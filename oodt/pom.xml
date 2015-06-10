@@ -26,7 +26,7 @@
         <executions>
           <execution>
             <id>install-oodt</id>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
@@ -74,7 +74,7 @@
           <!-- install additional OODT jars -->
           <execution>
             <id>install-oodt-jars</id>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>copy</goal>
             </goals>
@@ -113,7 +113,7 @@
         <executions>
           <execution>
             <id>copy-filemgr-properties</id>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -131,7 +131,7 @@
           </execution>
           <execution>
             <id>copy-workflow-properties</id>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -149,7 +149,7 @@
           </execution>
           <execution>
             <id>copy-resource-properties</id>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -173,7 +173,7 @@
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>run</goal>
             </goals>

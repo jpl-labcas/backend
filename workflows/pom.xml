@@ -52,7 +52,6 @@
         <configuration>
           <filesets>
             <fileset>
-              <!-- FIXME -->
               <directory>${install.dir}</directory>
               <includes>
                 <include>${workflow}/**</include>

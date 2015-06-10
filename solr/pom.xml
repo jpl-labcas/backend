@@ -22,22 +22,20 @@
     <dependency>
       <groupId>gov.nasa.jpl.edrn.labcas</groupId>
       <artifactId>tomcat</artifactId>
-      <version>0.1</version>
+      <version>${parent.version}</version>
     </dependency>
   </dependencies>
 
   <build>
-
     <plugins>
 
-      <!-- download and install Solr web application into existing Tomcat installation including installing the needed logging 
-        jars -->
+      <!-- download and install Solr web application into existing Tomcat installation including the needed logging jars -->
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
             <id>install-solr</id>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>copy</goal>
             </goals>
@@ -93,13 +91,13 @@
         </executions>
       </plugin>
 
-      <!-- install customized log4j.properties into Tomcat -->
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
+          <!-- install customized log4j.properties into Tomcat -->
           <execution>
             <id>copy-log4j-properties</id>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -115,17 +113,10 @@
               </resources>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-
-      <!-- create and configure the SOLR_HOME directory -->
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <!-- copy src/main/resources/solr.xml to SOLR_HOME/solr.xml -->
-        <executions>
+          <!-- create and configure the SOLR_HOME directory -->
           <execution>
             <id>copy-solr-xml</id>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -144,7 +135,7 @@
           <!-- copy src/main/config/* to SOLR_HOME/${solr.solr.core}/conf/. -->
           <execution>
             <id>copy-solr-config</id>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -157,6 +148,7 @@
               </resources>
             </configuration>
           </execution>
+          
         </executions>
       </plugin>
 

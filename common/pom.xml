@@ -46,7 +46,6 @@
         </configuration>
       </plugin>
 
-
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
@@ -100,7 +99,7 @@
         <executions>
           <execution>
             <id>chmod-scripts</id>
-            <phase>package</phase>
+            <phase>install</phase>
             <configuration>
               <target>
                 <chmod file="${install.dir}/*.sh" perm="755" />
@@ -122,7 +121,7 @@
               <directory>${install.dir}</directory>
               <includes>
                 <include>*.sh</include>
-                <include>run</include>
+                <include>**/run</include>
               </includes>
             </fileset>
           </filesets>

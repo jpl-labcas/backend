@@ -27,7 +27,7 @@
         <executions>
           <execution>
             <id>install-tomcat</id>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
@@ -52,7 +52,7 @@
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>run</goal>
             </goals>
