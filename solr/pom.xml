@@ -6,11 +6,9 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>gov.nasa.jpl.edrn.labcas</groupId>
   <artifactId>solr</artifactId>
   <packaging>pom</packaging>
-  <version>0.1</version>
-  <name>Apache Solr web application installed within Tomcat and configured as OODT File Manager back-end</name>
+  <name>Apache Solr web application configured for LabCAS File Manager</name>
 
   <parent>
     <groupId>gov.nasa.jpl.edrn.labcas</groupId>

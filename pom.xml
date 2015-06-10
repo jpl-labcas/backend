@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
   Author: Luca Cinquini 
-  Description: top-level project descriptor for LabCAS workflows 
+  Description: top-level project descriptor for LabCAS backend 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -10,7 +10,7 @@
 
   <groupId>gov.nasa.jpl.edrn.labcas</groupId>
   <artifactId>labcas-backend</artifactId>
-  <name>LabCAS Workflows</name>
+  <name>LabCAS backend</name>
   <version>0.1</version>
   <packaging>pom</packaging>
 
@@ -91,7 +91,7 @@
 
   <!-- profiles -->
   <profiles>
-    <!-- default profile: installs all back-end services -->
+    <!-- default profile: installs all back-end services and common components -->
     <profile>
       <id>default-profile</id>
       <activation>

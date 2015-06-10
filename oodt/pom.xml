@@ -6,10 +6,8 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>gov.nasa.jpl.edrn.labcas</groupId>
   <artifactId>oodt</artifactId>
   <packaging>pom</packaging>
-  <version>0.1</version>
   <name>OODT modules for LabCAS backend</name>
 
   <parent>

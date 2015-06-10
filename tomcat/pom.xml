@@ -7,11 +7,9 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>gov.nasa.jpl.edrn.labcas</groupId>
   <artifactId>tomcat</artifactId>
   <packaging>pom</packaging>
-  <version>0.1</version>
-  <name>Apache Tomcat web servlet container configured for LabCAS workflows</name>
+  <name>Apache Tomcat web servlet container configured for LabCAS backend</name>
 
   <parent>
     <groupId>gov.nasa.jpl.edrn.labcas</groupId>

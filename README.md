@@ -1,7 +1,11 @@
-labcas-workflows
-================
+LabCAS Backend
+==============
 
-OODT workflows for EDRN
+Repository containing back-end services and configuration
+for executing EDRN LabCAS data processing workflows.
+
+
+=================
 
 INSTALLATION INSTRUCTIONS
 
@@ -22,7 +26,7 @@ export DATA_ARCHIVE=/usr/local/data
 o Check out code from repository
 
 cd <any source directory>
-git checkout https://github.jpl.nasa.gov/EDRN/labcas-workflows
+git checkout https://github.com/EDRN/labcas-backend.git
 
 o Compile and install
 

@@ -4,11 +4,8 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>gov.nasa.jpl.edrn.labcas</groupId>
   <artifactId>common</artifactId>
-  <version>0.1</version>
   <packaging>jar</packaging>
-
   <name>LabCAS backend common components</name>
 
   <parent>
