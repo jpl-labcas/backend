@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pgeConfig>
+
+        <!-- PGE instructions -->
+        <exe dir="[JobDir]" shell="/bin/bash">
+          <cmd>cd [PGE_ROOT]</cmd>
+          <cmd>R --no-save &lt; ./scripts/PostProcess.R --args [ncv] [prefix] [PGE_ROOT]</cmd>
+        </exe>
+
+        <customMetadata>
+             <metadata key="ProductionDateTime" val="[DATE.UTC]"/>
+             <metadata key="JobDir" val="[PGE_ROOT]/jobs/job-[ProductionDateTime]"/>
+        </customMetadata>
+              
+</pgeConfig>

@@ -1,0 +1,253 @@
+<?xml version="1.0"?>
+<!-- Author: Luca Cinquini Description: Maven descriptor that installs selected OODT components to $LABCAS_HOME: 1. File 
+  Manager 2. Workflow Manager 3. Resource Manager 4. Crawler 5. PGE -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>gov.nasa.jpl.edrn.labcas</groupId>
+  <artifactId>oodt</artifactId>
+  <packaging>pom</packaging>
+  <version>0.1</version>
+  <name>OODT modules for LabCAS backend</name>
+
+  <parent>
+    <groupId>gov.nasa.jpl.edrn.labcas</groupId>
+    <artifactId>labcas-backend</artifactId>
+    <version>0.1</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <build>
+    <plugins>
+
+      <!-- install OODT components -->
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>install-oodt</id>
+            <phase>package</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.oodt</groupId>
+                  <artifactId>cas-filemgr</artifactId>
+                  <version>${oodt.version}</version>
+                  <classifier>dist</classifier>
+                  <type>tar.gz</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${oodt.dir}</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.oodt</groupId>
+                  <artifactId>cas-workflow</artifactId>
+                  <version>${oodt.version}</version>
+                  <classifier>dist</classifier>
+                  <type>tar.gz</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${oodt.dir}</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.oodt</groupId>
+                  <artifactId>cas-resource</artifactId>
+                  <version>${oodt.version}</version>
+                  <classifier>dist</classifier>
+                  <type>tar.gz</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${oodt.dir}</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.oodt</groupId>
+                  <artifactId>cas-crawler</artifactId>
+                  <version>${oodt.version}</version>
+                  <classifier>dist</classifier>
+                  <type>tar.gz</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${oodt.dir}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <!-- install additional OODT jars -->
+          <execution>
+            <id>install-oodt-jars</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.oodt</groupId>
+                  <artifactId>cas-filemgr</artifactId>
+                  <version>${oodt.version}</version>
+                  <type>jar</type>
+                  <outputDirectory>${oodt.dir}/cas-workflow-${oodt.version}/lib</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.oodt</groupId>
+                  <artifactId>cas-crawler</artifactId>
+                  <version>${oodt.version}</version>
+                  <type>jar</type>
+                  <outputDirectory>${oodt.dir}/cas-workflow-${oodt.version}/lib</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.oodt</groupId>
+                  <artifactId>cas-pge</artifactId>
+                  <version>${oodt.version}</version>
+                  <type>jar</type>
+                  <outputDirectory>${oodt.dir}/cas-workflow-${oodt.version}/lib</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- configure OODT components -->
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-filemgr-properties</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${oodt.dir}/cas-filemgr-${oodt.version}/etc</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/src/main/resources</directory>
+                  <includes>
+                    <include>filemgr.properties</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-workflow-properties</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${oodt.dir}/cas-workflow-${oodt.version}/etc</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/src/main/resources</directory>
+                  <includes>
+                    <include>workflow.properties</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-resource-properties</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${oodt.dir}/cas-resource-${oodt.version}/etc</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/src/main/resources</directory>
+                  <includes>
+                    <include>resource.properties</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- create/delete symbolic links -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <id>create-oodt-symlinks</id>
+            <configuration>
+              <target>
+                <symlink resource="./cas-filemgr-${oodt.version}" link="${oodt.dir}/cas-filemgr" overwrite="true" />
+                <symlink resource="./cas-workflow-${oodt.version}" link="${oodt.dir}/cas-workflow" overwrite="true" />
+                <symlink resource="./cas-resource-${oodt.version}" link="${oodt.dir}/cas-resource" overwrite="true" />
+                <symlink resource="./cas-crawler-${oodt.version}" link="${oodt.dir}/cas-crawler" overwrite="true" />
+                <!-- must also create filemgr/logs directory which is missing from distribution -->
+                <mkdir dir="${oodt.dir}/cas-filemgr/logs" />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <phase>clean</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <id>delete-oodt-symlinks</id>
+            <configuration>
+              <target>
+                <symlink action="delete" link="${oodt.dir}/cas-filemgr" />
+                <symlink action="delete" link="${oodt.dir}/cas-workflow" />
+                <symlink action="delete" link="${oodt.dir}/cas-resource" />
+                <symlink action="delete" link="${oodt.dir}/cas-crawler" />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <phase>clean</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <id>delete-target-dir</id>
+            <configuration>
+              <target>
+                <delete dir="${basedir}/target" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- delete OODT components -->
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>clean</phase>
+          </execution>
+        </executions>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${oodt.dir}/cas-filemgr-${oodt.version}</directory>
+            </fileset>
+            <fileset>
+              <directory>${oodt.dir}/cas-workflow-${oodt.version}</directory>
+            </fileset>
+            <fileset>
+              <directory>${oodt.dir}/cas-resource-${oodt.version}</directory>
+            </fileset>
+            <fileset>
+              <directory>${oodt.dir}/cas-crawler-${oodt.version}</directory>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>

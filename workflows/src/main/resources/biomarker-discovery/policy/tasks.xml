@@ -1,0 +1,170 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<cas:tasks xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+
+        <!-- Biomarker Discovery Qsub pipeline task 0 -->
+        <!-- standalone task that runs the whole biomarker discovery pipeline through qsub and R scripts -->
+        <task id="urn:edrn:BiomarkerDiscoveryTask0" name="BiomarkerDiscoveryTask0"
+                class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+                <conditions />
+                <configuration>
+                        <property name="PGETask_Name" value="BiomarkerDiscoveryTask0" />
+                        <property name="PGETask_ConfigFilePath"
+                                value="[LABCAS_HOME]/biomarker-discovery/pge-configs/biomarker-discovery-task0-config.pgeconfig.xml"
+                                envReplace="true" />
+                        <property name="PGETask_DumpMetadata" value="true" />
+                        <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]"
+                                envReplace="true" />
+                        <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]"
+                                envReplace="true" />
+                        <property name="PCS_MetFileExtension" value="met" />
+                        <property name="PCS_ClientTransferServiceFactory"
+                                value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
+                        <property name="PCS_ActionRepoFile"
+                                value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml"
+                                envReplace="true" />
+                        <!-- <property name="QueueName" value="linux-queue" /> -->
+                        <!-- script arguments -->
+                        <property name="prefix" value="JPL_NatMed_Gender_Classification" />
+                </configuration>
+                <requiredMetFields>
+                        <metfield name="ncv" />
+                </requiredMetFields>
+        </task>
+
+        <!-- Biomarker Discovery no-Qsub pipeline task 1 -->
+        <!-- task that runs a python script that submits sub-workflows to multiple nodes -->
+        <task id="urn:edrn:BiomarkerDiscoveryTask1" name="BiomarkerDiscoveryTask1"
+                class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+                <conditions />
+                <configuration>
+                        <property name="PGETask_Name" value="BiomarkerDiscoveryTask1" />
+                        <property name="PGETask_ConfigFilePath"
+                                value="[LABCAS_HOME]/biomarker-discovery/pge-configs/biomarker-discovery-task1-config.pgeconfig.xml"
+                                envReplace="true" />
+                        <property name="PGETask_DumpMetadata" value="true" />
+                        <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]"
+                                envReplace="true" />
+                        <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]"
+                                envReplace="true" />
+                        <property name="PCS_MetFileExtension" value="met" />
+                        <property name="PCS_ClientTransferServiceFactory"
+                                value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
+                        <property name="PCS_ActionRepoFile"
+                                value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml"
+                                envReplace="true" />
+                        <!-- <property name="PCS_ActionsIds" value="Unique"/> -->
+                        <!-- <property name="QueueName" value="linux-queue" /> -->
+                        <!-- script arguments -->
+                        <property name="prefix" value="JPL_NatMed_Gender_Classification" />
+                </configuration>
+                <requiredMetFields>
+                        <metfield name="ncv" />
+                </requiredMetFields>
+        </task>
+
+        <!-- Biomarker Discovery no-Qsub pipeline task 2 -->
+        <!-- task that runs a single iteration of the biomarker discovery pipeline R script -->
+        <task id="urn:edrn:BiomarkerDiscoveryTask2" name="BiomarkerDiscoveryTask2"
+                class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+                <conditions />
+                <configuration>
+                        <property name="PGETask_Name" value="BiomarkerDiscoveryTask2" />
+                        <property name="PGETask_ConfigFilePath"
+                                value="[LABCAS_HOME]/biomarker-discovery/pge-configs/biomarker-discovery-task2-config.pgeconfig.xml"
+                                envReplace="true" />
+                        <property name="PGETask_DumpMetadata" value="true" />
+                        <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]"
+                                envReplace="true" />
+                        <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]"
+                                envReplace="true" />
+                        <property name="PCS_MetFileExtension" value="met" />
+                        <property name="PCS_ClientTransferServiceFactory"
+                                value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
+                        <!-- script arguments -->
+                        <property name="prefix" value="JPL_NatMed_Gender_Classification" />
+                </configuration>
+                <requiredMetFields>
+                        <metfield name="ncv" />
+                </requiredMetFields>
+        </task>
+
+    <!-- Biomarker Discovery no-Qsub pipeline task 3 -->
+        <!-- task that runs the biomarker discovery post-processing R script -->
+        <task id="urn:edrn:BiomarkerDiscoveryTask3" name="BiomarkerDiscoveryTask3"
+                class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+                <conditions>
+                        <condition id="urn:oodt:BiomarkerDiscoveryPostProcessCondition" />
+                </conditions>
+                <configuration>
+                        <property name="PGETask_Name" value="BiomarkerDiscoveryTask3" />
+                        <property name="PGETask_ConfigFilePath"
+                                value="[LABCAS_HOME]/biomarker-discovery/pge-configs/biomarker-discovery-task3-config.pgeconfig.xml"
+                                envReplace="true" />
+                        <property name="PGETask_DumpMetadata" value="true" />
+                        <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]"
+                                envReplace="true" />
+                        <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]"
+                                envReplace="true" />
+                        <property name="PCS_MetFileExtension" value="met" />
+                        <property name="PCS_ClientTransferServiceFactory"
+                                value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
+                        <!-- script arguments -->
+                        <property name="prefix" value="JPL_NatMed_Gender_Classification" />
+                </configuration>
+                <requiredMetFields>
+                        <metfield name="ncv" />
+                </requiredMetFields>
+        </task>
+
+
+
+
+        <!-- Biomarker Discovery Qsub pipeline task 4 -->
+        <!-- task that publishes the biomarker discovery summary file -->
+        <task id="urn:edrn:BiomarkerDiscoveryTask4" name="BiomarkerDiscoveryTask4"
+                class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+                <conditions>
+                        <condition id="urn:oodt:BiomarkerDiscoverySummaryFileCondition" />
+                </conditions>
+                <configuration>
+                        <property name="PGETask_Name" value="BiomarkerDiscoveryTask4" />
+                        <property name="PGETask_ConfigFilePath"
+                                value="[LABCAS_HOME]/biomarker-discovery/pge-configs/biomarker-discovery-task4-config.pgeconfig.xml"
+                                envReplace="true" />
+                        <property name="PGETask_DumpMetadata" value="true" />
+                        <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]"
+                                envReplace="true" />
+                        <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]"
+                                envReplace="true" />
+                        <property name="PCS_MetFileExtension" value="met" />
+                        <property name="PCS_ClientTransferServiceFactory"
+                                value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
+                        <property name="PCS_ActionRepoFile"
+                                value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml"
+                                envReplace="true" />
+                        <!-- <property name="PCS_ActionsIds" value="Unique"/> -->
+                        <!-- <property name="QueueName" value="linux-queue" /> -->
+                        <!-- script arguments -->
+                        <property name="prefix" value="JPL_NatMed_Gender_Classification" />
+                </configuration>
+                <requiredMetFields>
+                        <metfield name="ncv" />
+                </requiredMetFields>
+        </task>
+
+</cas:tasks>

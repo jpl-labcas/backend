@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<!-- Author: Luca Cinquini Description: Maven descriptor that performs the following actions: 1. Downloads the tomcat distribution 
+  to the local maven repository 2. Copies and unpacks the tomcat distribution to LABCAS_HOME location 3. Creates a symlink 
+  ./tomcat to the apache-tomcat-version top-level directory -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>gov.nasa.jpl.edrn.labcas</groupId>
+  <artifactId>tomcat</artifactId>
+  <packaging>pom</packaging>
+  <version>0.1</version>
+  <name>Apache Tomcat web servlet container configured for LabCAS workflows</name>
+
+  <parent>
+    <groupId>gov.nasa.jpl.edrn.labcas</groupId>
+    <artifactId>labcas-backend</artifactId>
+    <version>0.1</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <build>
+    <plugins>
+
+      <!-- download and install Tomcat -->
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>install-tomcat</id>
+            <phase>package</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.tomcat</groupId>
+                  <artifactId>tomcat</artifactId>
+                  <version>${tomcat.version}</version>
+                  <type>tar.gz</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${tomcat.dir}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- create/delete symbolic link -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <id>create-tomcat-symlink</id>
+            <configuration>
+              <target>
+                <symlink resource="./apache-tomcat-${tomcat.version}" link="${tomcat.dir}/apache-tomcat"
+                  overwrite="true" />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <phase>clean</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <id>delete-tomcat-symlink</id>
+            <configuration>
+              <target>
+                <symlink action="delete" link="${tomcat.dir}/apache-tomcat" />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <phase>clean</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <id>delete-target-dir</id>
+            <configuration>
+              <target>
+                <delete dir="${basedir}/target" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- delete the tomcat installation -->
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${tomcat.dir}/apache-tomcat-${tomcat.version}</directory>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>

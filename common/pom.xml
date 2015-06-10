@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>gov.nasa.jpl.edrn.labcas</groupId>
+  <artifactId>common</artifactId>
+  <version>0.1</version>
+  <packaging>jar</packaging>
+
+  <name>LabCAS backend common components</name>
+
+  <parent>
+    <groupId>gov.nasa.jpl.edrn.labcas</groupId>
+    <artifactId>labcas-backend</artifactId>
+    <version>0.1</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-pge</artifactId>
+      <version>${oodt.version}</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <!-- Maven assembly configuration -->
+      <!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-assembly-plugin</artifactId> <version>2.5.1</version> 
+        <configuration> <descriptors> <descriptor>src/main/assembly/assembly.xml</descriptor> </descriptors> </configuration> <executions> 
+        <execution> <phase>package</phase> <goals> <goal>single</goal> </goals> </execution> </executions> </plugin> -->
+      <!-- Java compiler version -->
+
+      <!-- choose non-standard name for the jar -->
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <finalName>${parent.artifactId}-${artifactId}-${version}</finalName>
+        </configuration>
+      </plugin>
+
+
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+        
+          <!-- install jar file into OODT modules -->
+          <execution>
+            <id>copy-jar</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${oodt.dir}/cas-workflow-${oodt.version}/lib</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/target</directory>
+                  <includes>
+                    <include>${parent.artifactId}-${artifactId}-${version}.jar</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          
+          <!--  copy shell scripts -->
+          <execution>
+            <id>copy-scripts</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${install.dir}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/src/main/scripts</directory>
+                  <includes>
+                    <include>*.sh</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+
+        </executions>
+      </plugin>
+      
+      <!-- make all scripts executable -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>chmod-scripts</id>
+            <phase>package</phase>
+            <configuration>
+              <target>
+                <chmod file="${install.dir}/*.sh" perm="755" />
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <!-- clean up shell scripts -->
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${install.dir}</directory>
+              <includes>
+                <include>*.sh</include>
+                <include>run</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+</project>

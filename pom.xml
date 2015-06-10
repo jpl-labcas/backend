@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Author: Luca Cinquini 
+  Description: top-level project descriptor for LabCAS workflows 
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>gov.nasa.jpl.edrn.labcas</groupId>
+  <artifactId>labcas-backend</artifactId>
+  <name>LabCAS Workflows</name>
+  <version>0.1</version>
+  <packaging>pom</packaging>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <!-- properties common to all modules -->
+  <properties>
+
+    <!-- root installation directory -->
+    <install.dir>${env.LABCAS_HOME}</install.dir>
+
+    <!-- OODT version and location -->
+    <oodt.version>0.9</oodt.version>
+    <oodt.dir>${env.LABCAS_HOME}</oodt.dir>
+
+    <!-- Tomcat version and location -->
+    <tomcat.version>7.0.62</tomcat.version>
+    <tomcat.dir>${env.LABCAS_HOME}</tomcat.dir>
+
+    <!-- Solr version and configuration location -->
+    <solr.version>4.9.1</solr.version>
+    <solr.solr.home>${env.LABCAS_HOME}/solr-home</solr.solr.home>
+
+    <!-- logging jars -->
+    <slf4j.version>1.7.7</slf4j.version>
+    <log4j.version>1.2.17</log4j.version>
+
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+  </properties>
+
+  <!-- maven plugin definitions -->
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <source>1.7</source>
+            <target>1.7</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>2.10</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.3.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.7</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>1.7</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>2.6.1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <!-- profiles -->
+  <profiles>
+    <!-- default profile: installs all back-end services -->
+    <profile>
+      <id>default-profile</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>oodt</module>
+        <module>tomcat</module>
+        <module>solr</module>
+        <module>common</module>
+      </modules>
+    </profile>
+    <!-- profile that installs a specific workflow, triggered by -Dworkflow="workflow name" -->
+    <profile>
+      <id>workflow-profile</id>
+      <activation>
+        <property>
+          <name>workflow</name>
+        </property>
+      </activation>
+      <modules>
+        <module>workflows</module>
+      </modules>
+    </profile>
+  </profiles>
+
+</project>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pgeConfig>
+        <!-- PGE instructions -->
+        <!-- example command: python Submit.py 2 JPL_NatMed_Gender_Classification /usr/local/edrn/labcas/biomarker-discovery/pge -->
+        <exe dir="[JobDir]" shell="/bin/bash">
+          <cmd>cd [PGE_ROOT]</cmd>
+          <cmd>python Submit1.py [ncv] [prefix] [PGE_ROOT]</cmd>
+        </exe>
+
+        <customMetadata>
+             <metadata key="ProductionDateTime" val="[DATE.UTC]"/>
+             <metadata key="JobDir" val="[PGE_ROOT]/jobs/job-[ProductionDateTime]"/>
+        </customMetadata>
+
+</pgeConfig>

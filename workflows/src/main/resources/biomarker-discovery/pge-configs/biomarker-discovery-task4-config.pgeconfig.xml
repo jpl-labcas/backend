@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pgeConfig>
+
+        <!-- PGE instructions -->
+        <exe dir="[JobDir]" shell="/bin/bash">
+          <cmd>cd [PGE_ROOT]</cmd>
+        </exe>
+        
+        <!-- CAS Crawler directives -->
+        <output>
+				<!--  single iteration output -->
+                <dir path="[PGE_ROOT]/results/cv" createBeforeExe="false">
+	                <!-- metadata extractors matching specific files -->
+	                <files regExp=".*_iter_\d\.txt"
+	                	   metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
+	                       args="[LABCAS_HOME]/biomarker-discovery/pge-configs/metout.xml"/>
+           		</dir>
+           		<!--  summary file -->
+                <dir path="[PGE_ROOT]/results/summary" createBeforeExe="false">
+	                <!-- metadata extractors matching specific files -->
+	                <files regExp=".*_summary\.txt"
+	                	   metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
+	                       args="[LABCAS_HOME]/biomarker-discovery/pge-configs/metout2.xml"/>
+           		</dir>
+        </output>
+        
+        <!-- custom metadata to add to output metadata files -->
+        <customMetadata>
+            <metadata key="ProductionDateTime" val="[DATE.UTC]"/>
+<!--             <metadata key="ProductName" val="[prefix]_summary.txt"/>
+            <metadata key="ProductType" val="BiomarkerDiscoverySummaryFile"/>
+ -->            <metadata key="JobDir" val="[PGE_ROOT]/jobs/job-[ProductionDateTime]"/>
+            <metadata key="JobDir" val="[PGE_ROOT]/jobs/job-[ProductionDateTime]"/>
+            <metadata key="NumberOfCrossValidations" val="[ncv]"/>
+            <metadata key="Prefix" val="[prefix]"/>
+        </customMetadata>
+
+</pgeConfig>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadataList>
+    
+    <metadata key="JobId" value="[JobId]"/>
+    <metadata key="ProductType" value="BiomarkerDiscoverySummaryFile"/>
+    <metadata key="ProductionDateTime" value="[ProductionDateTime]"/>
+    <metadata key="NumberOfCrossValidations" value=""/>
+    <metadata key="Prefix" value=""/>
+    <metadata key="ProductName" val="[prefix]_summary.txt"/>
+    <metadata key="ProductType" val="BiomarkerDiscoverySummaryFile"/>
+    
+</metadataList>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pgeConfig>
+        <!-- example: sh Submit.sh 3 "JPL_NatMed_Gender_Classification" "/data/staging/pge_root/biomarker-discovery" -->
+        <exe dir="[JobDir]" shell="/bin/bash">
+          <cmd>cd [PGE_ROOT]</cmd>
+          <cmd>sh Submit.sh [ncv] [prefix] [PGE_ROOT]</cmd>
+        </exe>
+
+        <customMetadata>
+             <metadata key="ProductionDateTime" val="[DATE.UTC]"/>
+             <metadata key="JobDir" val="[PGE_ROOT]/jobs/job-[ProductionDateTime]"/>
+	</customMetadata>
+</pgeConfig>
