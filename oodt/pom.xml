@@ -184,6 +184,8 @@
                 <symlink resource="./cas-workflow-${oodt.version}" link="${oodt.dir}/cas-workflow" overwrite="true" />
                 <symlink resource="./cas-resource-${oodt.version}" link="${oodt.dir}/cas-resource" overwrite="true" />
                 <symlink resource="./cas-crawler-${oodt.version}" link="${oodt.dir}/cas-crawler" overwrite="true" />
+                <!-- create top-level run/ directory -->
+                <mkdir dir="${oodt.dir}/run" />
                 <!-- must also create filemgr/logs directory which is missing from distribution -->
                 <mkdir dir="${oodt.dir}/cas-filemgr/logs" />
               </target>
@@ -229,6 +231,9 @@
         </executions>
         <configuration>
           <filesets>
+            <fileset>
+              <directory>${oodt.dir}/run</directory>
+            </fileset>
             <fileset>
               <directory>${oodt.dir}/cas-filemgr-${oodt.version}</directory>
             </fileset>

@@ -29,12 +29,20 @@ mvn install
 mvn install -Dworkflow=biomarker-discovery
 	- will install the specific configuration for "biomarker-discovery" workflow on top of the existing services
 	
+source /usr/local/edrn/labcas/env.sh
+	- defines additional internal environment variables
+	
 o Directory structure
 
 o Start services
 
 cd $LABCAS_HOME
 ./start.sh
+
+or to start a single service:
+source $LABCAS_HOME/env.sh 
+cd $LABCAS_HOME/cas-workflow/bin
+./wmgr start
 
 o Test
 
@@ -47,6 +55,12 @@ http://<hostname>:8080/solr/
 
 
 o Run workflow
+
+cd LABCAS_HOME/cas-workflow/bin
+
+./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName biomarker-discovery-0 --metaData --key ncv 2 --key MyKey MyValue
+or:
+./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName biomarker-discovery --metaData --key ncv 2 --key MyKey MyValue
 
 o Stop services
 
