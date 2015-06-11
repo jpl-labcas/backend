@@ -1,0 +1,71 @@
+LabCAS INSTALLATION INSTRUCTIONS
+
+o Prerequisites
+
+Java 1.7+
+Unix OS (Linux, MacOSX, ...)
+
+o Define environment where software will be installed
+
+For example:
+
+export LABCAS_HOME=/usr/local/labcas
+	- location where all software components will be installed
+
+export DATA_ARCHIVE=/usr/local/data
+	- location where files will be archived
+
+o Check out code from repository
+(to any directory, for example ~/src)
+
+git clone https://github.com/EDRN/labcas-backend.git
+
+o Compile and install
+
+cd labcas-backend
+mvn install
+	- will install all back-end services
+	
+mvn install -Dworkflow=biomarker-discovery
+	- will install the specific configuration for "biomarker-discovery" workflow on top of the existing services
+	
+o Directory structure
+
+o Start services
+
+cd $LABCAS_HOME
+./start.sh
+
+o Test
+
+Query Workflow Manager for available workflows
+cd $LABCAS_HOME
+./wmgr-client -op -events -url http://localhost:9001
+
+Query Solr
+http://<hostname>:8080/solr/
+
+
+o Run workflow
+
+o Stop services
+
+cd $LABCAS_HOME
+./stop.sh
+
+
+o Upgrade installation
+
+to only upgrade specific components: cd to the module subdirectory and mvn install, for example:
+cd solr
+mvn install
+
+o Clean up
+
+mvn clean
+	- will remove all services from $LABCAS_HOME
+
+mvn clean -Dworkflow=biomarker-discovery
+	- will remove the specific workflow configuration
+	
+
