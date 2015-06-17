@@ -24,7 +24,7 @@
                 <configuration>
                         <property name="PGETask_Name" value="BiomarkerDiscoveryTask0" />
                         <property name="PGETask_ConfigFilePath"
-                                value="[LABCAS_HOME]/biomarker-discovery/pge-configs/biomarker-discovery-task0-config.pgeconfig.xml"
+                                value="[LABCAS_HOME]/workflows/biomarker-discovery/pge-configs/biomarker-discovery-task0-config.pgeconfig.xml"
                                 envReplace="true" />
                         <property name="PGETask_DumpMetadata" value="true" />
                         <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]"
@@ -54,7 +54,7 @@
                 <configuration>
                         <property name="PGETask_Name" value="BiomarkerDiscoveryTask1" />
                         <property name="PGETask_ConfigFilePath"
-                                value="[LABCAS_HOME]/biomarker-discovery/pge-configs/biomarker-discovery-task1-config.pgeconfig.xml"
+                                value="[LABCAS_HOME]/workflows/biomarker-discovery/pge-configs/biomarker-discovery-task1-config.pgeconfig.xml"
                                 envReplace="true" />
                         <property name="PGETask_DumpMetadata" value="true" />
                         <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]"
@@ -85,7 +85,7 @@
                 <configuration>
                         <property name="PGETask_Name" value="BiomarkerDiscoveryTask2" />
                         <property name="PGETask_ConfigFilePath"
-                                value="[LABCAS_HOME]/biomarker-discovery/pge-configs/biomarker-discovery-task2-config.pgeconfig.xml"
+                                value="[LABCAS_HOME]/workflows/biomarker-discovery/pge-configs/biomarker-discovery-task2-config.pgeconfig.xml"
                                 envReplace="true" />
                         <property name="PGETask_DumpMetadata" value="true" />
                         <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]"
@@ -113,7 +113,7 @@
                 <configuration>
                         <property name="PGETask_Name" value="BiomarkerDiscoveryTask3" />
                         <property name="PGETask_ConfigFilePath"
-                                value="[LABCAS_HOME]/biomarker-discovery/pge-configs/biomarker-discovery-task3-config.pgeconfig.xml"
+                                value="[LABCAS_HOME]/workflows/biomarker-discovery/pge-configs/biomarker-discovery-task3-config.pgeconfig.xml"
                                 envReplace="true" />
                         <property name="PGETask_DumpMetadata" value="true" />
                         <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]"
@@ -144,7 +144,7 @@
                 <configuration>
                         <property name="PGETask_Name" value="BiomarkerDiscoveryTask4" />
                         <property name="PGETask_ConfigFilePath"
-                                value="[LABCAS_HOME]/biomarker-discovery/pge-configs/biomarker-discovery-task4-config.pgeconfig.xml"
+                                value="[LABCAS_HOME]/workflows/biomarker-discovery/pge-configs/biomarker-discovery-task4-config.pgeconfig.xml"
                                 envReplace="true" />
                         <property name="PGETask_DumpMetadata" value="true" />
                         <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]"

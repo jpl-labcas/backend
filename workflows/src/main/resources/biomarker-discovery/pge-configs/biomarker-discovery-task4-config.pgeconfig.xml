@@ -13,14 +13,14 @@
 	                <!-- metadata extractors matching specific files -->
 	                <files regExp=".*_iter_\d\.txt"
 	                	   metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
-	                       args="[LABCAS_HOME]/biomarker-discovery/pge-configs/metout.xml"/>
+	                       args="[LABCAS_HOME]/workflows/biomarker-discovery/pge-configs/metout.xml"/>
            		</dir>
            		<!--  summary file -->
                 <dir path="[PGE_ROOT]/results/summary" createBeforeExe="false">
 	                <!-- metadata extractors matching specific files -->
 	                <files regExp=".*_summary\.txt"
 	                	   metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
-	                       args="[LABCAS_HOME]/biomarker-discovery/pge-configs/metout2.xml"/>
+	                       args="[LABCAS_HOME]/workflows/biomarker-discovery/pge-configs/metout2.xml"/>
            		</dir>
         </output>
         
