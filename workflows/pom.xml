@@ -32,7 +32,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${install.dir}</outputDirectory>
+              <outputDirectory>${install.dir}/workflows</outputDirectory>
               <resources>
                 <resource>
                   <directory>${project.basedir}/src/main/resources</directory>
@@ -52,7 +52,7 @@
         <configuration>
           <filesets>
             <fileset>
-              <directory>${install.dir}</directory>
+              <directory>${install.dir}/workflows</directory>
               <includes>
                 <include>${workflow}/**</include>
               </includes>
