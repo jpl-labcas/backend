@@ -39,6 +39,7 @@
     <!-- Solr version and configuration location -->
     <solr.version>4.9.1</solr.version>
     <solr.solr.home>${env.LABCAS_HOME}/solr-home</solr.solr.home>
+    <solr.data.dir>${env.LABCAS_HOME}/solr-index</solr.data.dir>
 
     <!-- logging jars -->
     <slf4j.version>1.7.7</slf4j.version>

@@ -2,8 +2,11 @@
 
 export OODT_HOME=$LABCAS_HOME
 export CATALINA_HOME=$LABCAS_HOME/apache-tomcat
+
 export SOLR_HOME=$LABCAS_HOME/solr-home
-export CATALINA_OPTS='-Dsolr.solr.home=$SOLR_HOME'
+export SOLR_DATA_DIR=$LABCAS_HOME/solr-index
+export CATALINA_OPTS='-Dsolr.solr.home=$SOLR_HOME -Dsolr.data.dir=$SOLR_DATA_DIR'
+
 # FIXME
 #export PGE_ROOT=$LABCAS_HOME/biomarker-discovery
 

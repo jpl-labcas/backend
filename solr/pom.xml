@@ -152,17 +152,20 @@
         </executions>
       </plugin>
 
-      <!-- clean up SOLR_HOME -->
-      <plugin>
+      <!-- clean up SOLR_HOME, SOLR_DATA_DIR -->
+<!--       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
           <filesets>
             <fileset>
               <directory>${solr.solr.home}</directory>
             </fileset>
+            <fileset>
+              <directory>${solr.data.dir}</directory>
+            </fileset>
           </filesets>
         </configuration>
-      </plugin>
+      </plugin> -->
 
     </plugins>
   </build>
