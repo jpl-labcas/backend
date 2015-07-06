@@ -29,7 +29,7 @@ mvn install
 mvn install -Dworkflow=biomarker-discovery
 	- will install the specific configuration for "biomarker-discovery" workflow on top of the existing services
 	
-source /usr/local/edrn/labcas/env.sh
+source $LABCAS_HOME/env.sh
 	- defines additional internal environment variables
 	
 o Directory structure
@@ -40,7 +40,6 @@ cd $LABCAS_HOME
 ./start.sh
 
 or to start a single service:
-source $LABCAS_HOME/env.sh 
 cd $LABCAS_HOME/cas-workflow/bin
 ./wmgr start
 
