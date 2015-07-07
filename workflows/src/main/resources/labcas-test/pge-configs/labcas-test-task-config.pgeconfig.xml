@@ -10,7 +10,6 @@
   
   <!-- PGE metadata -->
   <customMetadata>
-    <metadata key="ProductType" val="LabcasTestFile" />
     <metadata key="ProductionDateTime" val="[DATE.UTC]" />
     <metadata key="JobDir" val="[PGE_ROOT]/labcas-test/jobs/job-[ProductionDateTime]" />
     <metadata key="location" val="LAB-01" />
