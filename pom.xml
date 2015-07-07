@@ -50,14 +50,15 @@
   </properties>
   
   <!-- additional repository containing OODT snapshots 
-      (in addition to Maven central defined in super-POM) -->
-  <repositories>
+      (in addition to Maven central defined in super-POM) 
+      NOTE: snapshot are currently NOT built on ASF server - must be compiled and installed manually on each machine -->
+<!--   <repositories>
     <repository>
       <id>apache.snapshots</id>
       <name>ASF Snapshots</name>
       <url>http://repository.apache.org/snapshots/</url>
     </repository>
-  </repositories>
+  </repositories> -->
 
   <!-- maven plugin definitions -->
   <build>
