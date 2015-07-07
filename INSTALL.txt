@@ -5,6 +5,8 @@ o Prerequisites
 Java 1.7+
 Unix OS (Linux, MacOSX, ...)
 
+Maven 2.2+
+
 o Define environment where software will be installed
 
 For example:
@@ -25,6 +27,9 @@ o Compile and install
 cd labcas-backend
 mvn install
 	- will install all back-end services
+	
+mvn install -Dworkflow=labcas-test
+	- will install the specific configuration for "labcas-test" workflow on top of the existing services
 	
 mvn install -Dworkflow=biomarker-discovery
 	- will install the specific configuration for "biomarker-discovery" workflow on top of the existing services
@@ -57,9 +62,24 @@ o Run workflow
 
 cd LABCAS_HOME/cas-workflow/bin
 
+./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-test --metaData --key experiment 1
+
+
 ./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName biomarker-discovery-0 --metaData --key ncv 2 --key MyKey MyValue
 or:
 ./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName biomarker-discovery --metaData --key ncv 2 --key MyKey MyValue
+
+After successful run:
+
+- job output is contained within directory <PGE_ROOT>/labcas-test/jobs/<job_id>
+	- labcas-test-output.txt contains run output
+	- labcas-test-output.txt.met contains job metadata generated while crawling
+	- sciPgeExeScript_LabcasTestTask contains runnable task script
+	- logs/
+
+- directory $PGE_ROOT contains output file output.txt
+- directory $PGE_ROOT/jobs contains script executable and log files
+
 
 o Stop services
 

@@ -27,9 +27,8 @@
         <!-- custom metadata to add to output metadata files -->
         <customMetadata>
             <metadata key="ProductionDateTime" val="[DATE.UTC]"/>
-<!--             <metadata key="ProductName" val="[prefix]_summary.txt"/>
-            <metadata key="ProductType" val="BiomarkerDiscoverySummaryFile"/>
- -->            <metadata key="JobDir" val="[PGE_ROOT]/jobs/job-[ProductionDateTime]"/>
+            <!-- <metadata key="ProductName" val="[prefix]_summary.txt"/>
+            <metadata key="ProductType" val="BiomarkerDiscoverySummaryFile"/>-->            
             <metadata key="JobDir" val="[PGE_ROOT]/jobs/job-[ProductionDateTime]"/>
             <metadata key="NumberOfCrossValidations" val="[ncv]"/>
             <metadata key="Prefix" val="[prefix]"/>

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadataList>
     
-    <metadata key="JobId" value="[JobId]"/>
-    <metadata key="ProductType" value="BiomarkerDiscoverySummaryFile"/>
-    <metadata key="ProductionDateTime" value="[ProductionDateTime]"/>
-    <metadata key="NumberOfCrossValidations" value=""/>
-    <metadata key="Prefix" value=""/>
-    <metadata key="ProductName" val="[prefix]_summary.txt"/>
+    <metadata key="JobId" val="[JobId]"/>
     <metadata key="ProductType" val="BiomarkerDiscoverySummaryFile"/>
+    <metadata key="ProductionDateTime" val="[ProductionDateTime]"/>
+    <metadata key="NumberOfCrossValidations" val=""/>
+    <metadata key="Prefix" val=""/>
+    <metadata key="ProductName" val="[prefix]_summary.txt"/>
     
 </metadataList>

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
   Licensed to the Apache Software Foundation (ASF) under one or more
   contributor license agreements.  See the NOTICE file distributed with
@@ -15,12 +14,6 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<cas:producttypemap xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+<cas:conditions xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
- <type id="urn:edrn:BiomarkerDiscoveryOutputFile" parent="urn:oodt:GenericFile" />
-
- <type id="urn:edrn:BiomarkerDiscoverySummaryFile" parent="urn:oodt:GenericFile">
-   <element id="PI" />
- </type>
-
-</cas:producttypemap>
+</cas:conditions>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pgeConfig>
+
+  <!-- PGE commands -->
+  <exe dir="[JobDir]" shell="/bin/bash">
+    <cmd>cd [PGE_ROOT]/labcas-test</cmd>
+    <cmd>mkdir -p output</cmd>
+    <cmd>echo 'xyz' > output/labcas-test-output.txt</cmd>
+  </exe>
+  
+  <!-- PGE metadata -->
+  <customMetadata>
+    <metadata key="ProductType" val="LabcasTestFile" />
+    <metadata key="ProductionDateTime" val="[DATE.UTC]" />
+    <metadata key="JobDir" val="[PGE_ROOT]/labcas-test/jobs/job-[ProductionDateTime]" />
+    <metadata key="location" val="LAB-01" />
+  </customMetadata>
+  
+  <!-- CAS Crawler directives -->
+  <output>
+    <dir path="[PGE_ROOT]/labcas-test/output" createBeforeExe="false">
+      <!-- metadata extractors matching specific files -->
+      <files regExp=".*output\.txt" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
+             args="[LABCAS_HOME]/workflows/labcas-test/pge-configs/metout.xml" />
+    </dir>
+    </output>
+
+</pgeConfig>

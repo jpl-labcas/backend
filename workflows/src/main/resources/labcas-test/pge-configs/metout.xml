@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadataList>
-
+    
     <metadata key="JobId" val="[JobId]"/>
-    <metadata key="ProductType" val="BiomarkerDiscoveryOutputFile"/>
+    <metadata key="ProductType" val="LabcasTestFile"/>
     <metadata key="ProductionDateTime" val="[ProductionDateTime]"/>
-    <metadata key="Prefix" val=""/>
     <metadata key="ProductName" val="[Filename]"/>
+    <metadata key="number_of_samples" val="10"/>
+    <metadata key="location" val=""/>
     
 </metadataList>
