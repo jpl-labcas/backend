@@ -20,7 +20,7 @@
 	           class="gov.nasa.jpl.edrn.labcas.common.conditions.BiomarkerDiscoveryPostProcessCondition">
     <configuration>
             <property name="prefix" value="JPL_NatMed_Gender_Classification"/>
-            <property name="projectDirectory" value="[PGE_ROOT]" envReplace="true" />
+            <property name="projectDirectory" value="[PGE_ROOT]/biomarker_discovery" envReplace="true" />
     </configuration>
  </condition>
 
@@ -29,7 +29,7 @@
             <configuration>
             <property name="mustBeOlderThanInSecs" value="2"/>
             <property name="filepath" 
-                      value="[PGE_ROOT]/results/summary/JPL_NatMed_Gender_Classification_summary.txt" envReplace="true" />
+                      value="[PGE_ROOT]/biomarker_discovery/results/summary/JPL_NatMed_Gender_Classification_summary.txt" envReplace="true" />
         </configuration>
   </condition>
 
