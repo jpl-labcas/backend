@@ -60,7 +60,7 @@ http://<hostname>:8080/solr/
 
 o Run workflow
 
-cd LABCAS_HOME/cas-workflow/bin
+cd $LABCAS_HOME/cas-workflow/bin
 
 ./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-test --metaData --key experiment 1
 
