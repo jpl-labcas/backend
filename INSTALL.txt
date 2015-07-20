@@ -54,15 +54,16 @@ cd $LABCAS_HOME/cas-workflow/bin
 
 o Test
 
-Query Workflow Manager for available workflows
+Query Workflow Manager for available workflows:
 cd $LABCAS_HOME/cas-workflow/bin
 ./wmgr-client -op -events -url http://localhost:9001
 
-Query Solr
+Query Solr:
 http://<hostname>:8080/solr/
+http://localhost:8080/solr/oodt-fm/select?q=*%3A*&wt=json&indent=true
 
 
-o Run workflow
+o Run labcas-test workflow
 
 cd $LABCAS_HOME/cas-workflow/bin
 
@@ -75,7 +76,8 @@ o After successful run:
   http://<hostname>:8080/solr/#/oodt-fm/query
 
 - job output and logs can be inspected at:
-  $LABCAS_HOME/pges/labcas-test/pges, output
+  $LABCAS_HOME/pges/labcas-test/jobs
+  $LABCAS_HOME/pges/labcas-test/output
 
 - output file is copied to:
   $LABCAS_ARCHIVE/labcas-test/files/labcas-test-output.txt
@@ -85,6 +87,8 @@ o Stop services
 
 cd $LABCAS_HOME
 ./stop.sh
+
+======================================
 
 o Upgrade installation
 
@@ -100,4 +104,3 @@ mvn clean
 mvn clean -Dworkflow=biomarker-discovery
 	- will remove the specific workflow configuration
 	
-
