@@ -1,10 +1,9 @@
-LabCAS INSTALLATION INSTRUCTIONS
+LabCAS back-end INSTALLATION INSTRUCTIONS
 
-o Prerequisites
+o Prerequisites (i.e. tested with...)
 
 Java 1.7+
 Unix OS (Linux, MacOSX, ...)
-
 Maven 2.2+
 
 o Define environment where software will be installed
@@ -15,18 +14,23 @@ export LABCAS_HOME=/usr/local/labcas
 	- location where all software components will be installed
 
 export LABCAS_ARCHIVE=/usr/local/data
-	- location where files will be archived
+	- location where product files will be archived
 
 o Check out code from repository
 (to any directory, for example ~/src)
 
 git clone https://github.com/EDRN/labcas-backend.git
 
+cd labcas-backend
+
+Optionally, select a specific branch 
+(not recommended unless you are a labcas-backend developer - typically, you want to work with the stable 'master' branch):
+git checkout -b devel origin/devel
+
 o Compile and install
 
-cd labcas-backend
 mvn install
-	- will install all back-end services
+	- will install all back-end services to $LABCAS_HOME	
 	
 mvn install -Dworkflow=labcas-test
 	- will install the specific configuration for "labcas-test" workflow on top of the existing services

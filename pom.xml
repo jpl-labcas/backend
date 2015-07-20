@@ -29,7 +29,7 @@
     <install.dir>${env.LABCAS_HOME}</install.dir>
 
     <!-- OODT version and location -->
-    <oodt.version>0.10-SNAPSHOT</oodt.version>
+    <oodt.version>0.8.1</oodt.version>
     <oodt.dir>${env.LABCAS_HOME}</oodt.dir>
 
     <!-- Tomcat version and location -->
