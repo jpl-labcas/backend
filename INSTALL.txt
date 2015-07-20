@@ -29,33 +29,33 @@ git checkout -b devel origin/devel
 
 o Compile and install
 
+(note: the first time you compile on a machine, it might take a long time since Maven will have to find and download 
+all the dependencies to your local Maven repository. After the first time, it will go much faster).
+
 mvn install
 	- will install all back-end services to $LABCAS_HOME	
 	
 mvn install -Dworkflow=labcas-test
-	- will install the specific configuration for "labcas-test" workflow on top of the existing services
-	
-mvn install -Dworkflow=biomarker-discovery
-	- will install the specific configuration for "biomarker-discovery" workflow on top of the existing services
-	
+	- will install the specific configuration for the "labcas-test" workflow on top of the existing services
+		
+o Start services
+
 source $LABCAS_HOME/env.sh
 	- defines additional internal environment variables
-	
-o Directory structure
-
-o Start services
 
 cd $LABCAS_HOME
 ./start.sh
+	- starts all the labcas backend services (File Manager with Tomcat/Solr back-end, Workflow Manager, Resource Manager)
 
-or to start a single service:
+or to start a single service, for example:
+
 cd $LABCAS_HOME/cas-workflow/bin
 ./wmgr start
 
 o Test
 
 Query Workflow Manager for available workflows
-cd $LABCAS_HOME
+cd $LABCAS_HOME/cas-workflow/bin
 ./wmgr-client -op -events -url http://localhost:9001
 
 Query Solr
