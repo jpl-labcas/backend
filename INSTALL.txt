@@ -67,7 +67,7 @@ o Run labcas-test workflow
 
 cd $LABCAS_HOME/cas-workflow/bin
 
-./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-test --metaData --key experiment 1
+./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-test --metaData --key experiment 11 --key species snakes
 
 
 o After successful run:

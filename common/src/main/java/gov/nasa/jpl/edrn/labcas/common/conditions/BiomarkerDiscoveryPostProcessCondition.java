@@ -8,6 +8,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.WorkflowConditionConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowConditionInstance;
 
+
 public class BiomarkerDiscoveryPostProcessCondition implements WorkflowConditionInstance {
 	
 	private static final Logger LOG = Logger.getLogger(BiomarkerDiscoveryPostProcessCondition.class.getName());
