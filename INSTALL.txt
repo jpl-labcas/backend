@@ -1,10 +1,9 @@
-LabCAS INSTALLATION INSTRUCTIONS
+LabCAS back-end INSTALLATION INSTRUCTIONS
 
-o Prerequisites
+o Prerequisites (i.e. tested with...)
 
 Java 1.7+
 Unix OS (Linux, MacOSX, ...)
-
 Maven 2.2+
 
 o Define environment where software will be installed
@@ -15,50 +14,56 @@ export LABCAS_HOME=/usr/local/labcas
 	- location where all software components will be installed
 
 export LABCAS_ARCHIVE=/usr/local/data
-	- location where files will be archived
+	- location where product files will be archived
 
 o Check out code from repository
 (to any directory, for example ~/src)
 
 git clone https://github.com/EDRN/labcas-backend.git
 
+cd labcas-backend
+
+Optionally, select a specific branch 
+(not recommended unless you are a labcas-backend developer - typically, you want to work with the stable 'master' branch):
+git checkout -b devel origin/devel
+
 o Compile and install
 
-cd labcas-backend
+(note: the first time you compile on a machine, it might take a long time since Maven will have to find and download 
+all the dependencies to your local Maven repository. After the first time, it will go much faster).
+
 mvn install
-	- will install all back-end services
+	- will install all back-end services to $LABCAS_HOME	
 	
 mvn install -Dworkflow=labcas-test
-	- will install the specific configuration for "labcas-test" workflow on top of the existing services
-	
-mvn install -Dworkflow=biomarker-discovery
-	- will install the specific configuration for "biomarker-discovery" workflow on top of the existing services
-	
+	- will install the specific configuration for the "labcas-test" workflow on top of the existing services
+		
+o Start services
+
 source $LABCAS_HOME/env.sh
 	- defines additional internal environment variables
-	
-o Directory structure
-
-o Start services
 
 cd $LABCAS_HOME
 ./start.sh
+	- starts all the labcas backend services (File Manager with Tomcat/Solr back-end, Workflow Manager, Resource Manager)
 
-or to start a single service:
+or to start a single service, for example:
+
 cd $LABCAS_HOME/cas-workflow/bin
 ./wmgr start
 
 o Test
 
-Query Workflow Manager for available workflows
-cd $LABCAS_HOME
+Query Workflow Manager for available workflows:
+cd $LABCAS_HOME/cas-workflow/bin
 ./wmgr-client -op -events -url http://localhost:9001
 
-Query Solr
+Query Solr:
 http://<hostname>:8080/solr/
+http://localhost:8080/solr/oodt-fm/select?q=*%3A*&wt=json&indent=true
 
 
-o Run workflow
+o Run labcas-test workflow
 
 cd $LABCAS_HOME/cas-workflow/bin
 
@@ -71,7 +76,8 @@ o After successful run:
   http://<hostname>:8080/solr/#/oodt-fm/query
 
 - job output and logs can be inspected at:
-  $LABCAS_HOME/pges/labcas-test/pges, output
+  $LABCAS_HOME/pges/labcas-test/jobs
+  $LABCAS_HOME/pges/labcas-test/output
 
 - output file is copied to:
   $LABCAS_ARCHIVE/labcas-test/files/labcas-test-output.txt
@@ -81,6 +87,8 @@ o Stop services
 
 cd $LABCAS_HOME
 ./stop.sh
+
+======================================
 
 o Upgrade installation
 
@@ -96,4 +104,3 @@ mvn clean
 mvn clean -Dworkflow=biomarker-discovery
 	- will remove the specific workflow configuration
 	
-
