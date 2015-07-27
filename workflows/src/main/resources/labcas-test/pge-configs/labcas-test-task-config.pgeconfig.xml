@@ -3,10 +3,11 @@
 
 	<!-- PGE commands -->
 	<exe dir="[JobDir]" shell="/bin/bash">
-		<cmd>cd [PGE_ROOT]/labcas-test/output</cmd>
-		<cmd>echo 'xyz' > labcas-test-output.txt</cmd>
+		<cmd>cd [PGE_ROOT]/labcas-test</cmd>
+		<cmd>mkdir -p output</cmd>
+		<cmd>echo 'xyz' > output/labcas-test-output.txt</cmd>
 	</exe>
-	
+
 	<customMetadata>
 		<metadata key="ProductionDateTime" val="[DATE.UTC]" />
 		<metadata key="JobDir"

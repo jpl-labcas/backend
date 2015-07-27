@@ -15,6 +15,9 @@ export LABCAS_HOME=/usr/local/labcas
 
 export LABCAS_ARCHIVE=/usr/local/data
 	- location where product files will be archived
+	
+export PGE_ROOT=/data/staging/pge_root
+	- location where the specific executable will be installed (possibly outside of LabCAS version control)
 
 o Check out code from repository
 (to any directory, for example ~/src)
