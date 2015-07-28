@@ -28,9 +28,9 @@
       <property name="input.dataset.title" value="Dataset" />
       <property name="input.dataset.description" 
                 value="Input dataset containing gene expression set from laboratory studies" />
-      <property name="input.dataset.value" value="/data/GSE37147_COPD.rds" />
-      <property name="input.dataset.value" value="/data/GSE4115_41female_41male.rds" />
-      <property name="input.dataset.value" value="/data/GSE4115_Cancer.rds" />
+      <property name="input.dataset.value.1" value="/data/GSE37147_COPD.rds" />
+      <property name="input.dataset.value.2" value="/data/GSE4115_41female_41male.rds" />
+      <property name="input.dataset.value.3" value="/data/GSE4115_Cancer.rds" />
       
       <!-- output products -->
       <property name="output.product.type" value="urn:edrn:BiomarkerDiscoveryOutputFile"/>

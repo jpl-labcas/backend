@@ -33,9 +33,9 @@
       <property name="input.species.type" value="string" />
       <property name="input.species.title" value="Species" />
       <property name="input.species.description" value="The species that was tested" />
-      <property name="input.species.value" value="humans" />
-      <property name="input.species.value" value="snakes" />
-      <property name="input.species.value" value="sharks" />
+      <property name="input.species.value.1" value="humans" />
+      <property name="input.species.value.2" value="snakes" />
+      <property name="input.species.value.3" value="sharks" />
       
       <!-- output products -->
       <property name="output.product.type" value="urn:edrn:LabcasTestFile"/>
