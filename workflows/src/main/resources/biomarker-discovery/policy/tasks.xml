@@ -34,6 +34,7 @@
       
       <!-- output products -->
       <property name="output.product.type" value="urn:edrn:BiomarkerDiscoveryOutputFile"/>
+      <property name="output.product.type" value="urn:edrn:BiomarkerDiscoverySummaryFile"/>
       
     </configuration>
     

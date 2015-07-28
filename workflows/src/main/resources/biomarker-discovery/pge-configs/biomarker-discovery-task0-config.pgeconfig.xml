@@ -3,6 +3,8 @@
         <!-- example: sh Submit.sh 3 "JPL_NatMed_Gender_Classification" "/data/staging/pge_root/biomarker-discovery" -->
         <exe dir="[JobDir]" shell="/bin/bash">
           <cmd>cd [PGE_ROOT]/biomarker_discovery</cmd>
+          <cmd>rm results/cv/*</cmd>
+          <cmd>rm results/summary/*</cmd>
           <cmd>sh Submit.sh [ncv] [prefix] [PGE_ROOT]/biomarker_discovery</cmd>
         </exe>
 
