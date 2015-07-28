@@ -1,5 +1,7 @@
 package gov.nasa.jpl.edrn.labcas.tasks;
 
+import java.util.Enumeration;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,7 +12,7 @@ import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceExcep
 
 /**
  * Task used to initialize a LabCAS workflow.
- * For now it does nothing except printing a stetement.
+ * For now it does nothing except printing stetements.
  * 
  * @author luca
  *
@@ -22,7 +24,22 @@ public class LabcasInitTaskInstance implements WorkflowTaskInstance {
 	@Override
 	public void run(Metadata metadata, WorkflowTaskConfiguration config) throws WorkflowTaskInstanceException {
 		
+		// print out configuration
 		LOG.log(Level.INFO, "LabcasInitTaskInstance running with config="+config);
+		Properties props = config.getProperties();
+		Enumeration e = props.propertyNames();
+	    while (e.hasMoreElements()) {
+	      String key = (String) e.nextElement();
+	      LOG.log(Level.INFO, "==> property key=["+key+"] value=["+props.getProperty(key)+"]");
+	    }
+	    
+	    // print out metadata
+	    LOG.log(Level.INFO, "LabcasInitTaskInstance using metadata="+metadata);
+		for (String key : metadata.getAllKeys()) {
+			LOG.info("==> metadata key=["+key+"] value=["+metadata.getMetadata(key)+"]");
+		}
+
+		
 		
 	}
 
