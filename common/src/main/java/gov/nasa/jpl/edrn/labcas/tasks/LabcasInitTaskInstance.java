@@ -30,13 +30,13 @@ public class LabcasInitTaskInstance implements WorkflowTaskInstance {
 		Enumeration e = props.propertyNames();
 	    while (e.hasMoreElements()) {
 	      String key = (String) e.nextElement();
-	      LOG.log(Level.INFO, "==> property key=["+key+"] value=["+props.getProperty(key)+"]");
+	      LOG.log(Level.INFO, "\t==> config key=["+key+"] value=["+props.getProperty(key)+"]");
 	    }
 	    
 	    // print out metadata
 	    LOG.log(Level.INFO, "LabcasInitTaskInstance using metadata="+metadata);
 		for (String key : metadata.getAllKeys()) {
-			LOG.info("==> metadata key=["+key+"] value=["+metadata.getMetadata(key)+"]");
+			LOG.info("\t==> metadata key=["+key+"] value=["+metadata.getMetadata(key)+"]");
 		}
 
 		
