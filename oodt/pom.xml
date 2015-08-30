@@ -38,8 +38,6 @@
                   <version>${oodt.version}</version>
                   <classifier>dist</classifier>
                   <type>tar.gz</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${oodt.dir}</outputDirectory>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.oodt</groupId>
@@ -47,8 +45,6 @@
                   <version>${oodt.version}</version>
                   <classifier>dist</classifier>
                   <type>tar.gz</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${oodt.dir}</outputDirectory>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.oodt</groupId>
@@ -56,19 +52,17 @@
                   <version>${oodt.version}</version>
                   <classifier>dist</classifier>
                   <type>tar.gz</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${oodt.dir}</outputDirectory>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.oodt</groupId>
                   <artifactId>cas-crawler</artifactId>
                   <version>${oodt.version}</version>
                   <classifier>dist</classifier>
-                  <type>tar.gz</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${oodt.dir}</outputDirectory>
+                  <type>tar.gz</type>                                   
                 </artifactItem>
               </artifactItems>
+              <outputDirectory>${oodt.dir}</outputDirectory>
+              <overWrite>true</overWrite>
             </configuration>
           </execution>
           <!-- install additional OODT jars -->
@@ -85,23 +79,21 @@
                   <artifactId>cas-filemgr</artifactId>
                   <version>${oodt.version}</version>
                   <type>jar</type>
-                  <outputDirectory>${oodt.dir}/cas-workflow-${oodt.version}/lib</outputDirectory>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.oodt</groupId>
                   <artifactId>cas-crawler</artifactId>
                   <version>${oodt.version}</version>
                   <type>jar</type>
-                  <outputDirectory>${oodt.dir}/cas-workflow-${oodt.version}/lib</outputDirectory>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.oodt</groupId>
                   <artifactId>cas-pge</artifactId>
                   <version>${oodt.version}</version>
                   <type>jar</type>
-                  <outputDirectory>${oodt.dir}/cas-workflow-${oodt.version}/lib</outputDirectory>
                 </artifactItem>
               </artifactItems>
+              <outputDirectory>${oodt.dir}/cas-workflow-${oodt.version}/lib</outputDirectory>
             </configuration>
           </execution>
         </executions>
