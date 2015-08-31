@@ -1,0 +1,6 @@
+${project.parent.name} manifest file
+
+labcas-backend version: ${project.version}
+Tomcat version: ${tomcat.version}
+OODT version: ${oodt.version}
+Solr version: ${solr.version}

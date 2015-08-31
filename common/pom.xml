@@ -89,6 +89,27 @@
               </resources>
             </configuration>
           </execution>
+          
+          <!-- copy and filter the mainfest file -->
+          <execution>
+            <id>copy-manifest</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${install.dir}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/src/main/resources</directory>
+                  <filtering>true</filtering>
+                  <includes>
+                    <include>manifest.txt</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
 
         </executions>
       </plugin>
@@ -112,7 +133,7 @@
         </executions>
       </plugin>
       
-      <!-- clean up shell scripts -->
+      <!-- clean up shell scripts, manifest -->
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
@@ -121,6 +142,7 @@
               <directory>${install.dir}</directory>
               <includes>
                 <include>*.sh</include>
+                <include>manifest.txt</include>
                 <include>**/run</include>
               </includes>
             </fileset>
