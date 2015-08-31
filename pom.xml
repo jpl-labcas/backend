@@ -110,8 +110,8 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <modules>
+      	<module>tomcat</module>
         <module>oodt</module>
-        <module>tomcat</module>
         <module>solr</module>
         <module>common</module>
       </modules>

@@ -24,6 +24,7 @@
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
+          <!-- unpack OODT modules into installation directories -->
           <execution>
             <id>install-oodt</id>
             <phase>install</phase>
@@ -95,6 +96,27 @@
               </artifactItems>
               <outputDirectory>${oodt.dir}/cas-workflow-${oodt.version}/lib</outputDirectory>
             </configuration>
+          </execution>
+          <!-- copy fmprod war into Tomcat directory -->
+          <execution>
+            <id>install-fmprod</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.oodt</groupId>
+                  <artifactId>cas-product</artifactId>
+                  <version>${oodt.version}</version>
+                  <type>war</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${install.dir}/apache-tomcat/webapps</outputDirectory>
+                  <destFileName>fmprod.war</destFileName>
+                </artifactItem>
+          	</artifactItems>
+          </configuration>
           </execution>
         </executions>
       </plugin>

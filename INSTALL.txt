@@ -75,7 +75,7 @@ cd $LABCAS_HOME/cas-workflow/bin
 
 o After successful run:
 
-- product metadata can be queries from Solr catalog:
+- product metadata can be queried from Solr catalog:
   http://<hostname>:8080/solr/#/oodt-fm/query
 
 - job output and logs can be inspected at:
@@ -85,6 +85,10 @@ o After successful run:
 - output file is copied to:
   $LABCAS_ARCHIVE/labcas-test/files/labcas-test-output.txt
 
+- output file can be downloaded through the OODT Product Server:
+
+curl --remote-name --remote-header-name 'http://localhost:8080/fmprod/data?productID=<product_id>'
+wget --content-disposition 'http://localhost:8080/fmprod/data?productID=<product_id>'
 
 o Stop services
 
