@@ -41,6 +41,9 @@ mvn install
 mvn install -Dworkflow=labcas-test
 	- will install the specific configuration for the "labcas-test" workflow on top of the existing services
 		
+mvn install -Dworkflow=crawl
+	- will install the specific configuration for the "crawl" workflow that publishes uploaded to a staging area
+		
 o Start services
 
 source $LABCAS_HOME/env.sh
@@ -111,3 +114,9 @@ mvn clean
 mvn clean -Dworkflow=biomarker-discovery
 	- will remove the specific workflow configuration
 	
+========================================
+
+o To delete ALL records from the File Manager and underlying Solr index:
+
+curl -s http://localhost:8080/solr/oodt-fm/update?commit=true -H "Content-Type:text/xml" --data-binary '<delete><query>*:*</query></delete>'
+

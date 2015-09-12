@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadataList>
+    
+    <metadata key="JobId" val="[JobId]"/>
+    <metadata key="ProductType" val="LabcasFile"/>
+    <metadata key="ProductionDateTime" val="[ProductionDateTime]"/>
+    <metadata key="ProductName" val="[Filename]"/>
+    <metadata key="Dataset" val="[dataset]"/>
+    <metadata key="Version" val="[version]"/>
+    
+</metadataList>
