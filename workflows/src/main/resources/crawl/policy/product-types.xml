@@ -18,8 +18,8 @@
 <cas:producttypes xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
   <type id="urn:edrn:LabcasFile" name="LabcasFile">
-    <repository path="file://[LABCAS_ARCHIVE]/crawl/files" />
-    <versioner class="org.apache.oodt.cas.filemgr.versioning.BasicVersioner" />
+    <repository path="file://[LABCAS_ARCHIVE]/crawl" />
+    <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner" />
     <description>Files uploaded through Labcas front-end.</description>
     <metExtractors>
       <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
