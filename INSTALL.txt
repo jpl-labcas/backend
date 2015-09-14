@@ -75,6 +75,9 @@ cd $LABCAS_HOME/cas-workflow/bin
 
 ./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-test --metaData --key experiment 11 --key species snakes
 
+o Trigger crawling for uploaded dataset "mydata":
+
+./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName crawl --metaData --key dataset mydata
 
 o After successful run:
 

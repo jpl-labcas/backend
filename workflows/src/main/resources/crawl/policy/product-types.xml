@@ -36,10 +36,6 @@
         <key>dataset</key>
         <val>[dataset]</val>
       </keyval>
-      <keyval>
-        <key>version</key>
-        <val>[version]</val>
-      </keyval>
     </metadata>
   </type>
 

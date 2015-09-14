@@ -16,7 +16,7 @@
 -->
 <cas:tasks xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
-  <task id="urn:edrn:CrawlerInitTask" name="CrawlerInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasInitTaskInstance">
+  <task id="urn:edrn:CrawlerInitTask" name="CrawlerInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.CrawlerInitTaskInstance">
   
     <conditions />
   
@@ -26,10 +26,6 @@
       <property name="input.dataset.type" value="string" />
       <property name="input.dataset.title" value="Dataset" />
       <property name="input.species.description" value="Dataset name" />
-
-      <property name="input.version.type" value="string" />
-      <property name="input.version.title" value="Version" />
-      <property name="input.version.description" value="Dataset version" />
       
       <!-- output products -->
       <property name="output.product.type" value="urn:edrn:LabcasFile"/>
@@ -38,7 +34,6 @@
     
     <requiredMetFields>
       <metfield name="dataset" />
-      <metfield name="version" />
     </requiredMetFields>
     
   </task>
