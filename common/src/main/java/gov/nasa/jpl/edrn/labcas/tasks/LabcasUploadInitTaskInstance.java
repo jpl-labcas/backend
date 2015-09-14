@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.logging.Logger;
 
+import org.apache.log4j.Level;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
@@ -13,7 +15,8 @@ import gov.nasa.jpl.edrn.labcas.Constants;
 
 /**
  * Task used to initialize a LabCAS crawler workflow.
- * It parses the target archive directory and automatically sets the dataset version.
+ * o it parses the target archive directory and automatically sets the dataset version
+ * o if found, it adds all metadata contained in the file DatasetMetadata.xml (to all products in the dataset)
  * 
  * @author luca
  *
@@ -48,7 +51,32 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
         
         LOG.fine("Setting next dataset version to: "+version);
         metadata.replaceMetadata(Constants.METADATA_KEY_VERSION, version);
-        LOG.info("METADATA VERSION="+metadata.getMetadata(Constants.METADATA_KEY_VERSION));
+        
+        // add global dataset metadata from file DatasetMetadata.xml
+        String stagingDir = System.getenv(Constants.ENV_LABCAS_STAGING) + "/" + metadata.getMetadata(Constants.METADATA_KEY_DATASET);
+        File datasetMetadataFile = new File(stagingDir, Constants.METADATA_FILE);
+        
+        if (datasetMetadataFile.exists()) {
+        	LOG.info("Adding metadata from file: "+datasetMetadataFile.getAbsolutePath());
+        	
+        	try {
+        		 SerializableMetadata sm = new SerializableMetadata("UTF-8", false);
+        		 sm.loadMetadataFromXmlStream(datasetMetadataFile.toURI().toURL().openStream());
+        		 Metadata datasetMetadata = sm.getMetadata();
+     			 for (String key : datasetMetadata.getAllKeys()) {
+    				for (String val : datasetMetadata.getAllMetadata(key)) {
+    					LOG.fine("\t==> Adding dataset metadata key=["+key+"] value=["+val+"]");
+    				}
+     			 }
+        		 metadata.addMetadata(sm.getMetadata());
+        		 
+        	} catch (Exception e) {
+        		LOG.warning(e.getMessage());
+        	}
+        	
+        } else {
+        	LOG.warning("Metadata file: "+datasetMetadataFile.getAbsolutePath()+" not found");
+        }
 		
 	}
 

@@ -19,4 +19,7 @@ public interface Constants {
 	public final static String METADATA_KEY_DATASET = "Dataset";
 	public final static String METADATA_KEY_VERSION = "Version";
 	
+	// dataset-level metadata file
+	public final static String METADATA_FILE = "DatasetMetadata.xml";
+	
 }
