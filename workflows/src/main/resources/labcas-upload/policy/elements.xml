@@ -17,12 +17,12 @@
 -->
 <cas:elements xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
-  <element id="dataset" name="dataset">
+  <element id="Dataset" name="dataset">
     <description>Dataset name.</description>
     <dcElement />
   </element>
 
-  <element id="version" name="version">
+  <element id="Version" name="version">
     <description>Dataset version</description>
     <dcElement />
   </element>

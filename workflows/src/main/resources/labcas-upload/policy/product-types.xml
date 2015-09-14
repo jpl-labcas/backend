@@ -18,7 +18,7 @@
 <cas:producttypes xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
   <type id="urn:edrn:LabcasFile" name="LabcasFile">
-    <repository path="file://[LABCAS_STAGING]" />
+    <repository path="file://[LABCAS_ARCHIVE]/labcas-upload" />
     <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner" />
     <description>Files uploaded through Labcas front-end.</description>
     <metExtractors>
@@ -33,8 +33,12 @@
     </metExtractors>
     <metadata>
       <keyval>
-        <key>dataset</key>
-        <val>[dataset]</val>
+        <key>Dataset</key>
+        <val>[Dataset]</val>
+      </keyval>
+      <keyval>
+        <key>Version</key>
+        <val>[Version]</val>
       </keyval>
     </metadata>
   </type>

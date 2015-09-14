@@ -16,7 +16,7 @@
 -->
 <cas:tasks xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
-  <task id="urn:edrn:CrawlerInitTask" name="CrawlerInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.CrawlerInitTaskInstance">
+  <task id="urn:edrn:LabcasUploadInitTask" name="CrawlerInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasUploadInitTaskInstance">
   
     <conditions />
   
@@ -33,20 +33,20 @@
     </configuration>
     
     <requiredMetFields>
-      <metfield name="dataset" />
+      <metfield name="Dataset" />
     </requiredMetFields>
     
   </task>
 
 
-  <task id="urn:edrn:CrawlerExecuteTask" name="CrawlerExecuteTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+  <task id="urn:edrn:LabcasUploadExecuteTask" name="LabcasUploadExecuteTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
   
     <conditions />
   
     <configuration>
-      <property name="PGETask_Name" value="CrawlerExecuteTask" />
+      <property name="PGETask_Name" value="LabcasUploadExecuteTask" />
       <property name="PGETask_ConfigFilePath"
-        value="[LABCAS_HOME]/workflows/crawl/pge-configs/crawler-execute-task-config.pgeconfig.xml"
+        value="[LABCAS_HOME]/workflows/labcas-upload/pge-configs/labcas-upload-execute-task-config.pgeconfig.xml"
         envReplace="true" />
       <property name="PGETask_DumpMetadata" value="true" />
       <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />

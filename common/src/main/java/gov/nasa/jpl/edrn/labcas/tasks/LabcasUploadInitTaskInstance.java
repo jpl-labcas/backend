@@ -18,16 +18,16 @@ import gov.nasa.jpl.edrn.labcas.Constants;
  * @author luca
  *
  */
-public class CrawlerInitTaskInstance implements WorkflowTaskInstance {
+public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 	
-	private static final Logger LOG = Logger.getLogger(CrawlerInitTaskInstance.class.getName());
+	private static final Logger LOG = Logger.getLogger(LabcasUploadInitTaskInstance.class.getName());
 	
 	@Override
 	public void run(Metadata metadata, WorkflowTaskConfiguration config) throws WorkflowTaskInstanceException {
 		
 		// archive/dataset directory
-		String archiveDir = System.getenv(Constants.ENV_LABCAS_ARCHIVE) + "/crawl"; // FIXME ?
-        File datasetDir = new File(archiveDir, metadata.getMetadata(Constants.METADATA_KEY_DATASET));
+		String workflowDir = System.getenv(Constants.ENV_LABCAS_ARCHIVE) + "/" + Constants.WORKFLOW_LABCAS_UPOLOAD;
+        File datasetDir = new File(workflowDir, metadata.getMetadata(Constants.METADATA_KEY_DATASET));
         
         // set the next "Version" metadata attribute
         String version = "1"; // default version
@@ -48,6 +48,7 @@ public class CrawlerInitTaskInstance implements WorkflowTaskInstance {
         
         LOG.fine("Setting next dataset version to: "+version);
         metadata.replaceMetadata(Constants.METADATA_KEY_VERSION, version);
+        LOG.info("METADATA VERSION="+metadata.getMetadata(Constants.METADATA_KEY_VERSION));
 		
 	}
 

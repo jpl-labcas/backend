@@ -1,0 +1,8 @@
+<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="LabcasUploadWorkflow" id="urn:edrn:LabcasUploadWorkflow">
+
+  <tasks>
+  	<task id="urn:edrn:LabcasUploadInitTask" />
+    <task id="urn:edrn:LabcasUploadExecuteTask" />
+  </tasks>
+
+</cas:workflow>

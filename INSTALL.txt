@@ -44,8 +44,8 @@ mvn install
 mvn install -Dworkflow=labcas-test
 	- will install the specific configuration for the "labcas-test" workflow on top of the existing services
 		
-mvn install -Dworkflow=crawl
-	- will install the specific configuration for the "crawl" workflow that publishes uploaded to a staging area
+mvn install -Dworkflow=labcas-upload
+	- will install the specific configuration for the "labcas-upload" workflow that publishes datasets uploaded to a staging area
 		
 o Start services
 
@@ -80,7 +80,7 @@ cd $LABCAS_HOME/cas-workflow/bin
 
 o Trigger crawling for uploaded dataset "mydata":
 
-./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName crawl --metaData --key dataset mydata
+./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-upload --metaData --key Dataset mydata
 
 o After successful run:
 

@@ -5,7 +5,7 @@
     <metadata key="ProductType" val="LabcasFile"/>
     <metadata key="ProductionDateTime" val="[ProductionDateTime]"/>
     <metadata key="ProductName" val="[Filename]"/>
-    <metadata key="Dataset" val="[dataset]"/>
-    <metadata key="Version" val="[version]"/>
+    <metadata key="Dataset" val="[Dataset]"/>
+    <metadata key="Version" val="[Version]"/>
     
 </metadataList>

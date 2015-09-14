@@ -18,8 +18,8 @@
 <cas:producttypemap xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
  <type id="urn:edrn:LabcasFile" parent="urn:oodt:GenericFile">
-   <element id="dataset" />
-   <element id="version" />
+   <element id="Dataset" />
+   <element id="Version" />
  </type>
 
 </cas:producttypemap>

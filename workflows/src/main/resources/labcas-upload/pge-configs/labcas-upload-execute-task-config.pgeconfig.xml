@@ -3,7 +3,7 @@
 
 	<!-- PGE commands -->
 	<exe dir="[JobDir]" shell="/bin/bash">
-		<cmd>cd [PGE_ROOT]/crawl/uploaded</cmd>
+		<cmd>cd [LABCAS_STAGING]/[Dataset]</cmd>
 		<cmd>ls -l</cmd>
 	</exe>
 
@@ -15,11 +15,11 @@
 
 	<!-- CAS Crawler directives -->
 	<output>
-		<dir path="[LABCAS_STAGING]/[dataset]" createBeforeExe="false">
+		<dir path="[LABCAS_STAGING]/[Dataset]" createBeforeExe="false">
 			<!-- metadata extractors matching specific files -->
 			<files regExp=".*\.txt"
 				metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
-				args="[LABCAS_HOME]/workflows/crawl/pge-configs/metout.xml" />
+				args="[LABCAS_HOME]/workflows/labcas-upload/pge-configs/metout.xml" />
 		</dir>
 	</output>
 

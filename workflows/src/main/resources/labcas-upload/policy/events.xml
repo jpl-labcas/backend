@@ -16,8 +16,8 @@
 -->
 <cas:workflowevents xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
-  <event name="crawl">
-    <workflow id="urn:edrn:CrawlerWorkflow" />
+  <event name="labcas-upload">
+    <workflow id="urn:edrn:LabcasUploadWorkflow" />
   </event>
 
 </cas:workflowevents>

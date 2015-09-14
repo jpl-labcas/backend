@@ -1,8 +1,0 @@
-<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="CrawlerWorkflow" id="urn:edrn:CrawlerWorkflow">
-
-  <tasks>
-  	<task id="urn:edrn:CrawlerInitTask" />
-    <task id="urn:edrn:CrawlerExecuteTask" />
-  </tasks>
-
-</cas:workflow>
