@@ -33,7 +33,8 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
         File datasetDir = new File(workflowDir, metadata.getMetadata(Constants.METADATA_KEY_DATASET));
         
         // set the next "Version" metadata attribute
-        String version = "1"; // default version
+        // don't just count the directories, select the highest number
+        int version = 0;
         if (datasetDir.exists()) {
             
 	        LOG.fine("Looking for dataset versions in "+datasetDir.getAbsolutePath());
@@ -45,12 +46,17 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 	                    return new File(current, name).isDirectory();
 	                  }
 	                });
-	        version = Integer.toString(directories.length+1);      	
+	        for (String dir : directories) {
+	        	int v = Integer.parseInt(dir);
+	        	if (v > version) version = v;
+	        }
 	        
         }
         
+        // increment to next version
+        version++;      	
         LOG.fine("Setting next dataset version to: "+version);
-        metadata.replaceMetadata(Constants.METADATA_KEY_VERSION, version);
+        metadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version);
         
         // add global dataset metadata from file DatasetMetadata.xml
         String stagingDir = System.getenv(Constants.ENV_LABCAS_STAGING) + "/" + metadata.getMetadata(Constants.METADATA_KEY_DATASET);
