@@ -77,6 +77,20 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
         } else {
         	LOG.warning("Metadata file: "+datasetMetadataFile.getAbsolutePath()+" not found");
         }
+        
+        // remove all .met files from staging directory - probably a leftover of a previous workflow submission
+        // list "version" sub-directories
+        String[] metFiles = new File(stagingDir).list(new FilenameFilter() {
+                  @Override
+                  public boolean accept(File current, String name) {
+                    return new File(current, name).getAbsolutePath().endsWith(Constants.METADATA_EXTENSION);
+                  }
+                });
+        for (String metFile : metFiles) {
+        	File _metFile = new File(stagingDir, metFile);
+        	LOG.fine("Deleting older metadata file: "+_metFile.getAbsolutePath());
+        	_metFile.delete();
+        }
 		
 	}
 

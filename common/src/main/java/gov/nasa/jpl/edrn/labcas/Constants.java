@@ -22,4 +22,7 @@ public interface Constants {
 	// dataset-level metadata file
 	public final static String METADATA_FILE = "DatasetMetadata.xml";
 	
+	// OODT metadata extension
+	public final static String METADATA_EXTENSION = ".met";
+	
 }

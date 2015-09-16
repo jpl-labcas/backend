@@ -18,7 +18,7 @@ server = xmlrpclib.ServerProxy('http://localhost:9001/', verbose=verbose)
 # NOTE: currently, if you start a named workflow, the XMLRPC interface only returns True/False, not a workflow instance identifier...
 #wInstId = server.workflowmgr.handleEvent('labcas-upload', { 'Dataset':'mydata' } )
 
-# ... consequently, you submit an equivalent dynamic workflow, which does return the workflow instance id
+# ... consequently, you must submit an equivalent dynamic workflow, which does return the workflow instance id
 wInstId = server.workflowmgr.executeDynamicWorkflow( ['urn:edrn:LabcasUploadInitTask','urn:edrn:LabcasUploadExecuteTask'], { 'Dataset':'mydata' } )
 
 # wait for the server to instantiate this workflow before querying it
