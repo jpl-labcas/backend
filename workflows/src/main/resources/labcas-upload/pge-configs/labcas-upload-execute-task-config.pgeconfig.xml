@@ -17,7 +17,7 @@
 	<output>
 		<dir path="[LABCAS_STAGING]/[Dataset]" createBeforeExe="false">
 			<!-- metadata extractors matching specific files -->
-			<files regExp="^(?!.*(DatasetMetadata)).*$"
+			<files regExp="^(?!.*(DatasetMetadata\.xml)).*$"
 				metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
 				args="[LABCAS_HOME]/workflows/labcas-upload/pge-configs/metout.xml" />
 		</dir>
