@@ -141,6 +141,7 @@
                   </includes>
                 </resource>
               </resources>
+              <overwrite>true</overwrite>
             </configuration>
           </execution>
           <execution>
@@ -159,6 +160,7 @@
                   </includes>
                 </resource>
               </resources>
+              <overwrite>true</overwrite>
             </configuration>
           </execution>
           <execution>
@@ -177,6 +179,7 @@
                   </includes>
                 </resource>
               </resources>
+              <overwrite>true</overwrite>
             </configuration>
           </execution>
         </executions>
