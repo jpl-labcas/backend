@@ -49,9 +49,6 @@ mvn install -Dworkflow=labcas-upload
 		
 o Start services
 
-source $LABCAS_HOME/env.sh
-	- defines additional internal environment variables
-
 cd $LABCAS_HOME
 ./start.sh
 	- starts all the labcas backend services (File Manager with Tomcat/Solr back-end, Workflow Manager, Resource Manager)
