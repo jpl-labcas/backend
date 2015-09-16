@@ -15,17 +15,16 @@ server = xmlrpclib.ServerProxy('http://localhost:9001/', verbose=verbose)
 # list all supported workflows
 #server.workflowmgr.getWorkflows()
 
-# start 'labcas-upload' workflow
-#server.workflowmgr.handleEvent('labcas-upload', { 'Dataset':'mydata' } )
+# NOTE: currently, if you start a named workflow, the XMLRPC interface only returns True/False, not a workflow instance identifier...
+#wInstId = server.workflowmgr.handleEvent('labcas-upload', { 'Dataset':'mydata' } )
 
-#server.workflowmgr.getWorkflowInstances()
-
-# submit dynamic workflow, retrieve workflow instance id
+# ... consequently, you submit an equivalent dynamic workflow, which does return the workflow instance id
 wInstId = server.workflowmgr.executeDynamicWorkflow( ['urn:edrn:LabcasUploadInitTask','urn:edrn:LabcasUploadExecuteTask'], { 'Dataset':'mydata' } )
+
 # wait for the server to instantiate this workflow before querying it
 time.sleep(1) 
 
-# use workflow instance id to check for status, wait until completed
+# now use the workflow instance id to check for status, wait until completed
 running_status  = ['CREATED', 'QUEUED', 'STARTED', 'PAUSED']
 pge_task_status = ['STAGING INPUT', 'BUILDING CONFIG FILE', 'PGE EXEC', 'CRAWLING']
 finished_status = ['FINISHED', 'ERROR']
