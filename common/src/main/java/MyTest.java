@@ -1,5 +1,4 @@
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.logging.Logger;
@@ -13,7 +12,6 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
@@ -22,6 +20,7 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
+import gov.nasa.jpl.edrn.labcas.Utils;
 
 public class MyTest {
 	
@@ -32,7 +31,7 @@ public class MyTest {
 		String datasetName = "DatasetMetadata.xml"; // FIXME: metadata.getMetadata(Constants.METADATA_KEY_DATASET)
 		
 		// determine latest dataset version
-		int version = MyTest.findLatestDatasetVersion( datasetName );
+		int version = Utils.findLatestDatasetVersion( datasetName );
 		LOG.info("VERSION="+version);
 		
 		
@@ -82,58 +81,14 @@ public class MyTest {
 	}
 	
 	
-	// utility function to determine the latest dataset version
-	// if not found, the latest version is set to 0
-	private static int findLatestDatasetVersion(String datasetName) {
-		
-		String archiveDir = System.getenv(Constants.ENV_LABCAS_ARCHIVE) + "/" + Constants.WORKFLOW_LABCAS_UPOLOAD;
-		File datasetDir = new File(archiveDir, datasetName); 
-		LOG.info("datasetDir="+datasetDir.getAbsolutePath());
-		
-        int version = 0;
-        if (datasetDir.exists()) {           
-	        LOG.fine("Looking for dataset versions in "+datasetDir.getAbsolutePath());
-	
-	        // list "version" sub-directories
-	        String[] directories = datasetDir.list(new FilenameFilter() {
-	                  @Override
-	                  public boolean accept(File current, String name) {
-	                    return new File(current, name).isDirectory();
-	                  }
-	                });
-	        for (String dir : directories) {
-	        	int v = Integer.parseInt(dir);
-	        	if (v > version) version = v;
-	        }    
-        }
-        
-        return version;
-		
-	}
-	
 	private static String readDatasetXml(String datasetName) throws IOException {
 		
         String stagingDir = System.getenv(Constants.ENV_LABCAS_STAGING) + "/" + datasetName;
         File datasetMetadataFile = new File(stagingDir, Constants.METADATA_FILE);
 		
 		// read input metadata
-        if (datasetMetadataFile.exists()) {
-        	LOG.info("Updating metadata from file: "+datasetMetadataFile.getAbsolutePath());
-        	
-        	try {
-        		 SerializableMetadata sm = new SerializableMetadata("UTF-8", false);
-        		 sm.loadMetadataFromXmlStream(datasetMetadataFile.toURI().toURL().openStream());
-        		 Metadata datasetMetadata = sm.getMetadata();
-     			 for (String key : datasetMetadata.getAllKeys()) {
-    				for (String val : datasetMetadata.getAllMetadata(key)) {
-    					LOG.info("\t==> Updating dataset metadata key=["+key+"] value=["+val+"]");
-    				}
-     			 }
-        		 
-        	} catch (Exception e) {
-        		LOG.warning(e.getMessage());
-        	}
-        }
+        Metadata datasetMetadata = Utils.readDatasetMetadata(datasetName);
+        
         
         // FIXME: must transform metadata into Solr XML update document
         String strXMLFilename = "/Users/cinquini/tmp/doc.xml";

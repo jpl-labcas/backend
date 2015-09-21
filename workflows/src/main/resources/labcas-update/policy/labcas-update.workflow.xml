@@ -1,0 +1,7 @@
+<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="LabcasUpdateWorkflow" id="urn:edrn:LabcasUpdateWorkflow">
+
+  <tasks>
+  	<task id="urn:edrn:LabcasUpdateTask" />
+  </tasks>
+
+</cas:workflow>

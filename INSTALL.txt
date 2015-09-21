@@ -79,6 +79,10 @@ o Trigger crawling for uploaded dataset "mydata":
 
 ./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-upload --metaData --key Dataset mydata
 
+o Trigger metadata update for previously uploaded dataset "mydata":
+
+./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-update --metaData --key Dataset mydata
+
 o After successful run:
 
 - product metadata can be queried from Solr catalog:
