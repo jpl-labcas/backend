@@ -22,6 +22,9 @@
   
     <configuration>
     
+      <!-- FM Solr URL -->
+      <property name="solr.url" value="http://edrn-frontend.jpl.nasa.gov:8080/solr/oodt-fm" />
+    
       <!-- input parameters -->      
       <property name="input.dataset.type" value="string" />
       <property name="input.dataset.title" value="Dataset" />

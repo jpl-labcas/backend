@@ -93,6 +93,25 @@
                   <version>${oodt.version}</version>
                   <type>jar</type>
                 </artifactItem>
+                <!-- solrJ + slf4j needed to query Solr File Manager back-end -->
+                <artifactItem>
+			      <groupId>org.apache.solr</groupId>
+				  <artifactId>solr-solrj</artifactId>
+				  <version>${solr-jars.version}</version>
+                  <type>jar</type>
+                </artifactItem>
+                 <artifactItem>
+                  <!-- solrJ + slf4j needed to query Solr File Manager back-end -->
+			      <groupId>org.apache.solr</groupId>
+				  <artifactId>solr-common</artifactId>
+				  <version>${solr-jars.version}</version>
+                  <type>jar</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.slf4j</groupId>
+                  <artifactId>slf4j-api</artifactId>
+                  <version>${slf4j.version}</version>
+                </artifactItem>
               </artifactItems>
               <outputDirectory>${oodt.dir}/cas-workflow-${oodt.version}/lib</outputDirectory>
             </configuration>

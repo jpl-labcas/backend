@@ -25,4 +25,8 @@ public interface Constants {
 	// OODT metadata extension
 	public final static String METADATA_EXTENSION = ".met";
 	
+	// maximum number of records returned by Solr
+	// (i.e. maximum number of files in a single dataset that can be updated)
+	public final static int MAX_SOLR_ROWS = 1000;
+	
 }

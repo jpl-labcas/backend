@@ -27,6 +27,12 @@
       <version>${oodt.version}</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+    	<groupId>org.apache.solr</groupId>
+	    <artifactId>solr-solrj</artifactId>
+	    <version>${solr-jars.version}</version>
+	    <scope>compile</scope>
+    </dependency>
   </dependencies>
 
   <build>

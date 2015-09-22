@@ -1,7 +1,18 @@
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Iterator;
 import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
@@ -18,6 +29,8 @@ import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
 import gov.nasa.jpl.edrn.labcas.Utils;
@@ -28,7 +41,7 @@ public class MyTest {
 
 	public static void main(String[] args) throws Exception {
 		
-		String datasetName = "DatasetMetadata.xml"; // FIXME: metadata.getMetadata(Constants.METADATA_KEY_DATASET)
+		String datasetName = "mydata"; // FIXME: metadata.getMetadata(Constants.METADATA_KEY_DATASET)
 		
 		// determine latest dataset version
 		int version = Utils.findLatestDatasetVersion( datasetName );
@@ -40,9 +53,8 @@ public class MyTest {
         SolrServer server = new CommonsHttpSolrServer(url);
         
         SolrQuery query = new SolrQuery();
-        query.setQuery( "*:*" );
-        query.set("Dataset", "mydata");
-        query.set("Version", ""+version);
+        query.setQuery( "*:*");
+        query.addFilterQuery("Dataset:"+datasetName,"Version:"+version);
         
         QueryResponse rsp = server.query( query );
         SolrDocumentList docs = rsp.getResults();
@@ -55,11 +67,11 @@ public class MyTest {
         }
         
 		// read updated metadata from DatasetMetadata.xml
-		String xml = MyTest.readDatasetXml( datasetName );
-        LOG.info("XML="+xml);
+		//String xml = MyTest.readDatasetXml( datasetName );
+        //LOG.info("XML="+xml);
         
         // update Solr document
-        MyTest.updateDocuments(xml);
+        //MyTest.updateDocuments(xml);
                 
 	}
 	
@@ -81,21 +93,59 @@ public class MyTest {
 	}
 	
 	
-	private static String readDatasetXml(String datasetName) throws IOException {
-		
-        String stagingDir = System.getenv(Constants.ENV_LABCAS_STAGING) + "/" + datasetName;
-        File datasetMetadataFile = new File(stagingDir, Constants.METADATA_FILE);
-		
+	private static String readDatasetXml(String datasetName) throws Exception {
+				
 		// read input metadata
         Metadata datasetMetadata = Utils.readDatasetMetadata(datasetName);
         
+        // create Solr/XML update document
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = dbf.newDocumentBuilder();
+        Document xmlDocument = builder.newDocument();
         
-        // FIXME: must transform metadata into Solr XML update document
-        String strXMLFilename = "/Users/cinquini/tmp/doc.xml";
-        File input = new File(strXMLFilename);
-        String xml = FileUtils.readFileToString(input);
-        return xml;
+        // <add>
+        Element addElement = xmlDocument.createElement("add");
+        xmlDocument.appendChild(addElement);
+        
+        // <doc> (for each file)
+        Element docElement = xmlDocument.createElement("doc");
+        addElement.appendChild(docElement);
+        
+        // <field name="id">38b6e7e6-3a9b-4565-9d57-37e8104b4fde</field>
+        Element fieldElement = xmlDocument.createElement("field");
+        fieldElement.setAttribute("name", "id");
+        fieldElement.insertBefore(xmlDocument.createTextNode("38b6e7e6-3a9b-4565-9d57-37e8104b4fde"), fieldElement.getLastChild());
+        docElement.appendChild(fieldElement);
+        
+        // <field name="Institution" update="set">Darthmouth</field>
+		 for (String key : datasetMetadata.getAllKeys()) {
+			for (String val : datasetMetadata.getAllMetadata(key)) {
+				LOG.info("\t==> XML: Updating dataset metadata key=["+key+"] value=["+val+"]");
+				
+				Element metFieldElement = xmlDocument.createElement("field");
+				metFieldElement.setAttribute("name", key);
+				metFieldElement.setAttribute("update", "set");
+				metFieldElement.insertBefore(xmlDocument.createTextNode(val), metFieldElement.getLastChild());
+		        docElement.appendChild(metFieldElement);
+				
+			}
+		 }
+
+        String xmlString = MyTest.prettyPrint(xmlDocument);
+        LOG.info(xmlString);
+        return xmlString;
+
 		
 	}
+	
+	 public static final String prettyPrint(Document xml) throws Exception {
+		 Transformer tf = TransformerFactory.newInstance().newTransformer();
+		 tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+		 tf.setOutputProperty(OutputKeys.INDENT, "yes");
+		 Writer out = new StringWriter();
+		 tf.transform(new DOMSource(xml), new StreamResult(out));
+		 return out.toString();
+	 }
+
 
 }
