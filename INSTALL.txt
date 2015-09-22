@@ -83,6 +83,34 @@ o Trigger metadata update for previously uploaded dataset "mydata":
 
 ./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-update --metaData --key Dataset mydata
 
+Each metadata field contained in the file "DatasetMetadata.xml" will be updated, completely replacing all previous values for that field.
+To insert multiple values for the same field, simply specify multiple "<keyval>" elements. To completely remove all values for a field, 
+leave the "<val>" empty.
+
+Example of DatasetMetadata.xml:
+
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<cas:metadata xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+	<keyval type="vector">
+		<key>PI</key>
+		<val></val>
+	</keyval>
+	<keyval type="vector">
+		<key>Institution</key>
+		<val>Darthmouth</val>
+	</keyval>
+	<keyval type="vector">
+		<key>Institution</key>
+		<val>Children Hospital</val>
+	</keyval>
+</cas:metadata>
+
+will cause:
+o the field "PI" to be removed from all macthing records
+o the field "Institution" to be assigned the two possible values "Darthmouth" and "Children Hospital"
+
+
+
 o After successful run:
 
 - product metadata can be queried from Solr catalog:
