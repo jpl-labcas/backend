@@ -26,6 +26,7 @@ import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -166,7 +167,11 @@ public class LabcasUpdateTaskInstance implements WorkflowTaskInstance {
 	        fieldElement.insertBefore(xmlDocument.createTextNode(id), fieldElement.getLastChild());
 	        docElement.appendChild(fieldElement);
 	        
-	        // <field name="Institution" update="set">Darthmouth</field>
+	         // to add one or more values:
+	         // <field name="Institution" update="set">Darthmouth</field>
+	         // <field name="Institution" update="set">Children Hospital</field>
+	         // to remove a key:
+	         // <field name="Institution" update="set" null="true"/>
 			 for (String key : datasetMetadata.getAllKeys()) {
 				for (String val : datasetMetadata.getAllMetadata(key)) {
 					LOG.info("\t==> XML: Updating dataset metadata key=["+key+"] value=["+val+"]");
@@ -174,7 +179,13 @@ public class LabcasUpdateTaskInstance implements WorkflowTaskInstance {
 					Element metFieldElement = xmlDocument.createElement("field");
 					metFieldElement.setAttribute("name", key);
 					metFieldElement.setAttribute("update", "set");
-					metFieldElement.insertBefore(xmlDocument.createTextNode(val), metFieldElement.getLastChild());
+					if (StringUtils.hasText(val)) {
+						// add this value to that key
+						metFieldElement.insertBefore(xmlDocument.createTextNode(val), metFieldElement.getLastChild());
+					} else {
+						// remove all values for that key
+						metFieldElement.setAttribute("null", "true");
+					}
 			        docElement.appendChild(metFieldElement);
 					
 				}
