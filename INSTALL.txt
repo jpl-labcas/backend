@@ -5,22 +5,27 @@ o Prerequisites (i.e. tested with...)
 Java 1.7+
 Unix OS (Linux, MacOSX, ...)
 Maven 2.2+
+Git
+
+optionally: port 8080 open to be able to access the Solr web portal UI
 
 o Define environment where software will be installed
 
 For example:
 
-export LABCAS_HOME=/usr/local/labcas_home
+export LABCAS_HOME=/usr/local/labcas/home
 	- location where all software components will be installed
 
-export LABCAS_STAGING=/usr/local/labcas_staging
+export LABCAS_STAGING=/usr/local/labcas/staging
 	- root location where products will be uploaded (only needed to support publishing of uploaded files)
 
-export LABCAS_ARCHIVE=/usr/local/labcas_archive
+export LABCAS_ARCHIVE=/usr/local/labcas/archive
 	- location where product files will be archived
 	
-export PGE_ROOT=/usr/local/labcas_pges
+export PGE_ROOT=/usr/local/labcas/pges
 	- location where the specific executable will be installed (possibly outside of LabCAS version control)
+
+Create the above directories if not existing already.
 
 o Check out code from repository
 (to any directory, for example ~/src)
@@ -45,7 +50,9 @@ mvn install -Dworkflow=labcas-test
 	- will install the specific configuration for the "labcas-test" workflow on top of the existing services
 		
 mvn install -Dworkflow=labcas-upload
-	- will install the specific configuration for the "labcas-upload" workflow that publishes datasets uploaded to a staging area
+mvn install -Dworkflow=labcas-update
+	- will install the specific configurations for the "labcas-upload" and "labcas-update" workflows 
+	  to support publishing of uploaded datasets
 		
 o Start services
 
@@ -53,7 +60,7 @@ cd $LABCAS_HOME
 ./start.sh
 	- starts all the labcas backend services (File Manager with Tomcat/Solr back-end, Workflow Manager, Resource Manager)
 
-or to start a single service, for example:
+Note: to start a single service, for example:
 
 cd $LABCAS_HOME/cas-workflow/bin
 ./wmgr start
