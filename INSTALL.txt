@@ -13,16 +13,16 @@ o Define environment where software will be installed
 
 For example:
 
-export LABCAS_HOME=/usr/local/labcas/home
+export LABCAS_HOME=/usr/local/labcas/backend/home
 	- location where all software components will be installed
 
-export LABCAS_STAGING=/usr/local/labcas/staging
+export LABCAS_STAGING=/usr/local/labcas/backend/staging
 	- root location where products will be uploaded (only needed to support publishing of uploaded files)
 
-export LABCAS_ARCHIVE=/usr/local/labcas/archive
+export LABCAS_ARCHIVE=/usr/local/labcas/backend/archive
 	- location where product files will be archived
 	
-export PGE_ROOT=/usr/local/labcas/pges
+export PGE_ROOT=/usr/local/labcas/backend/pges
 	- location where the specific executable will be installed (possibly outside of LabCAS version control)
 
 Create the above directories if not existing already.
