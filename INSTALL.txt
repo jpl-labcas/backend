@@ -7,7 +7,9 @@ Unix OS (Linux, MacOSX, ...)
 Maven 2.2+
 Git
 
-optionally: port 8080 open to be able to access the Solr web portal UI
+optional: 
+o port 8080 open to be able to access the Solr web portal UI
+o solrpy to query Solr through python
 
 o Define environment where software will be installed
 
@@ -122,7 +124,10 @@ o After successful run:
 
 - product metadata can be queried from Solr catalog:
   http://<hostname>:8080/solr/#/oodt-fm/query
-
+  
+  for example to query all products:
+  http://<hostname>:8080/solr/oodt-fm/select?q=*%3A*&wt=json&indent=true
+  
 - job output and logs can be inspected at:
   $LABCAS_HOME/pges/labcas-test/jobs
   $LABCAS_HOME/pges/labcas-test/output
