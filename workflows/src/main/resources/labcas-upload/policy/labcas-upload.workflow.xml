@@ -1,8 +1,13 @@
 <cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="LabcasUploadWorkflow" id="urn:edrn:LabcasUploadWorkflow">
 
   <tasks>
-  	<task id="urn:edrn:LabcasUploadInitTask" />
+  	
+    <!-- determines the next dataset version, reads in metadata from DatasetMetadata.xml -->
+    <task id="urn:edrn:LabcasUploadInitTask" />
+    
+    <!-- crawls the staging area and publishes the files -->
     <task id="urn:edrn:LabcasUploadExecuteTask" />
+    
   </tasks>
 
 </cas:workflow>

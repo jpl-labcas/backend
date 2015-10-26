@@ -16,6 +16,7 @@ import gov.nasa.jpl.edrn.labcas.Utils;
  * Task used to initialize a LabCAS crawler workflow.
  * o it parses the target archive directory and automatically sets the dataset version
  * o if found, it adds all metadata contained in the file DatasetMetadata.xml (to all products in the dataset)
+ * o cleans up the previously generated metadata files
  * 
  * @author luca
  *
