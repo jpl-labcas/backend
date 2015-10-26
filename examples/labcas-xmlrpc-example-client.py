@@ -1,5 +1,9 @@
 #!/usr/bin/python
 # Example script for submitting and monitoring a 'labcas-upload' workflow
+# Supported server methods are defined in file org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager.java:
+# o public boolean handleEvent(String eventName, Hashtable metadata)
+# o public String executeDynamicWorkflow(Vector<String> taskIds, Hashtable metadata)
+# o public Hashtable getWorkflowInstanceById(String wInstId)
 
 import xmlrpclib
 import time
@@ -44,7 +48,7 @@ if __name__ == '__main__':
 	
 	# 1) submit "labcas-upload" workflow
 	# NOTE: currently, if you start a named workflow, the XMLRPC interface only returns True/False, not a workflow instance identifier...
-	#wInstId = server.workflowmgr.handleEvent('labcas-upload', { 'Dataset':'mydata' } )
+	#tf = server.workflowmgr.handleEvent('labcas-upload', { 'Dataset':'mydata' } )
 	
 	# ... consequently, you must submit an equivalent dynamic workflow, which does return the workflow instance id
 	wInstId1 = server.workflowmgr.executeDynamicWorkflow( ['urn:edrn:LabcasUploadInitTask','urn:edrn:LabcasUploadExecuteTask'], { 'Dataset':'mydata' } )

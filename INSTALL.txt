@@ -84,9 +84,11 @@ cd $LABCAS_HOME/cas-workflow/bin
 
 ./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-test --metaData --key experiment 11 --key species snakes
 
-o Trigger crawling for uploaded dataset "mydata":
+o Trigger crawling for uploaded dataset "mydata", stored in directory $LABCAS_STAGIN/mydata
 
 ./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-upload --metaData --key Dataset mydata
+
+will also ingest metadata contained in file $LABCAS_STAGIN/mydata/DatasetMetadata.xmlS
 
 o Trigger metadata update for previously uploaded dataset "mydata":
 
@@ -128,6 +130,9 @@ o After successful run:
   for example to query all products:
   http://<hostname>:8080/solr/oodt-fm/select?q=*%3A*&wt=json&indent=true
   
+  or for example to query all files of a given type:
+  curl 'http://localhost:8080/solr/oodt-fm/select?q=CAS.ProductTypeName%3ALabcasTestFile&wt=json&indent=true'
+  
 - job output and logs can be inspected at:
   $LABCAS_HOME/pges/labcas-test/jobs
   $LABCAS_HOME/pges/labcas-test/output
@@ -139,6 +144,8 @@ o After successful run:
 
 curl --remote-name --remote-header-name 'http://localhost:8080/fmprod/data?productID=<product_id>'
 wget --content-disposition 'http://localhost:8080/fmprod/data?productID=<product_id>'
+
+example: wget --content-disposition 'http://localhost:8080/fmprod/data?productID=a227edec-5dc8-46d6-8a3e-028182eb713e'
 
 o Stop services
 
@@ -166,4 +173,14 @@ mvn clean -Dworkflow=biomarker-discovery
 o To delete ALL records from the File Manager and underlying Solr index:
 
 curl -s http://localhost:8080/solr/oodt-fm/update?commit=true -H "Content-Type:text/xml" --data-binary '<delete><query>*:*</query></delete>'
+
+=======================================
+
+Python clients.
+
+Example on how to submit a workflow through a Python XML/RPC client:
+python examples/labcas-xmlrpc-example-client.py
+
+Example on how to query product metadata through a Python Solrpy client:
+python examples/labcas-solrpy-example-client.py 
 
