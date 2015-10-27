@@ -2,7 +2,7 @@
 <metadataList>
     
     <metadata key="JobId" val="[JobId]"/>
-    <metadata key="ProductType" val="LabcasFile"/>
+    <metadata key="ProductType" val="[ProductType]"/>
     <metadata key="ProductionDateTime" val="[ProductionDateTime]"/>
     <metadata key="ProductName" val="[Filename]"/>
     <metadata key="Dataset" val="[Dataset]"/>

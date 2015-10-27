@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang.WordUtils;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.pge.writers.MetadataKeyReplacerTemplateWriter;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
@@ -75,7 +76,10 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
         
         // add global dataset metadata from file DatasetMetadata.xml
         //metadata.addMetadata( );
-                
+        
+        // set the ProductType
+        metadata.replaceMetadata(Constants.PRODUCT_TYPE, productType);
+                        
         // remove all .met files from staging directory - probably a leftover of a previous workflow submission
         String stagingDir = System.getenv(Constants.ENV_LABCAS_STAGING) + "/" + dataset;
         String[] metFiles = new File(stagingDir).list(new FilenameFilter() {

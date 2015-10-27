@@ -5,7 +5,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -219,7 +218,7 @@ public class Utils {
 		Document xmlDocument = Utils.newXmlDocument();
 		
 		// <cas:producttypes xmlns:cas="http://oodt.apache.org/components/cas">
-        Element rootElement = xmlDocument.createElement(Constants.PREFIX+"::producttypes");
+        Element rootElement = xmlDocument.createElement(Constants.PREFIX+":producttypes");
         rootElement.setAttribute("xmlns:"+Constants.PREFIX, Constants.NS);
         xmlDocument.appendChild(rootElement);
         
@@ -232,21 +231,21 @@ public class Utils {
         // <repository path="file://[LABCAS_ARCHIVE]/labcas-upload"/>
         Element repositoryElement = xmlDocument.createElement("repository");
         repositoryElement.setAttribute("path", "file://[LABCAS_ARCHIVE]/labcas-upload");
-        rootElement.appendChild(repositoryElement);
+        typeElement.appendChild(repositoryElement);
         
         // <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner"/>
         Element versionerElement = xmlDocument.createElement("versioner");
         versionerElement.setAttribute("class", "gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner");
-        rootElement.appendChild(versionerElement);
+        typeElement.appendChild(versionerElement);
         
         // <description>Analysis_of_pancreatic_cancer_biomarkers_in_PLCO_set product type</description>
         Element descriptionElement = xmlDocument.createElement("description");
         descriptionElement.insertBefore(xmlDocument.createTextNode(description), descriptionElement.getLastChild());
-        rootElement.appendChild(descriptionElement);
+        typeElement.appendChild(descriptionElement);
         
         // <metExtractors>
         Element metExtractorsElement = xmlDocument.createElement("metExtractors");
-        rootElement.appendChild(metExtractorsElement);
+        typeElement.appendChild(metExtractorsElement);
         
         // <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
         Element extractor1Element = xmlDocument.createElement("extractor");
@@ -286,7 +285,7 @@ public class Utils {
 
         // <metadata>
         Element metadataElement = xmlDocument.createElement("metadata");
-        rootElement.appendChild(metadataElement);
+        typeElement.appendChild(metadataElement);
        
         // loop over all metadata keys, values
         for (String key : metadata.getAllKeys()) {

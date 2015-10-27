@@ -35,6 +35,9 @@ public interface Constants {
 	// XML parameters
 	public final static String PREFIX = "cas";
 	public final static String NS = "http://oodt.apache.org/components/cas";
+	
+	// FIXME: will be replaced with same values in CoreMetKeys.java
+	public final static String PRODUCT_TYPE = "ProductType";
 
 	
 }
