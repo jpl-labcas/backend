@@ -5,6 +5,11 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -16,6 +21,11 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor;
+import org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor;
+import org.apache.oodt.cas.filemgr.structs.ExtractorSpec;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.w3c.dom.Document;
@@ -24,6 +34,12 @@ import org.w3c.dom.Element;
 public class Utils {
 		
 	private static final Logger LOG = Logger.getLogger(Utils.class.getName());
+	
+	// parameters that enter into product type definition
+	private static final String REPOSITORY = "file://[LABCAS_ARCHIVE]/labcas-upload";
+	private static final String VERSIONER = "gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner";
+	private final static String ELEMENT_LIST = "ProductReceivedTime,ProductName,ProductId,ProductType";
+
 	
 	/** 
 	 * Utility function to determine the latest version of an archived dataset.
@@ -151,6 +167,7 @@ public class Utils {
 		
 		// pretty formatting
 		String xmlstring = xmlToString(xmldoc);
+		System.out.println(xmlstring);
 		
 		// write out
 		FileUtils.writeStringToFile(file, xmlstring);
@@ -230,12 +247,12 @@ public class Utils {
         
         // <repository path="file://[LABCAS_ARCHIVE]/labcas-upload"/>
         Element repositoryElement = xmlDocument.createElement("repository");
-        repositoryElement.setAttribute("path", "file://[LABCAS_ARCHIVE]/labcas-upload");
+        repositoryElement.setAttribute("path", REPOSITORY);
         typeElement.appendChild(repositoryElement);
         
         // <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner"/>
         Element versionerElement = xmlDocument.createElement("versioner");
-        versionerElement.setAttribute("class", "gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner");
+        versionerElement.setAttribute("class", VERSIONER);
         typeElement.appendChild(versionerElement);
         
         // <description>Analysis_of_pancreatic_cancer_biomarkers_in_PLCO_set product type</description>
@@ -249,7 +266,7 @@ public class Utils {
         
         // <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
         Element extractor1Element = xmlDocument.createElement("extractor");
-        extractor1Element.setAttribute("class", "org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor");
+        extractor1Element.setAttribute("class", CoreMetExtractor.class.getCanonicalName());
         metExtractorsElement.appendChild(extractor1Element);
 
         // <configuration>
@@ -265,7 +282,7 @@ public class Utils {
         // <property name="elements" value="ProductReceivedTime,ProductName,ProductId,ProductType"/>
         Element property2Element = xmlDocument.createElement("property");
         property2Element.setAttribute("name", "elements");
-        property2Element.setAttribute("value", "ProductReceivedTime,ProductName,ProductId,ProductType");
+        property2Element.setAttribute("value", ELEMENT_LIST);
         configuration1Element.appendChild(property2Element);
 
         // <property name="elementNs" value="CAS"/>
@@ -276,7 +293,7 @@ public class Utils {
 
         // <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor">
         Element extractor2Element = xmlDocument.createElement("extractor");
-        extractor2Element.setAttribute("class", "org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor");
+        extractor2Element.setAttribute("class", MimeTypeExtractor.class.getCanonicalName());
         metExtractorsElement.appendChild(extractor2Element);
         
         // <configuration>
@@ -311,6 +328,55 @@ public class Utils {
 
         // write out the file
         Utils.xmlToFile(xmlDocument, filepath);
+		
+	}
+	
+	/**
+	 * Method that adds or updates a ProductType through the File Manager XML/RPC interface.
+	 */
+	public final static void addProductType(String productTypeName, String datasetDescription, Metadata metadata) throws Exception {
+		
+		// instantiate XML/RPC client to File Manager
+		String fmURL = System.getenv(Constants.ENV_FILEMGR_URL);
+		if (fmURL==null) {
+			fmURL = "http://localhost:9000/";
+		}
+		XmlRpcFileManagerClient client = new XmlRpcFileManagerClient(new URL(fmURL));
+		
+		// create a product type
+		String description = productTypeName;
+		String repository = REPOSITORY.replace("[LABCAS_ARCHIVE]", System.getenv(Constants.ENV_LABCAS_ARCHIVE));
+		String versioner = VERSIONER;
+		String id = "urn:edrn:"+productTypeName;
+		ProductType productType = new ProductType(id, productTypeName, description, repository, versioner);
+		
+		// add metadata extractors
+		List<ExtractorSpec> extractors = new ArrayList<ExtractorSpec>();
+		
+		// org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor
+		ExtractorSpec coreMetExtractor = new ExtractorSpec();
+		coreMetExtractor.setClassName(CoreMetExtractor.class.getCanonicalName());
+		Properties config = new Properties();
+		config.setProperty("nsAware", "true");
+		config.setProperty("elements", ELEMENT_LIST);
+		config.setProperty("elementNs", "CAS");
+		coreMetExtractor.setConfiguration(config);
+		extractors.add(coreMetExtractor);
+		
+		// org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor
+		ExtractorSpec mimeTypeExtractor = new ExtractorSpec();
+		mimeTypeExtractor.setClassName(MimeTypeExtractor.class.getCanonicalName());
+		extractors.add(mimeTypeExtractor);
+		
+		productType.setExtractors(extractors);
+		
+		// add dataset metadata
+		productType.setTypeMetadata(metadata);
+		
+		// add this product type to the File Manager
+		String productTypeId = client.addProductType(productType);
+		System.out.println("Inserted product type: "+productTypeId);
+		
 		
 	}
 

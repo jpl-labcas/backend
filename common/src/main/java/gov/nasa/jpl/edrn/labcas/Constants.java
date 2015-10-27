@@ -12,6 +12,9 @@ public interface Constants {
 	public final static String ENV_LABCAS_STAGING = "LABCAS_STAGING";
 	public final static String ENV_LABCAS_ARCHIVE = "LABCAS_ARCHIVE";
 	
+	public final static String ENV_FILEMGR_URL = "FILEMGR_URL";
+	public final static String ENV_WORKFLOW_URL = "WORKFLOW_URL";
+	
 	// workflows
 	public final static String WORKFLOW_LABCAS_UPOLOAD = "labcas-upload";
 	
