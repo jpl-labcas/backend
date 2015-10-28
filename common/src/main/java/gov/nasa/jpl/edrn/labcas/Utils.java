@@ -343,11 +343,10 @@ public class Utils {
 		XmlRpcFileManagerClient client = new XmlRpcFileManagerClient(new URL(fmURL));
 		
 		// create a product type
-		String description = productTypeName;
 		String repository = REPOSITORY.replace("[LABCAS_ARCHIVE]", System.getenv(Constants.ENV_LABCAS_ARCHIVE));
 		String versioner = VERSIONER;
 		String id = "urn:edrn:"+productTypeName;
-		ProductType productType = new ProductType(id, productTypeName, description, repository, versioner);
+		ProductType productType = new ProductType(id, productTypeName, datasetDescription, repository, versioner);
 		
 		// add metadata extractors
 		List<ExtractorSpec> extractors = new ArrayList<ExtractorSpec>();

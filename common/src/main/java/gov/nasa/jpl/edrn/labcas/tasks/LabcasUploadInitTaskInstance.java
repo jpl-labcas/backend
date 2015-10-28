@@ -77,7 +77,7 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 			Utils.makeProductTypesXmlFile(productTypesXmlFile, productType, datasetDescription, datasetMetadata);
 			
 			// must upload the same product type through the File Manager XML/RPC interface so it can be used right away
-			// without waiting for the static XML metadtaa to be ingested at the next startup
+			// without waiting for the static XML metadata to be ingested at the next startup
 			Utils.addProductType(productType, datasetDescription, datasetMetadata);
 			
 		} catch(Exception ioe) {

@@ -29,6 +29,7 @@ if __name__ == '__main__':
 	
 	# add new product type		
 	# will override if existing already
+	'''
 	ptHash = { 'id':"XYZ",
 			  'name': 'XYZ_Product_Type',
 			  'description': 'XYZ product type',
@@ -44,4 +45,5 @@ if __name__ == '__main__':
 	print 'Added product type: %s' % ptName
 	
 	listProductTypes(server) 
+	'''
 	
