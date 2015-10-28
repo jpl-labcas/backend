@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang.WordUtils;
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.pge.writers.MetadataKeyReplacerTemplateWriter;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
@@ -16,8 +15,9 @@ import gov.nasa.jpl.edrn.labcas.Utils;
 
 /**
  * Task used to initialize a LabCAS crawler workflow.
+ * o it creates or updates a product type for the dataset to be uploaded
+ * o if found, it adds all metadata contained in the file DatasetMetadata.xml to the product type metadata
  * o it parses the target archive directory and automatically sets the dataset version
- * o if found, it adds all metadata contained in the file DatasetMetadata.xml (to all products in the dataset)
  * o cleans up the previously generated metadata files
  * 
  * @author luca
@@ -30,31 +30,43 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 	@Override
 	public void run(Metadata metadata, WorkflowTaskConfiguration config) throws WorkflowTaskInstanceException {
 		        
-		// retrieve dataset name == product type name
+		// retrieve dataset name
 		String dataset = metadata.getMetadata(Constants.METADATA_KEY_DATASET);
-		//String productType = WordUtils.capitalize(dataset).replaceAll("\\s+", "_");
-		String productType = dataset; // FIXME ?
-		String datasetDescription = dataset; // FIXME ?
+		// enforce no spaces
+		if (dataset.contains(" ")) {
+			throw new WorkflowTaskInstanceException("Dataset name cannot contain spaces");
+		}
+		
+		// build product type
+		String productType = WordUtils.capitalize(dataset).replaceAll("\\s+", "_");
+		//String productType = dataset;
 		
 		// retrieve additional dataset metadata from file DatasetMetadata.xml
 		Metadata datasetMetadata = Utils.readDatasetMetadata( dataset ) ;
 		
-		// create product type directory with the same name
-		File datasetDir = Utils.getDatasetDir(dataset);
-		File policyDir = new File(datasetDir, "policy");
-		if (!policyDir.exists()) {
-			policyDir.mkdirs();
+		// transfer metadata field 'Description' to dataset description
+		String datasetDescription = dataset; // default
+		if (datasetMetadata.containsKey(Constants.METADATA_KEY_DESCRIPTION)) {
+			datasetDescription = datasetMetadata.getMetadata(Constants.METADATA_KEY_DESCRIPTION);
+			datasetMetadata.removeMetadata(Constants.METADATA_KEY_DESCRIPTION);
 		}
 		
 		try {
 			
-			// create "elements.xml"
+			// create product type directory with the same name
+			File datasetDir = Utils.getDatasetDir(dataset);
+			File policyDir = new File(datasetDir, "policy");
+			if (!policyDir.exists()) {
+				policyDir.mkdirs();
+			}
+
+			// create file "elements.xml"
 			File elementsXmlFile = new File(policyDir, "elements.xml");
 			if (!elementsXmlFile.exists()) {
 				Utils.makeElementsXmlFile( elementsXmlFile );
 			}
 			
-			// create "product-type-element-map.xml"
+			// create file "product-type-element-map.xml"
 			File productTypeElementMapXmlFile = new File(policyDir, "product-type-element-map.xml");
 			if (!productTypeElementMapXmlFile.exists()) {
 				Utils.makeProductTypeElementMapXmlFile( productTypeElementMapXmlFile, productType );

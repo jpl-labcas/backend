@@ -1,29 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Licensed to the Apache Software Foundation (ASF) under one or more
-  contributor license agreements.  See the NOTICE file distributed with
-  this work for additional information regarding copyright ownership.
-  The ASF licenses this file to You under the Apache License, Version 2.0
-  (the "License"); you may not use this file except in compliance with
-  the License.  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE file distributed with this work 
+  for additional information regarding copyright ownership. The ASF licenses this file to You under the Apache License, Version 2.0 (the "License"); you 
+  may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless 
+  required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+  OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. -->
 <cas:elements xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
+
+  <element id="Date" />
+
+  <element id="LeadPI" />
+
   <element id="Dataset" name="dataset">
-    <description>Dataset name.</description>
+    <description>Dataset name</description>
     <dcElement />
   </element>
 
   <element id="Version" name="version">
     <description>Dataset version</description>
+    <dcElement />
+  </element>
+
+  <element id="PublishState" name="publish_state">
+    <description>Publish State</description>
+    <dcElement />
+  </element>
+
+  <element id="ProtocolId" name="protocol_id">
+    <description>Protocol Id</description>
+    <dcElement />
+  </element>
+
+  <element id="ProtocolName" name="protocol_name">
+    <description>Protocol Name</description>
+    <dcElement />
+  </element>
+
+  <element id="DatasetURL" name="dataset_url">
+    <description>Dataset URL</description>
+    <dcElement />
+  </element>
+
+  <element id="OrganSite" name="organ_site">
+    <description>Organ Site</description>
+    <dcElement />
+  </element>
+
+  <element id="SiteName" name="site_name">
+    <description>Site Name</description>
+    <dcElement />
+  </element>
+
+  <element id="ResultsAndConclusionSummary" name="results_and_conclusion_summary">
+    <description>Results And Conclusion Summary</description>
+    <dcElement />
+  </element>
+
+  <element id="DataDisclaimer" name="data_disclaimer">
+    <description>Data Disclaimer</description>
+    <dcElement />
+  </element>
+
+  <element id="Discipline" name="discipline">
+    <description>Discipline</description>
+    <dcElement />
+  </element>
+
+  <element id="CollaborativeGroup" name="collaborative_group">
+    <description>Collaborative Group</description>
+    <dcElement />
+  </element>
+
+  <element id="DateDatasetFrozen" name="date_dataset_frozen">
+    <description>Date Dataset Frozen</description>
+    <dcElement />
+  </element>
+
+  <element id="DataCustodian" name="data_custodian">
+    <description>Data Custodian</description>
+    <dcElement />
+  </element>
+
+  <element id="DataCustodianEmail" name="data_custodian_email">
+    <description>Data Custodian Email</description>
+    <dcElement />
+  </element>
+
+  <element id="QAState" name="qa_state">
+    <description>QA State</description>
+    <dcElement />
+  </element>
+
+  <element id="MethodDetails" name="method_details">
+    <description>Method Details</description>
+    <dcElement />
+  </element>
+
+  <element id="LeadPI" name="lead_pi">
+    <description>Lead PI</description>
+    <dcElement />
+  </element>
+
+  <element id="Date" name="date">
+    <description>Date</description>
+    <dcElement />
+  </element>
+
+  <element id="AccessGrantedTo" name="access_granted_to">
+    <description>Access Granted To</description>
     <dcElement />
   </element>
 
