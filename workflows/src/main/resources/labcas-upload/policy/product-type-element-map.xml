@@ -31,6 +31,7 @@
     <element id="AccessGrantedTo" />
     <element id="MethodDetails" />
     <element id="LeadPI" />
+    <element id="Status" />
     
   </type>
 

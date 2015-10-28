@@ -112,12 +112,17 @@
   </element>
 
   <element id="Date" name="date">
-    <description>Date</description>
+    <description>Last Update Date</description>
     <dcElement />
   </element>
 
   <element id="AccessGrantedTo" name="access_granted_to">
     <description>Access Granted To</description>
+    <dcElement />
+  </element>
+  
+  <element id="Status" name="status">
+    <description>Processing Status</description>
     <dcElement />
   </element>
 
