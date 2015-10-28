@@ -6,18 +6,28 @@
   OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. -->
 <cas:elements xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
-
-  <element id="Date" />
-
-  <element id="LeadPI" />
-
   <element id="Dataset" name="dataset">
-    <description>Dataset name</description>
+    <description>Dataset identifier (unique, for machines, same as id)</description>
+    <dcElement />
+  </element>
+  
+  <element id="DatasetName" name="dataset_name">
+    <description>Dataset name (short, for humans, same as title)</description>
+    <dcElement />
+  </element>
+  
+  <element id="Description" name="description">
+    <description>Dataset description (longer, for humans, same as abstract)</description>
     <dcElement />
   </element>
 
   <element id="Version" name="version">
     <description>Dataset version</description>
+    <dcElement />
+  </element>
+  
+  <element id="OwnerGroup" name="owner_group">
+    <description>Owner Group</description>
     <dcElement />
   </element>
 
