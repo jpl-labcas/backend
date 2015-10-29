@@ -31,6 +31,9 @@ public class LabcasUpdateTaskInstance implements WorkflowTaskInstance {
 			// update dataset object in File Manager
 			FileManagerUtils.updateDataset(dataset);
 			
+			// reload the catalog configuration so that the new product type is available for publishing
+			FileManagerUtils.reload();
+			
 		
 		} catch(Exception e) {
 			e.printStackTrace();

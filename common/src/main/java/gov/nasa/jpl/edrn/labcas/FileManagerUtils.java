@@ -35,6 +35,16 @@ public class FileManagerUtils {
 	}
 	
 	private static final Logger LOG = Logger.getLogger(FileManagerUtils.class.getName());
+	
+	public static void reload() throws Exception {
+		
+		XmlRpcFileManagerClient client = new XmlRpcFileManagerClient(new URL(FILEMANAGER_URL));
+		
+		boolean status = client.refreshConfigAndPolicy();
+		LOG.info("File Manager reoloaded, status="+status);
+		Thread.sleep(5000); // FIXME: sleep 5 seconds
+		
+	}
 		
 	/**
 	 * Method to add a new dataset, or update an existing dataset, into the File Manager.
@@ -93,11 +103,7 @@ public class FileManagerUtils {
 		File productTypesXmlFile = new File(FileManagerUtils.getDatasetDir(dataset), "/policy/product-types.xml");
 		XmlStructFactory.writeProductTypeXmlDocument(producTypes, productTypesXmlFile.getAbsolutePath());
 		LOG.info("Written XML file="+ productTypesXmlFile.getAbsolutePath());
-		
-		// send updated object to the File Manager
-		String productTypeId = client.addProductType(productType);
-		LOG.info("Updated product type="+productTypeId);
-		
+				
 	}
 	
 	

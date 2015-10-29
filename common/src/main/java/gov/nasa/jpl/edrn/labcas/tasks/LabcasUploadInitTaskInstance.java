@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang.WordUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
@@ -78,7 +77,10 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 						
 			// must upload the same product type through the File Manager XML/RPC interface so it can be used right away
 			// without waiting for the static XML metadata to be ingested at the next startup
-			Utils.addProductType(productType, datasetDescription, datasetMetadata);
+			//Utils.addProductType(productType, datasetDescription, datasetMetadata);
+			
+			// reload the catalog configuration so that the new product type is available for publishing
+			FileManagerUtils.reload();
 			
 		} catch(Exception ioe) {
 			throw new WorkflowTaskInstanceException(ioe.getMessage());
