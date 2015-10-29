@@ -9,6 +9,7 @@ package gov.nasa.jpl.edrn.labcas;
 public interface Constants {
 	
 	// environment variables
+	public final static String ENV_LABCAS_HOME = "LABCAS_HOME";
 	public final static String ENV_LABCAS_STAGING = "LABCAS_STAGING";
 	public final static String ENV_LABCAS_ARCHIVE = "LABCAS_ARCHIVE";
 	

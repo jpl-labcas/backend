@@ -84,11 +84,19 @@ cd $LABCAS_HOME/cas-workflow/bin
 
 ./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-test --metaData --key experiment 11 --key species snakes
 
+
+
 o Trigger crawling for uploaded dataset "mydata", stored in directory $LABCAS_STAGIN/mydata
 
 ./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-upload --metaData --key Dataset mydata
 
-will also ingest metadata contained in file $LABCAS_STAGIN/mydata/DatasetMetadata.xmlS
+will also ingest metadata contained in file $LABCAS_STAGIN/mydata/DatasetMetadata.xml
+
+NOTE: every time the labcas-workflow is run:
+	- a new dataset version will be uploaded (even if nothing changed)
+	- the new metadata will completely override the previous metadata
+	
+To update metadata without changing the version, use the "labcas-upadte" workflow.
 
 o Trigger metadata update for previously uploaded dataset "mydata":
 

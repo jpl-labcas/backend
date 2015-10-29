@@ -20,6 +20,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor;
 import org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor;
 import org.apache.oodt.cas.filemgr.structs.ExtractorSpec;
@@ -85,6 +86,18 @@ public class Utils {
 		String archiveDir = System.getenv(Constants.ENV_LABCAS_ARCHIVE) + "/" + Constants.WORKFLOW_LABCAS_UPOLOAD;
 		File datasetDir = new File(archiveDir, datasetName); 
 		return datasetDir;
+		
+	}
+	
+	/**
+	 * Constructs the product type name from a dataset identifier.
+	 * @param dataset
+	 * @return
+	 */
+	public static String getProductTypeName(String dataset) {
+		
+		String productType = WordUtils.capitalize(dataset).replaceAll("\\s+", "_");
+		return productType;
 		
 	}
 	
@@ -220,6 +233,7 @@ public class Utils {
 		
 	}
 	
+	
 	/**
 	 * Utility method to create the file "product-types.xml".
 	 * @param filepath
@@ -329,6 +343,27 @@ public class Utils {
         Utils.xmlToFile(xmlDocument, filepath);
 		
 	}
+	
+	/**
+	 * Method to retrieve a ProductType from the File Manager XML/RPC interface.
+	 * 
+	 * @param productTypeName
+	 */
+	/**
+	public final static ProductType getProductType(String productTypeName) throws Exception {
+		
+		// instantiate XML/RPC client to File Manager
+		String fmURL = System.getenv(Constants.ENV_FILEMGR_URL);
+		if (fmURL==null) {
+			fmURL = "http://localhost:9000/";
+		}
+		XmlRpcFileManagerClient client = new XmlRpcFileManagerClient(new URL(fmURL));
+		
+		ProductType productType = client.getProductTypeByName(productTypeName);
+		
+		return productType;
+		
+	}*/
 	
 	/**
 	 * Method that adds or updates a ProductType through the File Manager XML/RPC interface.

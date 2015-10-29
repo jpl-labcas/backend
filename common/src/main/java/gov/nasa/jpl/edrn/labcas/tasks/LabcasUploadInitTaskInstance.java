@@ -11,6 +11,7 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
+import gov.nasa.jpl.edrn.labcas.FileManagerUtils;
 import gov.nasa.jpl.edrn.labcas.Utils;
 
 /**
@@ -38,8 +39,7 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 		}
 		
 		// build product type
-		String productType = WordUtils.capitalize(dataset).replaceAll("\\s+", "_");
-		//String productType = dataset;
+		String productType = Utils.getProductTypeName(dataset);
 		
 		// retrieve additional dataset metadata from file DatasetMetadata.xml
 		Metadata datasetMetadata = Utils.readDatasetMetadata( dataset ) ;
@@ -75,7 +75,7 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 			// create "product-types.xml" (override each time)
 			File productTypesXmlFile = new File(policyDir, "product-types.xml");
 			Utils.makeProductTypesXmlFile(productTypesXmlFile, productType, datasetDescription, datasetMetadata);
-			
+						
 			// must upload the same product type through the File Manager XML/RPC interface so it can be used right away
 			// without waiting for the static XML metadata to be ingested at the next startup
 			Utils.addProductType(productType, datasetDescription, datasetMetadata);
