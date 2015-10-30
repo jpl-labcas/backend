@@ -25,7 +25,7 @@ public class LabcasUpdateTaskInstance implements WorkflowTaskInstance {
 
 		try {
 						
-			// retrieve dataset name
+			// retrieve dataset identifier
 			String dataset = metadata.getMetadata(Constants.METADATA_KEY_DATASET);
 			
 			// update dataset object in File Manager

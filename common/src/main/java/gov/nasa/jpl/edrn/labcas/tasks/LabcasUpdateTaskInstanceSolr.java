@@ -31,7 +31,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
-import gov.nasa.jpl.edrn.labcas.Utils;
+import gov.nasa.jpl.edrn.labcas.FileManagerUtils;
+import gov.nasa.jpl.edrn.labcas.XmlUtils;
 
 /**
  * Task used to update the metadata of an already published dataset.
@@ -74,14 +75,14 @@ public class LabcasUpdateTaskInstanceSolr implements WorkflowTaskInstance {
 			String datasetName = metadata.getMetadata(Constants.METADATA_KEY_DATASET);
 			
 			// determine latest dataset version
-			String datasetVersion = Integer.toString( Utils.findLatestDatasetVersion( datasetName ) );
+			String datasetVersion = Integer.toString( FileManagerUtils.findLatestDatasetVersion( datasetName ) );
 			LOG.info("Updating metadata for dataset: "+datasetName+" version:"+datasetVersion);
 			
 			// query Solr for all product ids matching the given dataset name and version
 			List<String> ids = querySolr(datasetName, datasetVersion);
 			
 			// read dataset metadata
-			Metadata datasetMetadata = Utils.readDatasetMetadata(datasetName);
+			Metadata datasetMetadata = FileManagerUtils.readDatasetMetadata(datasetName);
 			
 			// create Solr XML update document
 			String solrXmlDocument = buildSolrXmlDocument(ids, datasetMetadata);
@@ -193,7 +194,7 @@ public class LabcasUpdateTaskInstanceSolr implements WorkflowTaskInstance {
         
         } // loop over record ids
 			 
-        String xmlString = Utils.xmlToString(xmlDocument);
+        String xmlString = XmlUtils.xmlToString(xmlDocument);
         LOG.info(xmlString);
         return xmlString;
 
