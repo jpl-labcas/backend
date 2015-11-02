@@ -103,8 +103,8 @@ o Trigger metadata update for previously uploaded dataset "mydata":
 ./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-update --metaData --key Dataset mydata
 
 Each metadata field contained in the file "DatasetMetadata.xml" will be updated, completely replacing all previous values for that field.
-To insert multiple values for the same field, simply specify multiple "<keyval>" elements. To completely remove all values for a field, 
-leave the "<val>" empty.
+To insert multiple values for the same field, simply specify multiple "<val>" elements within a "<keyval>" element. 
+To completely remove all values for a field, leave the "<val>" empty.
 
 Example of DatasetMetadata.xml:
 
@@ -117,9 +117,6 @@ Example of DatasetMetadata.xml:
 	<keyval type="vector">
 		<key>Institution</key>
 		<val>Darthmouth</val>
-	</keyval>
-	<keyval type="vector">
-		<key>Institution</key>
 		<val>Children Hospital</val>
 	</keyval>
 </cas:metadata>

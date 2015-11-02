@@ -206,12 +206,22 @@ public class FileManagerUtils {
 		
 		XmlRpcFileManagerClient client = new XmlRpcFileManagerClient(new URL(FILEMANAGER_URL));
 		
+		LOG.info("Reloading the File Manager...");
 		boolean status = client.refreshConfigAndPolicy();
 
-		// FIXME: sleep 5 seconds
-		Thread.sleep(5000); 
+		// wait for the File Manager to come back online
+		boolean isAlive = false;
+		while (!isAlive) {
+			try {
+				isAlive = client.isAlive();	
+			} catch(Exception e) {
+				LOG.warning(e.getMessage());
+				LOG.info("Waiting for File Manager to reload...");
+				Thread.sleep(1000); // wait 1 second
+			}
+		}
 
-		LOG.info("File Manager reoloaded, status="+status);
+		LOG.info("File Manager reoloaded - status="+status);
 				
 	}
 	
@@ -475,19 +485,21 @@ public class FileManagerUtils {
         Element metadataElement = xmlDocument.createElement("metadata");
         typeElement.appendChild(metadataElement);
        
-        // loop over all metadata keys, values
+        // loop over all metadata keys
         for (String key : metadata.getAllKeys()) {
+
+        	// <keyval>
+        	Element keyvalElement = xmlDocument.createElement("keyval");
+        	metadataElement.appendChild(keyvalElement);
+        	
+        	// <key>Dataset</key>
+        	Element keyElement = xmlDocument.createElement("key");
+        	keyElement.insertBefore(xmlDocument.createTextNode(key), keyElement.getLastChild());
+        	keyvalElement.appendChild(keyElement);
+        	
+        	// loop over all values for that key
         	for (String val : metadata.getAllMetadata(key)) {
         	
-	        	// <keyval>
-	        	Element keyvalElement = xmlDocument.createElement("keyval");
-	        	metadataElement.appendChild(keyvalElement);
-	        	
-	        	// <key>Dataset</key>
-	        	Element keyElement = xmlDocument.createElement("key");
-	        	keyElement.insertBefore(xmlDocument.createTextNode(key), keyElement.getLastChild());
-	        	keyvalElement.appendChild(keyElement);
-	        	
 	        	// <val>[Dataset]</val>
 	        	Element valElement = xmlDocument.createElement("val");
 	        	valElement.insertBefore(xmlDocument.createTextNode(val), valElement.getLastChild());
