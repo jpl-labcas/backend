@@ -29,7 +29,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
-import gov.nasa.jpl.edrn.labcas.XmlUtils;
 
 /**
  * Class containing general utilities to query/update the Solr index behind an OODT File Manager.

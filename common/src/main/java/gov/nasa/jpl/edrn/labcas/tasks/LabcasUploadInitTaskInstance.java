@@ -10,7 +10,7 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
-import gov.nasa.jpl.edrn.labcas.FileManagerUtils;
+import gov.nasa.jpl.edrn.labcas.utils.FileManagerUtils;
 
 /**
  * Task used to initialize a LabCAS crawler workflow.

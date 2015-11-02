@@ -10,7 +10,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
-import gov.nasa.jpl.edrn.labcas.FileManagerUtils;
+import gov.nasa.jpl.edrn.labcas.utils.FileManagerUtils;
 
 /**
  * Class that reads product-level metadata from an XML file 

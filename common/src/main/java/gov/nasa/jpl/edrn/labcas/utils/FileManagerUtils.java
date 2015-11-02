@@ -1,4 +1,4 @@
-package gov.nasa.jpl.edrn.labcas;
+package gov.nasa.jpl.edrn.labcas.utils;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -19,8 +19,8 @@ import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import gov.nasa.jpl.edrn.labcas.Constants;
 import gov.nasa.jpl.edrn.labcas.extractors.XmlFileMetExtractor;
-import gov.nasa.jpl.edrn.labcas.utils.SolrUtils;
 
 /**
  * Class that contains common functionality to interact with the FileManager.
