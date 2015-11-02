@@ -58,13 +58,31 @@
         
           <!-- install jar file into OODT modules -->
           <execution>
-            <id>copy-jar</id>
+            <id>copy-jar-to-workflow</id>
             <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${oodt.dir}/cas-workflow-${oodt.version}/lib</outputDirectory>
+              <outputDirectory>${oodt.dir}/cas-workflow/lib</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/target</directory>
+                  <includes>
+                    <include>${parent.artifactId}-${artifactId}-${version}.jar</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-jar-to-filemgr</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${oodt.dir}/cas-filemgr/lib</outputDirectory>
               <resources>
                 <resource>
                   <directory>${project.basedir}/target</directory>

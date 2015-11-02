@@ -8,8 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang.WordUtils;
-import org.apache.oodt.cas.filemgr.cli.action.FileManagerCliAction;
 import org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor;
 import org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
@@ -19,6 +17,8 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import gov.nasa.jpl.edrn.labcas.extractors.XmlFileMetExtractor;
 
 /**
  * Class that contains common functionality to interact with the FileManager.
@@ -198,7 +198,7 @@ public class FileManagerUtils {
 	
 	/**
 	 * Utility method that reads the additional dataset metadata 
-	 * from the file DatasetMetadata.xml located in the dataset staging directory.
+	 * from the file DatasetMetadata.xmlmet located in the dataset staging directory.
 	 * 
 	 * @param datasetName
 	 * @return
@@ -208,19 +208,32 @@ public class FileManagerUtils {
 		
         String stagingDir = System.getenv(Constants.ENV_LABCAS_STAGING) + "/" + datasetName;
         File datasetMetadataFile = new File(stagingDir, Constants.METADATA_FILE);
+    
+        return readMetadata(datasetMetadataFile);
+        
+	}
+	
+	/**
+	 * Utility method to read metadata from a file.
+	 * 
+	 * @param metadataFilepath
+	 * @return
+	 */
+    public static Metadata readMetadata(final File metadataFilepath) {
 		
-		// read input metadata
+		// read file metadata
         Metadata metadata = new Metadata(); // empty metadata container
-        if (datasetMetadataFile.exists()) {
-        	LOG.info("Updating metadata from file: "+datasetMetadataFile.getAbsolutePath());
+        
+        if (metadataFilepath.exists()) {
+        	LOG.info("Reading metadata from file: "+metadataFilepath.getAbsolutePath());
         	
         	try {
         		 SerializableMetadata sm = new SerializableMetadata("UTF-8", false);
-        		 sm.loadMetadataFromXmlStream(datasetMetadataFile.toURI().toURL().openStream());
+        		 sm.loadMetadataFromXmlStream(metadataFilepath.toURI().toURL().openStream());
         		 metadata = sm.getMetadata();
      			 for (String key : metadata.getAllKeys()) {
     				for (String val : metadata.getAllMetadata(key)) {
-    					LOG.fine("\t==> Read dataset metadata key=["+key+"] value=["+val+"]");
+    					LOG.fine("\t==> Read metadata key=["+key+"] value=["+val+"]");
     				}
      			 }
         		 
@@ -229,7 +242,7 @@ public class FileManagerUtils {
         	}
         	
         } else {
-        	LOG.warning("Metadata file: "+datasetMetadataFile.getAbsolutePath()+" not found");
+        	LOG.warning("Metadata file: "+metadataFilepath.getAbsolutePath()+" not found");
         }
         
         return metadata;
@@ -387,6 +400,16 @@ public class FileManagerUtils {
         // <configuration>
         Element configuration2Element = xmlDocument.createElement("configuration");
         extractor2Element.appendChild(configuration2Element);
+        
+        // <extractor class="gov.nasa.jpl.edrn.labcas.extractors.XmlFileMetExtractor">
+        Element extractor3Element = xmlDocument.createElement("extractor");
+        extractor3Element.setAttribute("class", XmlFileMetExtractor.class.getCanonicalName());
+        metExtractorsElement.appendChild(extractor3Element);
+        
+        // <configuration>
+        Element configuration3Element = xmlDocument.createElement("configuration");
+        extractor3Element.appendChild(configuration3Element);
+
 
         // <metadata>
         Element metadataElement = xmlDocument.createElement("metadata");

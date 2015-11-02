@@ -23,15 +23,18 @@ public interface Constants {
 	public final static String METADATA_KEY_DATASET = "Dataset";
 	public final static String METADATA_KEY_VERSION = "Version";
 	public final static String METADATA_KEY_DESCRIPTION = "Description";
+	public final static String METADATA_KEY_FILE_LOCATION = "FileLocation";
+	public final static String METADATA_KEY_FILE_NAME = "Filename";
 	
 	// dataset-level metadata file
-	public final static String METADATA_FILE = "DatasetMetadata.xml";
+	public final static String METADATA_FILE = "DatasetMetadata.xmlmet";
 	
 	// policy directory
 	public final static String POLICY = "policy";
 	
-	// OODT metadata extension
-	public final static String METADATA_EXTENSION = ".met";
+	// metadata file extensions
+	public final static String OODT_METADATA_EXTENSION = ".met";
+	public final static String EDRN_METADATA_EXTENSION = ".xmlmet";
 	
 	// maximum number of records returned by Solr
 	// (i.e. maximum number of files in a single dataset that can be updated)

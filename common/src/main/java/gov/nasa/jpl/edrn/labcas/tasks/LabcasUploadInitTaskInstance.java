@@ -11,7 +11,6 @@ import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceExcep
 
 import gov.nasa.jpl.edrn.labcas.Constants;
 import gov.nasa.jpl.edrn.labcas.FileManagerUtils;
-import gov.nasa.jpl.edrn.labcas.XmlUtils;
 
 /**
  * Task used to initialize a LabCAS crawler workflow.
@@ -60,7 +59,7 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 	        String[] metFiles = new File(stagingDir).list(new FilenameFilter() {
 	                  @Override
 	                  public boolean accept(File current, String name) {
-	                    return new File(current, name).getAbsolutePath().endsWith(Constants.METADATA_EXTENSION);
+	                    return new File(current, name).getAbsolutePath().endsWith(Constants.OODT_METADATA_EXTENSION);
 	                  }
 	                });
 	        for (String metFile : metFiles) {
