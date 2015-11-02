@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -19,6 +20,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import gov.nasa.jpl.edrn.labcas.extractors.XmlFileMetExtractor;
+import gov.nasa.jpl.edrn.labcas.utils.SolrUtils;
 
 /**
  * Class that contains common functionality to interact with the FileManager.
@@ -65,7 +67,7 @@ public class FileManagerUtils {
 		}
 		
 		// create product type directory with the same name
-		File datasetDir = FileManagerUtils.getDatasetDir(dataset);
+		File datasetDir = FileManagerUtils.getDatasetArchiveDir(dataset);
 		File policyDir = new File(datasetDir, "policy");
 		if (!policyDir.exists()) {
 			policyDir.mkdirs();
@@ -138,11 +140,62 @@ public class FileManagerUtils {
 		// write the updated product type object to XML
 		final List<ProductType> productTypes = Arrays.asList( new ProductType[] { productType });
 
-		File productTypesXmlFile = new File(FileManagerUtils.getDatasetDir(dataset), "/policy/product-types.xml");
+		File productTypesXmlFile = new File(FileManagerUtils.getDatasetArchiveDir(dataset), "/policy/product-types.xml");
 		XmlStructFactory.writeProductTypeXmlDocument(productTypes, productTypesXmlFile.getAbsolutePath());
 		LOG.info("Written update product type metadata to XML file: "+ productTypesXmlFile.getAbsolutePath());
 				
 		return productTypeName;
+	}
+	
+	/**
+	 * Method to update the metadata content of all products belonging to a given dataset
+	 * (latest version only).
+	 * @param dataset
+	 * @throws Exception
+	 */
+	public static void updateProducts(String dataset) throws Exception {
+		
+		// determine latest dataset version
+		int version = findLatestDatasetVersion(dataset);
+		
+		// loop over .xmlmet files in staging directory
+		File stagingDir = getDatasetStagingDir(dataset);
+        String[] xmlmetFiles = stagingDir.list(new FilenameFilter() {
+                  @Override
+                  public boolean accept(File current, String name) {
+                    return name.endsWith(Constants.EDRN_METADATA_EXTENSION);
+                  }
+                });
+        
+        
+        // loop over products with additional metadata
+        HashMap<String, Metadata> updateMetadataMap = new HashMap<String, Metadata>();
+        for (String xmlmetFile : xmlmetFiles) {
+        	if (!xmlmetFile.equals(Constants.METADATA_FILE)) {
+        	
+	        	// filename
+	        	String filename = xmlmetFile.replace(Constants.EDRN_METADATA_EXTENSION, "");
+	        	// read in product metadata
+	        	Metadata met = readMetadata( new File(stagingDir, xmlmetFile) );
+	        	// retrieve product id
+	        	String id = SolrUtils.queryProduct(dataset, version, filename);
+	          	LOG.info("Updating product name: "+filename+" id: "+id+" with metadata from file: "+xmlmetFile);
+	          	
+	          	if (id!=null) {
+	          		// populate the map with the metadata to update
+	          		updateMetadataMap.put(id, met);
+	          	}
+	          	
+        	}
+        		
+        }    
+        
+        // send all updates at once
+        if (updateMetadataMap.size()>0) {
+        	String solrXmlDocument = SolrUtils.buildSolrXmlDocument(updateMetadataMap);
+        	SolrUtils.postSolrXml(solrXmlDocument);
+        }
+		
 	}
 	
 	/**
@@ -168,7 +221,7 @@ public class FileManagerUtils {
 	 */
 	public static int findLatestDatasetVersion(final String datasetName) {
 		
-		File datasetDir = FileManagerUtils.getDatasetDir(datasetName);
+		File datasetDir = FileManagerUtils.getDatasetArchiveDir(datasetName);
 		
         int version = 0;
         if (datasetDir.exists()) {           
@@ -255,13 +308,20 @@ public class FileManagerUtils {
 	 * @param datasetName
 	 * @return
 	 */
-	private static File getDatasetDir(final String datasetName) {
+	private static File getDatasetArchiveDir(final String datasetName) {
 		
 		String archiveDir = System.getenv(Constants.ENV_LABCAS_ARCHIVE) + "/" + Constants.WORKFLOW_LABCAS_UPOLOAD;
 		File datasetDir = new File(archiveDir, datasetName); 
 		return datasetDir;
 		
 	}
+	
+	private static File getDatasetStagingDir(final String datasetName) {
+		
+		return new File(System.getenv(Constants.ENV_LABCAS_STAGING), datasetName);
+		
+	}
+	
 	
 	/**
 	 * Constructs the product type name from a dataset identifier.

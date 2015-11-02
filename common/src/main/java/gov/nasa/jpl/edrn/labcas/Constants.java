@@ -15,6 +15,7 @@ public interface Constants {
 	
 	public final static String ENV_FILEMGR_URL = "FILEMGR_URL";
 	public final static String ENV_WORKFLOW_URL = "WORKFLOW_URL";
+	public final static String ENV_SOLR_URL = "SOLR_URL";
 	
 	// workflows
 	public final static String WORKFLOW_LABCAS_UPOLOAD = "labcas-upload";
@@ -25,6 +26,7 @@ public interface Constants {
 	public final static String METADATA_KEY_DESCRIPTION = "Description";
 	public final static String METADATA_KEY_FILE_LOCATION = "FileLocation";
 	public final static String METADATA_KEY_FILE_NAME = "Filename";
+	public final static String METADATA_KEY_PRODUCT_NAME = "ProductName";
 	
 	// dataset-level metadata file
 	public final static String METADATA_FILE = "DatasetMetadata.xmlmet";
