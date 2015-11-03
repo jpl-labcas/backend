@@ -9,14 +9,27 @@ def printProductType(productTypeDict):
 		print '\t%s = %s' % (key, value)
 
 if __name__ == '__main__':
-	
-	# connect to File Manager server
-	# use verbose=True to print out every request/response 
-	verbose=False
-	server = xmlrpclib.ServerProxy('http://localhost:9000/', verbose=verbose)
-	
-	print "Server is alive: %s" % server.filemgr.isAlive()
-	
-	productTypes =  server.filemgr.getProductTypes()
-	for productTypeDict in productTypes:
-		printProductType(productTypeDict)
+
+        # connect to File Manager server
+        # use verbose=True to print out every request/response 
+        verbose=False
+        server = xmlrpclib.ServerProxy('http://localhost:9000/', verbose=verbose)
+
+        # test server is alive
+        print "Server is alive: %s" % server.filemgr.isAlive()
+
+        # query all product types
+        productTypes =  server.filemgr.getProductTypes()
+        for productTypeDict in productTypes:
+                printProductType(productTypeDict)
+
+        # retrieve a specific product type
+        # returned result is a dictionary suitable as argument for next call
+        productTypeName = "miRNAStudyPine"
+        productType = server.filemgr.getProductTypeByName(productTypeName)
+
+        # query all products of a given type
+        products = server.filemgr.getProductsByProductType( productType )
+        print 'Printing products'
+        for product in products:
+            print product
