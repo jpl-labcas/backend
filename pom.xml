@@ -37,7 +37,9 @@
     <tomcat.dir>${env.LABCAS_HOME}</tomcat.dir>
 
     <!-- Solr/Solrj version and configuration location -->
-    <solr.version>4.9.1</solr.version>
+    <solr.repo>http://apache.mirrors.lucidnetworks.net/lucene/solr</solr.repo>
+    <solr.version>5.3.1</solr.version>
+    <solr.dir>${env.LABCAS_HOME}</solr.dir>
     <solr.solr.home>${env.LABCAS_HOME}/solr-home</solr.solr.home>
     <solr.data.dir>${env.LABCAS_HOME}/solr-index</solr.data.dir>
     <solr-jars.version>1.3.0</solr-jars.version>

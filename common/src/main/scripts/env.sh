@@ -3,10 +3,10 @@
 export OODT_HOME=$LABCAS_HOME
 export CATALINA_HOME=$LABCAS_HOME/apache-tomcat
 
+export SOLR_DIR=$LABCAS_HOME
 export SOLR_HOME=$LABCAS_HOME/solr-home
 export SOLR_DATA_DIR=$LABCAS_HOME/solr-index
-export CATALINA_OPTS='-Dsolr.solr.home=$SOLR_HOME -Dsolr.data.dir=$SOLR_DATA_DIR'
-export SOLR_URL=http://localhost:8080/solr/oodt-fm
+export SOLR_URL=http://localhost:8983/solr/oodt-fm
 
 #export PGE_ROOT=$LABCAS_HOME/pges
 

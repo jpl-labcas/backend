@@ -19,6 +19,10 @@ cd $OODT_HOME/cas-resource/bin
 cd $CATALINA_HOME/bin
 ./catalina.sh start
 
+# Solr
+cd $SOLR_DIR/solr/bin
+./solr start -p 8983 -s $SOLR_HOME
+
 cd $LABCAS_HOME
 
 echo ""
@@ -27,3 +31,4 @@ echo "Currently running LabCAS services:"
 echo "----------------------------------"
 ps -ef | grep oodt
 ps -ef | grep catalina
+ps -ef | grep solr

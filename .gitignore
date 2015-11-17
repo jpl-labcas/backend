@@ -7,3 +7,6 @@
 **/.settings
 .pydevproject
 **/.DS_Store
+**/.zip
+**/.tar
+**/.tgz

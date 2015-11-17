@@ -1,14 +1,12 @@
 <?xml version="1.0"?>
-<!-- Author: Luca Cinquini Description: Maven descriptor that performs the following actions: 1. Downloads the Solr war file 
-  and copies it to the Tomcat distribution 2. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!-- Author: Luca Cinquini -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>solr</artifactId>
   <packaging>pom</packaging>
-  <name>Apache Solr web application configured for LabCAS File Manager</name>
+  <name>Apache Solr application configured for LabCAS File Manager</name>
 
   <parent>
     <groupId>gov.nasa.jpl.edrn.labcas</groupId>
@@ -17,105 +15,75 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <!-- Solr webapp must be installed AFTER Tomcat is already installed -->
-  <dependencies>
-    <dependency>
-      <groupId>gov.nasa.jpl.edrn.labcas</groupId>
-      <artifactId>tomcat</artifactId>
-      <version>${parent.version}</version>
-    </dependency>
-  </dependencies>
-
   <build>
     <plugins>
 
-      <!-- download and install Solr web application into existing Tomcat installation including the needed logging jars -->
+      <!-- download and install Solr full package (note: NOT available from Maven central) -->
       <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
-            <id>install-solr</id>
+            <id>download-solr</id>
             <phase>install</phase>
             <goals>
-              <goal>copy</goal>
+              <goal>run</goal>
             </goals>
             <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.apache.solr</groupId>
-                  <artifactId>solr</artifactId>
-                  <version>${solr.version}</version>
-                  <type>war</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${install.dir}/apache-tomcat/webapps</outputDirectory>
-                  <destFileName>solr.war</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.slf4j</groupId>
-                  <artifactId>slf4j-api</artifactId>
-                  <version>${slf4j.version}</version>
-                  <type>jar</type>
-                  <outputDirectory>${install.dir}/apache-tomcat/lib</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.slf4j</groupId>
-                  <artifactId>jcl-over-slf4j</artifactId>
-                  <version>${slf4j.version}</version>
-                  <type>jar</type>
-                  <outputDirectory>${install.dir}/apache-tomcat/lib</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.slf4j</groupId>
-                  <artifactId>jul-to-slf4j</artifactId>
-                  <version>${slf4j.version}</version>
-                  <type>jar</type>
-                  <outputDirectory>${install.dir}/apache-tomcat/lib</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.slf4j</groupId>
-                  <artifactId>slf4j-log4j12</artifactId>
-                  <version>${slf4j.version}</version>
-                  <type>jar</type>
-                  <outputDirectory>${install.dir}/apache-tomcat/lib</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>log4j</groupId>
-                  <artifactId>log4j</artifactId>
-                  <version>${log4j.version}</version>
-                  <type>jar</type>
-                  <outputDirectory>${install.dir}/apache-tomcat/lib</outputDirectory>
-                </artifactItem>
-              </artifactItems>
+              <target>
+                <!-- run Ant "get" task to download the file -->
+                <get src="${solr.repo}/${solr.version}/solr-${solr.version}.tgz" dest="." verbose="false" usetimestamp="true" />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-solr</id>
+            <phase>install</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <!-- run Ant "untar" task to expand the file -->
+                <untar src="./solr-${solr.version}.tgz" dest="${solr.dir}/" compression="gzip" overwrite="false" />
+              </target>
+            </configuration>
+          </execution>
+           <execution>
+            <id>chmod-solr</id>
+            <phase>install</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <!-- run Ant "chmod" task to make the start/stop script executable -->
+                <chmod file="${solr.dir}/solr-${solr.version}/bin/solr" perm="a+x"/>
+              </target>
+            </configuration>
+          </execution>
+         
+          <execution>
+            <id>symlink-solr</id>
+            <phase>install</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <symlink resource="${solr.dir}/solr-${solr.version}" link="${solr.dir}/solr" overwrite="true" />
+              </target>
             </configuration>
           </execution>
         </executions>
       </plugin>
 
+      <!-- clone SOLR_HOME directory -->
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
-          <!-- install customized log4j.properties into Tomcat -->
           <execution>
-            <id>copy-log4j-properties</id>
-            <phase>install</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${install.dir}/apache-tomcat/lib</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${project.basedir}/src/main/resources</directory>
-                  <includes>
-                    <include>log4j.properties</include>
-                  </includes>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-          <!-- create and configure the SOLR_HOME directory -->
-          <execution>
-            <id>copy-solr-xml</id>
+            <id>copy-solr-home</id>
             <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
@@ -124,48 +92,50 @@
               <outputDirectory>${solr.solr.home}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.basedir}/src/main/resources</directory>
-                  <includes>
-                    <include>solr.xml</include>
-                  </includes>
+                  <directory>${project.basedir}/src/main/resources/solr-home</directory>
+                  <!-- enable filtering to replace value of ${solr.data.dir} in core.properties -->
+                  <filtering>true</filtering>
                 </resource>
               </resources>
             </configuration>
           </execution>
-          <!-- copy src/main/config/* to SOLR_HOME/${solr.solr.core}/conf/. -->
-          <execution>
-            <id>copy-solr-config</id>
-            <phase>install</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${solr.solr.home}/oodt-fm/conf</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${project.basedir}/src/main/config</directory>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-          
         </executions>
       </plugin>
-
-      <!-- clean up SOLR_HOME, SOLR_DATA_DIR -->
-<!--       <plugin>
+      
+      <!-- clean up Solr installation -->
+      <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
           <filesets>
             <fileset>
-              <directory>${solr.solr.home}</directory>
+              <directory>${solr.dir}/solr-${solr.version}</directory>
             </fileset>
-            <fileset>
+            <!-- <fileset>
               <directory>${solr.data.dir}</directory>
-            </fileset>
+            </fileset> -->
+            <!-- <fileset>
+              <directory>${solr.data.dir}</directory>
+            </fileset> -->
           </filesets>
         </configuration>
-      </plugin> -->
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>clean</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <id>unsymlink-solr</id>
+            <configuration>
+              <target>
+                <symlink action="delete" link="${solr.dir}/solr" />
+              </target>
+            </configuration>
+          </execution>
+      </executions>
+      </plugin>
 
     </plugins>
   </build>

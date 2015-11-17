@@ -3,6 +3,10 @@
 
 # Stop all LabCAS backend services
 
+# Solr
+cd $SOLR_DIR/solr/bin
+./solr stop -p 8983
+
 # Apache Tomcat
 cd $CATALINA_HOME/bin
 ./catalina.sh stop
