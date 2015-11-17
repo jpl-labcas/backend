@@ -15,7 +15,7 @@ def printResult(result):
 
 if __name__ == '__main__':
     
-    solr_url = "http://localhost:8080/solr" 
+    solr_url = "http://localhost:8983/solr/oodt-fm" 
     solr_server = solr.SolrConnection(solr_url)
     
     # query for all datasets with this name, all versions

@@ -20,7 +20,7 @@ import solr
 verbose = False
 workflowManagerServerProxy = xmlrpclib.ServerProxy('http://localhost:9001/', verbose=verbose)
 fileManaferServerProxy = xmlrpclib.ServerProxy('http://localhost:9000/', verbose=verbose)
-solrServerProxy = solr.SolrConnection("http://localhost:8080/solr")
+solrServerProxy = solr.SolrConnection("http://localhost:8983/solr/oodt-fm")
 
 	
 def uploadDataset(dataset):

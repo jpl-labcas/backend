@@ -41,7 +41,8 @@ public class SolrUtils {
 	private final static Logger LOG = Logger.getLogger(SolrUtils.class.getName());
 	
 	// default value for SOLR URL
-	private static String SOLR_URL = "http://localhost:8080/solr/oodt-fm";
+	private static String SOLR_URL = "http://localhost:8983/solr/oodt-fm";
+	//private static String SOLR_URL = "http://localhost:8080/solr/oodt-fm";
 	
 	// IMPORTANT: must re-use the same SolrServer instance across all requests to prevent memory leaks
 	// see https://issues.apache.org/jira/browse/SOLR-861 
