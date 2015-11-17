@@ -8,7 +8,7 @@ Maven 2.2+
 Git
 
 optional: 
-o port 8080 open to be able to access the Solr web portal UI
+o port 8983 open to be able to access the Solr web portal UI
 o solrpy to query Solr through python
 
 o Define environment where software will be installed
@@ -74,8 +74,8 @@ cd $LABCAS_HOME/cas-workflow/bin
 ./wmgr-client -op -events -url http://localhost:9001
 
 Query Solr:
-http://<hostname>:8080/solr/
-http://localhost:8080/solr/oodt-fm/select?q=*%3A*&wt=json&indent=true
+http://<hostname>:8983/solr/oodt-fm/
+http://localhost:8983/solr/oodt-fm/select?q=*%3A*&wt=json&indent=true
 
 
 o Run labcas-test workflow
@@ -130,13 +130,13 @@ o the field "Institution" to be assigned the two possible values "Darthmouth" an
 o After successful run:
 
 - product metadata can be queried from Solr catalog:
-  http://<hostname>:8080/solr/#/oodt-fm/query
+  http://<hostname>:8983/solr/#/oodt-fm/query
   
   for example to query all products:
-  http://<hostname>:8080/solr/oodt-fm/select?q=*%3A*&wt=json&indent=true
+  http://<hostname>:8983/solr/oodt-fm/select?q=*%3A*&wt=json&indent=true
   
   or for example to query all files of a given type:
-  curl 'http://localhost:8080/solr/oodt-fm/select?q=CAS.ProductTypeName%3ALabcasTestFile&wt=json&indent=true'
+  curl 'http://localhost:8983/solr/oodt-fm/select?q=CAS.ProductTypeName%3ALabcasTestFile&wt=json&indent=true'
   
 - job output and logs can be inspected at:
   $LABCAS_HOME/pges/labcas-test/jobs
@@ -177,7 +177,7 @@ mvn clean -Dworkflow=biomarker-discovery
 
 o To delete ALL records from the File Manager and underlying Solr index:
 
-curl -s http://localhost:8080/solr/oodt-fm/update?commit=true -H "Content-Type:text/xml" --data-binary '<delete><query>*:*</query></delete>'
+curl -s http://localhost:8983/solr/oodt-fm/update?commit=true -H "Content-Type:text/xml" --data-binary '<delete><query>*:*</query></delete>'
 
 =======================================
 
