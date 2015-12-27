@@ -1,0 +1,8 @@
+<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="NistWorkflow" id="urn:edrn:NistWorkflow">
+
+  <tasks>
+  	<task id="urn:edrn:NistInitTask" />
+    <task id="urn:edrn:NistConvertTask" />
+  </tasks>
+
+</cas:workflow>

@@ -3,24 +3,23 @@
 
 	<!-- PGE commands -->
 	<exe dir="[JobDir]" shell="/bin/bash">
-		<cmd>cd [PGE_ROOT]/labcas-test</cmd>
+		<cmd>cd [PGE_ROOT]/nist</cmd>
 		<cmd>mkdir -p output</cmd>
-		<cmd>echo 'xyz' > output/labcas-test-output.txt</cmd>
+		<cmd>echo 'xyz' > output/nist-convert-output.txt</cmd>
 	</exe>
 
 	<customMetadata>
 		<metadata key="ProductionDateTime" val="[DATE.UTC]" />
-		<metadata key="JobDir"
-			val="[PGE_ROOT]/labcas-test/jobs/job-[ProductionDateTime]" />
+		<metadata key="JobDir" val="[PGE_ROOT]/nist/jobs/job-[ProductionDateTime]" />
 	</customMetadata>
 
 	<!-- CAS Crawler directives -->
 	<output>
-		<dir path="[PGE_ROOT]/labcas-test/output" createBeforeExe="false">
+		<dir path="[PGE_ROOT]/nist/output" createBeforeExe="false">
 			<!-- metadata extractors matching specific files -->
 			<files regExp=".*output\.txt"
 				metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
-				args="[LABCAS_HOME]/workflows/labcas-test/pge-configs/metout.xml" />
+				args="[LABCAS_HOME]/workflows/nist/pge-configs/metout.xml" />
 		</dir>
 	</output>
 
