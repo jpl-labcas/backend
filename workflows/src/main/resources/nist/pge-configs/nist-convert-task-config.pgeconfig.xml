@@ -3,9 +3,8 @@
 
 	<!-- PGE commands -->
 	<exe dir="[JobDir]" shell="/bin/bash">
-		<cmd>cd [PGE_ROOT]/nist</cmd>
-		<cmd>mkdir -p output</cmd>
-		<cmd>echo 'xyz' > output/nist-convert-output.txt</cmd>
+		<cmd>cd [LABCAS_HOME]/workflows/nist/pges</cmd>
+		<cmd>python nist-converter.py [LABCAS_STAGING]/nist --pi [pi] --instrument [instrument] --lab [lab] --date [date]</cmd>
 	</exe>
 
 	<customMetadata>
@@ -15,9 +14,9 @@
 
 	<!-- CAS Crawler directives -->
 	<output>
-		<dir path="[PGE_ROOT]/nist/output" createBeforeExe="false">
+		<dir path="[LABCAS_STAGING]/nist" createBeforeExe="false">
 			<!-- metadata extractors matching specific files -->
-			<files regExp=".*output\.txt"
+			<files regExp=".*\.nist"
 				metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
 				args="[LABCAS_HOME]/workflows/nist/pge-configs/metout.xml" />
 		</dir>
