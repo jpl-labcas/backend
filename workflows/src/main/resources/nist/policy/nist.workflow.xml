@@ -3,6 +3,7 @@
   <tasks>
   	<task id="urn:edrn:NistInitTask" />
     <task id="urn:edrn:NistConvertTask" />
+    <task id="urn:edrn:NistExecuteTask" />
   </tasks>
 
 </cas:workflow>

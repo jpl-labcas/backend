@@ -44,8 +44,11 @@
       <property name="input.mirnadatadir.title" value="miRNA data directory" />
       <property name="input.mirnadatadir.description" value="Relative path to directory containing miRNA input files." />
       
-      <!-- output products -->
-      <property name="output.product.type" value="urn:edrn:LabcasNistFile"/>
+      <!-- output -->
+      <!-- <property name="output.product.type" value="urn:edrn:LabcasNistFile"/> -->
+      <property name="output.appURL.type" value="url"/>
+      <property name="output.appURL.title" value="Shiny URL"/>
+      <property name="output.appURL.description" value="The URL that the user clicks to execute the Shiny workflow over the converted miRNA files"/>
       
     </configuration>
     
@@ -78,6 +81,13 @@
         envReplace="true" />
     </configuration>
     
+  </task>
+  
+  <task id="urn:edrn:NistExecuteTask" name="NistExecuteTask" class="gov.nasa.jpl.edrn.labcas.tasks.nist.NistExecuteTaskInstance">
+    <conditions />
+    <configuration>
+      <property name="baseURL" value="http://shiny.jpl.nasa.gov/" />
+    </configuration>
   </task>
 
 </cas:tasks>

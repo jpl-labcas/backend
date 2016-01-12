@@ -14,7 +14,7 @@ def waitForCompletion(wInstId):
     ''' Monitors a workflow instance until it completes.'''
     
     # wait for the server to instantiate this workflow before querying it
-    time.sleep(1) 
+    time.sleep(2) 
 
     # now use the workflow instance id to check for status, wait until completed
     running_status  = ['CREATED', 'QUEUED', 'STARTED', 'PAUSED']
@@ -39,8 +39,11 @@ if __name__ == '__main__':
     
     # submit workflow
     # /wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName nist --metaData --key pi Johns --key instrument trombone --key lab LAB01 --key date 20160101 --key mirnadatadir nist/LAB01/20160101
-    wInstId = workflowManagerServerProxy.workflowmgr.executeDynamicWorkflow( ['urn:edrn:NistInitTask','urn:edrn:NistConvertTask'], 
-                                                                             { 'pi':'Johns', 'instrument':'trumpet', 'lab':'LAB01','date':'20160101', 'mirnadatadir':'nist/LAB01/20160101' } )
+    wInstId = workflowManagerServerProxy.workflowmgr.executeDynamicWorkflow( ['urn:edrn:NistInitTask','urn:edrn:NistConvertTask','urn:edrn:NistExecuteTask'], 
+                                                                             {'pi':'Johns', 
+                                                                              'instrument':'trumpet', 
+                                                                              'lab':'LAB01','date':'20160101', 
+                                                                              'mirnadatadir':'nist/LAB01/20160101' } )
 
     # monitor workflow instance
     waitForCompletion(wInstId)
