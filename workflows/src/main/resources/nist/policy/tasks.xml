@@ -24,21 +24,21 @@
     
       <!-- input parameters -->
             
-      <property name="input.species.type" value="string" />
-      <property name="input.species.title" value="PI" />
-      <property name="input.species.description" value="Principal Investigator that collected data" />
+      <property name="input.pi.type" value="string" />
+      <property name="input.pi.title" value="PI" />
+      <property name="input.pi.description" value="Principal Investigator that collected data" />
       
-      <property name="input.species.type" value="string" />
-      <property name="input.species.title" value="Instrument" />
-      <property name="input.species.description" value="Instrument used to collect data" />
+      <property name="input.instrument.type" value="string" />
+      <property name="input.instrument.title" value="Instrument" />
+      <property name="input.instrument.description" value="Instrument used to collect data" />
 
-      <property name="input.species.type" value="string" />
-      <property name="input.species.title" value="Lab" />
-      <property name="input.species.description" value="Laboratory where data was collected" />
+      <property name="input.lab.type" value="string" />
+      <property name="input.lab.title" value="Lab" />
+      <property name="input.lab.description" value="Laboratory where data was collected" />
       
-      <property name="input.species.type" value="string" />
-      <property name="input.species.title" value="Date" />
-      <property name="input.species.description" value="Date when data was collected (yyyymmdd)" />
+      <property name="input.date.type" value="string" />
+      <property name="input.date.title" value="Date" />
+      <property name="input.date.description" value="Date when data was collected (yyyymmdd)" />
       
       <!-- output products -->
       <property name="output.product.type" value="urn:edrn:LabcasNistFile"/>
