@@ -26,7 +26,7 @@
         <configuration>
           <property name="nsAware" value="true" />
           <property name="elementNs" value="CAS" />
-          <property name="elements" value="ProductReceivedTime,ProductName,ProductId,ProductType" />
+          <property name="elements" value="ProductReceivedTime,ProductName,ProductId,ProductType,WorkflowName" />
         </configuration>
       </extractor>
       <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor" />

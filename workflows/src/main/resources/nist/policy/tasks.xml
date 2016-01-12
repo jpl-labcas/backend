@@ -40,6 +40,10 @@
       <property name="input.date.title" value="Date" />
       <property name="input.date.description" value="Date when data was collected (yyyymmdd)" />
       
+      <property name="input.mirnadatadir.type" value="directory" />
+      <property name="input.mirnadatadir.title" value="miRNA data directory" />
+      <property name="input.mirnadatadir.description" value="Relative path to directory containing miRNA input files." />
+      
       <!-- output products -->
       <property name="output.product.type" value="urn:edrn:LabcasNistFile"/>
       
@@ -50,6 +54,7 @@
       <metfield name="instrument" />
       <metfield name="lab" />
       <metfield name="date" />
+      <metfield name="mirnadatadir" />
     </requiredMetFields>
     
   </task>

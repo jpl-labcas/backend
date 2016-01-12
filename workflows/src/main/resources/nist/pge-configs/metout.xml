@@ -5,6 +5,7 @@
     <metadata key="ProductType" val="LabcasNistFile"/>
     <metadata key="ProductionDateTime" val="[ProductionDateTime]"/>
     <metadata key="ProductName" val="[Filename]"/>
+    <metadata key="WorkflowName" val="[WorkflowName]"/>
     
     <metadata key="pi" val=""/>
     <metadata key="instrument" val="[instrument]"/>
