@@ -11,7 +11,7 @@
   <groupId>gov.nasa.jpl.edrn.labcas</groupId>
   <artifactId>labcas-backend</artifactId>
   <name>LabCAS backend</name>
-  <version>0.3</version>
+  <version>${labcas-backend.version}</version>
   <packaging>pom</packaging>
 
   <licenses>
@@ -24,6 +24,9 @@
 
   <!-- properties common to all modules -->
   <properties>
+  
+    <!-- global project version - must be set to a property to be inherited -->
+    <labcas-backend.version>0.4</labcas-backend.version>
 
     <!-- root installation directory -->
     <install.dir>${env.LABCAS_HOME}</install.dir>

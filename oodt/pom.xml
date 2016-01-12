@@ -13,7 +13,7 @@
   <parent>
     <groupId>gov.nasa.jpl.edrn.labcas</groupId>
     <artifactId>labcas-backend</artifactId>
-    <version>0.3</version>
+    <version>${labcas-backend.version}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
