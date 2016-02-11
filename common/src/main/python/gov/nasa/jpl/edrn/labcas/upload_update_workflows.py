@@ -13,14 +13,15 @@ if __name__ == '__main__':
     labcasClient.getWorkflowById("urn:edrn:LabcasUploadWorkflow")
     
     # core metadata fields
-    metadata = { 'DatasetName':'My Data',
+    metadata = { 'Description':'My own data',
+                 'DatasetName':'My Data',
                  'ProtocolId':'99',
                  'LeadPI':'John Doe'} 
     
 
     # upload dataset staged in directory 'mydata'
-    #labcasClient.uploadDataset(dataset, metadata)
-  
+    labcasClient.uploadDataset(dataset, metadata)
+'''
     # upload the dataset again:
     # o a new version will be generated
     # o the product type metadata will be completey overridden
@@ -43,3 +44,4 @@ if __name__ == '__main__':
     
     # list all products for given dataset == product type
     labcasClient.listProducts(dataset)
+'''
