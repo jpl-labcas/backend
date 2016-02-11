@@ -2,8 +2,12 @@ package gov.nasa.jpl.edrn.labcas.tasks;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
@@ -15,7 +19,8 @@ import gov.nasa.jpl.edrn.labcas.utils.FileManagerUtils;
 /**
  * Task used to initialize a LabCAS crawler workflow.
  * o it creates or updates a product type for the dataset to be uploaded
- * o if found, it adds all metadata contained in the file DatasetMetadata.xml to the product type metadata
+ * o it uses the task configuration parameter of the form "init.field...." to define the produt type metadata
+ * o if found, it adds all metadata fields contained in the file DatasetMetadata.xml to the above product type metadata
  * o it parses the target archive directory and determines the dataset version
  * o it augments the file level metadata with the product type name and dataset version 
  *   (the dataset identifier already comes from the workflow invocation)
@@ -40,8 +45,42 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 				throw new WorkflowTaskInstanceException("Dataset name cannot contain spaces");
 			}
 			
+			// debug: print all workflow instance metadata
+	        for (String key : metadata.getAllKeys()) {
+	        	for (String val : metadata.getAllMetadata(key)) {
+	        		LOG.fine("Workflow Instance metadata key="+key+" value="+val);
+	        	}
+	        }
+	        
+	        // extract core dataset metadata keys from task configuration parameters of the form "init.field...."
+	        // example: 
+	        // <property name="input.ProtocolId.type" value="integer" />
+	        // <property name="input.ProtocolId.title" value="Protocol ID" />
+	        Set<String> coreMetadataKeys = new HashSet<String>();
+	        for (Object objKey : config.getProperties().keySet()) {
+	            String key = (String) objKey;
+	            String value = config.getProperties().getProperty(key);
+	            LOG.fine("Workflow configuration property: key="+key+" value="+value);
+	            if (key.toLowerCase().startsWith("input")) {
+	            	String[] parts = key.split("\\."); 
+	            	coreMetadataKeys.add(parts[1]);
+	            }
+	        }
+	        
+	        // populate core dataset metadata values from client supplied metadata
+	        Metadata coreMetadata = new Metadata();
+	        for (String key : coreMetadataKeys) {
+	        	if (metadata.containsKey(key)) {
+	        		// Note: OODT split input metadata "My Data" as separate values "My", "Data"
+	        		// must merge the values back
+	        		List<String> values = metadata.getAllMetadata(key);
+	        		String value = StringUtils.join(values, " ");
+	        		coreMetadata.addMetadata(key, value);
+	        	}
+	        }
+			
 			// update dataset object in File Manager
-			String productTypeName = FileManagerUtils.uploadDataset(dataset);
+			String productTypeName = FileManagerUtils.uploadDataset(dataset, coreMetadata);
 			
 			// reload the catalog configuration so that the new product type is available for publishing
 			FileManagerUtils.reload();

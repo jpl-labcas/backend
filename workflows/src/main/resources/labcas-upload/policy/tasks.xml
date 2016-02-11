@@ -23,9 +23,25 @@
     <configuration>
     
       <!-- input parameters -->      
-      <property name="input.dataset.type" value="string" />
-      <property name="input.dataset.title" value="Dataset" />
-      <property name="input.dataset.description" value="Dataset name" />
+      <property name="input.Dataset.type" value="string" />
+      <property name="input.Dataset.title" value="Dataset Name" />
+      <property name="input.Dataset.description" value="Unique identifier for this dataset (letters only, no spaces)" />
+      <property name="input.Dataset.required" value="true" />
+      
+      <property name="input.DatasetName.type" value="string" />
+      <property name="input.DatasetName.title" value="Dataset Name" />
+      <property name="input.DatasetName.description" value="One sentence that describes this dataset" />
+      <property name="input.DatasetName.required" value="true" />
+      
+      <property name="input.ProtocolId.type" value="integer" />
+      <property name="input.ProtocolId.title" value="Protocol ID" />
+      <property name="input.ProtocolId.description" value="Number for the medical protocol identifier" />
+      <property name="input.ProtocolId.required" value="true" />
+      
+      <property name="input.LeadPI.type" value="string" />
+      <property name="input.LeadPI.title" value="Lead PI" />
+      <property name="input.LeadPI.description" value="Name of lead Principal Investigator" />
+      <property name="input.LeadPI.required" value="true" />
       
       <!-- output products -->
       <property name="output.product.type" value="urn:edrn:LabcasFile"/>
@@ -34,6 +50,9 @@
     
     <requiredMetFields>
       <metfield name="Dataset" />
+      <metfield name="DatasetName" />
+      <metfield name="ProtocolId" />
+      <metfield name="LeadPI" />
     </requiredMetFields>
     
   </task>

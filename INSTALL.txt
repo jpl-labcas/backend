@@ -82,8 +82,8 @@ o Run labcas-test workflow
 
 cd $LABCAS_HOME/cas-workflow/bin
 
-./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-test --metaData --key experiment 11 --key species snakes
-
+#./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-test --metaData --key experiment 11 --key species snakes
+./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-upload --metaData --key Dataset mydata --key DatasetName 'My Data' --key ProtocolId 1 --key LeadPI 'John Smith'
 
 
 o Trigger crawling for uploaded dataset "mydata", stored in directory $LABCAS_STAGIN/mydata

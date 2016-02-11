@@ -49,15 +49,19 @@ public class FileManagerUtils {
 	 * Method to upload a new dataset to the File Manager, creating a corresponding product type;
 	 * or, upload a new version of the same dataset, overriding the metadata for the same product type.
 	 * @param dataset
+	 * @param coreMetadata
 	 * @throws Exception
 	 */
-	public static String uploadDataset(String dataset) throws Exception {
-		
+	public static String uploadDataset(String dataset, Metadata coreMetadata) throws Exception {
+				
 		// build product type
 		String productTypeName = FileManagerUtils.getProductTypeName(dataset);
 		
 		// retrieve additional dataset metadata from file DatasetMetadata.xml
 		Metadata datasetMetadata = FileManagerUtils.readDatasetMetadata( dataset );
+		
+		// merge dataset specific metadata with core metadata
+		datasetMetadata.addMetadata(coreMetadata);
 		
 		// transfer metadata field 'Description' to dataset description, if found
 		String datasetDescription = dataset; // default
@@ -100,7 +104,7 @@ public class FileManagerUtils {
 	 * @param dataset
 	 */
 	public static String updateDataset(String dataset) throws Exception {
-		
+				
 		XmlRpcFileManagerClient client = new XmlRpcFileManagerClient(new URL(FILEMANAGER_URL));
 		
 		// build product type from dataset
