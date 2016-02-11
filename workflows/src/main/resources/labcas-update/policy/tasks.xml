@@ -25,13 +25,13 @@
       <!-- input parameters -->      
 
       <!-- CAS metadata: 
-           "Dataset": product type "id", "name"
+           "DatasetId": product type "id", "name"
            "Description": product type "description"
       -->      
-      <property name="input.Dataset.type" value="string" />
-      <property name="input.Dataset.title" value="Dataset Identifier" />
-      <property name="input.Dataset.description" value="Unique identifier for this dataset (letters only, no spaces)" />
-      <property name="input.Dataset.required" value="true" />
+      <property name="input.DatasetId.type" value="string" />
+      <property name="input.DatasetId.title" value="Dataset Identifier" />
+      <property name="input.DatasetId.description" value="Unique identifier for this dataset (letters only, no spaces)" />
+      <property name="input.DatasetId.required" value="true" />
       
       <property name="input.Description.type" value="string" />
       <property name="input.Description.title" value="Dataset Description" />
@@ -66,10 +66,10 @@
     
     <requiredMetFields>
       <!-- 
-        only required metadata field is Dataset 
+        only required metadata field is DatasetId 
         all other fields are optional on update
       -->
-      <metfield name="Dataset" />
+      <metfield name="DatasetId" />
     </requiredMetFields>
     
   </task>

@@ -61,13 +61,13 @@ class LabcasClient(object):
                 break
         print response
         
-    def uploadDataset(self, dataset, metadata):
+    def uploadDataset(self, datasetId, metadata):
         
-        # add 'Dataset' key, value to other metadata
-        metadata['Dataset'] = dataset
+        # add 'DatasetId' key, value to other metadata
+        metadata['DatasetId'] = datasetId
     
         # NOTE: currently, if you start a named workflow, the XMLRPC interface only returns True/False, not a workflow instance identifier...
-        #tf = serverProxy.workflowmgr.handleEvent('labcas-upload', { 'Dataset':'mydata' } )
+        #tf = serverProxy.workflowmgr.handleEvent('labcas-upload', { 'DatasetId':'mydata' } )
     
         # ... consequently, you must submit an equivalent dynamic workflow, which does return the workflow instance id
         wInstId = self.workflowManagerServerProxy.workflowmgr.executeDynamicWorkflow( ['urn:edrn:LabcasUploadInitTask','urn:edrn:LabcasUploadExecuteTask'], 
@@ -76,10 +76,10 @@ class LabcasClient(object):
         # monitor workflow instance
         self.waitForCompletion(wInstId)
 
-    def updateDataset(self, dataset, metadata):
+    def updateDataset(self, datasetId, metadata):
         
-        # add 'Dataset' key, value to other metadata
-        metadata['Dataset'] = dataset
+        # add 'DatasetId' key, value to other metadata
+        metadata['DatasetId'] = datasetId
         
         # submit "labcas-update" workflow
         wInstId = self.workflowManagerServerProxy.workflowmgr.executeDynamicWorkflow( ['urn:edrn:LabcasUpdateTask'], 

@@ -87,8 +87,7 @@ cd $LABCAS_HOME/cas-workflow/bin
 
 o Trigger crawling for uploaded dataset "mydata", stored in directory $LABCAS_STAGING/mydata
 
-#./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-upload --metaData --key Dataset mydata
-./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-upload --metaData --key Dataset mydata --key DatasetName 'My Data' --key ProtocolId 1 --key LeadPI 'John Smith'
+./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-upload --metaData --key DatasetId mydata --key DatasetName 'My Data' --key Description 'My own data' --key ProtocolId 1 --key LeadPI 'John Smith'
 
 
 will also ingest metadata contained in file $LABCAS_STAGIN/mydata/DatasetMetadata.xmlmet
@@ -101,9 +100,7 @@ To update metadata without changing the version, use the "labcas-update" workflo
 
 o Trigger metadata update for previously uploaded dataset "mydata":
 
-#./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-update --metaData --key Dataset mydata
-
-./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-update --metaData --key Dataset mydata --key DatasetName 'My Data' --key ProtocolId 1 --key LeadPI 'John Doe'
+./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-update --metaData --key DatasetId mydata --key DatasetName 'My Data' --key ProtocolId 1 --key LeadPI 'John Doe'
 
 Each metadata field passed from command line will update the corresponding metadata field in the product type.
 

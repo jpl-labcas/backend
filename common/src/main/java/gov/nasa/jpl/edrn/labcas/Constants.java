@@ -21,7 +21,7 @@ public interface Constants {
 	public final static String WORKFLOW_LABCAS_UPOLOAD = "labcas-upload";
 	
 	// metadata keys
-	public final static String METADATA_KEY_DATASET = "Dataset";
+	public final static String METADATA_KEY_DATASET_ID = "DatasetId";
 	public final static String METADATA_KEY_VERSION = "Version";
 	public final static String METADATA_KEY_DESCRIPTION = "Description";
 	public final static String METADATA_KEY_FILE_LOCATION = "FileLocation";

@@ -33,8 +33,8 @@
     </metExtractors>
     <metadata>
       <keyval>
-        <key>Dataset</key>
-        <val>[Dataset]</val>
+        <key>DatasetId</key>
+        <val>[DatasetId]</val>
       </keyval>
       <keyval>
         <key>Version</key>

@@ -26,16 +26,16 @@ public class LabcasUpdateTaskInstance implements WorkflowTaskInstance {
 		try {
 						
 			// retrieve dataset identifier
-			String dataset = metadata.getMetadata(Constants.METADATA_KEY_DATASET);
+			String datasetId = metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
 			
 			// populate core dataset metadata
 			Metadata coreMetadata = FileManagerUtils.readConfigMetadata(metadata, config);
 			
 			// update dataset object in File Manager
-			FileManagerUtils.updateDataset(dataset, coreMetadata);
+			FileManagerUtils.updateDataset(datasetId, coreMetadata);
 			
 			// update products metadata directly into Solr
-			FileManagerUtils.updateProducts(dataset);
+			FileManagerUtils.updateProducts(datasetId);
 			
 			// reload the catalog configuration so that the new product type is available for publishing
 			FileManagerUtils.reload();

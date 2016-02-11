@@ -102,19 +102,19 @@ public class SolrUtils {
 	
 	/**
 	 * Utility method to query Solr for a specific product belonging to a dataset and version.
-	 * @param datasetName
+	 * @param datasetId
 	 * @param datasetVersion
 	 * @param productName
 	 * @return
 	 */
-	public static String queryProduct(String datasetName, int datasetVersion, String productName) {
+	public static String queryProduct(String datasetId, int datasetVersion, String productName) {
 		
 		String id = null;
 		
 		// build Solr query
         SolrQuery request = new SolrQuery();
         request.setQuery("*:*");
-        request.addFilterQuery(Constants.METADATA_KEY_DATASET+":"+datasetName, 
+        request.addFilterQuery(Constants.METADATA_KEY_DATASET_ID+":"+datasetId, 
         		               Constants.METADATA_KEY_VERSION+":"+datasetVersion, 
         		               Constants.METADATA_KEY_PRODUCT_NAME+":"+productName);
         request.setRows(1);

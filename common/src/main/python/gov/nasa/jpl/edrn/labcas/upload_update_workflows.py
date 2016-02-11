@@ -4,7 +4,7 @@ from gov.nasa.jpl.edrn.labcas.labcas_client import LabcasClient
 
 if __name__ == '__main__':
         
-    dataset = 'mydata'
+    datasetId = 'mydata'
     labcasClient = LabcasClient()
     
     # print out workflow definition
@@ -20,28 +20,26 @@ if __name__ == '__main__':
     
 
     # upload dataset staged in directory 'mydata'
-    labcasClient.uploadDataset(dataset, metadata)
-'''
+    labcasClient.uploadDataset(datasetId, metadata)
+
     # upload the dataset again:
     # o a new version will be generated
     # o the product type metadata will be completey overridden
     metadata['ProtocolId'] = '98'
-    #labcasClient.uploadDataset(dataset, metadata)
-
+    labcasClient.uploadDataset(datasetId, metadata)
  
     # update dataset metadata - no new version is generated
     metadata['LeadPI'] = 'Mister X'
-    #labcasClient.updateDataset(dataset, metadata)
+    labcasClient.updateDataset(datasetId, metadata)
     
     # list all product types in File manager
     labcasClient.listProductTypes()
     
     # query the product types from the XML/RPC File Manager interface
-    labcasClient.getProductTypeByName(dataset)
+    labcasClient.getProductTypeByName(datasetId)
     
     # or equivalently
-    labcasClient.getProductTypeById("urn:edrn:%s" % dataset)
+    labcasClient.getProductTypeById("urn:edrn:%s" % datasetId)
     
     # list all products for given dataset == product type
-    labcasClient.listProducts(dataset)
-'''
+    labcasClient.listProducts(datasetId)

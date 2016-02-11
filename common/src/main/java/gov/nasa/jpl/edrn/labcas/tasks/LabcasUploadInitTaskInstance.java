@@ -37,23 +37,23 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 		try {
 			
 			// retrieve dataset identifier
-			String dataset = metadata.getMetadata(Constants.METADATA_KEY_DATASET);
+			String datasetId = metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
 			// enforce no spaces
-			if (dataset.contains(" ")) {
-				throw new WorkflowTaskInstanceException("Dataset name cannot contain spaces");
+			if (datasetId.contains(" ")) {
+				throw new WorkflowTaskInstanceException("DatasetId cannot contain spaces");
 			}
 			
 			// populate core dataset metadata
 			Metadata coreMetadata = FileManagerUtils.readConfigMetadata(metadata, config);
 						
 			// update dataset object in File Manager
-			String productTypeName = FileManagerUtils.uploadDataset(dataset, coreMetadata);
+			String productTypeName = FileManagerUtils.uploadDataset(datasetId, coreMetadata);
 			
 			// reload the catalog configuration so that the new product type is available for publishing
 			FileManagerUtils.reload();
 			
 	        // set the next dataset version into products metadata
-	        int version = FileManagerUtils.findLatestDatasetVersion( dataset ) + 1;
+	        int version = FileManagerUtils.findLatestDatasetVersion( datasetId ) + 1;
 	        LOG.fine("Setting next dataset version to: "+version);
 	        metadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version);
 	        	        
@@ -61,7 +61,7 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 	        metadata.replaceMetadata(Constants.PRODUCT_TYPE, productTypeName);
 	                        
 	        // remove all .met files from staging directory - probably a leftover of a previous workflow submission
-	        String stagingDir = System.getenv(Constants.ENV_LABCAS_STAGING) + "/" + dataset;
+	        String stagingDir = System.getenv(Constants.ENV_LABCAS_STAGING) + "/" + datasetId;
 	        String[] metFiles = new File(stagingDir).list(new FilenameFilter() {
 	                  @Override
 	                  public boolean accept(File current, String name) {

@@ -165,13 +165,13 @@ public class FileManagerUtils {
 	 * @param dataset
 	 * @throws Exception
 	 */
-	public static void updateProducts(String dataset) throws Exception {
+	public static void updateProducts(String datasetId) throws Exception {
 		
 		// determine latest dataset version
-		int version = findLatestDatasetVersion(dataset);
+		int version = findLatestDatasetVersion(datasetId);
 		
 		// loop over .xmlmet files in staging directory
-		File stagingDir = getDatasetStagingDir(dataset);
+		File stagingDir = getDatasetStagingDir(datasetId);
         String[] xmlmetFiles = stagingDir.list(new FilenameFilter() {
                   @Override
                   public boolean accept(File current, String name) {
@@ -190,7 +190,7 @@ public class FileManagerUtils {
 	        	// read in product metadata
 	        	Metadata met = readMetadataFromFile( new File(stagingDir, xmlmetFile) );
 	        	// retrieve product id
-	        	String id = SolrUtils.queryProduct(dataset, version, filename);
+	        	String id = SolrUtils.queryProduct(datasetId, version, filename);
 	          	LOG.info("Updating product name: "+filename+" id: "+id+" with metadata from file: "+xmlmetFile);
 	          	
 	          	if (id!=null) {
@@ -557,7 +557,7 @@ public class FileManagerUtils {
         	// loop over all values for that key
         	for (String val : metadata.getAllMetadata(key)) {
         	
-	        	// <val>[Dataset]</val>
+	        	// <val>[DatasetId]</val>
 	        	Element valElement = xmlDocument.createElement("val");
 	        	valElement.insertBefore(xmlDocument.createTextNode(val), valElement.getLastChild());
 	        	keyvalElement.appendChild(valElement);  
