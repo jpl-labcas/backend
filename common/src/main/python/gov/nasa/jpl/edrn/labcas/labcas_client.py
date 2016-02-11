@@ -6,6 +6,7 @@ class LabcasClient(object):
     '''
     Python client used to interact with a remote Labcas back-end.
     Mostly for demo and example purposes...
+    Available methods are defined in Java class org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager.
     '''
     
     def __init__(self, 
@@ -17,6 +18,19 @@ class LabcasClient(object):
         self.workflowManagerServerProxy = xmlrpclib.ServerProxy(workflowManagerUrl, verbose=verbose)
         self.fileManaferServerProxy = xmlrpclib.ServerProxy(fileManagerUrl, verbose=verbose)
         self.solrServerProxy = solr.SolrConnection(solrUrl)
+        
+    def getWorkflowsByEvent(self, eventName):
+        '''Retrieve a specific workflow by the triggering event.'''
+        
+        workflows =  self.workflowManagerServerProxy.workflowmgr.getWorkflowsByEvent(eventName)
+        for workflow in workflows:
+            self.printWorkflow(workflow)
+        
+    def getWorkflowById(self, workflowId):
+        '''Retrieve a specific workflow by its unique identifier.'''
+        
+        workflow =  self.workflowManagerServerProxy.workflowmgr.getWorkflowById(workflowId)
+        self.printWorkflow(workflow)
         
     def executeWorkflow(self, tasks, metadata):
         '''Submits a dynamic workflow composed of the specified tasks, using the specified metadata.'''
@@ -32,38 +46,44 @@ class LabcasClient(object):
         # now use the workflow instance id to check for status, wait until completed
         running_status  = ['CREATED', 'QUEUED', 'STARTED', 'PAUSED']
         pge_task_status = ['STAGING INPUT', 'BUILDING CONFIG FILE', 'PGE EXEC', 'CRAWLING']
-        finished_status = ['FINISHED', 'ERROR']
+        finished_status = ['FINISHED', 'ERROR', 'METMISS']
         while (True):
             response = self.workflowManagerServerProxy.workflowmgr.getWorkflowInstanceById(wInstId)
             status = response['status']
             if status in running_status or status in pge_task_status:
-                print 'Workflow istance=%s running with status=%s' % (wInstId, status)
+                print 'Workflow instance=%s running with status=%s' % (wInstId, status)
                 time.sleep(1)
             elif status in finished_status:
-                print 'Workflow istance=%s ended with status=%s' % (wInstId, status)
+                print 'Workflow instance=%s ended with status=%s' % (wInstId, status)
                 break
             else:
                 print 'UNRECOGNIZED WORKFLOW STATUS: %s' % status
                 break
         print response
         
-    def uploadDataset(self, dataset):
+    def uploadDataset(self, dataset, metadata):
+        
+        # add 'Dataset' key, value to other metadata
+        metadata['Dataset'] = dataset
     
         # NOTE: currently, if you start a named workflow, the XMLRPC interface only returns True/False, not a workflow instance identifier...
         #tf = serverProxy.workflowmgr.handleEvent('labcas-upload', { 'Dataset':'mydata' } )
     
         # ... consequently, you must submit an equivalent dynamic workflow, which does return the workflow instance id
         wInstId = self.workflowManagerServerProxy.workflowmgr.executeDynamicWorkflow( ['urn:edrn:LabcasUploadInitTask','urn:edrn:LabcasUploadExecuteTask'], 
-                                                                                      { 'Dataset':dataset } )
+                                                                                      metadata )
     
         # monitor workflow instance
         self.waitForCompletion(wInstId)
 
-    def updateDataset(self, dataset):
+    def updateDataset(self, dataset, metadata):
+        
+        # add 'Dataset' key, value to other metadata
+        metadata['Dataset'] = dataset
         
         # submit "labcas-update" workflow
         wInstId = self.workflowManagerServerProxy.workflowmgr.executeDynamicWorkflow( ['urn:edrn:LabcasUpdateTask'], 
-                                                                                      { 'Dataset':dataset } )
+                                                                                      metadata )
     
         # monitor workflow instance
         self.waitForCompletion(wInstId)
@@ -125,3 +145,11 @@ class LabcasClient(object):
         print "File size=%s" % result['FileSize'][0]    # multi-valued field
         print "File location=%s" % result['CAS.ReferenceDatastore'][0]  # multi-valued field
         print "File version=%s" % result['Version'][0]  # multi-valued field
+
+    def printWorkflow(self, workflowDict):
+        '''Utiliyu function to print out a workflow.'''
+        
+        print workflowDict
+        print "Workflow id=%s name=%s" % (workflowDict['id'], workflowDict['name'])
+        for task in workflowDict['tasks']:
+            print "Task: %s" % task
