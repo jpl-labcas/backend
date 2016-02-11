@@ -11,7 +11,8 @@ if __name__ == '__main__':
     #labcasClient.getWorkflowsByEvent("labcas-upload")
     # or equivalently
     labcasClient.getWorkflowById("urn:edrn:LabcasUploadWorkflow")
-    
+
+'''
     # core metadata fields
     metadata = { 'Description':'My own data',
                  'DatasetName':'My Data',
@@ -43,3 +44,4 @@ if __name__ == '__main__':
     
     # list all products for given dataset == product type
     labcasClient.listProducts(datasetId)
+'''
