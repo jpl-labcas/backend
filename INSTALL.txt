@@ -82,13 +82,14 @@ o Run labcas-test workflow
 
 cd $LABCAS_HOME/cas-workflow/bin
 
-#./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-test --metaData --key experiment 11 --key species snakes
+./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-test --metaData --key experiment 11 --key species snakes
+
+
+o Trigger crawling for uploaded dataset "mydata", stored in directory $LABCAS_STAGING/mydata
+
+#./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-upload --metaData --key Dataset mydata
 ./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-upload --metaData --key Dataset mydata --key DatasetName 'My Data' --key ProtocolId 1 --key LeadPI 'John Smith'
 
-
-o Trigger crawling for uploaded dataset "mydata", stored in directory $LABCAS_STAGIN/mydata
-
-./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-upload --metaData --key Dataset mydata
 
 will also ingest metadata contained in file $LABCAS_STAGIN/mydata/DatasetMetadata.xmlmet
 
@@ -100,9 +101,14 @@ To update metadata without changing the version, use the "labcas-update" workflo
 
 o Trigger metadata update for previously uploaded dataset "mydata":
 
-./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-update --metaData --key Dataset mydata
+#./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-update --metaData --key Dataset mydata
+
+./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-update --metaData --key Dataset mydata --key DatasetName 'My Data' --key ProtocolId 1 --key LeadPI 'John Doe'
+
+Each metadata field passed from command line will update the corresponding metadata field in the product type.
 
 Each metadata field contained in the file "DatasetMetadata.xmlmet" will be updated, completely replacing all previous values for that field.
+
 To insert multiple values for the same field, simply specify multiple "<val>" elements within a "<keyval>" element. 
 To completely remove all values for a field, leave the "<val>" empty.
 

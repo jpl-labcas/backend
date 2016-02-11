@@ -43,7 +43,7 @@ public class XmlFileMetExtractor implements FilemgrMetExtractor {
 		if (xmlmetFilepath.exists()) {
 			LOG.info("Adding additional product metadata from file: "+xmlmetFilepath.getAbsolutePath());
 			
-			Metadata fmet = FileManagerUtils.readMetadata(xmlmetFilepath);
+			Metadata fmet = FileManagerUtils.readMetadataFromFile(xmlmetFilepath);
 			outmet.addMetadata(fmet.getHashtable());
 			
 		}

@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor;
 import org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
@@ -16,6 +19,7 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.util.XmlStructFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -102,8 +106,9 @@ public class FileManagerUtils {
 	 * i.e. to change the product type metadata without uploading new products.
 	 * 
 	 * @param dataset
+	 * @param coreMetadata
 	 */
-	public static String updateDataset(String dataset) throws Exception {
+	public static String updateDataset(String dataset, Metadata coreMetadata) throws Exception {
 				
 		XmlRpcFileManagerClient client = new XmlRpcFileManagerClient(new URL(FILEMANAGER_URL));
 		
@@ -112,6 +117,9 @@ public class FileManagerUtils {
 		
 		// retrieve additional dataset metadata from file DatasetMetadata.xml
 		Metadata datasetMetadata = FileManagerUtils.readDatasetMetadata( dataset );
+		
+		// merge dataset specific metadata with core metadata
+		datasetMetadata.addMetadata(coreMetadata);
 				
 		// query File Manager for product type object
 		ProductType productType = client.getProductTypeByName(productTypeName);
@@ -180,7 +188,7 @@ public class FileManagerUtils {
 	        	// filename
 	        	String filename = xmlmetFile.replace(Constants.EDRN_METADATA_EXTENSION, "");
 	        	// read in product metadata
-	        	Metadata met = readMetadata( new File(stagingDir, xmlmetFile) );
+	        	Metadata met = readMetadataFromFile( new File(stagingDir, xmlmetFile) );
 	        	// retrieve product id
 	        	String id = SolrUtils.queryProduct(dataset, version, filename);
 	          	LOG.info("Updating product name: "+filename+" id: "+id+" with metadata from file: "+xmlmetFile);
@@ -276,8 +284,53 @@ public class FileManagerUtils {
         String stagingDir = System.getenv(Constants.ENV_LABCAS_STAGING) + "/" + datasetName;
         File datasetMetadataFile = new File(stagingDir, Constants.METADATA_FILE);
     
-        return readMetadata(datasetMetadataFile);
+        return readMetadataFromFile(datasetMetadataFile);
         
+	}
+	
+	/**
+	 * Utility method that reads the core dataset metadata from the task configuration,
+	 * and populates it with values from the workflow instance metadata 
+	 * (supplied when the workflow is submitted).
+	 * @return
+	 */
+	public static Metadata readConfigMetadata(Metadata metadata, WorkflowTaskConfiguration config) {
+		
+		// debug: print all workflow instance metadata
+        for (String key : metadata.getAllKeys()) {
+        	for (String val : metadata.getAllMetadata(key)) {
+        		LOG.fine("Workflow Instance metadata key="+key+" value="+val);
+        	}
+        }
+        
+        // extract core dataset metadata keys from task configuration parameters of the form "init.field...."
+        // example: 
+        // <property name="input.ProtocolId.type" value="integer" />
+        // <property name="input.ProtocolId.title" value="Protocol ID" />
+        Set<String> coreMetadataKeys = new HashSet<String>();
+        for (Object objKey : config.getProperties().keySet()) {
+            String key = (String) objKey;
+            String value = config.getProperties().getProperty(key);
+            LOG.fine("Workflow configuration property: key="+key+" value="+value);
+            if (key.toLowerCase().startsWith("input")) {
+            	String[] parts = key.split("\\."); 
+            	coreMetadataKeys.add(parts[1]);
+            }
+        }
+        
+        // populate core dataset metadata values from client supplied metadata
+        Metadata coreMetadata = new Metadata();
+        for (String key : coreMetadataKeys) {
+        	if (metadata.containsKey(key)) {
+        		// Note: OODT split input metadata "My Data" as separate values "My", "Data"
+        		// must merge the values back
+        		List<String> values = metadata.getAllMetadata(key);
+        		String value = StringUtils.join(values, " ");
+        		coreMetadata.addMetadata(key, value);
+        	}
+        }
+        
+        return coreMetadata;
 	}
 	
 	/**
@@ -286,7 +339,7 @@ public class FileManagerUtils {
 	 * @param metadataFilepath
 	 * @return
 	 */
-    public static Metadata readMetadata(final File metadataFilepath) {
+    public static Metadata readMetadataFromFile(final File metadataFilepath) {
 		
 		// read file metadata
         Metadata metadata = new Metadata(); // empty metadata container
