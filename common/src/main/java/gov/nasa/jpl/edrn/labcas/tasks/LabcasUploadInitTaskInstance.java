@@ -43,21 +43,30 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 				throw new WorkflowTaskInstanceException("DatasetId cannot contain spaces");
 			}
 			
-			// populate core dataset metadata
+			// populate core dataset metadata from workflow configuration
 			Metadata coreMetadata = FileManagerUtils.readConfigMetadata(metadata, config);
-						
+			
+	        // add dataset version to core metadata (used for generating product unique identifiers)
+	        int version = FileManagerUtils.findLatestDatasetVersion( datasetId );
+	        if (version==0) {  // dataset does not yet exist -> assign first version
+	        	version = 1; 
+	        } else {              // keep the same version unless the flag is set
+	        	if (Boolean.parseBoolean(metadata.getMetadata(Constants.METADATA_KEY_NEW_VERSION))) {
+	        		version += 1; // increment version
+	        		metadata.removeMetadata(Constants.METADATA_KEY_NEW_VERSION); // remove the flag
+	        	}
+	        }
+	        coreMetadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version);
+	        LOG.fine("Using dataset version=: "+version);
+
 			// update dataset object in File Manager
 			String productTypeName = FileManagerUtils.uploadDataset(datasetId, coreMetadata);
 			
 			// reload the catalog configuration so that the new product type is available for publishing
 			FileManagerUtils.reload();
 			
-	        // set the next dataset version into products metadata
-	        int version = FileManagerUtils.findLatestDatasetVersion( datasetId ) + 1;
-	        LOG.fine("Setting next dataset version to: "+version);
-	        metadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version);
-	        	        
-	        // set the ProductType into products metadata
+	        // set the ProductType and Version into products metadata
+			metadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version);
 	        metadata.replaceMetadata(Constants.PRODUCT_TYPE, productTypeName);
 	                        
 	        // remove all .met files from staging directory - probably a leftover of a previous workflow submission
