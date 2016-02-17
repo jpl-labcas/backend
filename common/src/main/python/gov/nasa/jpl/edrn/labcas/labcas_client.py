@@ -61,28 +61,20 @@ class LabcasClient(object):
                 break
         print response
         
-    def uploadDataset(self, datasetId, metadata):
+    def uploadDataset(self, datasetId, metadata, newVersion=False):
         
         # add 'DatasetId' key, value to other metadata
         metadata['DatasetId'] = datasetId
+        
+        # optionally request a new version
+        if newVersion:
+            metadata['newVersion'] = 'true'
     
         # NOTE: currently, if you start a named workflow, the XMLRPC interface only returns True/False, not a workflow instance identifier...
         #tf = serverProxy.workflowmgr.handleEvent('labcas-upload', { 'DatasetId':'mydata' } )
     
         # ... consequently, you must submit an equivalent dynamic workflow, which does return the workflow instance id
         wInstId = self.workflowManagerServerProxy.workflowmgr.executeDynamicWorkflow( ['urn:edrn:LabcasUploadInitTask','urn:edrn:LabcasUploadExecuteTask'], 
-                                                                                      metadata )
-    
-        # monitor workflow instance
-        self.waitForCompletion(wInstId)
-
-    def updateDataset(self, datasetId, metadata):
-        
-        # add 'DatasetId' key, value to other metadata
-        metadata['DatasetId'] = datasetId
-        
-        # submit "labcas-update" workflow
-        wInstId = self.workflowManagerServerProxy.workflowmgr.executeDynamicWorkflow( ['urn:edrn:LabcasUpdateTask'], 
                                                                                       metadata )
     
         # monitor workflow instance
@@ -116,9 +108,9 @@ class LabcasClient(object):
     
     def listProducts(self, datasetId):
         
-        # query for all datasets with this name, all versions
+        # query for all products of this type (i.e. all files of this dataset), all versions
         response = self.solrServerProxy.query('*:*', fq=['DatasetId:%s' % datasetId], start=0)
-        print "\nNumber of files found: %s" % response.numFound
+        print "\nNumber of files found: %s (all versions)" % response.numFound
         for result in response.results:
             self.printProduct(result)
             
@@ -133,18 +125,16 @@ class LabcasClient(object):
             
         # query for all files for a specific version
         response = self.solrServerProxy.query('*:*', fq=['DatasetId:%s' % datasetId,'Version:%s' % last_version ], start=0)
-        print "\nLatest version: %s number of files: %s" % (last_version, response.numFound)
+        print "\nLatest version: %s number of files: %s, listing them all:" % (last_version, response.numFound)
         for result in response.results:
             self.printProduct(result)
         
     def printProduct(self, result):
-        '''Utility function to print out a few fields of a result.'''
+        '''Utility function to print out the product metadata'''
         
-        print "\nFile id=%s" % result['id']             # single-valued field
-        print "File name=%s" % result['Filename'][0]    # multi-valued field
-        print "File size=%s" % result['FileSize'][0]    # multi-valued field
-        print "File location=%s" % result['CAS.ReferenceDatastore'][0]  # multi-valued field
-        print "File version=%s" % result['Version'][0]  # multi-valued field
+        print '\nProduct ID=%s' % result['id']
+        for key, values in result.items():
+            print '\tProduct metadata key=%s values=%s' % (key, values)
 
     def printWorkflow(self, workflowDict):
         '''Utiliyu function to print out a workflow.'''
