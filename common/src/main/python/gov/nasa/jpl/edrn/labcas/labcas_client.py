@@ -68,7 +68,7 @@ class LabcasClient(object):
         
         # optionally request a new version
         if newVersion:
-            metadata['newVersion'] = 'true'
+            metadata['NewVersion'] = 'true'
     
         # NOTE: currently, if you start a named workflow, the XMLRPC interface only returns True/False, not a workflow instance identifier...
         #tf = serverProxy.workflowmgr.handleEvent('labcas-upload', { 'DatasetId':'mydata' } )

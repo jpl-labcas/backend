@@ -22,7 +22,7 @@ public interface Constants {
 	
 	// metadata keys
 	public final static String METADATA_KEY_DATASET_ID = "DatasetId";
-	public final static String METADATA_KEY_NEW_VERSION = "newVersion";
+	public final static String METADATA_KEY_NEW_VERSION = "NewVersion";
 	public final static String METADATA_KEY_VERSION = "Version";
 	public final static String METADATA_KEY_DESCRIPTION = "Description";
 	public final static String METADATA_KEY_FILE_LOCATION = "FileLocation";
