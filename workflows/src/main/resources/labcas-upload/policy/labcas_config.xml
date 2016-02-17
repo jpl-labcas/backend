@@ -2,7 +2,7 @@
 
 <configuration>
     
-    <!-- input parameters -->    
+    <!-- dataset (aka product type) metadata -->    
     
     <!-- LabCAS core metadata: 
          "DatasetId": product type "id", "name"
@@ -73,6 +73,45 @@
     <property name="input.dataset.Discipline.title" value="Discipline" />
     <property name="input.dataset.Discipline.description" value="Medical discipline for this dataset (select one)" />
     <property name="input.dataset.Discipline.required" value="false" />
+
+    <!-- file (aka product) metadata -->
+    
+    <!-- ECAS metadata -->
+    <property name="input.file.ProductDescription.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.file.ProductDescription.title" value="Product Description" />
+    <property name="input.file.ProductDescription.description" value="Description of what this specific product file contains and any additional information allowing for facilitated understanding of contents" />
+    <property name="input.file.ProductDescription.required" value="false" />
+    
+    <property name="input.file.DataStage.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#dataStage" />
+    <property name="input.file.DataStage.title" value="Data Stage" />
+    <property name="input.file.DataStage.description" value="Wether the data is processed or unprocessed (select one)" />
+    <property name="input.file.DataStage.required" value="false" />
+    
+    <property name="input.file.InstrumentDetails.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.file.InstrumentDetails.title" value="Instrument Details" />
+    <property name="input.file.InstrumentDetails.description" value="If an instrument, software product, etc. was used to generate the data" />
+    <property name="input.file.InstrumentDetails.required" value="false" />
+    
+    <property name="input.file.ContentFunction.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.file.ContentFunction.title" value="Content Function" />
+    <property name="input.file.ContentFunction.description" value="The function of this file. (e.g. Analysis)" />
+    <property name="input.file.ContentFunction.required" value="false" />
+    
+    <property name="input.file.ProductMethodDetails.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.file.ProductMethodDetails.title" value="Product Method Details" />
+    <property name="input.file.ProductMethodDetails.description" value="If different from Dataset Method" />
+    <property name="input.file.ProductMethodDetails.required" value="false" />
+    
+    <property name="input.file.SpecimenType.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#specimenType" />
+    <property name="input.file.SpecimenType.title" value="Specimen Type" />
+    <property name="input.file.SpecimenType.description" value="The specimen type (select all that apply)" />
+    <property name="input.file.SpecimenType.required" value="false" />
+    
+    <property name="input.file.RecommendedSoftware.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.file.RecommendedSoftware.title" value="Recommended Software" />
+    <property name="input.file.RecommendedSoftware.description" value="List any software that may be used to analyze, view, etc. the data" />
+    <property name="input.file.RecommendedSoftware.required" value="false" />
+    
 
     <!-- output products -->
     <property name="output.product.type" value="urn:edrn:LabcasFile"/>
