@@ -27,11 +27,18 @@
     &labcas_config;
       
     <requiredMetFields>
+    
       <metfield name="DatasetId" />
-      <metfield name="Description" />
-      <metfield name="DatasetName" />
+      <!-- <metfield name="Description" /> -->
+      
+      <metfield name="ProtocolName" />
       <metfield name="ProtocolId" />
+      <metfield name="DatasetName" />
       <metfield name="LeadPI" />
+      <metfield name="DataCustodian" />
+      <metfield name="DataCustodianEmail" />
+      <metfield name="CollaborativeGroup" />
+      
     </requiredMetFields>
     
   </task>

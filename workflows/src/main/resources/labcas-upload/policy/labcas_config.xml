@@ -4,38 +4,74 @@
     
     <!-- input parameters -->    
     
-    <!-- CAS metadata: 
+    <!-- LabCAS core metadata: 
          "DatasetId": product type "id", "name"
          "Description": product type "description"
     -->      
     <property name="input.DatasetId.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.DatasetId.title" value="Dataset Identifier" />
     <property name="input.DatasetId.description" value="Unique identifier for this dataset (letters only, no spaces)" />
+    <property name="input.DatasetId.required" value="true" />
     
     <property name="input.Description.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.Description.title" value="Dataset Description" />
     <property name="input.Description.description" value="Longer description for this dataset (a few sentences)." />
-    <property name="input.Description.required" value="true" />
+    <property name="input.Description.required" value="false" />
     
     <!--  ECAS metadata -->
+    <property name="input.ProtocolName.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#protocolName" />
+    <property name="input.ProtocolName.title" value="Protocol Name" />
+    <property name="input.ProtocolName.description" value="String from Protocol Name controlled vocabulary" />
+    <property name="input.ProtocolName.required" value="true" />
+    
+    <property name="input.ProtocolId.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#protocolId" />
+    <property name="input.ProtocolId.title" value="Protocol ID" />
+    <property name="input.ProtocolId.description" value="Number from Protocol Name controlled vocabulary" />
+    <property name="input.ProtocolId.required" value="true" />
+    
+    <property name="input.LeadPI.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#principalInvestigator" />
+    <property name="input.LeadPI.title" value="Lead PI" />
+    <property name="input.LeadPI.description" value="Lead Principal Investigator" />
+    <property name="input.LeadPI.required" value="true" />
+    
     <property name="input.DatasetName.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.DatasetName.title" value="Dataset Name" />
     <property name="input.DatasetName.description" value="Short description for this dataset (one sentence)." />
     <property name="input.DatasetName.required" value="true" />
     
-    <property name="input.ProtocolId.type" value="http://www.w3.org/2001/XMLSchema/integer" />
-    <property name="input.ProtocolId.title" value="Protocol ID" />
-    <property name="input.ProtocolId.description" value="Number for the medical protocol identifier" />
-    <property name="input.ProtocolId.required" value="true" />
+    <property name="input.MethodDetails.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.MethodDetails.title" value="Method Details" />
+    <property name="input.MethodDetails.description" value="Description of investigation methods." />
+    <property name="input.MethodDetails.required" value="false" />
     
-    <property name="input.LeadPI.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#principalInvestigator" />
-    <property name="input.LeadPI.title" value="Lead PI" />
-    <property name="input.LeadPI.description" value="Name of lead Principal Investigator" />
-    <property name="input.LeadPI.required" value="true" />
+    <property name="input.DataCustodian.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.DataCustodian.title" value="Data Custodian" />
+    <property name="input.DataCustodian.description" value="Full name of dataset custodian" />
+    <property name="input.DataCustodian.required" value="true" />
     
-    <property name="input.Discipline.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.DataCustodianEmail.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.DataCustodianEmail.title" value="Data Custodian Email" />
+    <property name="input.DataCustodianEmail.description" value="Email address of dataset custodian" />
+    <property name="input.DataCustodianEmail.required" value="true" />
+    
+    <property name="input.CollaborativeGroup.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#collaborativeGroup" />
+    <property name="input.CollaborativeGroup.title" value="Collaborative Group" />
+    <property name="input.CollaborativeGroup.description" value="EDRN Organ Collaborative Group (select one)" />
+    <property name="input.CollaborativeGroup.required" value="true" />
+    
+    <property name="input.OrganSite.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#organSite" />
+    <property name="input.OrganSite.title" value="Organ Site" />
+    <property name="input.OrganSite.description" value="EDRN Organ Site (select all that apply)" />
+    <property name="input.OrganSite.required" value="false" />
+    
+    <property name="input.PubMedId.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#discipline" />
+    <property name="input.PubMedId.title" value="Pub Med ID" />
+    <property name="input.PubMedId.description" value="URL of PubMed publication" />
+    <property name="input.PubMedId.required" value="false" />
+    
+    <property name="input.Discipline.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#discipline" />
     <property name="input.Discipline.title" value="Discipline" />
-    <property name="input.Discipline.description" value="Medical discipline for this dataset" />
+    <property name="input.Discipline.description" value="Medical discipline for this dataset (select one)" />
     <property name="input.Discipline.required" value="false" />
 
     <!-- output products -->
