@@ -17,11 +17,10 @@ import gov.nasa.jpl.edrn.labcas.utils.FileManagerUtils;
  * to upload a new dataset, or a new version of a dataset.
  * 
  * o it creates or updates a product type for the dataset to be uploaded
- * o it uses the task configuration parameter of the form "init.field...." to define the produt type metadata
- * o if found, it adds all metadata fields contained in the file DatasetMetadata.xml to the above product type metadata
+ * o it uses the task configuration parameter of the form "init.field...." to define the product type metadata
+ * o if found, it adds all metadata fields contained in the file DatasetMetadata.xmlmet to the above product type metadata
  * o it parses the target archive directory and determines the dataset version
- * o it augments the file level metadata with the product type name and dataset version 
- *   (the dataset identifier already comes from the workflow invocation)
+ * o it augments the file level metadata with the dataset id and version
  * o cleans up the previously generated metadata files
  * 
  * @author luca
@@ -33,6 +32,13 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 	
 	@Override
 	public void run(Metadata metadata, WorkflowTaskConfiguration config) throws WorkflowTaskInstanceException {
+		
+		// debug: print all workflow instance metadata
+        for (String key : metadata.getAllKeys()) {
+        	for (String val : metadata.getAllMetadata(key)) {
+        		LOG.fine("==> Input metadata key="+key+" value="+val);
+        	}
+        }
 		        
 		try {
 			
@@ -43,10 +49,10 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 				throw new WorkflowTaskInstanceException("DatasetId cannot contain spaces");
 			}
 			
-			// populate core dataset metadata from workflow configuration
-			Metadata coreMetadata = FileManagerUtils.readConfigMetadata(metadata, config);
+			// populate product type metadata from workflow configuration
+			Metadata productTypeMetadata = FileManagerUtils.readConfigMetadata(metadata, config);
 			
-	        // add dataset version to core metadata (used for generating product unique identifiers)
+	        // add dataset version to product type metadata (used for generating product unique identifiers)
 	        int version = FileManagerUtils.findLatestDatasetVersion( datasetId );
 	        if (version==0) {  // dataset does not yet exist -> assign first version
 	        	version = 1; 
@@ -56,18 +62,16 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 	        		metadata.removeMetadata(Constants.METADATA_KEY_NEW_VERSION); // remove the flag
 	        	}
 	        }
-	        coreMetadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version);
+	        productTypeMetadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version); // product type metadata
+	        metadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version);            // product metadata
 	        LOG.fine("Using dataset version=: "+version);
 
-			// update dataset object in File Manager
-			String productTypeName = FileManagerUtils.uploadDataset(datasetId, coreMetadata);
+			// create or update the File Manager product type
+			String productTypeName = FileManagerUtils.uploadDataset(datasetId, productTypeMetadata);
+			metadata.replaceMetadata(Constants.PRODUCT_TYPE, productTypeName); // transfer to product level metadata
 			
 			// reload the catalog configuration so that the new product type is available for publishing
 			FileManagerUtils.reload();
-			
-	        // set the ProductType and Version into products metadata
-			metadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version);
-	        metadata.replaceMetadata(Constants.PRODUCT_TYPE, productTypeName);
 	                        
 	        // remove all .met files from staging directory - probably a leftover of a previous workflow submission
 	        String stagingDir = System.getenv(Constants.ENV_LABCAS_STAGING) + "/" + datasetId;

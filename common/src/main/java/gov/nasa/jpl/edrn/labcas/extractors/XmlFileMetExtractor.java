@@ -13,8 +13,10 @@ import gov.nasa.jpl.edrn.labcas.Constants;
 import gov.nasa.jpl.edrn.labcas.utils.FileManagerUtils;
 
 /**
- * Class that reads product-level metadata from an XML file 
- * with the same name in the same directory.
+ * Class responsible for writing product/file level metadata:
+ * o reads all metadata from XML file <filename>.xmlmet in the same directory
+ * o transfers product-level metadata fields: DatasetId, Version
+ * o disregards all other product-level metadata
  * 
  * @author luca
  *
@@ -33,7 +35,11 @@ public class XmlFileMetExtractor implements FilemgrMetExtractor {
 		
 		// merge original metadata
 		Metadata outmet = new Metadata();
-		outmet.addMetadata(inmet.getHashtable());
+		
+		// transfer selected product-level metadata
+		//outmet.addMetadata(inmet.getHashtable()); // transfer ALL product level metadata
+		outmet.addMetadata(Constants.METADATA_KEY_DATASET_ID, inmet.getMetadata(Constants.METADATA_KEY_DATASET_ID));
+		outmet.addMetadata(Constants.METADATA_KEY_VERSION, inmet.getMetadata(Constants.METADATA_KEY_VERSION));
 		
 		// construct path to optional metadata file
 		File xmlmetFilepath = new File(inmet.getMetadata(Constants.METADATA_KEY_FILE_LOCATION), 

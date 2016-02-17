@@ -12,8 +12,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor;
-import org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.util.XmlStructFactory;
@@ -45,7 +43,6 @@ public class FileManagerUtils {
 	// parameters that enter into product type definition
 	private static final String REPOSITORY = "file://[LABCAS_ARCHIVE]/labcas-upload";
 	private static final String VERSIONER = "gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner";
-	private final static String ELEMENT_LIST = "ProductReceivedTime,ProductName,ProductId,ProductType";
 	
 	private static final Logger LOG = Logger.getLogger(FileManagerUtils.class.getName());
 	
@@ -296,41 +293,35 @@ public class FileManagerUtils {
 	 */
 	public static Metadata readConfigMetadata(Metadata metadata, WorkflowTaskConfiguration config) {
 		
-		// debug: print all workflow instance metadata
-        for (String key : metadata.getAllKeys()) {
-        	for (String val : metadata.getAllMetadata(key)) {
-        		LOG.fine("Workflow Instance metadata key="+key+" value="+val);
-        	}
-        }
         
-        // extract core dataset metadata keys from task configuration parameters of the form "init.field...."
+        // extract product type metadata keys from task configuration parameters of the form "init.field...."
         // example: 
         // <property name="input.ProtocolId.type" value="integer" />
         // <property name="input.ProtocolId.title" value="Protocol ID" />
-        Set<String> coreMetadataKeys = new HashSet<String>();
+        Set<String> productTypeMetadataKeys = new HashSet<String>();
         for (Object objKey : config.getProperties().keySet()) {
             String key = (String) objKey;
             String value = config.getProperties().getProperty(key);
             LOG.fine("Workflow configuration property: key="+key+" value="+value);
             if (key.toLowerCase().startsWith("input")) {
             	String[] parts = key.split("\\."); 
-            	coreMetadataKeys.add(parts[1]);
+            	productTypeMetadataKeys.add(parts[1]);
             }
         }
         
         // populate core dataset metadata values from client supplied metadata
-        Metadata coreMetadata = new Metadata();
-        for (String key : coreMetadataKeys) {
+        Metadata productTypeMetadata = new Metadata();
+        for (String key : productTypeMetadataKeys) {
         	if (metadata.containsKey(key)) {
         		// Note: OODT split input metadata "My Data" as separate values "My", "Data"
         		// must merge the values back
         		List<String> values = metadata.getAllMetadata(key);
         		String value = StringUtils.join(values, " ");
-        		coreMetadata.addMetadata(key, value);
+        		productTypeMetadata.addMetadata(key, value);
         	}
         }
         
-        return coreMetadata;
+        return productTypeMetadata;
 	}
 	
 	/**
@@ -491,43 +482,7 @@ public class FileManagerUtils {
         // <metExtractors>
         Element metExtractorsElement = xmlDocument.createElement("metExtractors");
         typeElement.appendChild(metExtractorsElement);
-        
-        // <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
-        Element extractor1Element = xmlDocument.createElement("extractor");
-        extractor1Element.setAttribute("class", CoreMetExtractor.class.getCanonicalName());
-        metExtractorsElement.appendChild(extractor1Element);
-
-        // <configuration>
-        Element configuration1Element = xmlDocument.createElement("configuration");
-        extractor1Element.appendChild(configuration1Element);
-
-        // <property name="nsAware" value="true"/>
-        Element property1Element = xmlDocument.createElement("property");
-        property1Element.setAttribute("name", "nsAware");
-        property1Element.setAttribute("value", "true");
-        configuration1Element.appendChild(property1Element);
-        
-        // <property name="elements" value="ProductReceivedTime,ProductName,ProductId,ProductType"/>
-        Element property2Element = xmlDocument.createElement("property");
-        property2Element.setAttribute("name", "elements");
-        property2Element.setAttribute("value", ELEMENT_LIST);
-        configuration1Element.appendChild(property2Element);
-
-        // <property name="elementNs" value="CAS"/>
-        Element property3Element = xmlDocument.createElement("property");
-        property3Element.setAttribute("name", "elementNs");
-        property3Element.setAttribute("value", "CAS");
-        configuration1Element.appendChild(property3Element);
-
-        // <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor">
-        Element extractor2Element = xmlDocument.createElement("extractor");
-        extractor2Element.setAttribute("class", MimeTypeExtractor.class.getCanonicalName());
-        metExtractorsElement.appendChild(extractor2Element);
-        
-        // <configuration>
-        Element configuration2Element = xmlDocument.createElement("configuration");
-        extractor2Element.appendChild(configuration2Element);
-        
+                
         // <extractor class="gov.nasa.jpl.edrn.labcas.extractors.XmlFileMetExtractor">
         Element extractor3Element = xmlDocument.createElement("extractor");
         extractor3Element.setAttribute("class", XmlFileMetExtractor.class.getCanonicalName());
@@ -536,7 +491,6 @@ public class FileManagerUtils {
         // <configuration>
         Element configuration3Element = xmlDocument.createElement("configuration");
         extractor3Element.appendChild(configuration3Element);
-
 
         // <metadata>
         Element metadataElement = xmlDocument.createElement("metadata");
