@@ -184,16 +184,16 @@ public class FileManagerUtils {
         
         // extract product type metadata keys from task configuration parameters of the form "init.field...."
         // example: 
-        // <property name="input.ProtocolId.type" value="integer" />
-        // <property name="input.ProtocolId.title" value="Protocol ID" />
+        // <property name="input.dataset.ProtocolId.type" value="integer" />
+        // <property name="input.dataset.ProtocolId.title" value="Protocol ID" />
         Set<String> productTypeMetadataKeys = new HashSet<String>();
         for (Object objKey : config.getProperties().keySet()) {
             String key = (String) objKey;
             String value = config.getProperties().getProperty(key);
             LOG.fine("Workflow configuration property: key="+key+" value="+value);
-            if (key.toLowerCase().startsWith("input")) {
+            if (key.toLowerCase().startsWith("input.dataset")) {
             	String[] parts = key.split("\\."); 
-            	productTypeMetadataKeys.add(parts[1]);
+            	productTypeMetadataKeys.add(parts[2]);
             }
         }
         
