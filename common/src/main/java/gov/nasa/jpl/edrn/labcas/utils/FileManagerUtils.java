@@ -4,17 +4,13 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
-import org.apache.oodt.cas.filemgr.util.XmlStructFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
@@ -209,7 +205,7 @@ public class FileManagerUtils {
         		// must merge the values back
         		List<String> values = metadata.getAllMetadata(key);
         		String value = StringUtils.join(values, " ");
-        		productTypeMetadata.addMetadata(key, value);
+        		productTypeMetadata.addMetadata(key, GeneralUtils.removeNonAsciiCharacters(value));
         	}
         }
         
@@ -233,10 +229,12 @@ public class FileManagerUtils {
         	try {
         		 SerializableMetadata sm = new SerializableMetadata("UTF-8", false);
         		 sm.loadMetadataFromXmlStream(metadataFilepath.toURI().toURL().openStream());
-        		 metadata = sm.getMetadata();
-     			 for (String key : metadata.getAllKeys()) {
-    				for (String val : metadata.getAllMetadata(key)) {
+        		 Metadata _metadata = sm.getMetadata();
+     			 for (String key : _metadata.getAllKeys()) {
+    				for (String val : _metadata.getAllMetadata(key)) {
     					LOG.fine("\t==> Read metadata key=["+key+"] value=["+val+"]");
+    					// sanitize the metadata fields
+    					metadata.addMetadata(key, GeneralUtils.removeNonAsciiCharacters(val) );
     				}
      			 }
         		 
