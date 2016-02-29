@@ -4,7 +4,7 @@
   <!-- PGE commands -->
   <exe dir="[JobDir]" shell="/bin/bash">
     <cmd>cd [LABCAS_HOME]/workflows/nist/pges</cmd>
-    <cmd>python ./nist-converter.py [LABCAS_STAGING]/[DatasetId] --LeadPI [LeadPI] --Instrument [Instrument] --Lab [Lab] --Date [Date]</cmd>
+    <cmd>python nist-converter.py [LABCAS_STAGING]/[DatasetId] --LeadPI [LeadPI] --Instrument [Instrument] --Lab [Lab] --Date [Date]</cmd>
   </exe>
   
   <customMetadata>

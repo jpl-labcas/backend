@@ -2,15 +2,14 @@
 
   <tasks>
   
-    <!-- provides wortkflow configuration to clients -->
-    <task id="urn:edrn:NistConfigTask" />
+    <!-- initializes product type, version -->
+    <task id="urn:edrn:NistInitTask" />
     
     <!-- converts files in the staging area from .txt to .nist format -->
     <task id="urn:edrn:NistConvertTask" />
     
-    
     <!-- builds the application URL and adds the link to the workflow metadata -->
-    <task id="urn:edrn:NistExecuteTask" /> 
+    <task id="urn:edrn:NistExecTask" /> 
     
     <!-- crawls the staging area and publishes the files -->
     <task id="urn:edrn:NistCrawlTask" />

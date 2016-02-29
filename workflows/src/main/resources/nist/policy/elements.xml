@@ -17,23 +17,23 @@
 -->
 <cas:elements xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
-  <element id="pi" name="PI">
+  <element id="LeadPI" name="LeadPI">
     <description>Principal Investigator that collected data</description>
     <dcElement />
   </element>
 
-  <element id="instrument" name="instrument">
+  <element id="Instrument" name="Instrument">
     <description>Instrument used to collect data</description>
     <dcElement />
   </element>
 
-  <element id="lab" name="lab">
+  <element id="Lab" name="Lab">
     <description>Laboratory where data was collected</description>
     <dcElement />
   </element>
   
-  <element id="date" name="date">
-    <description>Date when data was collected (yyyymmdd)</description>
+  <element id="Date" name="Date">
+    <description>Date when data was collected (yyyy/mm/dd)</description>
     <dcElement />
   </element>
 

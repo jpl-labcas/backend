@@ -17,7 +17,7 @@
 <cas:tasks xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
   <!-- standard LabcasUploadInitTaskInstance task configured with NIST specific metadata  -->
-  <task id="urn:edrn:NistConfigTask" name="NistConfigTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasUploadInitTaskInstance">
+  <task id="urn:edrn:NistInitTask" name="NistInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasUploadInitTaskInstance">
   
     <conditions />
     
@@ -82,8 +82,16 @@
     </configuration>
     
   </task>
+  
+  <!-- Task that builds the application URL, adds it to the metadata -->
+  <task id="urn:edrn:NistExecTask" name="NistExecTask" class="gov.nasa.jpl.edrn.labcas.tasks.nist.NistExecuteTaskInstance">
+    <conditions />
+    <configuration>
+      <property name="baseURL" value="http://shiny.jpl.nasa.gov/" />
+    </configuration>
+  </task>
 
-  <!-- Task that crawls $LABCAS_STAGING/<dataset_id> and publishes files to $LABCAS_ARCHIVE -->
+  <!-- Task that crawls $LABCAS_STAGING/$DatasetId and publishes files to $LABCAS_ARCHIVE/$DatasetId -->
   <task id="urn:edrn:NistCrawlTask" name="NistCrawlTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
   
     <conditions />
@@ -102,15 +110,6 @@
         envReplace="true" />
     </configuration>
     
-  </task>
-
-
-  <!-- Task that builds the application URL, adds it to the metadata -->
-  <task id="urn:edrn:NistExecuteTask" name="NistExecuteTask" class="gov.nasa.jpl.edrn.labcas.tasks.nist.NistExecuteTaskInstance">
-    <conditions />
-    <configuration>
-      <property name="baseURL" value="http://shiny.jpl.nasa.gov/" />
-    </configuration>
   </task>
 
 </cas:tasks>
