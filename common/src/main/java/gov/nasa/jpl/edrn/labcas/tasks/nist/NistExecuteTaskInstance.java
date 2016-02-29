@@ -1,5 +1,6 @@
 package gov.nasa.jpl.edrn.labcas.tasks.nist;
 
+import java.io.File;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,7 +32,10 @@ public class NistExecuteTaskInstance implements WorkflowTaskInstance {
 		Properties props = config.getProperties();
 		String baseURL = props.getProperty("baseURL");
 		LOG.log(Level.INFO, "Config baseUrl="+baseURL);
-		String appURL = baseURL + "?datadir="+FileManagerUtils.getDatasetArchiveDir(metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID));
+		File dataArchiveDir = FileManagerUtils.getDatasetArchiveDir(metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID));
+		// adda dataset version
+		File dataDir = new File(dataArchiveDir, metadata.getMetadata(Constants.METADATA_KEY_VERSION));
+		String appURL = baseURL + "?datadir="+dataDir;
 		LOG.log(Level.INFO, "Constructed ApplicationURL="+appURL);
 		metadata.addMetadata("ApplicationURL", appURL);
 		
