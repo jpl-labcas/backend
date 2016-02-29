@@ -1,4 +1,4 @@
-<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="NistWorkflow" id="urn:edrn:NistWorkflow">
+<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="Upload NIST data files" id="urn:edrn:NistWorkflow">
 
   <tasks>
   
