@@ -16,10 +16,7 @@ public interface Constants {
 	public final static String ENV_FILEMGR_URL = "FILEMGR_URL";
 	public final static String ENV_WORKFLOW_URL = "WORKFLOW_URL";
 	public final static String ENV_SOLR_URL = "SOLR_URL";
-	
-	// workflows
-	public final static String WORKFLOW_LABCAS_UPOLOAD = "labcas-upload";
-	
+		
 	// metadata keys
 	public final static String METADATA_KEY_DATASET_ID = "DatasetId";
 	public final static String METADATA_KEY_NEW_VERSION = "NewVersion";
@@ -49,6 +46,11 @@ public interface Constants {
 	
 	// FIXME: will be replaced with same values in CoreMetKeys.java
 	public final static String PRODUCT_TYPE = "ProductType";
+	
+	public final static String EDRN_PREFIX = "urn:edrn:";
+	public final static String LABCAS_PRODUCT_TYPE = "LabcasProduct";
+	public final static String ECAS_PRODUCT_TYPE = "EcasProduct";
+	
 
 	
 }

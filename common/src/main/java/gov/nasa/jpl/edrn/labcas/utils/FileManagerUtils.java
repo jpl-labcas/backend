@@ -37,7 +37,7 @@ public class FileManagerUtils {
 	}
 	
 	// parameters that enter into product type definition
-	private static final String REPOSITORY = "file://[LABCAS_ARCHIVE]/labcas-upload";
+	private static final String REPOSITORY = "file://[LABCAS_ARCHIVE]";
 	private static final String VERSIONER = "gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner";
 	
 	private static final Logger LOG = Logger.getLogger(FileManagerUtils.class.getName());
@@ -258,15 +258,10 @@ public class FileManagerUtils {
 	 */
 	private static File getDatasetArchiveDir(final String datasetName) {
 		
-		String archiveDir = System.getenv(Constants.ENV_LABCAS_ARCHIVE) + "/" + Constants.WORKFLOW_LABCAS_UPOLOAD;
+		//String archiveDir = System.getenv(Constants.ENV_LABCAS_ARCHIVE) + "/" + Constants.WORKFLOW_LABCAS_UPOLOAD;
+		String archiveDir = System.getenv(Constants.ENV_LABCAS_ARCHIVE);
 		File datasetDir = new File(archiveDir, datasetName); 
 		return datasetDir;
-		
-	}
-	
-	private static File getDatasetStagingDir(final String datasetName) {
-		
-		return new File(System.getenv(Constants.ENV_LABCAS_STAGING), datasetName);
 		
 	}
 	
@@ -319,10 +314,10 @@ public class FileManagerUtils {
         rootElement.setAttribute("xmlns:"+Constants.PREFIX, Constants.NS);
         xmlDocument.appendChild(rootElement);
         
-        // <type id="urn:edrn:Analysis_of_pancreatic_cancer_biomarkers_in_PLCO_set" parent="urn:edrn:LabcasFile" />
+        // <type id="urn:edrn:Analysis_of_pancreatic_cancer_biomarkers_in_PLCO_set" parent="urn:edrn:LabcasProduct" />
         Element typeElement = xmlDocument.createElement("type");
-        typeElement.setAttribute("id", "urn:edrn:"+productType);
-        typeElement.setAttribute("parent", "urn:edrn:LabcasFile");
+        typeElement.setAttribute("id", Constants.EDRN_PREFIX+productType);
+        typeElement.setAttribute("parent", Constants.EDRN_PREFIX+Constants.ECAS_PRODUCT_TYPE);
         rootElement.appendChild(typeElement);
 
         // write out the file
@@ -354,7 +349,7 @@ public class FileManagerUtils {
         typeElement.setAttribute("name", productTypeName);
         rootElement.appendChild(typeElement);
         
-        // <repository path="file://[LABCAS_ARCHIVE]/labcas-upload"/>
+        // <repository path="file://[LABCAS_ARCHIVE]"/>
         Element repositoryElement = xmlDocument.createElement("repository");
         repositoryElement.setAttribute("path", REPOSITORY);
         typeElement.appendChild(repositoryElement);

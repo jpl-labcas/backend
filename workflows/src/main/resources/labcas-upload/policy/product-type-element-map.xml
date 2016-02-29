@@ -6,32 +6,27 @@
   OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. -->
 <cas:producttypemap xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
-  <type id="urn:edrn:LabcasFile" parent="urn:oodt:GenericFile">
+  <type id="urn:edrn:LabcasProduct" parent="urn:oodt:GenericFile">
   
-    <element id="Dataset" />
-    <element id="DatasetName" />
+    <element id="DatasetId" />
     <element id="Description" />
     <element id="Version" />
-    <element id="OwnerGroup" />
-    <element id="PublishState" />
-    <element id="ProtocolId" />
+    
+  </type>
+  
+  <type id="urn:edrn:EcasProduct" parent="urn:edrn:LabcasProduct">
+  
     <element id="ProtocolName" />
-    <element id="DatasetURL" />
-    <element id="OrganSite" />
-    <element id="SiteName" />
-    <element id="ResultsAndConclusionSummary" />
-    <element id="DataDisclaimer" />
-    <element id="Discipline" />
-    <element id="CollaborativeGroup" />
-    <element id="DateDatasetFrozen" />
+    <element id="ProtocolId" />
+    <element id="LeadPI" />
+    <element id="DatasetName" />
+    <element id="MethodDetails" />
     <element id="DataCustodian" />
     <element id="DataCustodianEmail" />
-    <element id="QAState" />
-    <element id="Date" />
-    <element id="AccessGrantedTo" />
-    <element id="MethodDetails" />
-    <element id="LeadPI" />
-    <element id="Status" />
+    <element id="CollaborativeGroup" />
+    <element id="OrganSite" />
+    <element id="PubMedId" />
+    <element id="Discipline" />
     
   </type>
 

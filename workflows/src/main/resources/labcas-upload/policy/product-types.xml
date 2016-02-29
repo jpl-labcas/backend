@@ -17,10 +17,36 @@
 -->
 <cas:producttypes xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
-  <type id="urn:edrn:LabcasFile" name="LabcasFile">
-    <repository path="file://[LABCAS_ARCHIVE]/labcas-upload" />
+  <type id="urn:edrn:LabcasProduct" name="LabcasProduct">
+    <repository path="file://[LABCAS_ARCHIVE]" />
     <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner" />
-    <description>Files uploaded through Labcas front-end.</description>
+    <description>Generic files managed by LabCAS.</description>
+    <metExtractors>
+      <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
+        <configuration>
+          <property name="nsAware" value="true" />
+          <property name="elementNs" value="CAS" />
+          <property name="elements" value="ProductReceivedTime,ProductName,ProductId,ProductType,WorkflowName" />
+        </configuration>
+      </extractor>
+      <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor" />
+    </metExtractors>
+    <metadata>
+      <keyval>
+        <key>DatasetId</key>
+        <val>[DatasetId]</val>
+      </keyval>
+      <keyval>
+        <key>Version</key>
+        <val>[Version]</val>
+      </keyval>
+    </metadata>
+  </type>
+  
+  <type id="urn:edrn:EcasProduct" name="EcasProduct">
+    <repository path="file://[LABCAS_ARCHIVE]" />
+    <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner" />
+    <description>LabCAS files with ECAS metadata.</description>
     <metExtractors>
       <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
         <configuration>

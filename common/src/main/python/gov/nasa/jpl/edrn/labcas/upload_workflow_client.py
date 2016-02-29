@@ -1,4 +1,4 @@
-# Example Pythin script to execute the labcas-upload and labcas-update workflows
+# Example Python script to execute the labcas-upload and labcas-update workflows
 
 from gov.nasa.jpl.edrn.labcas.labcas_client import LabcasClient
 

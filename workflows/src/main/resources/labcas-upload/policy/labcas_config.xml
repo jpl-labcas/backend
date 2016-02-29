@@ -1,4 +1,4 @@
-<!-- XML snippet containing configuration for core LabCAS metadata fields -->
+<!-- XML snippet containing configuration for default ECAS metadata fields -->
 
 <configuration>
     
@@ -12,7 +12,7 @@
     <property name="input.dataset.DatasetId.title" value="Dataset Identifier" />
     <property name="input.dataset.DatasetId.description" value="Unique identifier for this dataset (letters only, no spaces)" />
     <property name="input.dataset.DatasetId.required" value="true" />
-    
+        
     <property name="input.dataset.Description.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.dataset.Description.title" value="Dataset Description" />
     <property name="input.dataset.Description.description" value="Longer description for this dataset (a few sentences)." />
@@ -114,6 +114,6 @@
     
 
     <!-- output products -->
-    <property name="output.product.type" value="urn:edrn:LabcasFile"/>
+    <property name="output.product.type" value="urn:edrn:LabcasProduct"/>
       
 </configuration>
