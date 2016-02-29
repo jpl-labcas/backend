@@ -256,7 +256,7 @@ public class FileManagerUtils {
 	 * @param datasetName
 	 * @return
 	 */
-	private static File getDatasetArchiveDir(final String datasetName) {
+	public static File getDatasetArchiveDir(final String datasetName) {
 		
 		//String archiveDir = System.getenv(Constants.ENV_LABCAS_ARCHIVE) + "/" + Constants.WORKFLOW_LABCAS_UPOLOAD;
 		String archiveDir = System.getenv(Constants.ENV_LABCAS_ARCHIVE);

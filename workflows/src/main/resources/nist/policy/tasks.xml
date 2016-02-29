@@ -105,12 +105,12 @@
   </task>
 
 
-  
-<!--   <task id="urn:edrn:NistExecuteTask" name="NistExecuteTask" class="gov.nasa.jpl.edrn.labcas.tasks.nist.NistExecuteTaskInstance">
+  <!-- Task that builds the application URL, adds it to the metadata -->
+  <task id="urn:edrn:NistExecuteTask" name="NistExecuteTask" class="gov.nasa.jpl.edrn.labcas.tasks.nist.NistExecuteTaskInstance">
     <conditions />
     <configuration>
       <property name="baseURL" value="http://shiny.jpl.nasa.gov/" />
     </configuration>
-  </task> -->
+  </task>
 
 </cas:tasks>

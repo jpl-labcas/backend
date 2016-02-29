@@ -41,17 +41,20 @@ public class XmlFileMetExtractor implements FilemgrMetExtractor {
 		outmet.addMetadata(Constants.METADATA_KEY_DATASET_ID, inmet.getMetadata(Constants.METADATA_KEY_DATASET_ID));
 		outmet.addMetadata(Constants.METADATA_KEY_VERSION, inmet.getMetadata(Constants.METADATA_KEY_VERSION));
 		
-		// construct path to optional metadata file
-		File xmlmetFilepath = new File(inmet.getMetadata(Constants.METADATA_KEY_FILE_LOCATION), 
-									   inmet.getMetadata(Constants.METADATA_KEY_FILE_NAME)+Constants.EDRN_METADATA_EXTENSION);
+		// construct paths to optional metadata files
+		// read both <filename>.met and <filename>.xmlmet
+		File[] xmlmetFilepaths = new File[]{ new File(inmet.getMetadata(Constants.METADATA_KEY_FILE_LOCATION), 
+									                  inmet.getMetadata(Constants.METADATA_KEY_FILE_NAME)+Constants.OODT_METADATA_EXTENSION),
+		                                     new File(inmet.getMetadata(Constants.METADATA_KEY_FILE_LOCATION), 
+										              inmet.getMetadata(Constants.METADATA_KEY_FILE_NAME)+Constants.EDRN_METADATA_EXTENSION)};
 
 		// add metadata from file
-		if (xmlmetFilepath.exists()) {
-			LOG.info("Adding additional product metadata from file: "+xmlmetFilepath.getAbsolutePath());
-			
-			Metadata fmet = FileManagerUtils.readMetadataFromFile(xmlmetFilepath);
-			outmet.addMetadata(fmet.getHashtable());
-			
+		for (File xmlmetFilepath :xmlmetFilepaths) {
+			if (xmlmetFilepath.exists()) {
+				LOG.info("Adding additional product metadata from file: "+xmlmetFilepath.getAbsolutePath());
+				Metadata fmet = FileManagerUtils.readMetadataFromFile(xmlmetFilepath);
+				outmet.addMetadata(fmet.getHashtable());
+			}
 		}
 		
 		return outmet;

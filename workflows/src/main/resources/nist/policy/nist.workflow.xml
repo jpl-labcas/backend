@@ -5,16 +5,16 @@
     <!-- provides wortkflow configuration to clients -->
     <task id="urn:edrn:NistConfigTask" />
     
-    <!-- converts files from .txt to .nist format -->
+    <!-- converts files in the staging area from .txt to .nist format -->
     <task id="urn:edrn:NistConvertTask" />
+    
+    
+    <!-- builds the application URL and adds the link to the workflow metadata -->
+    <task id="urn:edrn:NistExecuteTask" /> 
     
     <!-- crawls the staging area and publishes the files -->
     <task id="urn:edrn:NistCrawlTask" />
     
-  
-<!--   	<task id="urn:edrn:NistInitTask" />
-    <task id="urn:edrn:NistConvertTask" />
-    <task id="urn:edrn:NistExecuteTask" /> -->
   </tasks>
 
 </cas:workflow>
