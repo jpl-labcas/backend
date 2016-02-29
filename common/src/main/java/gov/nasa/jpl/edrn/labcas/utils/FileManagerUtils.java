@@ -258,7 +258,6 @@ public class FileManagerUtils {
 	 */
 	public static File getDatasetArchiveDir(final String datasetName) {
 		
-		//String archiveDir = System.getenv(Constants.ENV_LABCAS_ARCHIVE) + "/" + Constants.WORKFLOW_LABCAS_UPOLOAD;
 		String archiveDir = System.getenv(Constants.ENV_LABCAS_ARCHIVE);
 		File datasetDir = new File(archiveDir, datasetName); 
 		return datasetDir;
@@ -317,7 +316,7 @@ public class FileManagerUtils {
         // <type id="urn:edrn:Analysis_of_pancreatic_cancer_biomarkers_in_PLCO_set" parent="urn:edrn:LabcasProduct" />
         Element typeElement = xmlDocument.createElement("type");
         typeElement.setAttribute("id", Constants.EDRN_PREFIX+productType);
-        typeElement.setAttribute("parent", Constants.EDRN_PREFIX+Constants.ECAS_PRODUCT_TYPE);
+        typeElement.setAttribute("parent", Constants.EDRN_PREFIX+Constants.LABCAS_PRODUCT_TYPE);
         rootElement.appendChild(typeElement);
 
         // write out the file

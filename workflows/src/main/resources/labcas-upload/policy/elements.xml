@@ -6,18 +6,13 @@
   OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. -->
 <cas:elements xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
-  <element id="Dataset" name="dataset">
-    <description>Dataset identifier (unique, for machines, same as id)</description>
+  <element id="DatasetId" name="Dataset Identifier">
+    <description>Unique identifier for this dataset (letters only, no spaces)</description>
     <dcElement />
   </element>
   
-  <element id="DatasetName" name="dataset_name">
-    <description>Dataset name (short, for humans, same as title)</description>
-    <dcElement />
-  </element>
-  
-  <element id="Description" name="description">
-    <description>Dataset description (longer, for humans, same as abstract)</description>
+  <element id="Description" name="Dataset Description">
+    <description>Longer description for this dataset (a few sentences).</description>
     <dcElement />
   </element>
 
@@ -26,103 +21,58 @@
     <dcElement />
   </element>
   
-  <element id="OwnerGroup" name="owner_group">
-    <description>Owner Group</description>
+  <element id="ProtocolName" name="Protocol Name">
+    <description>String from Protocol Name controlled vocabulary</description>
     <dcElement />
   </element>
 
-  <element id="PublishState" name="publish_state">
-    <description>Publish State</description>
+  <element id="ProtocolId" name="Protocol ID">
+    <description>Number from Protocol Name controlled vocabulary</description>
     <dcElement />
   </element>
 
-  <element id="ProtocolId" name="protocol_id">
-    <description>Protocol Id</description>
+  <element id="LeadPI" name="Lead PI">
+    <description>Lead Principal Investigator</description>
     <dcElement />
   </element>
 
-  <element id="ProtocolName" name="protocol_name">
-    <description>Protocol Name</description>
+  <element id="DatasetName" name="Dataset Name">
+    <description>Short description for this dataset (one sentence).</description>
     <dcElement />
   </element>
 
-  <element id="DatasetURL" name="dataset_url">
-    <description>Dataset URL</description>
+  <element id="MethodDetails" name="Method Details">
+    <description>Description of investigation methods.</description>
     <dcElement />
   </element>
 
-  <element id="OrganSite" name="organ_site">
-    <description>Organ Site</description>
+  <element id="DataCustodian" name="Data Custodian">
+    <description>Full name of dataset custodian</description>
     <dcElement />
   </element>
 
-  <element id="SiteName" name="site_name">
-    <description>Site Name</description>
+  <element id="DataCustodianEmail" name="Data Custodian Email">
+    <description>Email address of dataset custodian</description>
     <dcElement />
   </element>
 
-  <element id="ResultsAndConclusionSummary" name="results_and_conclusion_summary">
-    <description>Results And Conclusion Summary</description>
+  <element id="CollaborativeGroup" name="Collaborative Group">
+    <description>EDRN Organ Collaborative Group (select one)</description>
     <dcElement />
   </element>
 
-  <element id="DataDisclaimer" name="data_disclaimer">
-    <description>Data Disclaimer</description>
+  <element id="OrganSite" name="Organ Site">
+    <description>EDRN Organ Site (select all that apply)</description>
     <dcElement />
   </element>
 
-  <element id="Discipline" name="discipline">
-    <description>Discipline</description>
+  <element id="PubMedId" name="Pub Med ID">
+    <description>URL of PubMed publication</description>
     <dcElement />
   </element>
 
-  <element id="CollaborativeGroup" name="collaborative_group">
-    <description>Collaborative Group</description>
-    <dcElement />
-  </element>
-
-  <element id="DateDatasetFrozen" name="date_dataset_frozen">
-    <description>Date Dataset Frozen</description>
-    <dcElement />
-  </element>
-
-  <element id="DataCustodian" name="data_custodian">
-    <description>Data Custodian</description>
-    <dcElement />
-  </element>
-
-  <element id="DataCustodianEmail" name="data_custodian_email">
-    <description>Data Custodian Email</description>
-    <dcElement />
-  </element>
-
-  <element id="QAState" name="qa_state">
-    <description>QA State</description>
-    <dcElement />
-  </element>
-
-  <element id="MethodDetails" name="method_details">
-    <description>Method Details</description>
-    <dcElement />
-  </element>
-
-  <element id="LeadPI" name="lead_pi">
-    <description>Lead PI</description>
-    <dcElement />
-  </element>
-
-  <element id="Date" name="date">
-    <description>Last Update Date</description>
-    <dcElement />
-  </element>
-
-  <element id="AccessGrantedTo" name="access_granted_to">
-    <description>Access Granted To</description>
-    <dcElement />
-  </element>
-  
-  <element id="Status" name="status">
-    <description>Processing Status</description>
+  <element id="Discipline" name="Discipline">
+    <description>Medical discipline for this dataset (select one)</description>
     <dcElement />
   </element>
 
