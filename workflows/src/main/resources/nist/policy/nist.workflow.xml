@@ -5,8 +5,11 @@
     <!-- provides wortkflow configuration to clients -->
     <task id="urn:edrn:NistConfigTask" />
     
+    <!-- converts files from .txt to .nist format -->
+    <task id="urn:edrn:NistConvertTask" />
+    
     <!-- crawls the staging area and publishes the files -->
-    <task id="urn:edrn:NistCrawlerTask" />
+    <task id="urn:edrn:NistCrawlTask" />
     
   
 <!--   	<task id="urn:edrn:NistInitTask" />

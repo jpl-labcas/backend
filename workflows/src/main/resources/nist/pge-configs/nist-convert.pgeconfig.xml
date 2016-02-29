@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pgeConfig>
+
+  <!-- PGE commands -->
+  <exe dir="[JobDir]" shell="/bin/bash">
+    <cmd>cd [LABCAS_HOME]/workflows/nist/pges</cmd>
+    <cmd>python ./nist-converter.py [LABCAS_STAGING]/[DatasetId] --LeadPI [LeadPI] --Instrument [Instrument] --Lab [Lab] --Date [Date]</cmd>
+  </exe>
+  
+  <customMetadata>
+    <metadata key="ProductionDateTime" val="[DATE.UTC]" />
+    <metadata key="JobDir" val="[PGE_ROOT]/nist/jobs/job-[ProductionDateTime]" />
+  </customMetadata>
+  
+</pgeConfig>

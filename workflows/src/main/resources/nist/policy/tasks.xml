@@ -61,9 +61,30 @@
     </requiredMetFields>
     
   </task>
+  
+  <!-- Task that converts NIST input files (.txt) into standard format (.nist) -->
+  <task id="urn:edrn:NistConvertTask" name="NistConvertTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+  
+    <conditions />
+  
+    <configuration>
+      <property name="PGETask_Name" value="NistConvertTask" />
+      <property name="PGETask_ConfigFilePath"
+        value="[LABCAS_HOME]/workflows/nist/pge-configs/nist-convert.pgeconfig.xml"
+        envReplace="true" />
+      <property name="PGETask_DumpMetadata" value="true" />
+      <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
+      <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true" />
+      <property name="PCS_MetFileExtension" value="met" />
+      <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
+      <property name="PCS_ActionRepoFile" value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml"
+        envReplace="true" />
+    </configuration>
+    
+  </task>
 
-  <!-- Task taht crawls $LABCAS_STAGING/<dataset_id> and publishes files to $LABCAS_ARCHIVE -->
-  <task id="urn:edrn:NistCrawlerTask" name="NistCrawlerTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+  <!-- Task that crawls $LABCAS_STAGING/<dataset_id> and publishes files to $LABCAS_ARCHIVE -->
+  <task id="urn:edrn:NistCrawlTask" name="NistCrawlTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
   
     <conditions />
   
@@ -83,25 +104,7 @@
     
   </task>
 
-<!--   <task id="urn:edrn:NistConvertTask" name="NistConvertTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
-  
-    <conditions />
-  
-    <configuration>
-      <property name="PGETask_Name" value="NistConvertTask" />
-      <property name="PGETask_ConfigFilePath"
-        value="[LABCAS_HOME]/workflows/nist/pge-configs/nist-convert-task-config.pgeconfig.xml"
-        envReplace="true" />
-      <property name="PGETask_DumpMetadata" value="true" />
-      <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
-      <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true" />
-      <property name="PCS_MetFileExtension" value="met" />
-      <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
-      <property name="PCS_ActionRepoFile" value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml"
-        envReplace="true" />
-    </configuration>
-    
-  </task> -->
+
   
 <!--   <task id="urn:edrn:NistExecuteTask" name="NistExecuteTask" class="gov.nasa.jpl.edrn.labcas.tasks.nist.NistExecuteTaskInstance">
     <conditions />
