@@ -17,11 +17,11 @@
 -->
 <cas:producttypemap xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
- <type id="urn:edrn:LabcasNistFile" parent="urn:oodt:GenericFile">
-   <element id="PI" />
-   <element id="instrument" />
-   <element id="lab" />
-   <element id="date" />
+ <type id="urn:edrn:LabcasNistFile" parent="urn:oodt:LabcasProduct">
+   <element id="LeadPI" />
+   <element id="Instrument" />
+   <element id="Lab" />
+   <element id="Date" />
  </type>
 
 </cas:producttypemap>

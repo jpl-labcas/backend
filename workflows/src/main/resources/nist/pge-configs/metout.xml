@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadataList>
     
-    <metadata key="JobId" val="[JobId]"/>
-    <metadata key="ProductType" val="LabcasNistFile"/>
-    <metadata key="ProductionDateTime" val="[ProductionDateTime]"/>
-    <metadata key="ProductName" val="[Filename]"/>
-    <metadata key="WorkflowName" val="[WorkflowName]"/>
-    
-    <metadata key="pi" val=""/>
-    <metadata key="instrument" val="[instrument]"/>
-    <metadata key="lab" val=""/>
-    <metadata key="date" val=""/>
+    <metadata key="DatasetId" val="[DatasetId]"/>
+    <metadata key="Version" val="[Version]"/>
+        
+    <metadata key="LeadPI" val="[LeadPI]"/>
+    <metadata key="Instrument" val="[Instrument]"/>
+    <metadata key="Lab" val="[Lab]"/>
+    <metadata key="Date" val="[Date]"/>
     
 </metadataList>

@@ -16,54 +16,74 @@
 -->
 <cas:tasks xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
-  <task id="urn:edrn:NistInitTask" name="NistInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasInitTaskInstance">
+  <!-- standard LabcasUploadInitTaskInstance task configured with NIST specific metadata  -->
+  <task id="urn:edrn:NistConfigTask" name="NistConfigTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasUploadInitTaskInstance">
   
     <conditions />
-  
+    
     <configuration>
     
-      <!-- input parameters -->
-            
-      <property name="input.pi.type" value="string" />
-      <property name="input.pi.title" value="PI" />
-      <property name="input.pi.description" value="Principal Investigator that collected data" />
+      <property name="input.dataset.DatasetId.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.DatasetId.title" value="Dataset Identifier" />
+      <property name="input.dataset.DatasetId.description" value="Unique identifier for this dataset (letters only, no spaces)" />
+      <property name="input.dataset.DatasetId.required" value="true" />
       
-      <property name="input.instrument.type" value="string" />
-      <property name="input.instrument.title" value="Instrument" />
-      <property name="input.instrument.description" value="Instrument used to collect data" />
-
-      <property name="input.lab.type" value="string" />
-      <property name="input.lab.title" value="Lab" />
-      <property name="input.lab.description" value="Laboratory where data was collected" />
+      <property name="input.dataset.LeadPI.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#principalInvestigator" />
+      <property name="input.dataset.LeadPI.title" value="Lead PI" />
+      <property name="input.dataset.LeadPI.description" value="Lead Principal Investigator" />
+      <property name="input.dataset.LeadPI.required" value="true" />
       
-      <property name="input.date.type" value="string" />
-      <property name="input.date.title" value="Date" />
-      <property name="input.date.description" value="Date when data was collected (yyyymmdd)" />
-      
-      <property name="input.mirnadatadir.type" value="directory" />
-      <property name="input.mirnadatadir.title" value="miRNA data directory" />
-      <property name="input.mirnadatadir.description" value="Relative path to directory containing miRNA input files." />
-      
-      <!-- output -->
-      <!-- <property name="output.product.type" value="urn:edrn:LabcasNistFile"/> -->
-      <property name="output.appURL.type" value="url"/>
-      <property name="output.appURL.title" value="Shiny URL"/>
-      <property name="output.appURL.description" value="The URL that the user clicks to execute the Shiny workflow over the converted miRNA files"/>
-      
-    </configuration>
+      <property name="input.dataset.Instrument.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.Instrument.title" value="Instrument" />
+      <property name="input.dataset.Instrument.description" value="Name of the instrument used to collect data." />
+      <property name="input.dataset.Instrument.required" value="true" />
     
+      <property name="input.dataset.Lab.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.Lab.title" value="Lab" />
+      <property name="input.dataset.Lab.description" value="Laboratory where the data was collected." />
+      <property name="input.dataset.Lab.required" value="true" />
+      
+      <property name="input.dataset.Date.type" value="http://www.w3.org/2001/XMLSchema/date" />
+      <property name="input.dataset.Date.title" value="Lab" />
+      <property name="input.dataset.Date.description" value="Date when the data was collected (yyyy/mm/dd)." />
+      <property name="input.dataset.Date.required" value="true" />
+    
+    </configuration>
+          
     <requiredMetFields>
-      <metfield name="pi" />
-      <metfield name="instrument" />
-      <metfield name="lab" />
-      <metfield name="date" />
-      <metfield name="mirnadatadir" />
+    
+      <metfield name="DatasetId" />
+      <metfield name="LeadPI" />
+      <metfield name="Instrument" />
+      <metfield name="Lab" />
+      <metfield name="Date" />
+            
     </requiredMetFields>
     
   </task>
 
+  <!-- Task taht crawls $LABCAS_STAGING/<dataset_id> and publishes files to $LABCAS_ARCHIVE -->
+  <task id="urn:edrn:NistCrawlerTask" name="NistCrawlerTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+  
+    <conditions />
+  
+    <configuration>
+      <property name="PGETask_Name" value="LabcasUploadExecuteTask" />
+      <property name="PGETask_ConfigFilePath"
+        value="[LABCAS_HOME]/workflows/nist/pge-configs/nist-crawler.pgeconfig.xml"
+        envReplace="true" />
+      <property name="PGETask_DumpMetadata" value="true" />
+      <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
+      <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true" />
+      <property name="PCS_MetFileExtension" value="met" />
+      <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
+      <property name="PCS_ActionRepoFile" value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml"
+        envReplace="true" />
+    </configuration>
+    
+  </task>
 
-  <task id="urn:edrn:NistConvertTask" name="NistConvertTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+<!--   <task id="urn:edrn:NistConvertTask" name="NistConvertTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
   
     <conditions />
   
@@ -81,13 +101,13 @@
         envReplace="true" />
     </configuration>
     
-  </task>
+  </task> -->
   
-  <task id="urn:edrn:NistExecuteTask" name="NistExecuteTask" class="gov.nasa.jpl.edrn.labcas.tasks.nist.NistExecuteTaskInstance">
+<!--   <task id="urn:edrn:NistExecuteTask" name="NistExecuteTask" class="gov.nasa.jpl.edrn.labcas.tasks.nist.NistExecuteTaskInstance">
     <conditions />
     <configuration>
       <property name="baseURL" value="http://shiny.jpl.nasa.gov/" />
     </configuration>
-  </task>
+  </task> -->
 
 </cas:tasks>

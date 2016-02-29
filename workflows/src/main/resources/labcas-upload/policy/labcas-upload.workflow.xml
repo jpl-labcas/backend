@@ -2,7 +2,7 @@
 
   <tasks>
   	
-    <!-- determines the next dataset version, reads in metadata from DatasetMetadata.xml -->
+    <!-- determines the next dataset version, reads in metadata from DatasetMetadata.xmlmet -->
     <task id="urn:edrn:LabcasUploadInitTask" />
     
     <!-- crawls the staging area and publishes the files -->

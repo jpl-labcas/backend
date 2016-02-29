@@ -33,20 +33,24 @@
     </metExtractors>
     <metadata>
       <keyval>
-        <key>PI</key>
-        <val>[pi]</val>
+        <key>DatasetId</key>
+        <val>[DatasetId]</val>
+      </keyval>
+      <keyval>
+        <key>LeadPI</key>
+        <val>[LeadPI]</val>
       </keyval>
       <keyval>
         <key>Instrument</key>
-        <val>[instrument]</val>
+        <val>[Instrument]</val>
       </keyval>
       <keyval>
         <key>Lab</key>
-        <val>[lab]</val>
+        <val>[Lab]</val>
       </keyval>
       <keyval>
         <key>Date</key>
-        <val>[date]</val>
+        <val>[Date]</val>
       </keyval>
     </metadata>
   </type>

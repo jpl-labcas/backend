@@ -1,5 +1,5 @@
 # python script to convert NIST files
-# usage: python nist-convert.py --pi pi --lab lab --instrument instrument --date date
+# usage: python nist-convert.py --LeadPI lead_pi --Lab lab --Instrument instrument --Date date
 
 import argparse
 import logging
@@ -20,10 +20,10 @@ def convert(filepath, filename, pi=None, instrument=None, lab=None, date=None):
     # open output file
     with open(output_file, 'w') as ofile:
         # write header lines
-        ofile.write('# pi=%s\n' % pi)
-        ofile.write('# instrument=%s\n' % instrument)
-        ofile.write('# lab=%s\n' % lab)
-        ofile.write('# date=%s\n' % date)
+        ofile.write('# LeadPI=%s\n' % pi)
+        ofile.write('# Instrument=%s\n' % instrument)
+        ofile.write('# Lab=%s\n' % lab)
+        ofile.write('# Date=%s\n' % date)
         
         # open input file
         with open(input_file) as ifile:
@@ -36,14 +36,14 @@ if __name__ == '__main__':
     # parse command line arguments
     parser = argparse.ArgumentParser(description="Python script to convert NIST files into standard format")
     parser.add_argument('dir', type=str, help="Directory containing NIST input files to be converted")
-    parser.add_argument('--pi', dest='pi', type=str, help="Principal Investigator that collected data", default=None)
-    parser.add_argument('--instrument', dest='instrument', type=str, help="Instrument used to collect data", default=None)
-    parser.add_argument('--lab', dest='lab', type=str, help="Laboratory where data was collected", default=None)
-    parser.add_argument('--date', dest='date', type=str, help="Date when data was collected (yyyymmdd)", default=None)
+    parser.add_argument('--LeadPI', dest='pi', type=str, help="Principal Investigator that collected data", default=None)
+    parser.add_argument('--Instrument', dest='instrument', type=str, help="Instrument used to collect data", default=None)
+    parser.add_argument('--Lab', dest='lab', type=str, help="Laboratory where data was collected", default=None)
+    parser.add_argument('--Date', dest='date', type=str, help="Date when data was collected (yyyymmdd)", default=None)
     args_dict = vars( parser.parse_args() )
 
     logging.debug('Directory=%s' % args_dict['dir'])
-    logging.debug('PI=%s' % args_dict['pi'])
+    logging.debug('LeadPI=%s' % args_dict['pi'])
     logging.debug('Instrument=%s' % args_dict['instrument'])
     logging.debug('Lab=%s' % args_dict['lab'])
     logging.debug('Date=%s' % args_dict['date'])
