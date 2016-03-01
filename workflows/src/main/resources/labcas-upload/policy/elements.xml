@@ -75,5 +75,10 @@
     <description>Medical discipline for this dataset (select one)</description>
     <dcElement />
   </element>
+  
+   <element id="OwnerGroup" name="Owner Group">
+    <description>Distinguished Name of the person that owns the data</description>
+    <dcElement />
+  </element>
 
 </cas:elements>
