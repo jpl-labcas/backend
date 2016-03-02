@@ -24,7 +24,7 @@
     <configuration>
     
       <!-- fixed dataset metadata -->
-      <property name="dataset.ParentDatasetId" value="NIST" />
+      <property name="dataset.ParentDatasetId" value="NistProduct" />
     
       <!-- input dataset metadata -->
       <property name="input.dataset.DatasetId.type" value="http://www.w3.org/2001/XMLSchema/string" />

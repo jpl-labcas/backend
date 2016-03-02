@@ -52,6 +52,14 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 			// populate product type metadata from workflow configuration
 			Metadata productTypeMetadata = FileManagerUtils.readConfigMetadata(metadata, config);
 			
+			// add parent product type (default: LabcasProduct)
+			if (!productTypeMetadata.containsKey(Constants.METADATA_KEY_PARENT_DATASET_ID)) {
+				productTypeMetadata.addMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID, Constants.LABCAS_PRODUCT_TYPE);
+			}
+			// must also add this key/value to the workflow metadata (so it can be written for each product)
+			metadata.replaceMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID,  // workflow (-> poroduct) metadata
+					productTypeMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID));  
+			
 	        // add dataset version to product type metadata (used for generating product unique identifiers)
 	        int version = FileManagerUtils.findLatestDatasetVersion( datasetId );
 	        if (version==0) {  // dataset does not yet exist -> assign first version
@@ -63,7 +71,7 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 	        	}
 	        }
 	        productTypeMetadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version); // product type metadata
-	        metadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version);            // product metadata
+	        metadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version);            // workflow (-> poroduct) metadata
 	        LOG.fine("Using dataset version=: "+version);
 
 			// create or update the File Manager product type

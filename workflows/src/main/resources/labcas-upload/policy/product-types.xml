@@ -37,8 +37,16 @@
         <val>[DatasetId]</val>
       </keyval>
       <keyval>
+        <key>ParentDatasetId</key>
+        <val>[DatasetId]</val>
+      </keyval>
+      <keyval>
         <key>Version</key>
-        <val>[Version]</val>
+        <val>[ParentDatasetId]</val>
+      </keyval>
+      <keyval>
+        <key>Description</key>
+        <val>[Description]</val>
       </keyval>
     </metadata>
   </type>
@@ -63,8 +71,16 @@
         <val>[DatasetId]</val>
       </keyval>
       <keyval>
+        <key>ParentDatasetId</key>
+        <val>[DatasetId]</val>
+      </keyval>
+      <keyval>
         <key>Version</key>
         <val>[Version]</val>
+      </keyval>
+      <keyval>
+        <key>Description</key>
+        <val>[Description]</val>
       </keyval>
     </metadata>
   </type>

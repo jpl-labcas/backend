@@ -83,11 +83,8 @@ public class FileManagerUtils {
 		// create file "product-type-element-map.xml" (if not existing already)
 		File productTypeElementMapXmlFile = new File(policyDir, "product-type-element-map.xml");
 		if (!productTypeElementMapXmlFile.exists()) {
-			String parentProductTypeName = Constants.LABCAS_PRODUCT_TYPE; // default parent product type
-			if (coreMetadata.containsKey(Constants.METADATA_KEY_PARENT_DATASET_ID)) {
-				parentProductTypeName = coreMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
-			}
-			FileManagerUtils.makeProductTypeElementMapXmlFile( productTypeElementMapXmlFile, productTypeName, parentProductTypeName);
+			String parentProductTypeName = coreMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
+			FileManagerUtils.makeProductTypeElementMapXmlFile(productTypeElementMapXmlFile, productTypeName, parentProductTypeName);
 		}
 
 		// create "product-types.xml" (override each time)

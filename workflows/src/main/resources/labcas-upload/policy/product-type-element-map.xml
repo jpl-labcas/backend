@@ -9,6 +9,7 @@
   <type id="urn:edrn:LabcasProduct" parent="urn:oodt:GenericFile">
   
     <element id="DatasetId" />
+    <element id="ParentDatasetId" />
     <element id="Description" />
     <element id="Version" />
     
