@@ -6,7 +6,7 @@ import logging
 from os import listdir, path
 from os.path import isfile, join
 
-INPUT_EXT = '.txt'
+INPUT_EXTS = ['.txt','.csv']
 OUTPUT_EXT = '.nist'
 logging.basicConfig(level=logging.DEBUG)
 
@@ -14,7 +14,8 @@ def convert(filepath, filename, pi=None, instrument=None, lab=None, date=None):
     '''Converts a NIST file from custom to standard format.'''
     
     input_file = join(filepath, filename)
-    output_file = join(filepath, filename.replace(INPUT_EXT, OUTPUT_EXT))
+    #output_file = join(filepath, filename.replace(INPUT_EXTS[0], OUTPUT_EXT).replace(INPUT_EXTS[1], OUTPUT_EXT))
+    output_file = join(filepath, filename + OUTPUT_EXT)
     logging.info("Converting file: %s --> %s" % (input_file, output_file))
     
     # open output file
@@ -52,7 +53,8 @@ if __name__ == '__main__':
     for f in listdir(args_dict['dir']):
          if isfile(join(args_dict['dir'], f)):
              file_name, file_extension = path.splitext(f)
-             if file_extension == INPUT_EXT:
-                 convert(args_dict['dir'], f, 
-                         pi=args_dict['pi'], instrument=args_dict['instrument'], lab=args_dict['lab'], date=args_dict['date'])
+             for input_ext in INPUT_EXTS:
+                 if file_extension == input_ext:
+                     convert(args_dict['dir'], f, 
+                             pi=args_dict['pi'], instrument=args_dict['instrument'], lab=args_dict['lab'], date=args_dict['date'])
     
