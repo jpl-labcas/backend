@@ -24,7 +24,9 @@ if __name__ == '__main__':
                  'LeadPI':'John Doe',
                  'DataCustodian':'Rich Smith',
                  'DataCustodianEmail':'rich.smith@pubmed.gov',
-                 'CollaborativeGroup':'Prostate and Urologic'} 
+                 'CollaborativeGroup':'Prostate and Urologic',
+                 'OwnerGroup':'EDRN_CANCER_GROUP',
+    } 
     
 
     # upload dataset staged in directory 'mydata'

@@ -38,6 +38,7 @@
       <metfield name="DataCustodian" />
       <metfield name="DataCustodianEmail" />
       <metfield name="CollaborativeGroup" />
+      <metfield name="OwnerGroup" />
       
     </requiredMetFields>
     

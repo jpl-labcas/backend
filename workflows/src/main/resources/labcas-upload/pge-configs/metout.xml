@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadataList>
     
-    <metadata key="DatasetId" val="[DatasetId]"/>
-    <metadata key="Version" val="[Version]"/>
+    <!-- NOTE: do NOT insert here DatasetId or Version otherwise there will be multiple values
+         (which will cause the Solr ingestion process to crash) -->
+    <metadata key="LeadPI" val="[LeadPI]"/>
     
 </metadataList>
