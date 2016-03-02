@@ -68,7 +68,8 @@ public class FileManagerUtils {
 		}
 		
 		// create product type directory with the same name
-		File datasetDir = FileManagerUtils.getDatasetArchiveDir(dataset);
+		String parentDataset = coreMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
+		File datasetDir = FileManagerUtils.getDatasetArchiveDir(dataset, parentDataset);
 		File policyDir = new File(datasetDir, "policy");
 		if (!policyDir.exists()) {
 			policyDir.mkdirs();
@@ -83,7 +84,10 @@ public class FileManagerUtils {
 		// create file "product-type-element-map.xml" (if not existing already)
 		File productTypeElementMapXmlFile = new File(policyDir, "product-type-element-map.xml");
 		if (!productTypeElementMapXmlFile.exists()) {
-			String parentProductTypeName = coreMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
+			String parentProductTypeName = Constants.ECAS_PRODUCT_TYPE; // default parent product type
+			if (coreMetadata.containsKey(Constants.METADATA_KEY_PARENT_DATASET_ID)) {
+				parentProductTypeName = coreMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
+			}
 			FileManagerUtils.makeProductTypeElementMapXmlFile(productTypeElementMapXmlFile, productTypeName, parentProductTypeName);
 		}
 
@@ -127,9 +131,9 @@ public class FileManagerUtils {
 	 * Utility function to determine the latest version of an archived dataset.
 	 * If not found, the latest version is set to 0.
 	 */
-	public static int findLatestDatasetVersion(final String datasetName) {
+	public static int findLatestDatasetVersion(final String datasetName, final String parentDatasetName) {
 		
-		File datasetDir = FileManagerUtils.getDatasetArchiveDir(datasetName);
+		File datasetDir = FileManagerUtils.getDatasetArchiveDir(datasetName, parentDatasetName);
 		
         int version = 0;
         if (datasetDir.exists()) {           
@@ -264,9 +268,12 @@ public class FileManagerUtils {
 	 * @param datasetName
 	 * @return
 	 */
-	public static File getDatasetArchiveDir(final String datasetName) {
+	public static File getDatasetArchiveDir(final String datasetName, final String parentDatasetName) {
 		
 		String archiveDir = System.getenv(Constants.ENV_LABCAS_ARCHIVE);
+		if (!parentDatasetName.equals(Constants.ECAS_PRODUCT_TYPE) && !parentDatasetName.equals(Constants.LABCAS_PRODUCT_TYPE) ) {
+			archiveDir += "/" + parentDatasetName;
+		}
 		File datasetDir = new File(archiveDir, datasetName); 
 		return datasetDir;
 		
@@ -340,7 +347,7 @@ public class FileManagerUtils {
 	 * @param metadata
 	 * @throws Exception
 	 */
-	public static final void makeProductTypesXmlFile(File filepath, String productTypeName, String description, Metadata metadata) throws Exception {
+	private static final void makeProductTypesXmlFile(File filepath, String productTypeName, String description, Metadata metadata) throws Exception {
 		
 		// XML document
 		Document xmlDocument = XmlUtils.newXmlDocument();
@@ -357,8 +364,15 @@ public class FileManagerUtils {
         rootElement.appendChild(typeElement);
         
         // <repository path="file://[LABCAS_ARCHIVE]"/>
+        // or:
+        // <repository path="file://[LABCAS_ARCHIVE]/[ParentDatasetId]"/>
         Element repositoryElement = xmlDocument.createElement("repository");
-        repositoryElement.setAttribute("path", REPOSITORY);
+        String parentDatasetId = metadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
+        if (parentDatasetId.equals(Constants.ECAS_PRODUCT_TYPE) || parentDatasetId.equals(Constants.LABCAS_PRODUCT_TYPE)) {
+        	repositoryElement.setAttribute("path", REPOSITORY);
+        } else {
+        	repositoryElement.setAttribute("path", REPOSITORY+"/"+parentDatasetId);
+        }
         typeElement.appendChild(repositoryElement);
         
         // <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner"/>

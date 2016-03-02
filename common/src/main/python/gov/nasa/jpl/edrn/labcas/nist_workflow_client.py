@@ -13,6 +13,7 @@ if __name__ == '__main__':
                                             'LeadPI':'Johns', 
                                             'Instrument':'trumpet', 
                                             'Lab':'LAB01',
-                                            'Date':'20160101' } )
+                                            'Date':'20160101',
+                                            'OwnerGroup':'Nist_Lab01_Researcher' } )
     # monitor workflow instance
     labcasClient.waitForCompletion(wInstId)

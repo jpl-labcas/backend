@@ -35,13 +35,7 @@ public class XmlFileMetExtractor implements FilemgrMetExtractor {
 		
 		// merge original metadata
 		Metadata outmet = new Metadata();
-		
-		// transfer selected product-level metadata
-		//outmet.addMetadata(inmet.getHashtable()); // transfer ALL product level metadata
-		//outmet.addMetadata(Constants.METADATA_KEY_DATASET_ID, inmet.getMetadata(Constants.METADATA_KEY_DATASET_ID));
-		//outmet.addMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID, inmet.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID));
-		//outmet.addMetadata(Constants.METADATA_KEY_VERSION, inmet.getMetadata(Constants.METADATA_KEY_VERSION));
-		
+				
 		// construct paths to optional metadata files
 		// read both <filename>.met and <filename>.xmlmet
 		File[] xmlmetFilepaths = new File[]{ new File(inmet.getMetadata(Constants.METADATA_KEY_FILE_LOCATION), 

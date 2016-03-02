@@ -32,7 +32,8 @@ public class NistExecuteTaskInstance implements WorkflowTaskInstance {
 		Properties props = config.getProperties();
 		String baseURL = props.getProperty("baseURL");
 		LOG.log(Level.INFO, "Config baseUrl="+baseURL);
-		File dataArchiveDir = FileManagerUtils.getDatasetArchiveDir(metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID));
+		File dataArchiveDir = FileManagerUtils.getDatasetArchiveDir(metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID),
+				                                                    metadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID));
 		// adda dataset version
 		File dataDir = new File(dataArchiveDir, metadata.getMetadata(Constants.METADATA_KEY_VERSION));
 		String appURL = baseURL + "?datadir="+dataDir;
