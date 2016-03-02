@@ -181,24 +181,31 @@ public class FileManagerUtils {
 	 */
 	public static Metadata readConfigMetadata(Metadata metadata, WorkflowTaskConfiguration config) {
 		
+		// product type metadata
+		Metadata productTypeMetadata = new Metadata();
         
         // extract product type metadata keys from task configuration parameters of the form "init.field...."
-        // example: 
+        // example of input metadata key: 
         // <property name="input.dataset.ProtocolId.type" value="integer" />
         // <property name="input.dataset.ProtocolId.title" value="Protocol ID" />
+		// or fixed metadata key:
+		// <property name="dataset.ParentDatasetId" value="NIST" />
         Set<String> productTypeMetadataKeys = new HashSet<String>();
         for (Object objKey : config.getProperties().keySet()) {
             String key = (String) objKey;
             String value = config.getProperties().getProperty(key);
             LOG.fine("Workflow configuration property: key="+key+" value="+value);
-            if (key.toLowerCase().startsWith("input.dataset")) {
+            if (key.toLowerCase().startsWith("input.dataset.")) {
             	String[] parts = key.split("\\."); 
             	productTypeMetadataKeys.add(parts[2]);
+            } else if (key.toLowerCase().startsWith("dataset.")) {
+            	String[] parts = key.split("\\."); 
+            	productTypeMetadata.addMetadata(parts[1], GeneralUtils.removeNonAsciiCharacters(value));
             }
         }
         
         // populate core dataset metadata values from client supplied metadata
-        Metadata productTypeMetadata = new Metadata();
+       
         for (String key : productTypeMetadataKeys) {
         	if (metadata.containsKey(key)) {
         		// Note: OODT split input metadata "My Data" as separate values "My", "Data"

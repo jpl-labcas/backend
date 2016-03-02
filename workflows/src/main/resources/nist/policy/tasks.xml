@@ -23,6 +23,10 @@
     
     <configuration>
     
+      <!-- fixed dataset metadata -->
+      <property name="dataset.ParentDatasetId" value="NIST" />
+    
+      <!-- input dataset metadata -->
       <property name="input.dataset.DatasetId.type" value="http://www.w3.org/2001/XMLSchema/string" />
       <property name="input.dataset.DatasetId.title" value="Dataset Identifier" />
       <property name="input.dataset.DatasetId.description" value="Unique identifier for this dataset (letters only, no spaces)" />
