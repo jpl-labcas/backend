@@ -9,11 +9,11 @@ if __name__ == '__main__':
     #               --metaData --key DatasetId NIST_LAB01 --key LeadPI Johns --key Instrument trombone --key Lab LAB01 --key Date 20160101
     labcasClient = LabcasClient()
     wInstId = labcasClient.executeWorkflow(['urn:edrn:NistInitTask','urn:edrn:NistConvertTask','urn:edrn:NistExecTask','urn:edrn:NistCrawlTask'], 
-                                           {'DatasetId':'NIST_LAB01',
+                                           {'DatasetId':'NistLab01',
                                             'LeadPI':'Johns', 
                                             'Instrument':'trumpet', 
-                                            'Lab':'LAB01',
+                                            'Lab':'Lab01',
                                             'Date':'20160101',
-                                            'OwnerGroup':'Nist_Lab01_Researcher' } )
+                                            'OwnerGroup':'NistLab01Researcher' } )
     # monitor workflow instance
     labcasClient.waitForCompletion(wInstId)
