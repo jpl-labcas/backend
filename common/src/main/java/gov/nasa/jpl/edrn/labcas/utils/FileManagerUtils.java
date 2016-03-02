@@ -83,7 +83,11 @@ public class FileManagerUtils {
 		// create file "product-type-element-map.xml" (if not existing already)
 		File productTypeElementMapXmlFile = new File(policyDir, "product-type-element-map.xml");
 		if (!productTypeElementMapXmlFile.exists()) {
-			FileManagerUtils.makeProductTypeElementMapXmlFile( productTypeElementMapXmlFile, productTypeName );
+			String parentProductTypeName = Constants.LABCAS_PRODUCT_TYPE; // default parent product type
+			if (coreMetadata.containsKey(Constants.METADATA_KEY_PARENT_DATASET_ID)) {
+				parentProductTypeName = coreMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
+			}
+			FileManagerUtils.makeProductTypeElementMapXmlFile( productTypeElementMapXmlFile, productTypeName, parentProductTypeName);
 		}
 
 		// create "product-types.xml" (override each time)
@@ -310,7 +314,7 @@ public class FileManagerUtils {
 	 * @param productType
 	 * @throws Exception
 	 */
-	private static final void makeProductTypeElementMapXmlFile(File filepath, String productType) throws Exception {
+	private static final void makeProductTypeElementMapXmlFile(File filepath, String productType, String parentProductType) throws Exception {
 		
 		// XML document
 		Document xmlDocument = XmlUtils.newXmlDocument();
@@ -323,7 +327,7 @@ public class FileManagerUtils {
         // <type id="urn:edrn:Analysis_of_pancreatic_cancer_biomarkers_in_PLCO_set" parent="urn:edrn:LabcasProduct" />
         Element typeElement = xmlDocument.createElement("type");
         typeElement.setAttribute("id", Constants.EDRN_PREFIX+productType);
-        typeElement.setAttribute("parent", Constants.EDRN_PREFIX+Constants.LABCAS_PRODUCT_TYPE);
+        typeElement.setAttribute("parent", Constants.EDRN_PREFIX+parentProductType);
         rootElement.appendChild(typeElement);
 
         // write out the file
