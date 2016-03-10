@@ -114,7 +114,7 @@
     
     <property name="input.dataset.DateDatasetFrozen.type" value="http://www.w3.org/2001/XMLSchema/date" />
     <property name="input.dataset.DateDatasetFrozen.title" value="Date Dataset Frozen" />
-    <property name="input.dataset.DateDatasetFrozen.description" value="Date when the dataset was frozen (yyyy/mm/dd)" />
+    <property name="input.dataset.DateDatasetFrozen.description" value="Date when the dataset was finalized (yyyy/mm/dd)" />
     <property name="input.dataset.DateDatasetFrozen.required" value="false" />
         
     <property name="input.dataset.DatasetURL.type" value="http://www.w3.org/2001/XMLSchema/url" />
@@ -125,6 +125,12 @@
     <!-- file (aka product) metadata -->
     
     <!-- ECAS metadata -->
+    
+    <property name="input.file.ProductTitle.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.file.ProductTitle.title" value="Product Title" />
+    <property name="input.file.ProductTitle.description" value="Short title for this specific file." />
+    <property name="input.file.ProductTitle.required" value="false" />
+    
     <property name="input.file.ProductDescription.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.file.ProductDescription.title" value="Product Description" />
     <property name="input.file.ProductDescription.description" value="Description of what this specific product file contains and any additional information allowing for facilitated understanding of contents" />
@@ -135,9 +141,14 @@
     <property name="input.file.DataStage.description" value="Wether the data is processed or unprocessed (select one)" />
     <property name="input.file.DataStage.required" value="false" />
     
+    <property name="input.file.InstrumentId.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#instrumentId" />
+    <property name="input.file.InstrumentId.title" value="Instrument Identifier" />
+    <property name="input.file.InstrumentId.description" value="Identifier or any instrument, software product, etc. that was used to generate the data" />
+    <property name="input.file.InstrumentId.required" value="false" />
+    
     <property name="input.file.InstrumentDetails.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.file.InstrumentDetails.title" value="Instrument Details" />
-    <property name="input.file.InstrumentDetails.description" value="If an instrument, software product, etc. was used to generate the data" />
+    <property name="input.file.InstrumentDetails.description" value="Description of any instrument, software product, etc. that was used to generate the data" />
     <property name="input.file.InstrumentDetails.required" value="false" />
     
     <property name="input.file.ContentFunction.type" value="http://www.w3.org/2001/XMLSchema/string" />
@@ -153,7 +164,23 @@
     <property name="input.file.SpecimenType.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#specimenType" />
     <property name="input.file.SpecimenType.title" value="Specimen Type" />
     <property name="input.file.SpecimenType.description" value="The specimen type (select all that apply)" />
-    <property name="input.file.SpecimenType.required" value="false" />    
+    <property name="input.file.SpecimenType.required" value="false" />   
+    
+    <property name="input.file.SpecimenId.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#specimenId" />
+    <property name="input.file.SpecimenId.title" value="Specimen Identifier" />
+    <property name="input.file.SpecimenId.description" value="The specimen identifier (select all that apply)" />
+    <property name="input.file.SpecimenId.required" value="false" />   
+    
+    <property name="input.file.DateProductFrozen.type" value="http://www.w3.org/2001/XMLSchema/date" />
+    <property name="input.file.DateProductFrozen.title" value="Date File Frozen" />
+    <property name="input.file.DateProductFrozen.description" value="Date when this file was finalized (yyyy/mm/dd)" />
+    <property name="input.file.DateProductFrozen.required" value="false" />
+     
+    <property name="input.file.DateDatasetFrozen.type" value="http://www.w3.org/2001/XMLSchema/date" />
+    <property name="input.file.DateDatasetFrozen.title" value="Date File Frozen" />
+    <property name="input.file.DateDatasetFrozen.description" value="Date when this file was frozen (yyyy/mm/dd)" />
+    <property name="input.file.DateDatasetFrozen.required" value="false" />
+    
 
     <!-- output products -->
     <property name="output.product.type" value="urn:edrn:LabcasProduct"/>
