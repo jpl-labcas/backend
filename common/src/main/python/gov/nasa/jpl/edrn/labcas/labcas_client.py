@@ -35,6 +35,7 @@ class LabcasClient(object):
     def executeWorkflow(self, tasks, metadata):
         '''Submits a dynamic workflow composed of the specified tasks, using the specified metadata.'''
         
+        # FIXME: pass metadata through: s.encode('ascii',errors='ignore')
         return self.workflowManagerServerProxy.workflowmgr.executeDynamicWorkflow(tasks, metadata)
         
     def waitForCompletion(self, wInstId):
@@ -104,15 +105,21 @@ class LabcasClient(object):
     def printProductType(self, productTypeDict):
         print 'PRODUCT TYPE: %s' % productTypeDict['name']
         for key, value in productTypeDict.items():
-            print '\t%s = %s' % (key, value)
+            # dictionary: typeMetadata = {'DataCustodianEmail': ['dsidrans@jhmi.edu'], 'DataDisclaimer': [...], ..}
+            if key=='typeMetadata':
+                print '\t%s =' % key
+                for _key, _value in value.items():
+                    print '\t\t%s = %s' % (_key, _value)
+            else:
+                print '\t%s = %s' % (key, value)
     
     def listProducts(self, datasetId):
         
         # query for all products of this type (i.e. all files of this dataset), all versions
-        response = self.solrServerProxy.query('*:*', fq=['DatasetId:%s' % datasetId], start=0)
-        print "\nNumber of files found: %s (all versions)" % response.numFound
-        for result in response.results:
-            self.printProduct(result)
+        #response = self.solrServerProxy.query('*:*', fq=['DatasetId:%s' % datasetId], start=0)
+        #print "\nNumber of files found: %s (all versions)" % response.numFound
+        #for result in response.results:
+        #    self.printProduct(result)
             
         # query for all possible versions of this dataset
         response = self.solrServerProxy.query('*:*', fq=['DatasetId:%s' % datasetId], start=0, rows=0, facet='true', facet_field='Version')
@@ -125,7 +132,7 @@ class LabcasClient(object):
             
         # query for all files for a specific version
         response = self.solrServerProxy.query('*:*', fq=['DatasetId:%s' % datasetId,'Version:%s' % last_version ], start=0)
-        print "\nLatest version: %s number of files: %s, listing them all:" % (last_version, response.numFound)
+        print "\nLatest version: %s, number of files: %s, listing them all:" % (last_version, response.numFound)
         for result in response.results:
             self.printProduct(result)
         

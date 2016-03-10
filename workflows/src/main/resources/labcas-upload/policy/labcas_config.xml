@@ -64,6 +64,16 @@
     <property name="input.dataset.OrganSite.description" value="EDRN Organ Site (select all that apply)" />
     <property name="input.dataset.OrganSite.required" value="false" />
     
+    <property name="input.dataset.SiteName.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#siteName" />
+    <property name="input.dataset.SiteName.title" value="Site Name" />
+    <property name="input.dataset.SiteName.description" value="Institution where the research was conducted (full name)" />
+    <property name="input.dataset.SiteName.required" value="false" />
+    
+    <property name="input.dataset.SiteShortName.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#siteShortName" />
+    <property name="input.dataset.SiteShortName.title" value="Site Short Name" />
+    <property name="input.dataset.SiteShortName.description" value="Institution where the research was conducted (short name)" />
+    <property name="input.dataset.SiteShortName.required" value="false" />
+    
     <property name="input.dataset.PubMedId.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#discipline" />
     <property name="input.dataset.PubMedId.title" value="Pub Med ID" />
     <property name="input.dataset.PubMedId.description" value="URL of PubMed publication" />
@@ -74,12 +84,44 @@
     <property name="input.dataset.Discipline.description" value="Medical discipline for this dataset (select one)" />
     <property name="input.dataset.Discipline.required" value="false" />
     
+    <property name="input.dataset.ResultsAndConclusionSummary.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.dataset.ResultsAndConclusionSummary.title" value="Results And Conclusion Summary" />
+    <property name="input.dataset.ResultsAndConclusionSummary.description" value="Summary of Results And Conclusion" />
+    <property name="input.dataset.ResultsAndConclusionSummary.required" value="false" />
+    
     <property name="input.dataset.OwnerGroup.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.dataset.OwnerGroup.title" value="Owner Group" />
-    <property name="input.dataset.OwnerGroup.description" value="Distinguished Name of the person that owns the data." />
+    <property name="input.dataset.OwnerGroup.description" value="Distinguished Name of the person that owns the data" />
     <property name="input.dataset.OwnerGroup.required" value="true" />
     <property name="input.dataset.OwnerGroup.visible" value="false" />
-
+    
+    <property name="input.dataset.QAState.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.dataset.QAState.title" value="QA State" />
+    <property name="input.dataset.QAState.description" value="Quality Assurance State" />
+    <property name="input.dataset.QAState.required" value="false" />
+    <property name="input.dataset.QAState.value.1" value="Draft" />
+    <property name="input.dataset.QAState.value.2" value="Accepted" />
+    
+    <property name="input.dataset.RecommendedSoftware.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.dataset.RecommendedSoftware.title" value="Recommended Software" />
+    <property name="input.dataset.RecommendedSoftware.description" value="Software that can be used to analyze or visualize these data" />
+    <property name="input.dataset.RecommendedSoftware.required" value="false" />
+    
+    <property name="input.dataset.DataDisclaimer.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.dataset.DataDisclaimer.title" value="Data Disclaimer" />
+    <property name="input.dataset.DataDisclaimer.description" value="Data disclaimer" />
+    <property name="input.dataset.DataDisclaimer.required" value="false" />
+    
+    <property name="input.dataset.DateDatasetFrozen.type" value="http://www.w3.org/2001/XMLSchema/date" />
+    <property name="input.dataset.DateDatasetFrozen.title" value="Date Dataset Frozen" />
+    <property name="input.dataset.DateDatasetFrozen.description" value="Date when the dataset was frozen (yyyy/mm/dd)" />
+    <property name="input.dataset.DateDatasetFrozen.required" value="false" />
+        
+    <property name="input.dataset.DatasetURL.type" value="http://www.w3.org/2001/XMLSchema/url" />
+    <property name="input.dataset.DatasetURL.title" value="Dataset URL" />
+    <property name="input.dataset.DatasetURL.description" value="URL of associated web site for these data" />
+    <property name="input.dataset.DatasetURL.required" value="false" />
+    
     <!-- file (aka product) metadata -->
     
     <!-- ECAS metadata -->
@@ -111,13 +153,7 @@
     <property name="input.file.SpecimenType.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#specimenType" />
     <property name="input.file.SpecimenType.title" value="Specimen Type" />
     <property name="input.file.SpecimenType.description" value="The specimen type (select all that apply)" />
-    <property name="input.file.SpecimenType.required" value="false" />
-    
-    <property name="input.file.RecommendedSoftware.type" value="http://www.w3.org/2001/XMLSchema/string" />
-    <property name="input.file.RecommendedSoftware.title" value="Recommended Software" />
-    <property name="input.file.RecommendedSoftware.description" value="List any software that may be used to analyze, view, etc. the data" />
-    <property name="input.file.RecommendedSoftware.required" value="false" />
-    
+    <property name="input.file.SpecimenType.required" value="false" />    
 
     <!-- output products -->
     <property name="output.product.type" value="urn:edrn:LabcasProduct"/>
