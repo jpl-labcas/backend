@@ -126,9 +126,11 @@ class LabcasClient(object):
         versions = response.facet_counts['facet_fields']['Version']
         last_version = 0
         for key, value in versions.items():
-            print "\nVersion number %s has %s files" % (key, value)
-            if int(key) > last_version:
-                last_version = int(key)
+            # NOTE: facet keys span the whole index, but their counts are specific to this search
+            if int(value)>0:
+                print "\nVersion number %s has %s files" % (key, value)
+                if int(key) > last_version:
+                    last_version = int(key)
             
         # query for all files for a specific version
         response = self.solrServerProxy.query('*:*', fq=['DatasetId:%s' % datasetId,'Version:%s' % last_version ], start=0)
