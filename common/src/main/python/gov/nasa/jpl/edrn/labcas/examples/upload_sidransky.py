@@ -1,4 +1,4 @@
-# Example Python script to execute the labcas-upload and labcas-update workflows
+# Example Python script to uploas Sidransky data
 
 from gov.nasa.jpl.edrn.labcas.labcas_client import LabcasClient
 
