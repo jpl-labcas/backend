@@ -52,15 +52,22 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 			// populate product type metadata from workflow configuration
 			Metadata productTypeMetadata = FileManagerUtils.readConfigMetadata(metadata, config);
 			
-			// add parent product type (default: LabcasProduct)
-			if (!productTypeMetadata.containsKey(Constants.METADATA_KEY_PARENT_DATASET_ID)) {
+			// override parent product type from XML/RPC parameters
+			if (metadata.containsKey(Constants.METADATA_KEY_PARENT_DATASET_ID)) {
+				productTypeMetadata.replaceMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID, metadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID));
+
+			// or read from workflow configuration
+			} else if (productTypeMetadata.containsKey(Constants.METADATA_KEY_PARENT_DATASET_ID)) {
+				metadata.replaceMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID, productTypeMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID));
+				
+			// or set default
+			} else {
 				productTypeMetadata.addMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID, Constants.ECAS_PRODUCT_TYPE);
+				metadata.replaceMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID, productTypeMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID));
 			}
-			String parentDatasetId = productTypeMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
-			// must also add this key/value to the workflow metadata (so it can be written for each product)
-			metadata.replaceMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID, parentDatasetId); // workflow (-> poroduct) metadata
 			
 	        // add dataset version to product type metadata (used for generating product unique identifiers)
+			String parentDatasetId = productTypeMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
 	        int version = FileManagerUtils.findLatestDatasetVersion( datasetId, parentDatasetId );
 	        if (version==0) {  // dataset does not yet exist -> assign first version
 	        	version = 1; 
