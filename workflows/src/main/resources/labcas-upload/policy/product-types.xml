@@ -38,11 +38,11 @@
       </keyval>
       <keyval>
         <key>ParentDatasetId</key>
-        <val>[DatasetId]</val>
+        <val>[ParentDatasetId]</val>
       </keyval>
       <keyval>
         <key>Version</key>
-        <val>[ParentDatasetId]</val>
+        <val>[Version]</val>
       </keyval>
       <keyval>
         <key>Description</key>
@@ -72,7 +72,7 @@
       </keyval>
       <keyval>
         <key>ParentDatasetId</key>
-        <val>[DatasetId]</val>
+        <val>[ParentDatasetId]</val>
       </keyval>
       <keyval>
         <key>Version</key>
