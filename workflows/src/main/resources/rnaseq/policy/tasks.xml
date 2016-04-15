@@ -24,8 +24,10 @@
     <configuration>
     
       <!-- fixed dataset metadata -->
-      <property name="dataset.ParentDatasetId" value="RnaSeqProduct2" />
+      <property name="dataset.ParentDatasetId" value="RnaSeqProduct" />
+      <property name="dataset.LeadPI" value="Chris Amos" />
       <property name="dataset.QAState" value="Public" />
+      <property name="dataset.CollaborativeGroup" value="MCL" />
     
       <!-- input dataset metadata -->
       <property name="input.dataset.DatasetId.type" value="http://www.w3.org/2001/XMLSchema/string" />
@@ -37,6 +39,11 @@
       <property name="input.dataset.Title.title" value="Title" />
       <property name="input.dataset.Title.description" value="Sample title." />
       <property name="input.dataset.Title.required" value="true" />
+           
+      <property name="input.dataset.OrganSite.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#organSite" />
+      <property name="input.dataset.OrganSite.title" value="Organ Site" />
+      <property name="input.dataset.OrganSite.description" value="EDRN Organ Site (select all that apply)" />
+      <property name="input.dataset.OrganSite.required" value="true" />
       
       <property name="input.dataset.AgeAtDiagnosis.type" value="http://www.w3.org/2001/XMLSchema/integer" />
       <property name="input.dataset.AgeAtDiagnosis.title" value="Age at diagnosis" />
@@ -81,6 +88,7 @@
     
       <metfield name="DatasetId" />
       <metfield name="Title" />
+      <metfield name="OrganSite" />
       <metfield name="AgeAtDiagnosis" />
       <metfield name="Gender" />
       <metfield name="SmokingStatus" />
