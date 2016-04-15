@@ -6,4 +6,4 @@ if __name__ == '__main__':
     
     labcasClient = LabcasClient()
     labcasClient.getProductTypeByName("RnaSeqProduct")
-    #labcasClient.getProductTypeByName("ERR164552")
+    labcasClient.getProductTypeByName("ERR164552")

@@ -85,6 +85,14 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 			String productTypeName = FileManagerUtils.uploadDataset(datasetId, productTypeMetadata);
 			metadata.replaceMetadata(Constants.PRODUCT_TYPE, productTypeName); // transfer to product level metadata
 			
+			// copy all product type metadata to product metadata
+	        for (String key : productTypeMetadata.getAllKeys()) {
+	        	if (!metadata.containsKey(key)) {
+	        		LOG.fine("==> Copy metadata for key="+key+" from dataset-level to file-level.");
+	        		metadata.addMetadata(key, productTypeMetadata.getAllMetadata(key));
+	        	}
+	        }
+			
 			// reload the catalog configuration so that the new product type is available for publishing
 			FileManagerUtils.reload();
 	                        

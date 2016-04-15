@@ -104,7 +104,6 @@ class LabcasClient(object):
     
     def printProductType(self, productTypeDict):
         print 'PRODUCT TYPE: %s' % productTypeDict['name']
-        print productTypeDict
         for key, value in productTypeDict.items():
             # dictionary: typeMetadata = {'DataCustodianEmail': ['dsidrans@jhmi.edu'], 'DataDisclaimer': [...], ..}
             if key=='typeMetadata':

@@ -37,7 +37,7 @@
       <!-- minimal LabCAS metadata -->
       <keyval>
         <key>DatasetId</key>
-        <val>GSE40419</val>
+        <val>RnaSeqProduct</val>
       </keyval>
       <keyval>
         <key>ParentDatasetId</key>
@@ -51,26 +51,26 @@
         <key>Description</key>
         <val>RNA Sequence Data Series GSE40419</val>
       </keyval>
+      
+      <!--  ECAS metadata -->
       <keyval>
         <key>LeadPI</key>
-        <val>Chris Amos2</val>
+        <val>Chris Amos</val>
       </keyval>
-      
-      <!-- ECAS metadata -->
       <keyval>
         <key>ProtocolId</key>
-        <value>20001</value>
+        <val>20001</val>
       </keyval>
       <keyval>
         <key>ProtocolName</key>
-        <value>MCL RNA seq prototype pipeline project</value>
+        <val>MCL RNA seq prototype pipeline project</val>
       </keyval>
       <keyval>
         <key>QAState</key>
-        <value>Public</value>
+        <val>Public</val>
       </keyval>
       
-      <!-- custom product type metadata -->
+      <!-- custom RNA seq metadata -->
       <keyval>
         <key>Status</key>
         <val>Public on Sep 06, 2012</val>
@@ -99,6 +99,7 @@
         <key>ReferenceUrl</key>
         <val>http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE40419</val>
       </keyval>
+      
     </metadata>
   </type>
 

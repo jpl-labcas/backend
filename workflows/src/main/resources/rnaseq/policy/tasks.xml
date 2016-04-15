@@ -24,7 +24,7 @@
     <configuration>
     
       <!-- fixed dataset metadata -->
-      <property name="dataset.ParentDatasetId" value="RnaSeqProduct" />
+      <property name="dataset.ParentDatasetId" value="RnaSeqProduct2" />
       <property name="dataset.QAState" value="Public" />
     
       <!-- input dataset metadata -->

@@ -23,9 +23,6 @@
    <element id="Organism" />
    <element id="Experiment type" />
    <element id="Summary" />
-   <element id="ProtocolId" />
-   <element id="ProtocolName" />
-   <element id="QAState" />
  </type>
 
 </cas:producttypemap>
