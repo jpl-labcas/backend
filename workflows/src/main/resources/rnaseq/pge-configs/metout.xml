@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadataList>
+            
+    <metadata key="DatasetId" val="[DatasetId]"/>
+    <metadata key="ParentDatasetId" val="[ParentDatasetId]"/>
+    <metadata key="Version" val="[Version]"/>
+        
+    <!--
+    <metadata key="Title" val="[Title]"/>
+    <metadata key="AgeAtDiagnosis" val="[AgeAtDiagnosis]"/>
+    <metadata key="Gender" val="[Gender]"/>
+    <metadata key="SmokingStatus" val="[SmokingStatus]"/>
+    <metadata key="Stage" val="[Stage]"/> 
+    -->
+    
+</metadataList>

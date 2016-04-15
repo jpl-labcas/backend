@@ -1,0 +1,13 @@
+<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="RNA Sequence dataset" id="urn:edrn:RnaSeqWorkflow">
+
+  <tasks>
+  
+    <!-- initializes product type, version, defines custom metadata -->
+    <task id="urn:edrn:RnaSeqInitTask" />
+        
+    <!-- crawls the staging area and publishes the files -->
+    <task id="urn:edrn:RnaSeqCrawlTask" />
+    
+  </tasks>
+
+</cas:workflow>

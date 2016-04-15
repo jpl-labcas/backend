@@ -102,7 +102,7 @@
     </configuration>
   </task>
 
-  <!-- Task that crawls $LABCAS_STAGING/$DatasetId and publishes files to $LABCAS_ARCHIVE/$DatasetId -->
+  <!-- Task that crawls $LABCAS_STAGING/$DatasetId and publishes files to $LABCAS_ARCHIVE/$ParentDatasetId/$DatasetId -->
   <task id="urn:edrn:NistCrawlTask" name="NistCrawlTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
   
     <conditions />

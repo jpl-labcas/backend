@@ -42,4 +42,18 @@
     <dcElement />
   </element>
 
+  <element id="ProtocolId" name="Protocol Identifier">
+    <description/>
+    <dcElement />
+  </element>
+  
+  <element id="ProtocolName" name="Protocol Name">
+    <description/>
+    <dcElement />
+  </element>
+  
+  <element id="QAState" name="QA Satat">
+    <description/>
+    <dcElement />
+  </element>
 </cas:elements>

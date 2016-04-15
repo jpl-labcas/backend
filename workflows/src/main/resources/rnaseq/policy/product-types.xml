@@ -17,10 +17,10 @@
 -->
 <cas:producttypes xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
-  <type id="urn:edrn:GSE40419" name="GSE40419">
-    <repository path="file://[LABCAS_ARCHIVE]/GSE40419" />
+  <type id="urn:edrn:RnaSeqProduct" name="RnaSeqProduct">
+    <repository path="file://[LABCAS_ARCHIVE]/RnaSeqProduct" />
     <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner" />
-    <description>Series GSE40419</description>
+    <description>The transcriptional landscape and mutational profile of lung adenocarcinoma</description>
    
     <metExtractors>
       <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
@@ -34,7 +34,7 @@
     </metExtractors>
     
     <metadata>
-      <!-- minimal ECAS metadata -->
+      <!-- minimal LabCAS metadata -->
       <keyval>
         <key>DatasetId</key>
         <val>GSE40419</val>
@@ -50,6 +50,24 @@
       <keyval>
         <key>Description</key>
         <val>RNA Sequence Data Series GSE40419</val>
+      </keyval>
+      <keyval>
+        <key>LeadPI</key>
+        <val>Chris Amos2</val>
+      </keyval>
+      
+      <!-- ECAS metadata -->
+      <keyval>
+        <key>ProtocolId</key>
+        <value>20001</value>
+      </keyval>
+      <keyval>
+        <key>ProtocolName</key>
+        <value>MCL RNA seq prototype pipeline project</value>
+      </keyval>
+      <keyval>
+        <key>QAState</key>
+        <value>Public</value>
       </keyval>
       
       <!-- custom product type metadata -->
@@ -72,6 +90,14 @@
       <keyval>
         <key>Summary</key>
         <val>Understanding the molecular signatures of cancer...</val>
+      </keyval>
+      <keyval>
+        <key>ReferenceId</key>
+        <val>geo:GSE40419</val>
+      </keyval>
+      <keyval>
+        <key>ReferenceUrl</key>
+        <val>http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE40419</val>
       </keyval>
     </metadata>
   </type>

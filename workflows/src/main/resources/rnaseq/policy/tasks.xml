@@ -1,0 +1,115 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<cas:tasks xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+
+  <!-- standard LabcasUploadInitTaskInstance task configured with RNA Sequence specific metadata  -->
+  <task id="urn:edrn:RnaSeqInitTask" name="RnaSeqInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasUploadInitTaskInstance">
+  
+    <conditions />
+    
+    <configuration>
+    
+      <!-- fixed dataset metadata -->
+      <property name="dataset.ParentDatasetId" value="RnaSeqProduct" />
+      <property name="dataset.QAState" value="Public" />
+    
+      <!-- input dataset metadata -->
+      <property name="input.dataset.DatasetId.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.DatasetId.title" value="Dataset Identifier" />
+      <property name="input.dataset.DatasetId.description" value="Unique identifier for this dataset (letters only, no spaces)" />
+      <property name="input.dataset.DatasetId.required" value="true" />
+          
+      <property name="input.dataset.Title.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.Title.title" value="Title" />
+      <property name="input.dataset.Title.description" value="Sample title." />
+      <property name="input.dataset.Title.required" value="true" />
+      
+      <property name="input.dataset.AgeAtDiagnosis.type" value="http://www.w3.org/2001/XMLSchema/integer" />
+      <property name="input.dataset.AgeAtDiagnosis.title" value="Age at diagnosis" />
+      <property name="input.dataset.AgeAtDiagnosis.description" value="Subject age when diagnosed." />
+      <property name="input.dataset.AgeAtDiagnosis.required" value="true" />
+      
+      <property name="input.dataset.Gender.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.Gender.title" value="Subject gender" />
+      <property name="input.dataset.Gender.description" value="Subject gender (male or female)." />
+      <property name="input.dataset.Gender.required" value="true" />
+      <property name="input.dataset.Gender.value.1" value="male" />
+      <property name="input.dataset.Gender.value.2" value="female" />
+
+      <property name="input.dataset.SmokingStatus.type" value="http://www.w3.org/2001/XMLSchema/boolean" />
+      <property name="input.dataset.SmokingStatus.title" value="Smoking status" />
+      <property name="input.dataset.SmokingStatus.description" value="Subject smoking status (true or false)." />
+      <property name="input.dataset.SmokingStatus.required" value="true" />
+      
+      <property name="input.dataset.Stage.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.Stage.title" value="Stage" />
+      <property name="input.dataset.Stage.description" value="Stage." />
+      <property name="input.dataset.Stage.required" value="true" />
+      <property name="input.dataset.Stage.value.1" value="1A" />
+      <property name="input.dataset.Stage.value.2" value="1B" />
+      <property name="input.dataset.Stage.value.3" value="2A" />
+      <property name="input.dataset.Stage.value.4" value="2B" />
+      
+      <property name="input.dataset.ReferenceId.type" value="http://www.w3.org/2001/XMLSchema/anyURI" />
+      <property name="input.dataset.ReferenceId.title" value="External Reference Identifier" />
+      <property name="input.dataset.ReferenceId.description" value="Unique identifier for this dataset in external archive." />
+      <property name="input.dataset.ReferenceId.required" value="true" />
+      
+      <property name="input.dataset.ReferenceUrl.type" value="http://www.w3.org/2001/XMLSchema/anyURI" />
+      <property name="input.dataset.ReferenceUrl.title" value="External Reference URL" />
+      <property name="input.dataset.ReferenceUrl.description" value="URL at remote external archive." />
+      <property name="input.dataset.ReferenceUrl.required" value="true" />
+      
+      
+    </configuration>
+          
+    <requiredMetFields>
+    
+      <metfield name="DatasetId" />
+      <metfield name="Title" />
+      <metfield name="AgeAtDiagnosis" />
+      <metfield name="Gender" />
+      <metfield name="SmokingStatus" />
+      <metfield name="Stage" />
+      <metfield name="ReferenceId" />
+      <metfield name="ReferenceUrl" />
+            
+    </requiredMetFields>
+    
+  </task>
+  
+  <!-- Task that crawls $LABCAS_STAGING/$DatasetId and publishes files to $LABCAS_ARCHIVE/$ParentDatasetId/$DatasetId -->
+  <task id="urn:edrn:RnaSeqCrawlTask" name="RnaSeqCrawlTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+  
+    <conditions />
+  
+    <configuration>
+      <property name="PGETask_Name" value="LabcasUploadExecuteTask" />
+      <property name="PGETask_ConfigFilePath" 
+                value="[LABCAS_HOME]/workflows/rnaseq/pge-configs/rnaseq-crawler.pgeconfig.xml" envReplace="true" />
+      <property name="PGETask_DumpMetadata" value="true" />
+      <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
+      <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true" />
+      <property name="PCS_MetFileExtension" value="met" />
+      <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
+      <property name="PCS_ActionRepoFile" 
+                value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml" envReplace="true" />
+    </configuration>
+    
+  </task>
+
+</cas:tasks>

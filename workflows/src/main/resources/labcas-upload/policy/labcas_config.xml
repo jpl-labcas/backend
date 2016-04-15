@@ -101,6 +101,7 @@
     <property name="input.dataset.QAState.required" value="false" />
     <property name="input.dataset.QAState.value.1" value="Draft" />
     <property name="input.dataset.QAState.value.2" value="Accepted" />
+    <property name="input.dataset.QAState.value.3" value="Public" />
     
     <property name="input.dataset.RecommendedSoftware.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.dataset.RecommendedSoftware.title" value="Recommended Software" />
