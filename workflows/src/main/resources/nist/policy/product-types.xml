@@ -34,31 +34,23 @@
     <metadata>
       <keyval>
         <key>DatasetId</key>
-        <val>[DatasetId]</val>
+        <val>NistProduct</val>
       </keyval>
       <keyval>
         <key>Description</key>
-        <val>[Description]</val>
+        <val>NIST Laboratory Data</val>
       </keyval>
       <keyval>
         <key>Version</key>
-        <val>[Version]</val>
+        <val>1</val>
       </keyval>
       <keyval>
         <key>LeadPI</key>
-        <val>[LeadPI]</val>
+        <val>Scott Pine</val>
       </keyval>
       <keyval>
-        <key>Instrument</key>
-        <val>[Instrument]</val>
-      </keyval>
-      <keyval>
-        <key>Lab</key>
-        <val>[Lab]</val>
-      </keyval>
-      <keyval>
-        <key>Date</key>
-        <val>[Date]</val>
+        <key>ParentDatasetId</key>
+        <val>LabcasProduct</val>
       </keyval>
     </metadata>
   </type>
