@@ -6,9 +6,12 @@ if __name__ == '__main__':
     
     labcasClient = LabcasClient()
     
+    # list all product types
+    labcasClient.listProductTypes()
+
     # retrieve a specific product type
-    #labcasClient.getProductTypeByName("RnaSeqProduct")
-    #labcasClient.getProductTypeByName("ERR164552")
+    labcasClient.getProductTypeByName("RnaSeqProduct")
+    labcasClient.getProductTypeByName("ERR164552")
     
     # list top-level product types
     topLevelProductTypes = labcasClient.listTopLevelProductTypes()

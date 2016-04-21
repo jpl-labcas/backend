@@ -123,6 +123,10 @@ class LabcasClient(object):
                 
                 typeMetadata = productTypeDict['typeMetadata']
                 datasetId = typeMetadata['DatasetId'][0]
+                try:
+                    datasetName = typeMetadata['DatasetName'][0]
+                except KeyError:
+                    datasetName = None
                 if typeMetadata.get('ParentDatasetId', None):
                     parentDatasetId = typeMetadata['ParentDatasetId'][0]
                 else:
@@ -140,11 +144,12 @@ class LabcasClient(object):
                         leadPI = None
                     
                     topLevelProductTypes[datasetId] = { 'name': name,
-                                                       'description':  description,
-                                                       'datasetId': datasetId,
-                                                       'parentDatasetId': parentDatasetId,
-                                                       'organSite': organSite,
-                                                       'leadPI':leadPI }
+                                                        'description':  description,
+                                                        'datasetId': datasetId,
+                                                        'datasetName': datasetName,
+                                                        'parentDatasetId': parentDatasetId,
+                                                        'organSite': organSite,
+                                                        'leadPI':leadPI }
                 
                 
         return topLevelProductTypes
