@@ -101,6 +101,70 @@ class LabcasClient(object):
         productTypes =  self.fileManaferServerProxy.filemgr.getProductTypes()
         for productTypeDict in productTypes:
             self.printProductType(productTypeDict)
+            
+    def listTopLevelProductTypes(self):
+        
+        # roots of product type hierarchy (NOT be displayed directly)
+        BUILTIN_PRODUCTS = ['GenericFile', 'LabcasProduct','EcasProduct']
+        
+        # dictionary of top level product types:
+        # key = DatasetId, value = dictionary of properties
+        topLevelProductTypes = {}
+        
+        # list all supported product types
+        productTypes =  self.fileManaferServerProxy.filemgr.getProductTypes()
+        for productTypeDict in productTypes:
+
+            # assemble information to be displayed by UI
+            name = productTypeDict['name']
+            
+            # do NOT include these types in display list
+            if name not in BUILTIN_PRODUCTS:
+                
+                typeMetadata = productTypeDict['typeMetadata']
+                datasetId = typeMetadata['DatasetId'][0]
+                if typeMetadata.get('ParentDatasetId', None):
+                    parentDatasetId = typeMetadata['ParentDatasetId'][0]
+                else:
+                    parentDatasetId = None
+                if parentDatasetId is None or parentDatasetId in BUILTIN_PRODUCTS:
+                
+                    description = productTypeDict['description']
+                    if typeMetadata.get('OrganSite', None):
+                        organSite = typeMetadata['OrganSite'][0]
+                    else:
+                        organSite = None
+                    if typeMetadata.get('LeadPI', None):
+                        leadPI = typeMetadata['LeadPI'][0]
+                    else:
+                        leadPI = None
+                    
+                    topLevelProductTypes[datasetId] = { 'name': name,
+                                                       'description':  description,
+                                                       'datasetId': datasetId,
+                                                       'parentDatasetId': parentDatasetId,
+                                                       'organSite': organSite,
+                                                       'leadPI':leadPI }
+                
+                
+        return topLevelProductTypes
+    
+    def listProductTypesByParent(self, parentDatasetId):
+        
+        childrenProductTypes = []
+        
+        # list all supported product types
+        productTypes =  self.fileManaferServerProxy.filemgr.getProductTypes()
+        for productTypeDict in productTypes:
+            try:
+                if parentDatasetId in productTypeDict['typeMetadata']['ParentDatasetId']:
+                    datasetId =  productTypeDict['typeMetadata']['DatasetId'][0]
+                    childrenProductTypes.append(datasetId)
+            except KeyError:
+                pass
+                    
+        return childrenProductTypes
+        
     
     def printProductType(self, productTypeDict):
         print 'PRODUCT TYPE: %s' % productTypeDict['name']

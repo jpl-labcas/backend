@@ -69,6 +69,10 @@
         <key>QAState</key>
         <val>Public</val>
       </keyval>
+      <keyval>
+        <key>OrganSite</key>
+        <val>Lung</val>
+      </keyval>
       
       <!-- custom RNA seq metadata -->
       <keyval>
