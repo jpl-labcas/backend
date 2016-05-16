@@ -23,8 +23,15 @@ public class ProductTypeDotVersionDotProductIdGenerator implements ProductIdGene
 		Metadata ptm = pt.getTypeMetadata();
 		String version = ptm.getMetadata(Constants.METADATA_KEY_VERSION);
 		
-		// example: "mydata.1.file1.txt"
-		String id = pt.getName()+"."+version+"."+product.getProductName();
+		String id = null;
+		if (version!=null) {
+			// example: "mydata.1.file1.txt"
+			id = pt.getName()+"."+version+"."+product.getProductName();
+		} else {
+			// example: "mydata.file1.txt"
+			id = pt.getName()+"."+product.getProductName();
+		}
+		
 		return id;
 		
 	}
