@@ -1,0 +1,81 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<cas:tasks xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+
+  <task id="urn:edrn:RnaSequencePipelineInit" name="RnaSequencePipelineInit" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasInitTaskInstance">
+  
+    <conditions />
+  
+    <configuration>
+    
+      <!-- input parameters -->
+            
+      <property name="input.genome_index.type" value="string" />
+      <property name="input.genome_index.title" value="Genome Index" />
+      <property name="input.genome_index.description" value="The basename of the genome index to be searched." />
+      <property name="input.genome_index.value.1" value="genome" />
+      
+      <property name="input.sample_id.type" value="string" />
+      <property name="input.sample_id.title" value="Sample ID" />
+      <property name="input.sample_id.description" value="Unique identifier of the lung adenocarcinoma sample to be used." />
+      <property name="input.sample_id.value.1" value="ERR164503" />
+      
+      <!-- output products -->
+      <property name="output.product.type" value="urn:edrn:RnaSequencePipelineOutputFile"/>
+      
+    </configuration>
+    
+    <requiredMetFields>
+      <metfield name="genome_index" />
+      <metfield name="sample_id" />
+    </requiredMetFields>
+    
+  </task>
+
+
+  <task id="urn:edrn:RnaSequencePipelineTask1" name="RnaSequencePipelineTask1" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+  
+    <conditions />
+  
+    <configuration>
+      
+      <!-- OODT Workflow arguments -->
+      <property name="PGETask_Name" value="RnaSequencePipelineTask1" />
+      <property name="PGETask_ConfigFilePath" 
+                value="[LABCAS_HOME]/workflows/rnaseq-pipeline/pge-configs/rnaseq-pipeline-task1-config.pgeconfig.xml"
+                envReplace="true" />
+      <property name="PGETask_DumpMetadata" value="true" />
+      <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
+      <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true" />
+      <property name="PCS_MetFileExtension" value="met" />
+      <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
+      <property name="PCS_ActionRepoFile" value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml" envReplace="true" />
+     
+      <!-- specific script arguments -->
+      <property name="num_threads" value="24" />
+      <property name="gene_transcript_file" value="genes" />
+     
+    </configuration>
+    
+    <requiredMetFields>
+      <metfield name="genome_index" />
+      <metfield name="sample_id" />
+    </requiredMetFields>
+    
+  </task>
+
+</cas:tasks>

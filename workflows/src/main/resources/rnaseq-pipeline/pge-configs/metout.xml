@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadataList>
+    
+    <metadata key="ProductType" val="RnaSequencePipelineOutputFile"/>
+    <metadata key="ProductionDateTime" val="[ProductionDateTime]"/>
+    <metadata key="ProductName" val="[Filename]"/>
+    <metadata key="genome_index" val="[genome_index]"/>
+    <metadata key="sample_id" val="[sample_id]"/>
+    
+</metadataList>
