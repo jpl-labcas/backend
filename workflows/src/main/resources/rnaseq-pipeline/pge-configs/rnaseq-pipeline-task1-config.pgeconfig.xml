@@ -2,11 +2,13 @@
 <pgeConfig>
 
 	<!-- PGE commands -->
-	<exe dir="[JobDir]" shell="/bin/bash">
-		<cmd>mkdir -p output</cmd>
-		<cmd>echo 'xyz' > output/gene.counts</cmd>
-	</exe>
-
+    <exe dir="[JobDir]" shell="/bin/bash">
+      <cmd>cd [JobDir]</cmd>
+      <cmd>python [LABCAS_HOME]/workflows/rnaseq-pipeline/pges/rnaseq-pipeline-task1.py\
+           --num_threads [num_threads] --gene_transcript_file [gene_transcript_file]\
+           --genome_index [genome_index] --data_dir [data_dir] --output_dir [output_dir] --sample_id [sample_id]</cmd>
+    </exe>
+  
 	<customMetadata>
 		<metadata key="ProductionDateTime" val="[DATE.UTC]" />
 		<metadata key="JobDir" val="[PGE_ROOT]/rnaseq-pipeline/jobs/[sample_id]" />
