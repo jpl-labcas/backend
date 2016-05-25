@@ -6,8 +6,10 @@
 
 import argparse
 import logging
-from os import listdir, path
-from os.path import isfile, join
+import os
+
+#from os import listdir, path, system
+#from os.path import isfile, join
 
 logging.basicConfig(level=logging.INFO)
 
@@ -32,16 +34,17 @@ if __name__ == '__main__':
     logging.debug('Sample Id=%s' % args_dict['sample_id'])
 
     # tophat -p 24 -G genes.gtf -o thout genome ERR164503_1.fastq ERR164503_2.fastq
-    command = "tophat -p %s -G %s -o %s %s" % (args_dict['num_threads'], args_dict['gene_transcript_file'], 
+    command = "/Users/cinquini/bin/tophat -p %s -G %s -o %s %s" % (args_dict['num_threads'], args_dict['gene_transcript_file'], 
                                                args_dict['output_dir'], args_dict['genome_index'])
 
     # loop for .fastq files in sample directory
-    input_dir = join(args_dict['data_dir'], args_dict['sample_id'])
-    for f in listdir(input_dir):
-         if isfile(join(input_dir, f)):
-            file_name, file_extension = path.splitext(f)
+    input_dir = os.path.join(args_dict['data_dir'], args_dict['sample_id'])
+    for f in os.listdir(input_dir):
+         if os.path.isfile(os.path.join(input_dir, f)):
+            file_name, file_extension = os.path.splitext(f)
             if file_extension == '.fastq':
                 command += " %s" % f
 
     # execute command
     logging.info("Executing command: %s" % command)
+    os.system( command )
