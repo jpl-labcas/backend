@@ -17,7 +17,7 @@
 	<output>
 		<dir path="[JobDir]/thout" createBeforeExe="false">
 			<!-- metadata extractors matching specific files -->
-			<files regExp=".*gene\.counts"
+			<files regExp=".*\.counts"
 				metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
 				args="[LABCAS_HOME]/workflows/rnaseq-pipeline/pge-configs/metout.xml" />
 		</dir>
