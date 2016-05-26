@@ -79,5 +79,31 @@
     </requiredMetFields>
     
   </task>
+  
+  <task id="urn:edrn:RnaSequencePipelineTask2" name="RnaSequencePipelineTask2" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+  
+    <conditions />
+  
+    <configuration>
+      
+      <!-- OODT Workflow arguments -->
+      <property name="PGETask_Name" value="RnaSequencePipelineTask2" />
+      <property name="PGETask_ConfigFilePath" 
+                value="[LABCAS_HOME]/workflows/rnaseq-pipeline/pge-configs/rnaseq-pipeline-task2-config.pgeconfig.xml"
+                envReplace="true" />
+      <property name="PGETask_DumpMetadata" value="true" />
+      <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
+      <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true" />
+      <property name="PCS_MetFileExtension" value="met" />
+      <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
+      <property name="PCS_ActionRepoFile" value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml" envReplace="true" />
+     
+      <!-- specific script arguments -->
+<!--       <property name="data_dir" value="/data/EDRN" />
+      <property name="output_dir" value="thout" />
+ -->     
+    </configuration>
+    
+  </task>
 
 </cas:tasks>
