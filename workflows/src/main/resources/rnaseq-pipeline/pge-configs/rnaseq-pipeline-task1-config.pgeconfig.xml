@@ -12,6 +12,7 @@
       <cmd>cd [JobDir]</cmd>
       <!-- cleanup from previous executions -->
       <cmd>rm -rf thout</cmd>
+      <cmd>rm -rf logs</cmd>
       <cmd>rm tophat.log</cmd>
       <!-- execute command -->
       <cmd>python [LABCAS_HOME]/workflows/rnaseq-pipeline/pges/rnaseq-pipeline-task1.py\

@@ -67,7 +67,7 @@
      
       <!-- specific script arguments -->
       <property name="num_threads" value="12" />
-      <property name="gene_transcript_file" value="genes" />
+      <property name="gene_transcript_file" value="genes.gtf" />
       <property name="data_dir" value="[RNASEQ_DATA_DIR]" />
       <property name="output_dir" value="thout" />
      
