@@ -32,11 +32,10 @@ if __name__ == '__main__':
     print'Sample Id=%s' % args_dict['sample_id']
 
     # tophat -p 24 -G genes.gtf -o thout genome ERR164503_1.fastq ERR164503_2.fastq
-    command = "%s/tophat -p %s -G %s -o %s %s" % (args_dict['exe_dir'], 
-                                                  args_dict['num_threads'], 
-                                                  args_dict['gene_transcript_file'], 
-                                                  args_dict['output_dir'], 
-                                                  args_dict['genome_index'])
+    command = "tophat -p %s -G %s -o %s %s" % (args_dict['num_threads'], 
+                                               args_dict['gene_transcript_file'], 
+                                               args_dict['output_dir'], 
+                                               args_dict['genome_index'])
 
     # symlink input data into working directory
     # look for .fastq files in sample directory

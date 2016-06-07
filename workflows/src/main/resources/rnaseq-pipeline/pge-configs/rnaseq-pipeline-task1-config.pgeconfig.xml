@@ -9,6 +9,9 @@
 	<!-- PGE commands -->
     <!-- FIXME: tophat-test -->
     <exe dir="[JobDir]" shell="/bin/bash">
+      <!-- must update PATH with location of executables -->
+      <cmd>export PATH=[PATH]:[PGE_ROOT]/rnaseq-pipeline/tophat</cmd>
+      <cmd>export PATH=[PATH]:[PGE_ROOT]/rnaseq-pipeline/bowtie2</cmd>
       <cmd>cd [JobDir]</cmd>
       <!-- cleanup from previous executions -->
       <cmd>rm -rf thout</cmd>
@@ -20,14 +23,5 @@
            --genome_index [genome_index] --exe_dir [PGE_ROOT]/rnaseq-pipeline/tophat-test --data_dir [data_dir] --output_dir [output_dir] --sample_id [sample_id]</cmd>
     </exe>
   
-	<!-- CAS Crawler directives -->
-<!-- 	<output>
-		<dir path="[JobDir]/[output_dir]" createBeforeExe="false">
-			metadata extractors matching specific files
-			<files regExp=".*accepted_hits\.bam"
-				metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
-				args="[LABCAS_HOME]/workflows/rnaseq-pipeline/pge-configs/metout.xml" />
-		</dir>
-	</output>
- -->
+
 </pgeConfig>
