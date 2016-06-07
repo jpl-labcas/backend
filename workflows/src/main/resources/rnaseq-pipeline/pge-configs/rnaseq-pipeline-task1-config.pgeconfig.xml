@@ -9,9 +9,8 @@
 	<!-- PGE commands -->
     <!-- FIXME: tophat-test -->
     <exe dir="[JobDir]" shell="/bin/bash">
-      <!-- must update PATH with location of executables -->
-      <cmd>export PATH=[PATH]:[PGE_ROOT]/rnaseq-pipeline/tophat</cmd>
-      <cmd>export PATH=[PATH]:[PGE_ROOT]/rnaseq-pipeline/bowtie2</cmd>
+      <!-- must update PATH with location of executables (all in one line!) -->
+      <cmd>export PATH=[PATH]:[PGE_ROOT]/rnaseq-pipeline/tophat:[PGE_ROOT]/rnaseq-pipeline/bowtie2</cmd>
       <cmd>cd [JobDir]</cmd>
       <!-- cleanup from previous executions -->
       <cmd>rm -rf thout</cmd>
