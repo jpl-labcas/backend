@@ -11,7 +11,8 @@
     <exe dir="[JobDir]" shell="/bin/bash">
       <cmd>cd [JobDir]</cmd>
       <!-- cleanup from previous executions -->
-      <cmd>rm -rf *</cmd>
+      <cmd>rm -rf thout</cmd>
+      <cmd>rm tophat.log</cmd>
       <!-- execute command -->
       <cmd>python [LABCAS_HOME]/workflows/rnaseq-pipeline/pges/rnaseq-pipeline-task1.py\
            --num_threads [num_threads] --gene_transcript_file [gene_transcript_file]\
