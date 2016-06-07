@@ -16,4 +16,24 @@
 -->
 <cas:conditions xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
+ <condition id="urn:edrn:TophatOutputFileExistenceCondition" 
+            name="Tophat Output File Existence Condition" 
+            class="gov.nasa.jpl.edrn.labcas.common.conditions.FileExistenceCondition">
+            <configuration>
+            <property name="mustBeOlderThanInSecs" value="1"/>
+            <property name="filepath" 
+                      value="[PGE_ROOT]/rnaseq-pipeline/jobs/$sample_id/thout/accepted_hits.bam" envReplace="true" />
+        </configuration>
+  </condition>
+
+ <condition id="urn:edrn:SamtoolsOutputFileExistenceCondition" 
+            name="Samtools Output File Existence Condition" 
+            class="gov.nasa.jpl.edrn.labcas.common.conditions.FileExistenceCondition">
+            <configuration>
+            <property name="mustBeOlderThanInSecs" value="1"/>
+            <property name="filepath" 
+                      value="[PGE_ROOT]/rnaseq-pipeline/jobs/$sample_id/thout/sorted.sam" envReplace="true" />
+        </configuration>
+  </condition>
+
 </cas:conditions>

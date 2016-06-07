@@ -22,6 +22,15 @@ public class FileExistenceCondition implements WorkflowConditionInstance {
 		// retrieve condition configuration
 		String filepath = config.getProperty("filepath");
 		int mustBeOlderThanInSecs = Integer.parseInt(config.getProperty("mustBeOlderThanInSecs"));
+		
+		// replace $key with corresponding metadata value
+		if (filepath.indexOf('$')>=0) {
+			for (String key : metadata.getAllKeys()) {
+				if (filepath.indexOf("$"+key)>=0) {
+					filepath = filepath.replaceAll("\\$"+key, metadata.getMetadata(key));
+				}
+			}
+		}
 
 		// loop over expected output files
 		Long now = System.currentTimeMillis();

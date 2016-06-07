@@ -82,7 +82,9 @@
   
   <task id="urn:edrn:RnaSequencePipelineTask2" name="RnaSequencePipelineTask2" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
   
-    <conditions />
+    <conditions>
+	   <condition id="urn:edrn:TophatOutputFileExistenceCondition" />
+	</conditions>
   
     <configuration>
       
@@ -109,7 +111,9 @@
   
   <task id="urn:edrn:RnaSequencePipelineTask3" name="RnaSequencePipelineTask3" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
   
-    <conditions />
+    <conditions>
+	   <condition id="urn:edrn:SamtoolsOutputFileExistenceCondition" />
+	</conditions>
   
     <configuration>
       
