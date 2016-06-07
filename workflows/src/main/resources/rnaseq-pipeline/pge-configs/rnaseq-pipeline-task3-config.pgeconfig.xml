@@ -9,7 +9,8 @@
 	<!-- PGE commands -->
     <exe dir="[JobDir]" shell="/bin/bash">
       <cmd>cd [JobDir]/thout</cmd>
-      <cmd>[LABCAS_HOME]/workflows/rnaseq-pipeline/pges-test/htseq-count -r name sorted.sam ../../genes.gtf  > gene.counts</cmd>
+      <cmd>export PATH=[PATH]:[PGE_ROOT]/rnaseq-pipeline</cmd>
+      <cmd>htseq-count -r name sorted.sam ../genes.gtf  > gene.counts</cmd>
     </exe>
 
 
