@@ -7,6 +7,8 @@
 import argparse
 import os
 
+INPUT_FILE_EXTENSIONS = ['.sra','.fastq','.gtf','.fa','.bt2']
+
 if __name__ == '__main__':
     
     # parse command line arguments
@@ -36,13 +38,18 @@ if __name__ == '__main__':
                                                   args_dict['output_dir'], 
                                                   args_dict['genome_index'])
 
-    # loop for .fastq files in sample directory
+    # symlink input data into working directory
+    # look for .fastq files in sample directory
     input_dir = os.path.join(args_dict['data_dir'], args_dict['sample_id'])
     for f in os.listdir(input_dir):
-         if os.path.isfile(os.path.join(input_dir, f)):
+        input_file = os.path.join(input_dir, f)
+        if os.path.isfile(input_file):
             file_name, file_extension = os.path.splitext(f)
             if file_extension == '.fastq':
                 command += " %s" % f
+            if file_extension in INPUT_FILE_EXTENSIONS:
+                if not os.path.exists(f):
+                    os.symlink(input_file, f)
 
     # execute command
     print "Executing command: %s" % command
