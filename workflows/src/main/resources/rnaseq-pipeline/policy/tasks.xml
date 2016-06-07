@@ -66,7 +66,7 @@
       <!-- <property name="PCS_ActionRepoFile" value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml" envReplace="true" /> -->
      
       <!-- specific script arguments -->
-      <property name="num_threads" value="24" />
+      <property name="num_threads" value="12" />
       <property name="gene_transcript_file" value="genes" />
       <property name="data_dir" value="/data/EDRN" />
       <property name="output_dir" value="thout" />

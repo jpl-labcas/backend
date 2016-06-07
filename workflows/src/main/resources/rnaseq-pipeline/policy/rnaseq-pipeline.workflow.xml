@@ -3,8 +3,8 @@
   <tasks>
     <task id="urn:edrn:RnaSequencePipelineInit" />
     <task id="urn:edrn:RnaSequencePipelineTask1" />
-    <task id="urn:edrn:RnaSequencePipelineTask2" />    
-    <task id="urn:edrn:RnaSequencePipelineTask3" />
+    <!-- <task id="urn:edrn:RnaSequencePipelineTask2" />    
+    <task id="urn:edrn:RnaSequencePipelineTask3" /> -->
   </tasks>
 
 </cas:workflow>

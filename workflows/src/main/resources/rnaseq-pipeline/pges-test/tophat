@@ -1,17 +1,12 @@
 #!/usr/bin/env python
-
-# example standalone invocation: 
-# tophat -p 24 -G genes -o thout genome ERR164503_1.fastq ERR164503_2.fastq
-
 import sys
 import os
 from datetime import datetime
 
-#print 'Number of arguments:', len(sys.argv), 'arguments.'
-#print 'Argument List:', str(sys.argv)
+print 'Number of arguments:', len(sys.argv), 'arguments.'
+print 'Argument List:', str(sys.argv)
 
 # assemble outpit directory path
-#job_dir = '/usr/local/labcas_pges/rnaseq-pipeline/jobs/ERR164503/' # FIXME
 job_dir = os.getcwd()
 output_dir = os.path.join(job_dir, sys.argv[6])
 print 'output_dir=%s' % output_dir
@@ -32,3 +27,5 @@ if os.path.exists(file):
 f = open(file, "w")
 f.write( str(datetime.now()) + "\n" )
 f.close()
+
+print "Output file=%s" % file
