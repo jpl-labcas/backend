@@ -7,11 +7,12 @@
     </customMetadata>
 
 	<!-- PGE commands -->
+    <!-- FIXME: tophat-test -->
     <exe dir="[JobDir]" shell="/bin/bash">
       <cmd>cd [JobDir]</cmd>
       <cmd>python [LABCAS_HOME]/workflows/rnaseq-pipeline/pges/rnaseq-pipeline-task1.py\
            --num_threads [num_threads] --gene_transcript_file [gene_transcript_file]\
-           --genome_index [genome_index] --exe_dir [PGE_ROOT]/rnaseq-pipeline/tophat --data_dir [data_dir] --output_dir [output_dir] --sample_id [sample_id]</cmd>
+           --genome_index [genome_index] --exe_dir [PGE_ROOT]/rnaseq-pipeline/tophat-test --data_dir [data_dir] --output_dir [output_dir] --sample_id [sample_id]</cmd>
     </exe>
   
 	<!-- CAS Crawler directives -->
