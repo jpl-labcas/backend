@@ -9,19 +9,9 @@
 	<!-- PGE commands -->
     <exe dir="[JobDir]" shell="/bin/bash">
       <cmd>cd [JobDir]/thout</cmd>
-      <cmd>[LABCAS_HOME]/workflows/rnaseq-pipeline/pges-test/samtools sort -n accepted_hits.bam -o sorted.bam</cmd>
-      <cmd>[LABCAS_HOME]/workflows/rnaseq-pipeline/pges-test/samtools view -h sorted.bam > sorted.sam</cmd>
+      <cmd>export PATH=[PATH]:[PGE_ROOT]/rnaseq-pipeline/samtools_install/bin</cmd>
+      <cmd>samtools sort -n accepted_hits.bam -o sorted.bam</cmd>
+      <cmd>samtools view -h sorted.bam > sorted.sam</cmd>
     </exe>
-
-
-	<!-- CAS Crawler directives -->
-<!-- 	<output>
-		<dir path="[JobDir]/thout" createBeforeExe="false">
-			metadata extractors matching specific files
-			<files regExp=".*sorted\.sam"
-				metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
-				args="[LABCAS_HOME]/workflows/rnaseq-pipeline/pge-configs/metout.xml" />
-		</dir>
-	</output> -->
 
 </pgeConfig>
