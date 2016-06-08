@@ -6,5 +6,6 @@
     <metadata key="ProductName" val="[Filename]"/>
     <metadata key="genome_index" val="[genome_index]"/>
     <metadata key="sample_id" val="[sample_id]"/>
+    <metadata key="OwnerGroup" val="[OwnerGroup]"/>
     
 </metadataList>

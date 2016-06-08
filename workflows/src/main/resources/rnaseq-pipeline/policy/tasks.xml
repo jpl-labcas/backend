@@ -34,6 +34,12 @@
       <property name="input.sample_id.description" value="Unique identifier of the lung adenocarcinoma sample to be used." />
       <property name="input.sample_id.value.1" value="ERR164503" />
       
+      <property name="input.dataset.OwnerGroup.type" value="urn:ldap:attributes:dn" />
+      <property name="input.dataset.OwnerGroup.title" value="Owner Group" />
+      <property name="input.dataset.OwnerGroup.description" value="Distinguished Name of the person that owns the data." />
+      <property name="input.dataset.OwnerGroup.required" value="true" />
+      <property name="input.dataset.OwnerGroup.visible" value="false" />
+      
       <!-- output products -->
       <property name="output.product.type" value="urn:edrn:RnaSequencePipelineOutputFile"/>
       
@@ -42,6 +48,7 @@
     <requiredMetFields>
       <metfield name="genome_index" />
       <metfield name="sample_id" />
+      <metfield name="OwnerGroup" />
     </requiredMetFields>
     
   </task>

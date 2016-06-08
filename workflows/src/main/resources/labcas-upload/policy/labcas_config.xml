@@ -89,7 +89,7 @@
     <property name="input.dataset.ResultsAndConclusionSummary.description" value="Summary of Results And Conclusion" />
     <property name="input.dataset.ResultsAndConclusionSummary.required" value="false" />
     
-    <property name="input.dataset.OwnerGroup.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.dataset.OwnerGroup.type" value="urn:ldap:attributes:dn" />
     <property name="input.dataset.OwnerGroup.title" value="Owner Group" />
     <property name="input.dataset.OwnerGroup.description" value="Distinguished Name of the person that owns the data" />
     <property name="input.dataset.OwnerGroup.required" value="true" />

@@ -81,6 +81,11 @@
       <property name="input.dataset.ReferenceUrl.description" value="URL at remote external archive." />
       <property name="input.dataset.ReferenceUrl.required" value="true" />
       
+      <property name="input.dataset.OwnerGroup.type" value="urn:ldap:attributes:dn" />
+      <property name="input.dataset.OwnerGroup.title" value="Owner Group" />
+      <property name="input.dataset.OwnerGroup.description" value="Distinguished Name of the person that owns the data." />
+      <property name="input.dataset.OwnerGroup.required" value="true" />
+      <property name="input.dataset.OwnerGroup.visible" value="false" />
       
     </configuration>
           
@@ -95,6 +100,7 @@
       <metfield name="Stage" />
       <metfield name="ReferenceId" />
       <metfield name="ReferenceUrl" />
+      <metfield name="OwnerGroup" />
             
     </requiredMetFields>
     
