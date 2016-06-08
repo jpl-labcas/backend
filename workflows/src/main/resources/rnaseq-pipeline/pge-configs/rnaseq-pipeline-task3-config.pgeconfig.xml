@@ -10,7 +10,7 @@
     <exe dir="[JobDir]" shell="/bin/bash">
       <cmd>cd [JobDir]/thout</cmd>
       <cmd>export PATH=[PATH]:[PGE_ROOT]/rnaseq-pipeline</cmd>
-      <cmd>htseq-count -r name sorted.sam ../genes.gtf  > gene.counts</cmd>
+      <cmd>htseq-count -r name sorted.sam ../genes.gtf  > [sample_id].gene.counts</cmd>
     </exe>
 
 
