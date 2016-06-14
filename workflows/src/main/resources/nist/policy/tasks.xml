@@ -53,8 +53,8 @@
       <property name="input.dataset.Date.required" value="true" />
       
       <property name="input.dataset.OwnerGroup.type" value="urn:ldap:attributes:dn" />
-      <property name="input.dataset.OwnerGroup.title" value="Owner Group" />
-      <property name="input.dataset.OwnerGroup.description" value="Distinguished Name of the person that owns the data." />
+      <property name="input.dataset.OwnerGroup.title" value="Authorized Groups" />
+      <property name="input.dataset.OwnerGroup.description" value="Groups that are authorized to view and download these data" />
       <property name="input.dataset.OwnerGroup.required" value="true" />
       <property name="input.dataset.OwnerGroup.visible" value="false" />
       
