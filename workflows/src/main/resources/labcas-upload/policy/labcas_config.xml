@@ -46,12 +46,12 @@
     
     <property name="input.dataset.DataCustodian.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.dataset.DataCustodian.title" value="Data Custodian" />
-    <property name="input.dataset.DataCustodian.description" value="Full name of dataset custodian" />
+    <property name="input.dataset.DataCustodian.description" value="Name of the dataset custodian in 'Last, First' format" />
     <property name="input.dataset.DataCustodian.required" value="true" />
     
     <property name="input.dataset.DataCustodianEmail.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.dataset.DataCustodianEmail.title" value="Data Custodian Email" />
-    <property name="input.dataset.DataCustodianEmail.description" value="Email address of dataset custodian" />
+    <property name="input.dataset.DataCustodianEmail.description" value="Email address of the dataset custodian" />
     <property name="input.dataset.DataCustodianEmail.required" value="true" />
     
     <property name="input.dataset.CollaborativeGroup.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#collaborativeGroup" />

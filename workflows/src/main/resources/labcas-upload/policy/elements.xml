@@ -54,12 +54,12 @@
   </element>
 
   <element id="DataCustodian" name="Data Custodian">
-    <description>Full name of dataset custodian</description>
+    <description>Name of the dataset custodian in 'Last, First' format</description>
     <dcElement />
   </element>
 
   <element id="DataCustodianEmail" name="Data Custodian Email">
-    <description>Email address of dataset custodian</description>
+    <description>Email address of the dataset custodian</description>
     <dcElement />
   </element>
 
