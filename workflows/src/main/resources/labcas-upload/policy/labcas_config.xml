@@ -1,6 +1,9 @@
 <!-- XML snippet containing configuration for default ECAS metadata fields -->
 
 <configuration>
+
+    <!--  UI workflow order -->
+    <property name="workflow.order" value="1" />
     
     <!-- dataset (aka product type) metadata -->    
     

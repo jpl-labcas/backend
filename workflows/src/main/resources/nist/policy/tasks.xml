@@ -23,6 +23,9 @@
     
     <configuration>
     
+      <!--  UI workflow order -->
+      <property name="workflow.order" value="2" />
+    
       <!-- fixed dataset metadata -->
       <property name="dataset.ParentDatasetId" value="NistProduct" />
     

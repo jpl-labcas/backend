@@ -22,6 +22,9 @@
   
     <configuration>
     
+      <!--  UI workflow order -->
+      <property name="workflow.order" value="4" />
+    
       <!-- input parameters -->
             
       <property name="input.genome_index.type" value="string" />
