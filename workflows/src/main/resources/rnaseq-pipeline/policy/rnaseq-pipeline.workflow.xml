@@ -1,4 +1,4 @@
-<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="RnaSequencePipelineWorkflow" id="urn:edrn:RnaSequencePipelineWorkflow">
+<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="RNA Sequence Pipeline Workflow" id="urn:edrn:RnaSequencePipelineWorkflow">
 
   <tasks>
     <task id="urn:edrn:RnaSequencePipelineInit" />
