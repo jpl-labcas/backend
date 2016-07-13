@@ -96,7 +96,6 @@
           
     <requiredMetFields>
     
-      <metfield name="DatasetId" />
       <metfield name="Title" />
       <metfield name="OrganSite" />
       <metfield name="AgeAtDiagnosis" />
@@ -106,6 +105,7 @@
       <metfield name="ReferenceId" />
       <metfield name="ReferenceUrl" />
       <metfield name="OwnerGroup" />
+      <metfield name="DatasetId" />
             
     </requiredMetFields>
     

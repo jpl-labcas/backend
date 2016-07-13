@@ -28,9 +28,6 @@
       
     <requiredMetFields>
     
-      <metfield name="DatasetId" />
-      <!-- <metfield name="Description" /> -->
-      
       <metfield name="ProtocolName" />
       <metfield name="ProtocolId" />
       <metfield name="DatasetName" />
@@ -39,6 +36,9 @@
       <metfield name="DataCustodianEmail" />
       <metfield name="CollaborativeGroup" />
       <metfield name="OwnerGroup" />
+      
+      <metfield name="DatasetId" />
+      <!-- <metfield name="Description" /> -->
       
     </requiredMetFields>
     

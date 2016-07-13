@@ -67,12 +67,12 @@
           
     <requiredMetFields>
     
-      <metfield name="DatasetId" />
       <metfield name="LeadPI" />
       <metfield name="Instrument" />
       <metfield name="Lab" />
       <metfield name="Date" />
       <metfield name="OwnerGroup" />
+      <metfield name="DatasetId" />
             
     </requiredMetFields>
     
