@@ -13,7 +13,8 @@
     -->      
     <property name="input.dataset.DatasetId.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.dataset.DatasetId.title" value="Dataset Identifier" />
-    <property name="input.dataset.DatasetId.description" value="Unique identifier for this dataset (letters only, no spaces)" />
+    <property name="input.dataset.DatasetId.description" 
+              value="Enter a unique identifier for this data. [Short Protocol Name]+[Site Abbreviation]+[PI Last Name]" />
     <property name="input.dataset.DatasetId.required" value="true" />
         
     <property name="input.dataset.Description.type" value="http://www.w3.org/2001/XMLSchema/string" />
@@ -24,7 +25,8 @@
     <!--  ECAS metadata -->
     <property name="input.dataset.ProtocolName.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#protocolName" />
     <property name="input.dataset.ProtocolName.title" value="Protocol Name" />
-    <property name="input.dataset.ProtocolName.description" value="String from Protocol Name controlled vocabulary" />
+    <property name="input.dataset.ProtocolName.description" 
+              value="Begin typing a protocol name or id. A list of options will appear. Don’t see the protocol you want? Email edrn-ic@jpl.nasa.gov" />
     <property name="input.dataset.ProtocolName.required" value="true" />
     
     <property name="input.dataset.ProtocolId.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#protocolId" />
@@ -34,7 +36,7 @@
     
     <property name="input.dataset.LeadPI.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#principalInvestigator" />
     <property name="input.dataset.LeadPI.title" value="Lead PI" />
-    <property name="input.dataset.LeadPI.description" value="Lead Principal Investigator" />
+    <property name="input.dataset.LeadPI.description" value="Begin typing an EDRN investigator name. A list of options will appear." />
     <property name="input.dataset.LeadPI.required" value="true" />
     
     <property name="input.dataset.DatasetName.type" value="http://www.w3.org/2001/XMLSchema/string" />
@@ -94,7 +96,8 @@
     
     <property name="input.dataset.OwnerGroup.type" value="urn:ldap:attributes:dn" />
     <property name="input.dataset.OwnerGroup.title" value="Authorized Groups" />
-    <property name="input.dataset.OwnerGroup.description" value="Groups that are authorized to view and download these data" />
+    <property name="input.dataset.OwnerGroup.description" 
+              value="Select or remove the groups with whom you’d like to share this data." />
     <property name="input.dataset.OwnerGroup.required" value="true" />
     <property name="input.dataset.OwnerGroup.visible" value="false" />
     

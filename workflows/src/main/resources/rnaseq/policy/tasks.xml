@@ -35,7 +35,8 @@
       <!-- input dataset metadata -->
       <property name="input.dataset.DatasetId.type" value="http://www.w3.org/2001/XMLSchema/string" />
       <property name="input.dataset.DatasetId.title" value="Dataset Identifier" />
-      <property name="input.dataset.DatasetId.description" value="Unique identifier for this dataset (letters only, no spaces)" />
+      <property name="input.dataset.DatasetId.description" 
+                value="Enter a unique identifier for this data. [Short Protocol Name]+[Site Abbreviation]+[PI Last Name]" />
       <property name="input.dataset.DatasetId.required" value="true" />
           
       <property name="input.dataset.Title.type" value="http://www.w3.org/2001/XMLSchema/string" />
@@ -86,7 +87,8 @@
       
       <property name="input.dataset.OwnerGroup.type" value="urn:ldap:attributes:dn" />
       <property name="input.dataset.OwnerGroup.title" value="Authorized Groups" />
-      <property name="input.dataset.OwnerGroup.description" value="Groups that are authorized to view and download these data" />
+      <property name="input.dataset.OwnerGroup.description" 
+                value="Select or remove the groups with whom you’d like to share this data." />
       <property name="input.dataset.OwnerGroup.required" value="true" />
       <property name="input.dataset.OwnerGroup.visible" value="false" />
       
