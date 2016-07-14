@@ -57,7 +57,7 @@
       <property name="input.dataset.Date.required" value="true" />
       
       <property name="input.dataset.OwnerGroup.type" value="urn:ldap:attributes:dn" />
-      <property name="input.dataset.OwnerGroup.title" value="Shared data with..." />
+      <property name="input.dataset.OwnerGroup.title" value="Share data with..." />
       <property name="input.dataset.OwnerGroup.description" 
                 value="Select or remove the groups with whom you’d like to share this data." />
       <property name="input.dataset.OwnerGroup.required" value="true" />
