@@ -1,5 +1,6 @@
 #!/bin/bash
-. ./env.sh
+
+. $LABCAS_HOME/env.sh
 
 # Start all LabCAS backend services
 
