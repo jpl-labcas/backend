@@ -99,8 +99,29 @@
     
   </task>
   
+  <!-- Task that runs the R script -->
+  <task id="urn:edrn:NistExecTask" name="NistExecTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+  
+    <conditions />
+  
+    <configuration>
+      <property name="PGETask_Name" value="NistExecTask" />
+      <property name="PGETask_ConfigFilePath"
+        value="[LABCAS_HOME]/workflows/nist/pge-configs/nist-exec.pgeconfig.xml"
+        envReplace="true" />
+      <property name="PGETask_DumpMetadata" value="true" />
+      <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
+      <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true" />
+      <property name="PCS_MetFileExtension" value="met" />
+      <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
+      <property name="PCS_ActionRepoFile" value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml"
+        envReplace="true" />
+    </configuration>
+    
+  </task>
+  
   <!-- Task that builds the application URL, adds it to the metadata -->
-  <task id="urn:edrn:NistExecTask" name="NistExecTask" class="gov.nasa.jpl.edrn.labcas.tasks.nist.NistExecuteTaskInstance">
+  <task id="urn:edrn:NistExec2Task" name="NistExec2Task" class="gov.nasa.jpl.edrn.labcas.tasks.nist.NistExecuteTaskInstance">
     <conditions />
     <configuration>
       <property name="baseURL" value="http://shiny.jpl.nasa.gov/" />
