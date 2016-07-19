@@ -38,5 +38,23 @@
       </keyval>
     </metadata>
   </type>
+  
+  <type id="urn:edrn:RnaSequencePipelineInputFile" name="RnaSequencePipelineInputFile">
+    <repository path="file://[LABCAS_ARCHIVE]/rnaseq-pipeline" />
+    <versioner class="org.apache.oodt.cas.filemgr.versioning.BasicVersioner" />
+    <description>Fastq sequence files used by RnaSequencePipeline.</description>
+    
+    <metExtractors>
+      <extractor class="gov.nasa.jpl.edrn.labcas.extractors.XmlFileMetExtractor">
+          <configuration/>
+      </extractor>
+    </metExtractors>
+    <metadata>
+      <keyval>
+        <key>sample_id</key>
+        <val>[sample_id]</val>
+      </keyval>
+    </metadata>
+  </type>
 
 </cas:producttypes>

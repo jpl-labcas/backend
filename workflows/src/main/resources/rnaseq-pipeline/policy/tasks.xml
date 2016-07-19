@@ -44,6 +44,9 @@
       <property name="input.dataset.OwnerGroup.required" value="true" />
       <property name="input.dataset.OwnerGroup.visible" value="false" />
       
+      <!-- input products -->
+      <property name="input.product.type" value="urn:edrn:RnaSequencePipelineInputFile"/>
+      
       <!-- output products -->
       <property name="output.product.type" value="urn:edrn:RnaSequencePipelineOutputFile"/>
       

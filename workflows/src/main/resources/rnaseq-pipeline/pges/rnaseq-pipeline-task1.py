@@ -35,7 +35,7 @@ if __name__ == '__main__':
                                                args_dict['output_dir'], 
                                                args_dict['genome_index'])
 
-    # symlink input data into working directory
+    # symlink or copy input data into working directory
     # look for .fastq files in sample directory
     input_dir = os.path.join(args_dict['data_dir'], args_dict['sample_id'])
     for f in os.listdir(input_dir):
@@ -46,7 +46,13 @@ if __name__ == '__main__':
                 command += " %s" % f
             if file_extension in INPUT_FILE_EXTENSIONS:
                 if not os.path.exists(f):
-                    os.symlink(input_file, f)
+                    if file_extension == '.fastq':
+                        # must copy files that we want to publish to the same directory where the metadata file will be created
+                        # otherwise the FM will not be able to publish the file
+                        os.system('cp '+ input_file + ' ' + f)
+                    else:
+                        # symlink other files
+                        os.symlink(input_file, f)
 
     # execute command
     print "Executing command: %s" % command

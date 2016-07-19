@@ -22,6 +22,11 @@
 				metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
 				args="[LABCAS_HOME]/workflows/rnaseq-pipeline/pge-configs/metout.xml" />
 		</dir>
-	</output>
+        <dir path="[JobDir]" createBeforeExe="false">
+          <files regExp=".*\.fastq"
+            metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
+            args="[LABCAS_HOME]/workflows/rnaseq-pipeline/pge-configs/metin.xml" />
+        </dir>
+  </output>
 
 </pgeConfig>

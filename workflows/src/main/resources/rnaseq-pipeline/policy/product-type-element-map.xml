@@ -17,6 +17,10 @@
 -->
 <cas:producttypemap xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
+ <type id="urn:edrn:RnaSequencePipelineInputFile" parent="urn:oodt:LabcasProduct">
+   <element id="sample_id" />
+ </type>
+ 
  <type id="urn:edrn:RnaSequencePipelineOutputFile" parent="urn:oodt:LabcasProduct">
    <element id="genome_index" />
    <element id="sample_id" />
