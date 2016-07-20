@@ -35,5 +35,15 @@
                       value="[PGE_ROOT]/rnaseq/jobs/$DatasetId/thout/sorted.sam" envReplace="true" />
         </configuration>
   </condition>
+  
+  <condition id="urn:edrn:HtseqCountsOutputFileExistenceCondition" 
+            name="Htseq-counts Output File Existence Condition" 
+            class="gov.nasa.jpl.edrn.labcas.common.conditions.FileExistenceCondition">
+            <configuration>
+            <property name="mustBeOlderThanInSecs" value="1"/>
+            <property name="filepath" 
+                      value="[PGE_ROOT]/rnaseq/jobs/$DatasetId/thout/gene.counts" envReplace="true" />
+        </configuration>
+  </condition>
 
 </cas:conditions>

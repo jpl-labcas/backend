@@ -223,14 +223,33 @@
     
   </task>
   
-  <!-- Task that copies all relevant input/output files from $PGE_ROOT/rnaseq/$datasetId to  $LABCAS_STAGING/$DatasetId,
-       then crawls $LABCAS_STAGING/$DatasetId and publishes files to $LABCAS_ARCHIVE/$ParentDatasetId/$DatasetId -->
+  <!-- Task that copies all relevant input/output files from $PGE_ROOT/rnaseq/$datasetId to  $LABCAS_STAGING/$DatasetId -->
+  <task id="urn:edrn:RnaSeqCopyTask" name="RnaSeqCopyTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+  
+    <conditions>
+     <condition id="urn:edrn:HtseqCountsOutputFileExistenceCondition" />
+    </conditions>
+  
+    <configuration>
+      <property name="PGETask_Name" value="RnaSeqCopyTask" />
+      <property name="PGETask_ConfigFilePath" 
+                value="[LABCAS_HOME]/workflows/rnaseq/pge-configs/rnaseq-copy.pgeconfig.xml" envReplace="true" />
+      <property name="PGETask_DumpMetadata" value="true" />
+      <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
+      <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true" />
+      <property name="PCS_MetFileExtension" value="met" />
+      <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
+    </configuration>
+    
+  </task>
+  
+  <!-- Task crawls $LABCAS_STAGING/$DatasetId and publishes files to $LABCAS_ARCHIVE/$ParentDatasetId/$DatasetId -->
   <task id="urn:edrn:RnaSeqCrawlTask" name="RnaSeqCrawlTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
   
     <conditions />
   
     <configuration>
-      <property name="PGETask_Name" value="LabcasUploadExecuteTask" />
+      <property name="PGETask_Name" value="RnaSeqCrawlTask" />
       <property name="PGETask_ConfigFilePath" 
                 value="[LABCAS_HOME]/workflows/rnaseq/pge-configs/rnaseq-crawler.pgeconfig.xml" envReplace="true" />
       <property name="PGETask_DumpMetadata" value="true" />

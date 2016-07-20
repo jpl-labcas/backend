@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pgeConfig>
+
+    <customMetadata>
+      <metadata key="ProductionDateTime" val="[DATE.UTC]" />
+      <metadata key="JobDir" val="[PGE_ROOT]/rnaseq/jobs/[DatasetId]" />
+    </customMetadata>
+
+	<!-- PGE commands -->
+	<exe dir="[JobDir]" shell="/bin/bash">
+        <cmd>mkdir -p [LABCAS_STAGING]/[DatasetId]</cmd>
+		<cmd>cp *.sra [LABCAS_STAGING]/[DatasetId]</cmd>
+        <cmd>cp *.fastq [LABCAS_STAGING]/[DatasetId]</cmd>
+        <cmd>cp *.bt2 [LABCAS_STAGING]/[DatasetId]</cmd>
+        <cmd>cp *.gtf [LABCAS_STAGING]/[DatasetId]</cmd>
+        <cmd>cp *.fa [LABCAS_STAGING]/[DatasetId]</cmd>
+        <cmd>cp thout/*.counts [LABCAS_STAGING]/[DatasetId]</cmd>
+        <cmd>cp thout/*.bam [LABCAS_STAGING]/[DatasetId]</cmd>
+        <cmd>cp thout/*.sam [LABCAS_STAGING]/[DatasetId]</cmd>
+		<cmd>ls -l [LABCAS_STAGING]/[DatasetId]</cmd>
+	</exe>
+
+</pgeConfig>

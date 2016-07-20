@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadataList>
             
+    <metadata key="ProductType" val="[DatasetId]"/>
     <metadata key="DatasetId" val="[DatasetId]"/>
     <metadata key="ParentDatasetId" val="[ParentDatasetId]"/>
     <metadata key="Version" val="[Version]"/>
