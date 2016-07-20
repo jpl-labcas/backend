@@ -4,8 +4,17 @@
   
     <!-- initializes product type, version, defines custom metadata -->
     <task id="urn:edrn:RnaSeqInitTask" />
-        
-    <!-- crawls the staging area and publishes the files -->
+    
+    <!-- tophat -->
+    <task id="urn:edrn:RnaSequenceTask1" />
+    
+    <!-- samtools -->
+    <task id="urn:edrn:RnaSequenceTask2" />
+    
+    <!-- htseq-count -->
+    <task id="urn:edrn:RnaSequenceTask3" />
+    
+    <!-- copies files to the staging area, then crawls the staging area and publishes the files -->
     <task id="urn:edrn:RnaSeqCrawlTask" />
     
   </tasks>

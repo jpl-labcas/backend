@@ -36,8 +36,9 @@
       <property name="input.dataset.DatasetId.type" value="http://www.w3.org/2001/XMLSchema/string" />
       <property name="input.dataset.DatasetId.title" value="Dataset Identifier" />
       <property name="input.dataset.DatasetId.description" 
-                value="Enter a unique identifier for this data. [Short Protocol Name]+[Site Abbreviation]+[PI Last Name]" />
+                value="Unique identifier of the lung adenocarcinoma sample to be used." />
       <property name="input.dataset.DatasetId.required" value="true" />
+      <property name="input.dataset.DatasetId.value.1" value="ERR164503" />
           
       <property name="input.dataset.Title.type" value="http://www.w3.org/2001/XMLSchema/string" />
       <property name="input.dataset.Title.title" value="Title" />
@@ -92,6 +93,12 @@
       <property name="input.dataset.OwnerGroup.required" value="true" />
       <property name="input.dataset.OwnerGroup.visible" value="false" />
       
+      <property name="input.GenomeIndex.type" value="string" />
+      <property name="input.GenomeIndex.title" value="Genome Index" />
+      <property name="input.GenomeIndex.description" value="The basename of the genome index to be searched." />
+      <property name="input.GenomeIndex.value.1" value="genome" />
+      
+      
     </configuration>
           
     <requiredMetFields>
@@ -106,12 +113,118 @@
       <metfield name="ReferenceUrl" />
       <metfield name="OwnerGroup" />
       <metfield name="DatasetId" />
+      <metfield name="GenomeIndex" />
             
     </requiredMetFields>
     
   </task>
   
-  <!-- Task that crawls $LABCAS_STAGING/$DatasetId and publishes files to $LABCAS_ARCHIVE/$ParentDatasetId/$DatasetId -->
+  <!-- 
+       executable: tophat
+       input files: ERR164552.sra, ERR164552_1.fastq, ERR164552_2.fastq, genes.gtf , genome.X.bt2, genome.fa, genome.rev.X.bt2
+       output files: thout/accepted_hits.bam 
+  -->
+  <task id="urn:edrn:RnaSequenceTask1" name="RnaSequenceTask1" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+  
+    <conditions />
+  
+    <configuration>
+      
+      <!-- OODT Workflow arguments -->
+      <property name="PGETask_Name" value="RnaSequenceTask1" />
+      <property name="PGETask_ConfigFilePath" 
+                value="[LABCAS_HOME]/workflows/rnaseq/pge-configs/rnaseq-task1-config.pgeconfig.xml"
+                envReplace="true" />
+      <property name="PGETask_DumpMetadata" value="true" />
+      <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
+      <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true" />
+      <property name="PCS_MetFileExtension" value="met" />
+      <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
+      <!-- <property name="PCS_ActionRepoFile" value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml" envReplace="true" /> -->
+     
+      <!-- specific script arguments -->
+      <property name="num_threads" value="12" />
+      <property name="gene_transcript_file" value="genes.gtf" />
+      <property name="data_dir" value="[RNASEQ_DATA_DIR]" />
+      <property name="output_dir" value="thout" />
+     
+    </configuration>
+    
+    <requiredMetFields>
+      <metfield name="GenomeIndex" />
+      <metfield name="DatasetId" />
+    </requiredMetFields>
+    
+  </task>
+  
+  <!-- 
+       executable: samtools
+       input files: accepted_hits.bam
+       output files: sorted.sam
+   -->
+  <task id="urn:edrn:RnaSequenceTask2" name="RnaSequenceTask2" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+  
+    <conditions>
+      <condition id="urn:edrn:TophatOutputFileExistenceCondition" />
+    </conditions>
+  
+    <configuration>
+      
+      <!-- OODT Workflow arguments -->
+      <property name="PGETask_Name" value="RnaSequenceTask2" />
+      <property name="PGETask_ConfigFilePath" 
+                value="[LABCAS_HOME]/workflows/rnaseq/pge-configs/rnaseq-task2-config.pgeconfig.xml"
+                envReplace="true" />
+      <property name="PGETask_DumpMetadata" value="true" />
+      <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
+      <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true" />
+      <property name="PCS_MetFileExtension" value="met" />
+      <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
+      <!-- <property name="PCS_ActionRepoFile" value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml" envReplace="true" /> -->
+     
+      <requiredMetFields>
+        <metfield name="DatasetId" />
+      </requiredMetFields>
+    
+    </configuration>
+    
+  </task>
+  
+  <!-- 
+       executable: htseq-count
+       input files: sorted.sam
+       output files: ERR164552.gene.counts
+   -->
+  <task id="urn:edrn:RnaSequenceTask3" name="RnaSequenceTask3" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+  
+    <conditions>
+     <condition id="urn:edrn:SamtoolsOutputFileExistenceCondition" />
+    </conditions>
+  
+    <configuration>
+      
+      <!-- OODT Workflow arguments -->
+      <property name="PGETask_Name" value="RnaSequenceTask3" />
+      <property name="PGETask_ConfigFilePath" 
+                value="[LABCAS_HOME]/workflows/rnaseq/pge-configs/rnaseq-task3-config.pgeconfig.xml"
+                envReplace="true" />
+      <property name="PGETask_DumpMetadata" value="true" />
+      <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
+      <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true" />
+      <property name="PCS_MetFileExtension" value="met" />
+      <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
+      <!-- <property name="PCS_ActionRepoFile" value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml" envReplace="true" /> -->
+     
+      <requiredMetFields>
+        <metfield name="DatasetId" />
+      </requiredMetFields>
+    
+    </configuration>
+    
+  </task>
+  
+  <!-- Task that copies all relevant input/output files from $PGE_ROOT/rnaseq/$datasetId to  $LABCAS_STAGING/$DatasetId,
+       then crawls $LABCAS_STAGING/$DatasetId and publishes files to $LABCAS_ARCHIVE/$ParentDatasetId/$DatasetId -->
   <task id="urn:edrn:RnaSeqCrawlTask" name="RnaSeqCrawlTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
   
     <conditions />

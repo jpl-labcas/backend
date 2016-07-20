@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pgeConfig>
+
+    <customMetadata>
+      <metadata key="ProductionDateTime" val="[DATE.UTC]" />
+      <metadata key="JobDir" val="[PGE_ROOT]/rnaseq/jobs/[DatasetId]" />
+    </customMetadata>
+
+	<!-- PGE commands -->
+    <exe dir="[JobDir]" shell="/bin/bash">
+      <cmd>cd [JobDir]/thout</cmd>
+      <cmd>export PATH=[PATH]:[PGE_ROOT]/rnaseq/samtools_install/bin</cmd>
+      <cmd>samtools sort -n accepted_hits.bam -o sorted.bam</cmd>
+      <cmd>samtools view -h sorted.bam > sorted.sam</cmd>
+    </exe>
+
+</pgeConfig>

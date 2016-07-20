@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pgeConfig>
 
+    <customMetadata>
+      <metadata key="ProductionDateTime" val="[DATE.UTC]" />
+      <metadata key="JobDir" val="[PGE_ROOT]/rnaseq/jobs/[DatasetId]" />
+    </customMetadata>
+
 	<!-- PGE commands -->
 	<exe dir="[JobDir]" shell="/bin/bash">
-		<cmd>cd [LABCAS_STAGING]/[DatasetId]</cmd>
-		<cmd>ls -l</cmd>
+        <cmd>mkdir -p [LABCAS_STAGING]/[DatasetId]</cmd>
+		<cmd>cp *.sra [LABCAS_STAGING]/[DatasetId]</cmd>
+        <cmd>cp *.fastq [LABCAS_STAGING]/[DatasetId]</cmd>
+        <cmd>cp *.bt2 [LABCAS_STAGING]/[DatasetId]</cmd>
+        <cmd>cp *.gtf [LABCAS_STAGING]/[DatasetId]</cmd>
+        <cmd>cp *.fa [LABCAS_STAGING]/[DatasetId]</cmd>
+        <cmd>cp thout/*.counts [LABCAS_STAGING]/[DatasetId]</cmd>
+        <cmd>cp thout/*.bam [LABCAS_STAGING]/[DatasetId]</cmd>
+        <cmd>cp thout/*.sam [LABCAS_STAGING]/[DatasetId]</cmd>
+		<cmd>ls -l [LABCAS_STAGING]/[DatasetId]</cmd>
 	</exe>
-
-	<customMetadata>
-		<metadata key="ProductionDateTime" val="[DATE.UTC]" />
-		<metadata key="JobDir" val="[PGE_ROOT]/crawl/jobs/job-[ProductionDateTime]" />
-	</customMetadata>
 
 	<!-- CAS Crawler directives -->
 	<output>
@@ -21,6 +29,9 @@
             <files regExp=".*\.bt2" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[LABCAS_HOME]/workflows/rnaseq/pge-configs/metout.xml" />
 	        <files regExp=".*\.gtf" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[LABCAS_HOME]/workflows/rnaseq/pge-configs/metout.xml" />
           	<files regExp=".*\.fa" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[LABCAS_HOME]/workflows/rnaseq/pge-configs/metout.xml" />
+            <files regExp=".*\.bam" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[LABCAS_HOME]/workflows/rnaseq/pge-configs/metout.xml" />
+            <files regExp=".*\.sam" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[LABCAS_HOME]/workflows/rnaseq/pge-configs/metout.xml" />
+            <files regExp=".*\.counts" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[LABCAS_HOME]/workflows/rnaseq/pge-configs/metout.xml" />
         </dir>
 	</output>
 
