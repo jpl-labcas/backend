@@ -235,6 +235,7 @@
       <property name="PGETask_ConfigFilePath" 
                 value="[LABCAS_HOME]/workflows/rnaseq/pge-configs/rnaseq-copy.pgeconfig.xml" envReplace="true" />
       <property name="PGETask_DumpMetadata" value="true" />
+      <property name="JOB_DIR" value="[RNASEQ_DATA_DIR]/[DatasetId]" />
       <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
       <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true" />
       <property name="PCS_MetFileExtension" value="met" />

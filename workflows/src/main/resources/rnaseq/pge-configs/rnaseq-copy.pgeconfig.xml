@@ -3,7 +3,11 @@
 
     <customMetadata>
       <metadata key="ProductionDateTime" val="[DATE.UTC]" />
-      <metadata key="JobDir" val="[PGE_ROOT]/rnaseq/jobs/[DatasetId]" />
+      <!-- copy from JOBS output directory -->
+      <!-- <metadata key="JobDir" val="[PGE_ROOT]/rnaseq/jobs/[DatasetId]" /> -->
+      <!-- copy from RNASEQ_DATA_DIR archive directory -->
+      <metadata key="JobDir" val="[RNASEQ_DATA_DIR]/[DatasetId]" />
+      
     </customMetadata>
 
 	<!-- PGE commands -->

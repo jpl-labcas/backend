@@ -6,13 +6,13 @@
     <task id="urn:edrn:RnaSeqInitTask" />
     
     <!-- tophat -->
-    <task id="urn:edrn:RnaSequenceTask1" />
+    <!-- <task id="urn:edrn:RnaSequenceTask1" /> -->
     
     <!-- samtools -->
-    <task id="urn:edrn:RnaSequenceTask2" />
+    <!-- <task id="urn:edrn:RnaSequenceTask2" /> -->
     
     <!-- htseq-count -->
-    <task id="urn:edrn:RnaSequenceTask3" />
+    <!-- <task id="urn:edrn:RnaSequenceTask3" /> -->
     
     <!-- copies files from the job directory to the staging area -->
     <task id="urn:edrn:RnaSeqCopyTask" />
