@@ -140,7 +140,6 @@
       <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true" />
       <property name="PCS_MetFileExtension" value="met" />
       <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
-      <!-- <property name="PCS_ActionRepoFile" value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml" envReplace="true" /> -->
      
       <!-- specific script arguments -->
       <property name="num_threads" value="12" />
@@ -180,7 +179,6 @@
       <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true" />
       <property name="PCS_MetFileExtension" value="met" />
       <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
-      <!-- <property name="PCS_ActionRepoFile" value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml" envReplace="true" /> -->
      
       <requiredMetFields>
         <metfield name="DatasetId" />
@@ -213,7 +211,6 @@
       <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true" />
       <property name="PCS_MetFileExtension" value="met" />
       <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
-      <!-- <property name="PCS_ActionRepoFile" value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml" envReplace="true" /> -->
      
       <requiredMetFields>
         <metfield name="DatasetId" />
@@ -258,8 +255,7 @@
       <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true" />
       <property name="PCS_MetFileExtension" value="met" />
       <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
-      <property name="PCS_ActionRepoFile" 
-                value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml" envReplace="true" />
+      <property name="PCS_ActionRepoFile" value="file:[OODT_HOME]/cas-crawler/policy/crawler-config.xml" envReplace="true" />
     </configuration>
     
   </task>
