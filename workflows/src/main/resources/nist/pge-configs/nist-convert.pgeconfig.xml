@@ -9,7 +9,7 @@
   
   <customMetadata>
     <metadata key="ProductionDateTime" val="[DATE.UTC]" />
-    <metadata key="JobDir" val="[PGE_ROOT]/nist/jobs/job-[ProductionDateTime]" />
+    <metadata key="JobDir" val="[PGE_ROOT]/nist/jobs/[DatasetId]" />
   </customMetadata>
   
 </pgeConfig>
