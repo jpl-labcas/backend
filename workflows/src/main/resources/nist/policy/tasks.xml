@@ -28,34 +28,89 @@
     
       <!-- fixed dataset metadata -->
       <property name="dataset.ParentDatasetId" value="NistProduct" />
+      <!-- FIXME -->
+      <!-- <property name="dataset.Dataset" value="Lab005_C_R03" /> -->
     
       <!-- input dataset metadata -->
       <property name="input.dataset.DatasetId.type" value="http://www.w3.org/2001/XMLSchema/string" />
       <property name="input.dataset.DatasetId.title" value="Dataset Identifier" />
-      <property name="input.dataset.DatasetId.description" 
-                value="Enter a unique identifier for this data. [Short Protocol Name]+[Site Abbreviation]+[PI Last Name]" />
+      <property name="input.dataset.DatasetId.description" value="Enter a unique identifier for this data." />
       <property name="input.dataset.DatasetId.required" value="true" />
+      <property name="input.dataset.DatasetId.format" value="Lab[LabNumber]_[NormalizationMethod]_R[RoundNumber]" />
       
+      <property name="input.dataset.LabNumber.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.LabNumber.title" value="Lab" />
+      <property name="input.dataset.LabNumber.description" value="Laboratory where the data was collected." />
+      <property name="input.dataset.LabNumber.required" value="true" />
+      <property name="input.dataset.LabNumber.value.1" value="001" />
+      <property name="input.dataset.LabNumber.value.2" value="002" />
+      <property name="input.dataset.LabNumber.value.3" value="003" />
+      <property name="input.dataset.LabNumber.value.4" value="004" />
+      <property name="input.dataset.LabNumber.value.5" value="005" />
+      <property name="input.dataset.LabNumber.value.6" value="006" />
+      <property name="input.dataset.LabNumber.value.7" value="007" />
+      <property name="input.dataset.LabNumber.value.8" value="008" />
+      
+      <property name="input.dataset.NormalizationMethod.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.NormalizationMethod.title" value="Normalization Method" />
+      <property name="input.dataset.NormalizationMethod.description" value="Normalization Method Description" />
+      <property name="input.dataset.NormalizationMethod.required" value="true" />
+      <property name="input.dataset.NormalizationMethod.value.1" value="A" />
+      <property name="input.dataset.NormalizationMethod.value.2" value="B" />
+      <property name="input.dataset.NormalizationMethod.value.3" value="C" />
+      <property name="input.dataset.NormalizationMethod.value.4" value="D" />
+      <property name="input.dataset.NormalizationMethod.value.5" value="E" />
+      
+      <property name="input.dataset.RoundNumber.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.RoundNumber.title" value="Round Number" />
+      <property name="input.dataset.RoundNumber.description" value="Round Number Description" />
+      <property name="input.dataset.RoundNumber.required" value="true" />
+      <property name="input.dataset.RoundNumber.value.1" value="01" />
+      <property name="input.dataset.RoundNumber.value.1" value="02" />
+      <property name="input.dataset.RoundNumber.value.1" value="03" />
+            
       <property name="input.dataset.LeadPI.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#principalInvestigator" />
       <property name="input.dataset.LeadPI.title" value="Lead PI" />
       <property name="input.dataset.LeadPI.description" value="Begin typing an EDRN investigator name. A list of options will appear." />
       <property name="input.dataset.LeadPI.required" value="true" />
       
-      <property name="input.dataset.Instrument.type" value="http://www.w3.org/2001/XMLSchema/string" />
-      <property name="input.dataset.Instrument.title" value="Instrument" />
-      <property name="input.dataset.Instrument.description" value="Name of the instrument used to collect data." />
-      <property name="input.dataset.Instrument.required" value="true" />
-    
-      <property name="input.dataset.Lab.type" value="http://www.w3.org/2001/XMLSchema/string" />
-      <property name="input.dataset.Lab.title" value="Lab" />
-      <property name="input.dataset.Lab.description" value="Laboratory where the data was collected." />
-      <property name="input.dataset.Lab.required" value="true" />
+      <property name="input.dataset.DateCollected.type" value="http://www.w3.org/2001/XMLSchema/date" />
+      <property name="input.dataset.DateCollected.title" value="Lab" />
+      <property name="input.dataset.DateCollected.description" value="Date when the data was collected (yyyy/mm/dd)." />
+      <property name="input.dataset.DateCollected.required" value="true" />
       
-      <property name="input.dataset.Date.type" value="http://www.w3.org/2001/XMLSchema/date" />
-      <property name="input.dataset.Date.title" value="Lab" />
-      <property name="input.dataset.Date.description" value="Date when the data was collected (yyyy/mm/dd)." />
-      <property name="input.dataset.Date.required" value="true" />
+      <property name="input.dataset.SampleProcessingProtocols.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.SampleProcessingProtocols.title" value="Sample Processing Protocols" />
+      <property name="input.dataset.SampleProcessingProtocols.description" 
+                value="How the samples were processed prior to be run on the instrumentation.
+                      Examples: library preparation, labeling, amplification method., ...
+                      Kits and reagents: specify source and catalog numbers"/> 
+      <property name="input.dataset.SampleProcessingProtocols.required" value="true" />
+
+      <property name="input.dataset.InstrumentationTechnologyCode.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.InstrumentationTechnologyCode.title" value="Instrumentation Technology Code" />
+      <property name="input.dataset.InstrumentationTechnologyCode.description" value="Instrumentation Technology Code" />
+      <property name="input.dataset.InstrumentationTechnologyCode.required" value="true" />
+      <property name="input.dataset.InstrumentationTechnologyCode.value.1" value="HYB" />
+      <property name="input.dataset.InstrumentationTechnologyCode.value.2" value="NGS" />
+      <property name="input.dataset.InstrumentationTechnologyCode.value.3" value="PCR" />
+      <property name="input.dataset.InstrumentationTechnologyCode.value.4" value="Other" />
+          
+      <property name="input.dataset.Manifacturer.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.Manifacturer.title" value="Manifacturer" />
+      <property name="input.dataset.Manifacturer.description" value="Manifacturer" />
+      <property name="input.dataset.Manifacturer.required" value="true" />
       
+      <property name="input.dataset.ModelNumber.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.ModelNumber.title" value="Model Number" />
+      <property name="input.dataset.ModelNumber.description" value="Model Number Description" />
+      <property name="input.dataset.ModelNumber.required" value="true" />
+  
+      <property name="input.dataset.DataProcessingProtocols.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.DataProcessingProtocols.title" value="Data Processing Protocols" />
+      <property name="input.dataset.DataProcessingProtocols.description" value="Prior to upload: alignment algorithms, data filtering, normalization, ..." />
+      <property name="input.dataset.DataProcessingProtocols.required" value="true" />
+  
       <property name="input.dataset.OwnerGroup.type" value="urn:ldap:attributes:dn" />
       <property name="input.dataset.OwnerGroup.title" value="Share data with..." />
       <property name="input.dataset.OwnerGroup.description" 
@@ -67,13 +122,19 @@
           
     <requiredMetFields>
     
-      <metfield name="LeadPI" />
-      <metfield name="Instrument" />
-      <metfield name="Lab" />
-      <metfield name="Date" />
-      <metfield name="OwnerGroup" />
       <metfield name="DatasetId" />
-            
+      <metfield name="LabNumber" />
+      <metfield name="NormalizationMethod" />
+      <metfield name="RoundNumber" />
+      <metfield name="LeadPI" />
+      <metfield name="DateCollected" />
+      <metfield name="SampleProcessingProtocols" />
+      <metfield name="InstrumentationTechnologyCode" />
+      <metfield name="Manifacturer" />
+      <metfield name="ModelNumber" />
+      <metfield name="DataProcessingProtocols" />
+      <metfield name="OwnerGroup" />
+      
     </requiredMetFields>
     
   </task>
