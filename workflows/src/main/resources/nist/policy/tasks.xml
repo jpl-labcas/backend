@@ -74,10 +74,10 @@
       <property name="input.dataset.LeadPI.description" value="Begin typing an EDRN investigator name. A list of options will appear." />
       <property name="input.dataset.LeadPI.required" value="true" />
       
-      <property name="input.dataset.DateCollected.type" value="http://www.w3.org/2001/XMLSchema/date" />
-      <property name="input.dataset.DateCollected.title" value="Lab" />
-      <property name="input.dataset.DateCollected.description" value="Date when the data was collected (yyyy/mm/dd)." />
-      <property name="input.dataset.DateCollected.required" value="true" />
+      <property name="input.dataset.DataCollectionDate.type" value="http://www.w3.org/2001/XMLSchema/date" />
+      <property name="input.dataset.DataCollectionDate.title" value="Lab" />
+      <property name="input.dataset.DataCollectionDate.description" value="Date when the data was collected (yyyy/mm/dd)." />
+      <property name="input.dataset.DataCollectionDate.required" value="true" />
       
       <property name="input.dataset.SampleProcessingProtocols.type" value="http://www.w3.org/2001/XMLSchema/string" />
       <property name="input.dataset.SampleProcessingProtocols.title" value="Sample Processing Protocols" />
@@ -96,10 +96,10 @@
       <property name="input.dataset.InstrumentationTechnologyCode.value.3" value="PCR" />
       <property name="input.dataset.InstrumentationTechnologyCode.value.4" value="Other" />
           
-      <property name="input.dataset.Manifacturer.type" value="http://www.w3.org/2001/XMLSchema/string" />
-      <property name="input.dataset.Manifacturer.title" value="Manifacturer" />
-      <property name="input.dataset.Manifacturer.description" value="Manifacturer" />
-      <property name="input.dataset.Manifacturer.required" value="true" />
+      <property name="input.dataset.Manufacturer.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.Manufacturer.title" value="Manufacturer" />
+      <property name="input.dataset.Manufacturer.description" value="Manufacturer" />
+      <property name="input.dataset.Manufacturer.required" value="true" />
       
       <property name="input.dataset.ModelNumber.type" value="http://www.w3.org/2001/XMLSchema/string" />
       <property name="input.dataset.ModelNumber.title" value="Model Number" />
@@ -127,10 +127,10 @@
       <metfield name="NormalizationMethod" />
       <metfield name="RoundNumber" />
       <metfield name="LeadPI" />
-      <metfield name="DateCollected" />
+      <metfield name="DataCollectionDate" />
       <metfield name="SampleProcessingProtocols" />
       <metfield name="InstrumentationTechnologyCode" />
-      <metfield name="Manifacturer" />
+      <metfield name="Manufacturer" />
       <metfield name="ModelNumber" />
       <metfield name="DataProcessingProtocols" />
       <metfield name="OwnerGroup" />

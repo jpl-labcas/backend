@@ -5,10 +5,16 @@
     <metadata key="ParentDatasetId" val="[ParentDatasetId]"/>
     <metadata key="Version" val="[Version]"/>
     
+    <metadata key="LabNumber" val="[LabNumber]"/>
+    <metadata key="NormalizationMethod" val="[NormalizationMethod]"/>
+    <metadata key="RoundNumber" val="[RoundNumber]"/>
     <metadata key="LeadPI" val="[LeadPI]"/>
-    <metadata key="Instrument" val="[Instrument]"/>
-    <metadata key="Lab" val="[Lab]"/>
-    <metadata key="Date" val="[Date]"/>
-    <metadata key="ApplicationURL" val="[ApplicationURL]"/>
-    
+    <metadata key="DataCollectionDate" val="[DataCollectionDate]"/>
+    <metadata key="SampleProcessingProtocols" val="[SampleProcessingProtocols]"/>
+    <metadata key="InstrumentationTechnologyCode" val="[InstrumentationTechnologyCode]"/>
+    <metadata key="Manufacturer" val="Manufacturer"/>
+    <metadata key="ModelNumber" val="[ModelNumber]"/>
+    <metadata key="DataProcessingProtocols" val="[DataProcessingProtocols]"/>
+    <metadata key="OwnerGroup" val="[OwnerGroup]"/>
+        
 </metadataList>
