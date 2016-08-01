@@ -9,7 +9,7 @@
     <task id="urn:edrn:NistConvertTask" />
     
     <!-- runs R script -->
-    <!-- <task id="urn:edrn:NistExecTask" /> --> 
+    <task id="urn:edrn:NistExecTask" /> 
     
     <!-- builds the application URL and adds the link to the workflow metadata -->
     <task id="urn:edrn:NistExec2Task" /> 
