@@ -66,8 +66,8 @@
       <property name="input.dataset.RoundNumber.description" value="Submission number corresponding to a given sample number." />
       <property name="input.dataset.RoundNumber.required" value="true" />
       <property name="input.dataset.RoundNumber.value.1" value="01" />
-      <property name="input.dataset.RoundNumber.value.1" value="02" />
-      <property name="input.dataset.RoundNumber.value.1" value="03" />
+      <property name="input.dataset.RoundNumber.value.2" value="02" />
+      <property name="input.dataset.RoundNumber.value.3" value="03" />
             
       <property name="input.dataset.LeadPI.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#principalInvestigator" />
       <property name="input.dataset.LeadPI.title" value="Lead PI" />
@@ -76,7 +76,7 @@
       
       <property name="input.dataset.DataCollectionDate.type" value="http://www.w3.org/2001/XMLSchema/date" />
       <property name="input.dataset.DataCollectionDate.title" value="Data Collection Date" />
-      <property name="input.dataset.DataCollectionDate.description" value="Date when the data was collected (yyyy/mm/dd)." />
+      <property name="input.dataset.DataCollectionDate.description" value="Date when the data was collected (mm/dd/yyyy)." />
       <property name="input.dataset.DataCollectionDate.required" value="true" />
       
       <property name="input.dataset.SampleProcessingProtocols.type" value="http://www.w3.org/2001/XMLSchema/string" />
@@ -89,7 +89,7 @@
 
       <property name="input.dataset.InstrumentationTechnologyCode.type" value="http://www.w3.org/2001/XMLSchema/string" />
       <property name="input.dataset.InstrumentationTechnologyCode.title" value="Instrumentation Technology Code" />
-      <property name="input.dataset.InstrumentationTechnologyCode.description" value="Select the instrumentation technology code from the list below." />
+      <property name="input.dataset.InstrumentationTechnologyCode.description" value="Select the instrumentation technology code." />
       <property name="input.dataset.InstrumentationTechnologyCode.required" value="true" />
       <property name="input.dataset.InstrumentationTechnologyCode.value.1" value="HYB" />
       <property name="input.dataset.InstrumentationTechnologyCode.value.2" value="NGS" />
