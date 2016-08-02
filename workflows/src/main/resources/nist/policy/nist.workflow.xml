@@ -11,9 +11,6 @@
     <!-- runs R script -->
     <task id="urn:edrn:NistExecTask" /> 
     
-    <!-- builds the application URL and adds the link to the workflow metadata -->
-    <task id="urn:edrn:NistExec2Task" /> 
-    
     <!-- crawls the staging area and publishes the files -->
     <task id="urn:edrn:NistCrawlTask" />
     

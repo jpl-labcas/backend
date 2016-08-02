@@ -181,14 +181,7 @@
     
   </task>
   
-  <!-- Task that builds the application URL, adds it to the metadata -->
-  <task id="urn:edrn:NistExec2Task" name="NistExec2Task" class="gov.nasa.jpl.edrn.labcas.tasks.nist.NistExecuteTaskInstance">
-    <conditions />
-    <configuration>
-      <property name="baseURL" value="http://shiny.jpl.nasa.gov/" />
-    </configuration>
-  </task>
-
+  
   <!-- Task that crawls $LABCAS_STAGING/$DatasetId and publishes files to $LABCAS_ARCHIVE/$ParentDatasetId/$DatasetId -->
   <task id="urn:edrn:NistCrawlTask" name="NistCrawlTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
   
