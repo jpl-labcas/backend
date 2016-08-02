@@ -4,20 +4,20 @@
   <!-- PGE commands -->
   <exe dir="[JobDir]" shell="/bin/bash">
     <!-- must execute R script in a separate directory -->
-    <cmd>cd [PGE_ROOT]/workflows/nist/pges</cmd>
+    <cmd>cd [PGE_ROOT]/nist/pges</cmd>
     <!-- copy latest uploaded data -->
-    <cmd>cp [LABCAS_STAGING]/[DatasetId]/[DatasetId]* .</cmd>
+    <cmd>cp [LABCAS_STAGING]/[DatasetId]/[DatasetId]*.txt .</cmd>
     <!-- run R script -->
     <cmd>Rscript ./Updated_R03.R</cmd>
     <!-- move output back to stangin area -->
     <cmd>mv Rplots.pdf [LABCAS_STAGING]/[DatasetId]/Rplots.pdf</cmd>
     <!-- remove latest uploaded data -->
-    <cmd>rm [DatasetId]* .</cmd>
+    <cmd>rm [DatasetId]*.txt</cmd>
   </exe>
   
   <customMetadata>
     <metadata key="ProductionDateTime" val="[DATE.UTC]" />
-    <metadata key="JobDir" val="[PGE_ROOT]/nist/jobs/job-[ProductionDateTime]" />
+    <metadata key="JobDir" val="[PGE_ROOT]/nist/jobs/[DatasetId]" />
   </customMetadata>
   
 </pgeConfig>

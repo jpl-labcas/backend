@@ -10,15 +10,15 @@
 	<customMetadata>
 		<metadata key="ProductionDateTime" val="[DATE.UTC]" />
 		<metadata key="JobDir"
-			val="[PGE_ROOT]/crawl/jobs/job-[ProductionDateTime]" />
+			val="[PGE_ROOT]/crawl/jobs/[DatasetId]" />
 	</customMetadata>
 
 	<!-- CAS Crawler directives -->
 	<output>
 		<dir path="[LABCAS_STAGING]/[DatasetId]" createBeforeExe="false">
 			<!-- metadata extractors matching specific files -->
-            <!-- <files regExp=".*\.txt" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[LABCAS_HOME]/workflows/nist/pge-configs/metout.xml" /> -->
-            <!-- <files regExp=".*\.csv" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[LABCAS_HOME]/workflows/nist/pge-configs/metout.xml" /> -->
+            <files regExp=".*\.txt" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[LABCAS_HOME]/workflows/nist/pge-configs/metout.xml" />
+            <files regExp=".*\.csv" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[LABCAS_HOME]/workflows/nist/pge-configs/metout.xml" />
             <files regExp=".*\.nist" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[LABCAS_HOME]/workflows/nist/pge-configs/metout.xml" />
             <files regExp=".*\.pdf" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[LABCAS_HOME]/workflows/nist/pge-configs/metout.xml" />
 		</dir>
