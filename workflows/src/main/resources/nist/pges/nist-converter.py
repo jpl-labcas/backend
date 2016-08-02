@@ -67,11 +67,13 @@ if __name__ == '__main__':
 
     for key, value in args_dict.items():
         logging.debug('%s=%s' % (key, value) )
-
+        
     # loop over files in input directory
+    datasetId = args_dict['DatasetId']
     for f in listdir(args_dict['dir']):
          if isfile(join(args_dict['dir'], f)):
              file_name, file_extension = path.splitext(f)
-             for input_ext in INPUT_EXTS:
-                 if file_extension == input_ext:
-                     convert(args_dict['dir'], f, args_dict)    
+             if datasetId in file_name:
+                 for input_ext in INPUT_EXTS:
+                     if file_extension == input_ext:
+                         convert(args_dict['dir'], f, args_dict)    
