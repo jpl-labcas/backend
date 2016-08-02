@@ -32,11 +32,11 @@
       <!-- <property name="dataset.Dataset" value="Lab005_C_R03" /> -->
     
       <!-- input dataset metadata -->
-      <property name="input.dataset.DatasetId.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.DatasetId.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#nistDatasetId" />
       <property name="input.dataset.DatasetId.title" value="Dataset Identifier" />
       <property name="input.dataset.DatasetId.description" value="Enter a unique identifier for this data." />
       <property name="input.dataset.DatasetId.required" value="true" />
-      <property name="input.dataset.DatasetId.format" value="Lab[LabNumber]_[NormalizationMethod]_R[RoundNumber]" />
+      <!-- <property name="input.dataset.DatasetId.format" value="Lab[LabNumber]_[NormalizationMethod]_R[RoundNumber]" /> -->
       
       <property name="input.dataset.LabNumber.type" value="http://www.w3.org/2001/XMLSchema/string" />
       <property name="input.dataset.LabNumber.title" value="Lab" />
