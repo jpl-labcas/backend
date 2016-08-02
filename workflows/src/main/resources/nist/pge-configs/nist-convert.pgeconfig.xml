@@ -4,7 +4,20 @@
   <!-- PGE commands -->
   <exe dir="[JobDir]" shell="/bin/bash">
     <cmd>cd [LABCAS_HOME]/workflows/nist/pges</cmd>
-    <cmd>python nist-converter.py [LABCAS_STAGING]/[DatasetId] --LeadPI [LeadPI] --Instrument [Instrument] --Lab [Lab] --Date [Date]</cmd>
+    <cmd>python nist-converter.py [LABCAS_STAGING]/[DatasetId] \
+         --DatasetId [DatasetId] \
+         --LabNumber [LabNumber] \
+         --NormalizationMethod [NormalizationMethod] \
+         --RoundNumber [RoundNumber] \
+         --LeadPI [LeadPI] \
+         --DataCollectionDate [DataCollectionDate] \
+         --SampleProcessingProtocols [SampleProcessingProtocols] \
+         --InstrumentationTechnologyCode [InstrumentationTechnologyCode] \
+         --Manufacturer [Manufacturer] \
+         --ModelNumber [ModelNumber] \
+         --DataProcessingProtocols [DataProcessingProtocols] \
+         --OwnerGroup [OwnerGroup]
+    </cmd>
   </exe>
   
   <customMetadata>

@@ -3,9 +3,16 @@
 
   <!-- PGE commands -->
   <exe dir="[JobDir]" shell="/bin/bash">
-    <cmd>cd [LABCAS_HOME]/workflows/nist/pges</cmd>
-    <cmd>Rscript ./twoaxes.r</cmd>
-    <cmd>cp Rplots.pdf [LABCAS_STAGING]/[DatasetId]/Rplots.pdf</cmd>
+    <!-- must execute R script in a separate directory -->
+    <cmd>cd [PGE_ROOT]/nist/pges</cmd>
+    <!-- copy latest uploaded data -->
+    <cmd>cp [LABCAS_STAGING]/[DatasetId]/[DatasetId]*.txt .</cmd>
+    <!-- run R script -->
+    <cmd>Rscript ./Updated_R03.R</cmd>
+    <!-- move output back to stangin area -->
+    <cmd>mv Rplots.pdf [LABCAS_STAGING]/[DatasetId]/Rplots.pdf</cmd>
+    <!-- remove latest uploaded data -->
+    <cmd>rm [DatasetId]*.txt</cmd>
   </exe>
   
   <customMetadata>
