@@ -10,7 +10,7 @@
 	<customMetadata>
 		<metadata key="ProductionDateTime" val="[DATE.UTC]" />
 		<metadata key="JobDir"
-			val="[PGE_ROOT]/crawl/jobs/job-[ProductionDateTime]" />
+			val="[PGE_ROOT]/crawl/jobs/[DatasetId].[Version]" />
 	</customMetadata>
 
 	<!-- CAS Crawler directives -->
