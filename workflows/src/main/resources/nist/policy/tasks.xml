@@ -76,7 +76,7 @@
       
       <property name="input.dataset.DataCollectionDate.type" value="http://www.w3.org/2001/XMLSchema/date" />
       <property name="input.dataset.DataCollectionDate.title" value="Data Collection Date" />
-      <property name="input.dataset.DataCollectionDate.description" value="Date when the data was collected (mm/dd/yyyy)." />
+      <property name="input.dataset.DataCollectionDate.description" value="Date when the data was collected (YYYY-MM-DD)." />
       <property name="input.dataset.DataCollectionDate.required" value="true" />
       
       <property name="input.dataset.SampleProcessingProtocols.type" value="http://www.w3.org/2001/XMLSchema/string" />
@@ -181,14 +181,7 @@
     
   </task>
   
-  <!-- Task that builds the application URL, adds it to the metadata -->
-  <task id="urn:edrn:NistExec2Task" name="NistExec2Task" class="gov.nasa.jpl.edrn.labcas.tasks.nist.NistExecuteTaskInstance">
-    <conditions />
-    <configuration>
-      <property name="baseURL" value="http://shiny.jpl.nasa.gov/" />
-    </configuration>
-  </task>
-
+  
   <!-- Task that crawls $LABCAS_STAGING/$DatasetId and publishes files to $LABCAS_ARCHIVE/$ParentDatasetId/$DatasetId -->
   <task id="urn:edrn:NistCrawlTask" name="NistCrawlTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
   
