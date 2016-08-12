@@ -15,6 +15,6 @@
     <metadata key="Manufacturer" val="Manufacturer"/>
     <metadata key="ModelNumber" val="[ModelNumber]"/>
     <metadata key="DataProcessingProtocols" val="[DataProcessingProtocols]"/>
-    <metadata key="OwnerGroup" val="[OwnerGroup]"/>
+    <metadata key="OwnerPrincipal" val="[OwnerPrincipal]"/>
         
 </metadataList>

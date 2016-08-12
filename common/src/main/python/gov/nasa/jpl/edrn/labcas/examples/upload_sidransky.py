@@ -18,7 +18,7 @@ if __name__ == '__main__':
                  'DataCustodian':'David Sidransky',
                  'DataCustodianEmail':'dsidrans@jhmi.edu',
                  'CollaborativeGroup':'Prostate and Urologic',
-                 'OwnerGroup':'/David/Sidransky',
+                 'OwnerPrincipal':'/David/Sidransky',
                  # optional
                  'OrganSite':'Prostate',
                  'SiteName':'Johns Hopkins University (Biomarker Developmental Laboratories)',

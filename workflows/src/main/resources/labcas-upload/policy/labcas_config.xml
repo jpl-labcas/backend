@@ -17,10 +17,10 @@
               value="Enter a unique identifier for this data. [Short Protocol Name]+[Site Abbreviation]+[PI Last Name]" />
     <property name="input.dataset.DatasetId.required" value="true" />
         
-    <property name="input.dataset.Description.type" value="http://www.w3.org/2001/XMLSchema/string" />
-    <property name="input.dataset.Description.title" value="Dataset Description" />
-    <property name="input.dataset.Description.description" value="Longer description for this dataset (a few sentences)." />
-    <property name="input.dataset.Description.required" value="false" />
+    <property name="input.dataset.DatasetDescription.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#text" />
+    <property name="input.dataset.DatasetDescription.title" value="Dataset Description" />
+    <property name="input.dataset.DatasetDescription.description" value="Longer description for this dataset (a few sentences)." />
+    <property name="input.dataset.DatasetDescription.required" value="true" />
     
     <!--  ECAS metadata -->
     <property name="input.dataset.ProtocolName.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#protocolName" />
@@ -94,12 +94,12 @@
     <property name="input.dataset.ResultsAndConclusionSummary.description" value="Summary of Results And Conclusion" />
     <property name="input.dataset.ResultsAndConclusionSummary.required" value="false" />
     
-    <property name="input.dataset.OwnerGroup.type" value="urn:ldap:attributes:dn" />
-    <property name="input.dataset.OwnerGroup.title" value="Share data with..." />
-    <property name="input.dataset.OwnerGroup.description" 
-              value="Select or remove the groups with whom you’d like to share this data." />
-    <property name="input.dataset.OwnerGroup.required" value="true" />
-    <property name="input.dataset.OwnerGroup.visible" value="false" />
+    <property name="input.dataset.OwnerPrincipal.type" value="urn:ldap:attributes:dn" />
+    <property name="input.dataset.OwnerPrincipal.title" value="Share data with..." />
+    <property name="input.dataset.OwnerPrincipal.description" 
+              value="Select or remove the groups or individuals with whom you’d like to share this data." />
+    <property name="input.dataset.OwnerPrincipal.required" value="true" />
+    <property name="input.dataset.OwnerPrincipal.visible" value="false" />
     
     <property name="input.dataset.QAState.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.dataset.QAState.title" value="QA State" />

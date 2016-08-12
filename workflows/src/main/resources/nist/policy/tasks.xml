@@ -111,12 +111,12 @@
       <property name="input.dataset.DataProcessingProtocols.description" value="Prior to upload: alignment algorithms, data filtering, normalization, ..." />
       <property name="input.dataset.DataProcessingProtocols.required" value="true" />
   
-      <property name="input.dataset.OwnerGroup.type" value="urn:ldap:attributes:dn" />
-      <property name="input.dataset.OwnerGroup.title" value="Share data with..." />
-      <property name="input.dataset.OwnerGroup.description" 
+      <property name="input.dataset.OwnerPrincipal.type" value="urn:ldap:attributes:dn" />
+      <property name="input.dataset.OwnerPrincipal.title" value="Share data with..." />
+      <property name="input.dataset.OwnerPrincipal.description" 
                 value="Select or remove the groups with whom you’d like to share this data." />
-      <property name="input.dataset.OwnerGroup.required" value="true" />
-      <property name="input.dataset.OwnerGroup.visible" value="false" />
+      <property name="input.dataset.OwnerPrincipal.required" value="true" />
+      <property name="input.dataset.OwnerPrincipal.visible" value="false" />
       
     </configuration>
           
@@ -133,7 +133,7 @@
       <metfield name="Manufacturer" />
       <metfield name="ModelNumber" />
       <metfield name="DataProcessingProtocols" />
-      <metfield name="OwnerGroup" />
+      <metfield name="OwnerPrincipal" />
       
     </requiredMetFields>
     

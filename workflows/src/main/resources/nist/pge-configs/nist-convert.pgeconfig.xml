@@ -16,7 +16,7 @@
          --Manufacturer [Manufacturer] \
          --ModelNumber [ModelNumber] \
          --DataProcessingProtocols [DataProcessingProtocols] \
-         --OwnerGroup [OwnerGroup]
+         --OwnerPrincipal [OwnerPrincipal]
     </cmd>
   </exe>
   

@@ -11,7 +11,7 @@
          --Manifacturer [Manifacturer] \
          --ModelNumber [ModelNumber] \
          --DataProcessingProtocols [DataProcessingProtocols] \
-         --OwnerGroup [OwnerGroup]
+         --OwnerPrincipal [OwnerPrincipal]
 '''
 
 import argparse
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     parser.add_argument('--Manufacturer', dest='Manufacturer', type=str, help="Manufacturer", default=None)
     parser.add_argument('--ModelNumber', dest='ModelNumber', type=str, help="Model Number", default=None)
     parser.add_argument('--DataProcessingProtocols', dest='DataProcessingProtocols', type=str, help="Data Processing Protocols", default=None)
-    parser.add_argument('--OwnerGroup', dest='OwnerGroup', type=str, help="Owner Group", default=None)
+    parser.add_argument('--OwnerPrincipal', dest='OwnerPrincipal', type=str, help="Owner Principal", default=None)
     args_dict = vars( parser.parse_args() )
 
     for key, value in args_dict.items():

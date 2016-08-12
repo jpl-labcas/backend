@@ -86,12 +86,12 @@
       <property name="input.dataset.ReferenceUrl.description" value="URL at remote external archive." />
       <property name="input.dataset.ReferenceUrl.required" value="true" />
       
-      <property name="input.dataset.OwnerGroup.type" value="urn:ldap:attributes:dn" />
-      <property name="input.dataset.OwnerGroup.title" value="Share data with..." />
-      <property name="input.dataset.OwnerGroup.description" 
+      <property name="input.dataset.OwnerPrincipal.type" value="urn:ldap:attributes:dn" />
+      <property name="input.dataset.OwnerPrincipal.title" value="Share data with..." />
+      <property name="input.dataset.OwnerPrincipal.description" 
                 value="Select or remove the groups with whom you’d like to share this data." />
-      <property name="input.dataset.OwnerGroup.required" value="true" />
-      <property name="input.dataset.OwnerGroup.visible" value="false" />
+      <property name="input.dataset.OwnerPrincipal.required" value="true" />
+      <property name="input.dataset.OwnerPrincipal.visible" value="false" />
       
       <property name="input.GenomeIndex.type" value="string" />
       <property name="input.GenomeIndex.title" value="Genome Index" />
@@ -111,7 +111,7 @@
       <metfield name="Stage" />
       <metfield name="ReferenceId" />
       <metfield name="ReferenceUrl" />
-      <metfield name="OwnerGroup" />
+      <metfield name="OwnerPrincipal" />
       <metfield name="DatasetId" />
       <metfield name="GenomeIndex" />
             

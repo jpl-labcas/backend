@@ -31,11 +31,12 @@
       <metfield name="ProtocolName" />
       <metfield name="ProtocolId" />
       <metfield name="DatasetName" />
+      <metfield name="DatasetDescription" />
       <metfield name="LeadPI" />
       <metfield name="DataCustodian" />
       <metfield name="DataCustodianEmail" />
       <metfield name="CollaborativeGroup" />
-      <metfield name="OwnerGroup" />
+      <metfield name="OwnerPrincipal" />
       
       <metfield name="DatasetId" />
       <!-- <metfield name="Description" /> -->
