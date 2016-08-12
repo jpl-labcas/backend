@@ -11,7 +11,7 @@ if __name__ == '__main__':
     #               --key DataCollectionDate 20160101 --key SampleProcessingProtocols 'With water and ammonia' 
     #               --key InstrumentationTechnologyCode NGS --key Manufacturer TexasInstruments 
     #               --key ModelNumber XYZ123 --key DataProcessingProtocols 'Crunching data' 
-    #               --key OwnerGroup Lab005_OwnerGroup
+    #               --key OwnerGroup Lab005_OwnerPrincipal
     labcasClient = LabcasClient()
     wInstId = labcasClient.executeWorkflow(['urn:edrn:NistInitTask',
                                             'urn:edrn:NistConvertTask',
@@ -29,6 +29,6 @@ if __name__ == '__main__':
                                             'Manufacturer':'TexasInstruments',
                                             'ModelNumber':'XYZ123',
                                             'DataProcessingProtocols':'Crunching data',
-                                            'OwnerGroup':'Lab005_OwnerGroup' } )
+                                            'OwnerPrincipal':'Lab005' } )
     # monitor workflow instance
     labcasClient.waitForCompletion(wInstId)

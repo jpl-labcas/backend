@@ -18,7 +18,7 @@ if __name__ == '__main__':
                  'DataCustodian':'Ji Qiu',
                  'DataCustodianEmail':'djiqiu@fhcrc.org',
                  'CollaborativeGroup':'Lung and Upper Aerodigestive',
-                 'OwnerGroup':'/Samir/Hanash',
+                 'OwnerPrincipal':'/Samir/Hanash',
                  # optional
                  'OrganSite':'Lung',
                  'SiteName':'Fred Hutchinson Cancer Research Center (Biomarker Developmental Laboratories)',

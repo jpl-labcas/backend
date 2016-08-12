@@ -6,7 +6,7 @@ if __name__ == '__main__':
     
     # submit workflow
     # ./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName rnaseq-pipeline 
-    #               --metaData --key genome_index genome --key sample_id ERR318895 --key OwnerGroup RnaResearchGroup
+    #               --metaData --key genome_index genome --key sample_id ERR318895 --key OwnerPrincipal RnaResearchGroup
     labcasClient = LabcasClient()
     wInstId = labcasClient.executeWorkflow(['urn:edrn:RnaSequencePipelineInit',
                                             'urn:edrn:RnaSequencePipelineTask1',
@@ -14,6 +14,6 @@ if __name__ == '__main__':
                                             'urn:edrn:RnaSequencePipelineTask3'], 
                                            {'genome_index':'genome',
                                             'sample_id':'ERR164503', 
-                                            'OwnerGroup':'RnaResearchGroup' } )
+                                            'OwnerPrincipal':'RnaResearchGroup' } )
     # monitor workflow instance
     labcasClient.waitForCompletion(wInstId)

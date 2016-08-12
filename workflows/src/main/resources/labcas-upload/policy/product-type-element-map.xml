@@ -28,7 +28,7 @@
     <element id="OrganSite" />
     <element id="PubMedId" />
     <element id="Discipline" />
-    <element id="OwnerGroup" />
+    <element id="OwnerPrincipal" />
     
   </type>
 

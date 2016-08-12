@@ -83,8 +83,8 @@
     <dcElement />
   </element>
   
-   <element id="OwnerGroup" name="Owner Group">
-    <description>Distinguished Name of the person that owns the data</description>
+   <element id="OwnerPrincipal" name="Owner Principal">
+    <description>Distinguished Name of the person or group that owns the data</description>
     <dcElement />
   </element>
 
