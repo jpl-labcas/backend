@@ -28,6 +28,21 @@
     
       <!-- fixed dataset metadata -->
       <property name="dataset.ParentDatasetId" value="UnivColoLungImage" />
+      
+      <!-- FIXME: the following fields should be inherited from the Parent dataset -->
+      <property name="dataset.LeadPI" value="Wilbur A. Frankin" />
+      <property name="dataset.CollaborativeGroup" value="Lung and Upper Aerodigestive" />
+      <property name="dataset.OrganSite" value="Lung" />
+      <property name="dataset.Description" value="University of Colorado Lung Image" />
+      <property name="dataset.ProtocolId" value="123" />
+      <property name="dataset.ProtocolName" value="ABC" />
+      <property name="dataset.Discipline" value="Pathology" />
+      <property name="dataset.QAState" value="Public" />
+      <property name="dataset.OwnerPrincipal" value="WilburAFrankin" />
+      
+      <!-- default dataset metadata -->
+      <!-- <property name="dataset.Version" value="1" /> -->
+      
     
       <!-- input dataset metadata -->
       <property name="input.dataset.DatasetId.type" value="http://www.w3.org/2001/XMLSchema/string" />

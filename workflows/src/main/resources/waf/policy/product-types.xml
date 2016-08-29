@@ -57,8 +57,12 @@
         <val>Wilbur A. Frankin</val>
       </keyval>
       <keyval>
+        <key>CollaborativeGroup</key>
+        <val>Lung and Upper Aerodigestive</val>
+      </keyval>
+      <keyval>
         <key>OwnerPrincipal</key>
-        <val>LabcasProduct</val>
+        <val>WilburAFrankin</val>
       </keyval>
       <keyval>
         <key>QAState</key>

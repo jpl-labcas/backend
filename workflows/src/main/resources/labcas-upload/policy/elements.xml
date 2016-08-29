@@ -27,12 +27,7 @@
     <dcElement />
   </element>
   
-  <!-- UnivColoLungImage elements -->
-  <element id="LeadPI" name="Lead PI">
-    <description>Lead Principal Investigator</description>
-    <dcElement />
-  </element>
-  
+  <!-- EcasProduct elements -->
   <element id="ProtocolName" name="Protocol Name">
     <description>String from Protocol Name controlled vocabulary</description>
     <dcElement />
@@ -43,18 +38,43 @@
     <dcElement />
   </element>
 
-  <!-- <element id="DatasetName" name="Dataset Name">
+  <element id="LeadPI" name="Lead PI">
+    <description>Lead Principal Investigator</description>
+    <dcElement />
+  </element>
+
+  <element id="DatasetName" name="Dataset Name">
     <description>Short description for this dataset (one sentence).</description>
     <dcElement />
-  </element> -->
+  </element>
+
+  <element id="MethodDetails" name="Method Details">
+    <description>Description of investigation methods.</description>
+    <dcElement />
+  </element>
+
+  <element id="DataCustodian" name="Data Custodian">
+    <description>Name of the dataset custodian in 'Last, First' format</description>
+    <dcElement />
+  </element>
+
+  <element id="DataCustodianEmail" name="Data Custodian Email">
+    <description>Email address of the dataset custodian</description>
+    <dcElement />
+  </element>
+
+  <element id="CollaborativeGroup" name="Collaborative Group">
+    <description>EDRN Organ Collaborative Group (select one)</description>
+    <dcElement />
+  </element>
 
   <element id="OrganSite" name="Organ Site">
     <description>EDRN Organ Site (select all that apply)</description>
     <dcElement />
   </element>
 
-  <element id="QAState" name="Quality Assurance State">
-    <description>Possible states: Draft, Accepted or Public</description>
+  <element id="PubMedId" name="Pub Med ID">
+    <description>URL of PubMed publication</description>
     <dcElement />
   </element>
 

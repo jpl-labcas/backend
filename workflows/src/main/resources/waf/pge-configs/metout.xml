@@ -4,5 +4,15 @@
     <metadata key="DatasetId" val="[DatasetId]"/>
     <metadata key="ParentDatasetId" val="[ParentDatasetId]"/>
     <metadata key="Version" val="[Version]"/>
-            
+    <metadata key="Description" val="[Description]"/>
+    
+    <metadata key="LeadPI" val="[LeadPI]"/>
+    <metadata key="OwnerPrincipal" val="[OwnerPrincipal]"/>
+    <metadata key="CollaborativeGroup" val="[CollaborativeGroup]"/>
+    <metadata key="QAState" val="[QAState]"/>
+    <metadata key="ProtocolId" val="[ProtocolId]"/>
+    <metadata key="ProtocolName" val="[ProtocolName]"/>
+    <metadata key="OrganSite" val="[OrganSite]"/>
+    <metadata key="Discipline" val="[Discipline]"/>
+                 
 </metadataList>
