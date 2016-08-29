@@ -9,27 +9,23 @@
   <type id="urn:edrn:LabcasProduct" parent="urn:oodt:GenericFile">
   
     <element id="DatasetId" />
+    <!-- <element id="DatasetName" /> -->
     <element id="ParentDatasetId" />
     <element id="Description" />
     <element id="Version" />
     
   </type>
   
-  <type id="urn:edrn:EcasProduct" parent="urn:edrn:LabcasProduct">
+  <type id="urn:edrn:UnivColoLungImage" parent="urn:edrn:LabcasProduct">
   
-    <element id="ProtocolName" />
-    <element id="ProtocolId" />
     <element id="LeadPI" />
-    <element id="DatasetName" />
-    <element id="MethodDetails" />
-    <element id="DataCustodian" />
-    <element id="DataCustodianEmail" />
-    <element id="CollaborativeGroup" />
-    <element id="OrganSite" />
-    <element id="PubMedId" />
-    <element id="Discipline" />
     <element id="OwnerPrincipal" />
-    
+    <element id="QAState" />
+    <element id="ProtocolId" />
+    <element id="ProtocolName" />
+    <element id="OrganSite" />
+    <element id="Discipline" />
+        
   </type>
 
 </cas:producttypemap>
