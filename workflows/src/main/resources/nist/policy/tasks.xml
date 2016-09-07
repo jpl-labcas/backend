@@ -52,7 +52,7 @@
       <property name="input.dataset.LabNumber.value.8" value="008" />
       
       <property name="input.dataset.Method.type" value="http://www.w3.org/2001/XMLSchema/string" />
-      <property name="input.dataset.Method.title" value="Normalization Method" />
+      <property name="input.dataset.Method.title" value="Method" />
       <property name="input.dataset.Method.description" 
                 value="Choose A if this is the first time you submit the data, 
                        or you are resubmitting data without significant changes to your method. 
