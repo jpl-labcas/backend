@@ -2,15 +2,10 @@
     usage: python nist-converter.py [LABCAS_STAGING]/[DatasetId] \
          --DatasetId [DatasetId] \
          --LabNumber [LabNumber] \
-         --NormalizationMethod [NormalizationMethod] \
+         --Method [Method] \
          --RoundNumber [RoundNumber] \
          --LeadPI [LeadPI] \
          --DataCollectionDate [DataCollectionDate] \
-         --SampleProcessingProtocols [SampleProcessingProtocols] \
-         --InstrumentationTechnologyCode [InstrumentationTechnologyCode] \
-         --Manifacturer [Manifacturer] \
-         --ModelNumber [ModelNumber] \
-         --DataProcessingProtocols [DataProcessingProtocols] \
          --OwnerPrincipal [OwnerPrincipal]
 '''
 
@@ -53,15 +48,15 @@ if __name__ == '__main__':
     parser.add_argument('dir', type=str, help="Directory containing NIST input files to be converted")
     parser.add_argument('--DatasetId', dest='DatasetId', type=str, help="Dataset Id", default=None)
     parser.add_argument('--LabNumber', dest='LabNumber', type=str, help="Lab Number", default=None)
-    parser.add_argument('--NormalizationMethod', dest='NormalizationMethod', type=str, help="Normalization Method", default=None)
+    parser.add_argument('--Method', dest='Method', type=str, help="Method", default=None)
     parser.add_argument('--RoundNumber', dest='RoundNumber', type=str, help="Round Number", default=None)
     parser.add_argument('--LeadPI', dest='LeadPi', type=str, help="Lead PI", default=None)
     parser.add_argument('--DataCollectionDate', dest='DataCollectionDate', type=str, help="Data Collection Date", default=None)
-    parser.add_argument('--SampleProcessingProtocols', dest='SampleProcessingProtocols', type=str, help="Sample Processing Protocols", default=None)
-    parser.add_argument('--InstrumentationTechnologyCode', dest='InstrumentationTechnologyCode', type=str, help="Instrumentation Technology Code", default=None)
-    parser.add_argument('--Manufacturer', dest='Manufacturer', type=str, help="Manufacturer", default=None)
-    parser.add_argument('--ModelNumber', dest='ModelNumber', type=str, help="Model Number", default=None)
-    parser.add_argument('--DataProcessingProtocols', dest='DataProcessingProtocols', type=str, help="Data Processing Protocols", default=None)
+    #parser.add_argument('--SampleProcessingProtocols', dest='SampleProcessingProtocols', type=str, help="Sample Processing Protocols", default=None)
+    #parser.add_argument('--InstrumentationTechnologyCode', dest='InstrumentationTechnologyCode', type=str, help="Instrumentation Technology Code", default=None)
+    #parser.add_argument('--Manufacturer', dest='Manufacturer', type=str, help="Manufacturer", default=None)
+    #parser.add_argument('--ModelNumber', dest='ModelNumber', type=str, help="Model Number", default=None)
+    #parser.add_argument('--DataProcessingProtocols', dest='DataProcessingProtocols', type=str, help="Data Processing Protocols", default=None)
     parser.add_argument('--OwnerPrincipal', dest='OwnerPrincipal', type=str, help="Owner Principal", default=None)
     args_dict = vars( parser.parse_args() )
 

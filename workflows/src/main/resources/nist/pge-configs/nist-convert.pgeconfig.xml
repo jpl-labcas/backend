@@ -7,15 +7,10 @@
     <cmd>python nist-converter.py [LABCAS_STAGING]/[DatasetId] \
          --DatasetId [DatasetId] \
          --LabNumber [LabNumber] \
-         --NormalizationMethod [NormalizationMethod] \
+         --Method [Method] \
          --RoundNumber [RoundNumber] \
          --LeadPI [LeadPI] \
          --DataCollectionDate [DataCollectionDate] \
-         --SampleProcessingProtocols [SampleProcessingProtocols] \
-         --InstrumentationTechnologyCode [InstrumentationTechnologyCode] \
-         --Manufacturer [Manufacturer] \
-         --ModelNumber [ModelNumber] \
-         --DataProcessingProtocols [DataProcessingProtocols] \
          --OwnerPrincipal [OwnerPrincipal]
     </cmd>
   </exe>
