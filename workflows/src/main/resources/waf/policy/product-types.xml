@@ -20,7 +20,7 @@
   <type id="urn:edrn:UnivColoLungImage" name="UnivColoLungImage">
     <repository path="file://[LABCAS_ARCHIVE]/UnivColoLungImage" />
     <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner" />
-    <description>Lung images collected for patients at the University of Colorado.</description>
+    <description>Lung images collected for patients at the University of Colorado Health Science Center.</description>
     <metExtractors>
       <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
         <configuration>

@@ -1,4 +1,4 @@
-<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="University of Colorado Lung Images" id="urn:edrn:WafWorkflow">
+<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="University of Colorado Health Science Center (UCHSC) Lung Images" id="urn:edrn:WafWorkflow">
 
   <tasks>
   
