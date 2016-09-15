@@ -29,16 +29,19 @@
       <!-- fixed dataset metadata -->
       <property name="dataset.ParentDatasetId" value="UnivColoLungImage" />
       
-      <!-- FIXME: the following fields should be inherited from the Parent dataset -->
+      <!-- FIXME: the following fields should be inherited from the Parent dataset 
+           instead of being hard-wired here -->
       <property name="dataset.LeadPI" value="Wilbur A. Frankin" />
       <property name="dataset.CollaborativeGroup" value="Lung and Upper Aerodigestive" />
       <property name="dataset.OrganSite" value="Lung" />
-      <property name="dataset.Description" value="University of Colorado Lung Image" />
+      <property name="dataset.Description" value="University of Colorado Health Science Center (UCHSC) Lung Image" />
       <property name="dataset.ProtocolId" value="123" />
       <property name="dataset.ProtocolName" value="ABC" />
       <property name="dataset.Discipline" value="Pathology" />
       <property name="dataset.QAState" value="Public" />
       <property name="dataset.OwnerPrincipal" value="WilburAFrankin" />
+      <!-- hyperlinks to: https://edrn.nci.nih.gov/sites/73-university-of-colorado-health-science-center -->
+      <property name="dataset.SiteId" value="73" />
       
       <!-- default dataset metadata -->
       <!-- <property name="dataset.Version" value="1" /> -->
@@ -49,12 +52,19 @@
       <property name="input.dataset.DatasetId.title" value="Dataset Identifier" />
       <property name="input.dataset.DatasetId.description" value="Enter a unique identifier for this data" />
       <property name="input.dataset.DatasetId.required" value="true" />
+      
+      <property name="input.dataset.DatasetName.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.DatasetName.title" value="Dataset Name" />
+      <property name="input.dataset.DatasetName.description" value="Short description for this dataset (one sentence)." />
+      <property name="input.dataset.DatasetName.required" value="true" />
+      
                   
     </configuration>
           
     <requiredMetFields>
     
       <metfield name="DatasetId" />
+      <metfield name="DatasetName" />
       
     </requiredMetFields>
     

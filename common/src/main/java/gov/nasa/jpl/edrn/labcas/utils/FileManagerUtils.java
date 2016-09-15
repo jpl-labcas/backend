@@ -61,10 +61,14 @@ public class FileManagerUtils {
 		datasetMetadata.addMetadata(coreMetadata);
 		
 		// transfer metadata field 'Description' to dataset description, if found
+		// or copy value from DatasetName, if found
 		String datasetDescription = dataset; // default
 		if (datasetMetadata.containsKey(Constants.METADATA_KEY_DESCRIPTION)) {
 			datasetDescription = datasetMetadata.getMetadata(Constants.METADATA_KEY_DESCRIPTION);
 			datasetMetadata.removeMetadata(Constants.METADATA_KEY_DESCRIPTION);
+			
+		} else if (coreMetadata.containsKey(Constants.METADATA_KEY_DESCRIPTION)) {
+			datasetDescription = coreMetadata.getMetadata(Constants.METADATA_KEY_DESCRIPTION);
 		}
 		
 		// create product type directory with the same name
