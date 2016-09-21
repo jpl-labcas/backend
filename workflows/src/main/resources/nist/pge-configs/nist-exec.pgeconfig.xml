@@ -8,7 +8,7 @@
     <!-- copy latest uploaded data -->
     <cmd>cp [LABCAS_STAGING]/[DatasetId]/[DatasetId]*.txt .</cmd>
     <!-- run R script -->
-    <cmd>Rscript --vanilla ModSingleLab_SingleRound.R Lab[LabNumber]_[Method] R[RoundNumber]</cmd>
+    <cmd>Rscript --vanilla ModSingleLab_SingleRound_C.R Lab[LabNumber]_[Method] R[RoundNumber]</cmd>
     <!-- move output back to stangin area -->
     <cmd>mv Rplots.pdf [LABCAS_STAGING]/[DatasetId]/Rplots.pdf</cmd>
     <!-- remove latest uploaded data -->

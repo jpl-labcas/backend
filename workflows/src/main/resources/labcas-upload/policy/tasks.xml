@@ -36,8 +36,8 @@
       <metfield name="DataCustodian" />
       <metfield name="DataCustodianEmail" />
       <metfield name="CollaborativeGroup" />
-      <metfield name="OwnerPrincipal" />
       <metfield name="OrganSite" />
+      <metfield name="OwnerPrincipal" />
       
       <metfield name="DatasetId" />
       <!-- <metfield name="Description" /> -->
