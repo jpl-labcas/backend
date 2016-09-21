@@ -5,13 +5,13 @@
   <exe dir="[JobDir]" shell="/bin/bash">
     <cmd>cd [LABCAS_HOME]/workflows/nist/pges</cmd>
     <cmd>python nist-converter.py [LABCAS_STAGING]/[DatasetId] \
-         --DatasetId [DatasetId] \
-         --LabNumber [LabNumber] \
-         --Method [Method] \
-         --RoundNumber [RoundNumber] \
-         --LeadPI [LeadPI] \
-         --DataCollectionDate [DataCollectionDate] \
-         --OwnerPrincipal [OwnerPrincipal]
+         --DatasetId '[DatasetId]' \
+         --LabNumber '[LabNumber]' \
+         --Method '[Method]' \
+         --RoundNumber '[RoundNumber]' \
+         --LeadPI '[LeadPI]' \
+         --DataCollectionDate '[DataCollectionDate]' \
+         --OwnerPrincipal '[OwnerPrincipal]'
     </cmd>
   </exe>
   
