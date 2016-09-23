@@ -67,8 +67,8 @@ public class FileManagerUtils {
 			datasetDescription = datasetMetadata.getMetadata(Constants.METADATA_KEY_DESCRIPTION);
 			datasetMetadata.removeMetadata(Constants.METADATA_KEY_DESCRIPTION);
 			
-		} else if (coreMetadata.containsKey(Constants.METADATA_KEY_DESCRIPTION)) {
-			datasetDescription = coreMetadata.getMetadata(Constants.METADATA_KEY_DESCRIPTION);
+		} else if (coreMetadata.containsKey(Constants.METADATA_KEY_DATASET_NAME)) {
+			datasetDescription = coreMetadata.getMetadata(Constants.METADATA_KEY_DATASET_NAME);
 		}
 		
 		// create product type directory with the same name

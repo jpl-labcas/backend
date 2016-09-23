@@ -84,7 +84,7 @@
       
       <property name="input.dataset.DataCollectionDate.type" value="http://www.w3.org/2001/XMLSchema/date" />
       <property name="input.dataset.DataCollectionDate.title" value="Data Collection Date" />
-      <property name="input.dataset.DataCollectionDate.description" value="Date when the data was collected (YYYY-MM-DD)." />
+      <property name="input.dataset.DataCollectionDate.description" value="Date when the data was collected." />
       <property name="input.dataset.DataCollectionDate.required" value="true" />
       
       <!-- <property name="input.dataset.SampleProcessingProtocols.type" value="http://www.w3.org/2001/XMLSchema/string" />
