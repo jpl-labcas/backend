@@ -67,7 +67,7 @@
     <property name="input.dataset.OrganSite.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#organSite" />
     <property name="input.dataset.OrganSite.title" value="Organ Site" />
     <property name="input.dataset.OrganSite.description" value="EDRN Organ Site (select all that apply)" />
-    <property name="input.dataset.OrganSite.required" value="false" />
+    <property name="input.dataset.OrganSite.required" value="true" />
     
     <property name="input.dataset.SiteName.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#siteName" />
     <property name="input.dataset.SiteName.title" value="Site Name" />
