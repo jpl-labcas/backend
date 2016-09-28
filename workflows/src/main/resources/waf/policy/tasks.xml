@@ -42,6 +42,9 @@
       <property name="dataset.OwnerPrincipal" value="WilburAFrankin" />
       <!-- hyperlinks to: https://edrn.nci.nih.gov/sites/73-university-of-colorado-health-science-center -->
       <property name="dataset.SiteId" value="73" />
+      <property name="dataset.ProtocolId" value="1000206" />
+      <property name="dataset.ProtocolName" value="Lung Imaging Study" />
+      
       
       <!-- default dataset metadata -->
       <!-- <property name="dataset.Version" value="1" /> -->

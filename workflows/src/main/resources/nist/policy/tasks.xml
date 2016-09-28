@@ -28,8 +28,12 @@
     
       <!-- fixed dataset metadata -->
       <property name="dataset.ParentDatasetId" value="NistProduct" />
-      <!-- FIXME -->
-      <!-- <property name="dataset.Dataset" value="Lab005_C_R03" /> -->
+      <property name="dataset.ProtocolId" value="410" />
+      <property name="dataset.ProtocolName" value="Interlab Study of miRNA Measurement" />
+      <property name="dataset.OrganSite" value="Liver, Placenta, Brain" />
+      <property name="dataset.CollaborativeGroup" value="N/A" />
+      <property name="dataset.OwnerPrincipal" value="Plant National Institute of Standards and Technology" />
+
     
       <!-- input dataset metadata -->
       <property name="input.dataset.DatasetId.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#nistDatasetId" />
@@ -141,7 +145,7 @@
       <!-- <metfield name="Manufacturer" /> -->
       <!-- <metfield name="ModelNumber" /> -->
       <!-- <metfield name="DataProcessingProtocols" /> -->
-      <metfield name="OwnerPrincipal" />
+      <!-- <metfield name="OwnerPrincipal" /> -->
       
     </requiredMetFields>
     
