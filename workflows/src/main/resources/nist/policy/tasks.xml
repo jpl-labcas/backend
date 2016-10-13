@@ -46,14 +46,14 @@
       <property name="input.dataset.LabNumber.title" value="Lab Number" />
       <property name="input.dataset.LabNumber.description" value="Laboratory where the data was collected." />
       <property name="input.dataset.LabNumber.required" value="true" />
-      <!-- <property name="input.dataset.LabNumber.value.1" value="001" /> -->
-      <!-- <property name="input.dataset.LabNumber.value.2" value="002" /> -->
+      <property name="input.dataset.LabNumber.value.1" value="001" />
+      <property name="input.dataset.LabNumber.value.2" value="002" />
       <property name="input.dataset.LabNumber.value.3" value="003" />
       <property name="input.dataset.LabNumber.value.4" value="004" />
       <property name="input.dataset.LabNumber.value.5" value="005" />
-      <!-- <property name="input.dataset.LabNumber.value.6" value="006" /> -->
-      <!-- <property name="input.dataset.LabNumber.value.7" value="007" /> -->
-      <!-- <property name="input.dataset.LabNumber.value.8" value="008" /> -->
+      <property name="input.dataset.LabNumber.value.6" value="006" />
+      <property name="input.dataset.LabNumber.value.7" value="007" />
+      <property name="input.dataset.LabNumber.value.8" value="008" />
       
       <property name="input.dataset.Method.type" value="http://www.w3.org/2001/XMLSchema/string" />
       <property name="input.dataset.Method.title" value="Method" />
@@ -74,8 +74,8 @@
                 value="Submission number corresponding to a given inter-laboratory study. 
                        Choose '00' if this data is NOT part of an inter-laboratory study." />
       <property name="input.dataset.RoundNumber.required" value="true" />
-      <property name="input.dataset.RoundNumber.value.1" value="01" />
-      <property name="input.dataset.RoundNumber.value.2" value="02" />
+      <!-- <property name="input.dataset.RoundNumber.value.1" value="01" /> -->
+      <!-- <property name="input.dataset.RoundNumber.value.2" value="02" /> -->
       <property name="input.dataset.RoundNumber.value.3" value="03" />
       <property name="input.dataset.RoundNumber.value.4" value="04" />
       <property name="input.dataset.RoundNumber.value.5" value="05" />
