@@ -76,10 +76,10 @@
       <property name="input.dataset.RoundNumber.required" value="true" />
       <!-- <property name="input.dataset.RoundNumber.value.1" value="01" /> -->
       <!-- <property name="input.dataset.RoundNumber.value.2" value="02" /> -->
-      <property name="input.dataset.RoundNumber.value.3" value="03" />
-      <property name="input.dataset.RoundNumber.value.4" value="04" />
-      <property name="input.dataset.RoundNumber.value.5" value="05" />
-      <property name="input.dataset.RoundNumber.value.6" value="00" />
+      <property name="input.dataset.RoundNumber.value.1" value="03" />
+      <property name="input.dataset.RoundNumber.value.2" value="04" />
+      <property name="input.dataset.RoundNumber.value.3" value="05" />
+      <property name="input.dataset.RoundNumber.value.4" value="00" />
             
       <property name="input.dataset.LeadPI.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#principalInvestigator" />
       <property name="input.dataset.LeadPI.title" value="Lead PI" />
