@@ -7,10 +7,10 @@
     <cmd>cd [PGE_ROOT]/nist/pges</cmd>
     <!-- copy latest uploaded data -->
     <cmd>cp [LABCAS_STAGING]/[DatasetId]/[DatasetId]*.txt .</cmd>
-    <!-- run R script -->
-    <cmd>Rscript --vanilla SingleLab_SingleRound_C.R Lab[LabNumber]_[Method] R[RoundNumber]</cmd>
+    <!-- run R script (only for Labs 005-008) -->
+    <cmd>if [ $LabNumber == '005' ] || [ $LabNumber == '006' ] || [ $LabNumber == '007' ] || [ $LabNumber == '008' ]; then Rscript --vanilla SingleLab_SingleRound_C.R Lab[LabNumber]_[Method] R[RoundNumber]; fi</cmd>
     <!-- move output back to stangin area -->
-    <cmd>mv Rplots.pdf [LABCAS_STAGING]/[DatasetId]/Rplots.pdf</cmd>
+    <cmd>if [ -e Rplots.pdf ];then mv Rplots.pdf [LABCAS_STAGING]/[DatasetId]/Rplots.pdf; fi</cmd>
     <!-- remove latest uploaded data -->
     <cmd>rm [DatasetId]*.txt</cmd>
   </exe>
