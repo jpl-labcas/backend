@@ -28,13 +28,7 @@
     
       <!-- fixed dataset metadata -->
       <property name="dataset.ProductType" value="NistProduct" />
-      <property name="dataset.ParentDatasetId" value="NistProduct" />
-      <property name="dataset.ProtocolId" value="410" />
-      <property name="dataset.ProtocolName" value="Interlab Study of miRNA Measurement" />
-      <property name="dataset.OrganSite" value="Liver, Placenta, Brain" />
-      <property name="dataset.CollaborativeGroup" value="N/A" />
       <property name="dataset.OwnerPrincipal" value="Plant National Institute of Standards and Technology" />
-
     
       <!-- input dataset metadata -->
       <property name="input.dataset.DatasetId.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#nistDatasetId" />
@@ -91,39 +85,7 @@
       <property name="input.dataset.DataCollectionDate.title" value="Data Collection Date" />
       <property name="input.dataset.DataCollectionDate.description" value="Date when the data was collected." />
       <property name="input.dataset.DataCollectionDate.required" value="true" />
-      
-      <!-- <property name="input.dataset.SampleProcessingProtocols.type" value="http://www.w3.org/2001/XMLSchema/string" />
-      <property name="input.dataset.SampleProcessingProtocols.title" value="Sample Processing Protocols" />
-      <property name="input.dataset.SampleProcessingProtocols.description" 
-                value="How the samples were processed prior to be run on the instrumentation.
-                      Examples: library preparation, labeling, amplification method., ...
-                      Kits and reagents: specify source and catalog numbers."/> 
-      <property name="input.dataset.SampleProcessingProtocols.required" value="true" />-->
-      
-      <!-- <property name="input.dataset.InstrumentationTechnologyCode.type" value="http://www.w3.org/2001/XMLSchema/string" />
-      <property name="input.dataset.InstrumentationTechnologyCode.title" value="Instrumentation Technology Code" />
-      <property name="input.dataset.InstrumentationTechnologyCode.description" value="Select the instrumentation technology code." />
-      <property name="input.dataset.InstrumentationTechnologyCode.required" value="true" />
-      <property name="input.dataset.InstrumentationTechnologyCode.value.1" value="HYB" />
-      <property name="input.dataset.InstrumentationTechnologyCode.value.2" value="NGS" />
-      <property name="input.dataset.InstrumentationTechnologyCode.value.3" value="PCR" />
-      <property name="input.dataset.InstrumentationTechnologyCode.value.4" value="Other" /> -->
-          
-      <!-- <property name="input.dataset.Manufacturer.type" value="http://www.w3.org/2001/XMLSchema/string" />
-      <property name="input.dataset.Manufacturer.title" value="Manufacturer" />
-      <property name="input.dataset.Manufacturer.description" value="Manufacturer of the instrument used to analyze the data." />
-      <property name="input.dataset.Manufacturer.required" value="true" /> -->
-      
-      <!-- <property name="input.dataset.ModelNumber.type" value="http://www.w3.org/2001/XMLSchema/string" />
-      <property name="input.dataset.ModelNumber.title" value="Model Number" />
-      <property name="input.dataset.ModelNumber.description" value="Model number of the instrument." />
-      <property name="input.dataset.ModelNumber.required" value="true" /> -->
-  
-     <!--  <property name="input.dataset.DataProcessingProtocols.type" value="http://www.w3.org/2001/XMLSchema/string" />
-      <property name="input.dataset.DataProcessingProtocols.title" value="Data Processing Protocols" />
-      <property name="input.dataset.DataProcessingProtocols.description" value="Prior to upload: alignment algorithms, data filtering, normalization, ..." />
-      <property name="input.dataset.DataProcessingProtocols.required" value="true" /> -->
-  
+        
       <property name="input.dataset.OwnerPrincipal.type" value="urn:ldap:attributes:dn" />
       <property name="input.dataset.OwnerPrincipal.title" value="Share data with..." />
       <property name="input.dataset.OwnerPrincipal.description" 
@@ -141,12 +103,6 @@
       <metfield name="RoundNumber" />
       <metfield name="LeadPI" />
       <metfield name="DataCollectionDate" />
-      <!-- <metfield name="SampleProcessingProtocols" /> -->
-      <!-- <metfield name="InstrumentationTechnologyCode" /> -->
-      <!-- <metfield name="Manufacturer" /> -->
-      <!-- <metfield name="ModelNumber" /> -->
-      <!-- <metfield name="DataProcessingProtocols" /> -->
-      <!-- <metfield name="OwnerPrincipal" /> -->
       
     </requiredMetFields>
     

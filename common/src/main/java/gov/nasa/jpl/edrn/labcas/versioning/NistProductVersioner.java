@@ -14,7 +14,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 public class NistProductVersioner extends MetadataBasedFileVersioner {
 	
 	//private String filePathSpec = "/[LabNumber]/[Method]/[RoundNumber]";
-	private String filePathSpec = "/[DatasetId]";
+	private String filePathSpec = "/[DatasetId]/";
 	
     public NistProductVersioner() {
         setFlatProducts(true);

@@ -42,33 +42,28 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 		        
 		try {
 			
-			// retrieve dataset identifier
+			// retrieve dataset identifier from XML/RPC parameters
 			String datasetId = metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
 			// enforce no spaces
 			if (datasetId.contains(" ")) {
 				throw new WorkflowTaskInstanceException("DatasetId cannot contain spaces");
 			}
 			
-			// populate product type metadata from workflow configuration
-			Metadata productTypeMetadata = FileManagerUtils.readConfigMetadata(metadata, config);
+			// populate dataset metadata from workflow configuration
+			Metadata datasetMetadata = FileManagerUtils.readConfigMetadata(metadata, config);
 			
-			// override parent product type from XML/RPC parameters
-			if (metadata.containsKey(Constants.METADATA_KEY_PARENT_DATASET_ID)) {
-				productTypeMetadata.replaceMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID, metadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID));
+			// retrieve product type from dataset metadata
+			// also needed at file-level metadata for ingestion
+			String productTypeName = datasetMetadata.getMetadata(Constants.PRODUCT_TYPE);
+			metadata.replaceMetadata(Constants.PRODUCT_TYPE, productTypeName); // transfer to product level metadata
+			LOG.info("Using productTypeName="+productTypeName );
 
-			// or read from workflow configuration
-			} else if (productTypeMetadata.containsKey(Constants.METADATA_KEY_PARENT_DATASET_ID)) {
-				metadata.replaceMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID, productTypeMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID));
-				
-			// or set default
-			} else {
-				productTypeMetadata.addMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID, Constants.ECAS_PRODUCT_TYPE);
-				metadata.replaceMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID, productTypeMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID));
-			}
-			
+						
 	        // add dataset version to product type metadata (used for generating product unique identifiers)
-			String parentDatasetId = productTypeMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
-	        int version = FileManagerUtils.findLatestDatasetVersion( datasetId, parentDatasetId );
+			//String parentDatasetId = datasetMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
+	        //int version = FileManagerUtils.findLatestDatasetVersion( datasetId, parentDatasetId );
+	        // FIXME
+	        int version = 0;
 	        if (version==0) {  // dataset does not yet exist -> assign first version
 	        	version = 1; 
 	        } else {              // keep the same version unless the flag is set
@@ -77,23 +72,16 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 	        		metadata.removeMetadata(Constants.METADATA_KEY_NEW_VERSION); // remove the flag
 	        	}
 	        }
-	        productTypeMetadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version); // product type metadata
+	        datasetMetadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version); // product type metadata
 	        metadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version);            // workflow (-> poroduct) metadata
 	        LOG.fine("Using dataset version=: "+version);
 
-			// create or update the File Manager product type
-			//String productTypeName = FileManagerUtils.uploadDataset(datasetId, productTypeMetadata);
-			
-			// FIXME
-			String productTypeName = productTypeMetadata.getMetadata(Constants.PRODUCT_TYPE);
-			metadata.replaceMetadata(Constants.PRODUCT_TYPE, productTypeName); // transfer to product level metadata
-			LOG.info("Using productTypeName="+productTypeName );
-			
+						
 			// copy all product type metadata to product metadata
-	        for (String key : productTypeMetadata.getAllKeys()) {
+	        for (String key : datasetMetadata.getAllKeys()) {
 	        	if (!metadata.containsKey(key)) {
 	        		LOG.fine("==> Copy metadata for key="+key+" from dataset-level to file-level.");
-	        		metadata.addMetadata(key, productTypeMetadata.getAllMetadata(key));
+	        		metadata.addMetadata(key, datasetMetadata.getAllMetadata(key));
 	        	}
 	        }
 			

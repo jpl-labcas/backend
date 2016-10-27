@@ -19,7 +19,7 @@
 
   <type id="urn:edrn:NistProduct" name="NistProduct">
     <repository path="file://[LABCAS_ARCHIVE]/NistProduct" />
-    <versioner class="gov.nasa.jpl.edrn.labcas.versioning.NistProductVersioner" />
+    <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner" />
     <description>Product published through NIST pipeline.</description>
     <metExtractors>
       <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
@@ -31,27 +31,41 @@
       </extractor>
       <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor" />
     </metExtractors>
+    
     <metadata>
-      <keyval>
-        <key>DatasetId</key>
-        <val>NistProduct</val>
-      </keyval>
+
+      <!-- LabCAS core metadata -->
       <keyval>
         <key>Description</key>
         <val>NIST Laboratory Data</val>
       </keyval>
+  
+      <!-- CDEs -->
       <keyval>
-        <key>Version</key>
-        <val>1</val>
+        <key>Discipline</key>
+        <val>MicroRnaSequencing</val>
       </keyval>
       <keyval>
         <key>LeadPI</key>
         <val>Scott Pine</val>
       </keyval>
       <keyval>
-        <key>ParentDatasetId</key>
-        <val>LabcasProduct</val>
+        <key>ProtocolId</key>
+        <val>410</val>
       </keyval>
+      <keyval>
+        <key>ProtocolName</key>
+        <val>Interlab Study of miRNA Measurement</val>
+      </keyval>
+      <keyval>
+        <key>OrganSite</key>
+        <val>Liver, Placenta, Brain</val>
+      </keyval>
+      <keyval>
+        <key>CollaborativeGroup</key>
+        <val>N/A</val>
+      </keyval>
+
     </metadata>
   </type>
 

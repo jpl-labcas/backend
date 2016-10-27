@@ -2,7 +2,6 @@
 <metadataList>
             
     <metadata key="DatasetId" val="[DatasetId]"/>
-    <metadata key="ParentDatasetId" val="[ParentDatasetId]"/>
     <metadata key="Version" val="[Version]"/>
     
     <metadata key="LabNumber" val="[LabNumber]"/>
@@ -10,11 +9,6 @@
     <metadata key="RoundNumber" val="[RoundNumber]"/>
     <metadata key="LeadPI" val="[LeadPI]"/>
     <metadata key="DataCollectionDate" val="[DataCollectionDate]"/>
-    <!-- <metadata key="SampleProcessingProtocols" val="[SampleProcessingProtocols]"/> -->
-    <!-- <metadata key="InstrumentationTechnologyCode" val="[InstrumentationTechnologyCode]"/> -->
-    <!-- <metadata key="Manufacturer" val="Manufacturer"/> -->
-    <!-- <metadata key="ModelNumber" val="[ModelNumber]"/> -->
-    <!-- <metadata key="DataProcessingProtocols" val="[DataProcessingProtocols]"/> -->
     <metadata key="OwnerPrincipal" val="[OwnerPrincipal]"/>
         
 </metadataList>
