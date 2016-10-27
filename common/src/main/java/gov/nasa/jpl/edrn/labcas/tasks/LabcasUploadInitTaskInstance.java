@@ -82,8 +82,12 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 	        LOG.fine("Using dataset version=: "+version);
 
 			// create or update the File Manager product type
-			String productTypeName = FileManagerUtils.uploadDataset(datasetId, productTypeMetadata);
+			//String productTypeName = FileManagerUtils.uploadDataset(datasetId, productTypeMetadata);
+			
+			// FIXME
+			String productTypeName = productTypeMetadata.getMetadata(Constants.PRODUCT_TYPE);
 			metadata.replaceMetadata(Constants.PRODUCT_TYPE, productTypeName); // transfer to product level metadata
+			LOG.info("Using productTypeName="+productTypeName );
 			
 			// copy all product type metadata to product metadata
 	        for (String key : productTypeMetadata.getAllKeys()) {
@@ -94,7 +98,7 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 	        }
 			
 			// reload the catalog configuration so that the new product type is available for publishing
-			FileManagerUtils.reload();
+			//FileManagerUtils.reload();
 	                        
 	        // remove all .met files from staging directory - probably a leftover of a previous workflow submission
 	        String stagingDir = System.getenv(Constants.ENV_LABCAS_STAGING) + "/" + datasetId;

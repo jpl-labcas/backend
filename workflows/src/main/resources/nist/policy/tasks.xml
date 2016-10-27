@@ -27,6 +27,7 @@
       <property name="workflow.order" value="2" />
     
       <!-- fixed dataset metadata -->
+      <property name="dataset.ProductType" value="NistProduct" />
       <property name="dataset.ParentDatasetId" value="NistProduct" />
       <property name="dataset.ProtocolId" value="410" />
       <property name="dataset.ProtocolName" value="Interlab Study of miRNA Measurement" />

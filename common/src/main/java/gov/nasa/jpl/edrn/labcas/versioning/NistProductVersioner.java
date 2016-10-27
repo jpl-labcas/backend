@@ -7,13 +7,14 @@ import org.apache.oodt.cas.metadata.Metadata;
 
 /**
  * Class that defines the directory structure used to archive NIST workflow products.
- * Metadata fields available for substitution are defined in the NIST product-types.xml configuration file.
+ * Metadata fields available for substitution are retrieved from the dynamic workflow metadata.
  * 
  * @author Luca Cinquini
  */
 public class NistProductVersioner extends MetadataBasedFileVersioner {
 	
-	private String filePathSpec = "/[lab]/[date]/[Filename]";
+	//private String filePathSpec = "/[LabNumber]/[Method]/[RoundNumber]";
+	private String filePathSpec = "/[DatasetId]";
 	
     public NistProductVersioner() {
         setFlatProducts(true);
