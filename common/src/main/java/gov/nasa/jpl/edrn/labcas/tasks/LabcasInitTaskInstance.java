@@ -15,7 +15,7 @@ import gov.nasa.jpl.edrn.labcas.Constants;
 
 /**
  * Task used to initialize a LabCAS workflow.
- * For now it does nothing except printing stetements.
+ * For now it does nothing except printing statements.
  * 
  * @author luca
  *
