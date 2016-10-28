@@ -2,7 +2,7 @@
 <metadataList>
             
     <metadata key="DatasetId" val="[DatasetId]"/>
-    <metadata key="Version" val="[Version]"/>
+    <metadata key="DatasetVersion" val="DatasetVersion"/>
     
     <metadata key="LabNumber" val="[LabNumber]"/>
     <metadata key="Method" val="[Method]"/>

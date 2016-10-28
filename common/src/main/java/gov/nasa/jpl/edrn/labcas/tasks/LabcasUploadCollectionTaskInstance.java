@@ -71,8 +71,8 @@ public class LabcasUploadCollectionTaskInstance implements WorkflowTaskInstance 
 			
 	        // add  version to dataset metadata (used for generating product unique identifiers)
 	        int version = FileManagerUtils.getNextVersion( FileManagerUtils.findLatestDatasetVersion( productTypeName, datasetId ), metadata);
-	        datasetMetadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version); // dataset metadata
-	        metadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version);        // product metadata
+	        datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+version); // dataset metadata
+	        metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+version);        // product metadata
 						
 			// copy all product type metadata to product metadata
 	        for (String key : productTypeMetadata.getAllKeys()) {

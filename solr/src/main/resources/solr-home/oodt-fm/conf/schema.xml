@@ -115,7 +115,7 @@
 
    <!-- LabCAS core attributes(not required because they are added AFTER the record stub -->
    <field name="DatasetId" type="string" indexed="true" stored="true" required="false" multiValued="false" />
-   <field name="Version" type="int" indexed="true" stored="true" required="false" multiValued="false" />
+   <field name="DatasetVersion" type="int" indexed="true" stored="true" required="false" multiValued="false" />
 
    <!-- core CAS product attributes -->
    <field name="CAS.ProductId" type="string" indexed="true" stored="true" required="true" multiValued="false" />

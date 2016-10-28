@@ -115,7 +115,7 @@ public class SolrUtils {
         SolrQuery request = new SolrQuery();
         request.setQuery("*:*");
         request.addFilterQuery(Constants.METADATA_KEY_DATASET_ID+":"+datasetId, 
-        		               Constants.METADATA_KEY_VERSION+":"+datasetVersion, 
+        		               Constants.METADATA_KEY_DATASET_VERSION+":"+datasetVersion, 
         		               Constants.METADATA_KEY_PRODUCT_NAME+":"+productName);
         request.setRows(1);
         

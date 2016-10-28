@@ -31,7 +31,7 @@ public interface Constants {
 	
 	public final static String METADATA_KEY_ID = "id";
 	public final static String METADATA_KEY_NAME = "Name";
-	public final static String METADATA_KEY_VERSION = "Version";
+	public final static String METADATA_KEY_DATASET_VERSION = "DatasetVersion";
 	public final static String METADATA_KEY_TITLE = "Title";
 	public final static String METADATA_KEY_DESCRIPTION = "Description";
 

@@ -65,8 +65,8 @@ public class LabcasUploadDatasetTaskInstance implements WorkflowTaskInstance {
 	        		metadata.removeMetadata(Constants.METADATA_KEY_NEW_VERSION); // remove the flag
 	        	}
 	        }
-	        datasetMetadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version); // product type metadata
-	        metadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version);        // workflow (-> product) metadata
+	        datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+version); // product type metadata
+	        metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+version);        // workflow (-> product) metadata
 	        LOG.fine("Using dataset version=: "+version);
 
 						

@@ -21,7 +21,7 @@ public class ProductTypeDotVersionDotProductIdGenerator implements ProductIdGene
 		
 		ProductType pt = product.getProductType();
 		Metadata ptm = pt.getTypeMetadata();
-		String version = ptm.getMetadata(Constants.METADATA_KEY_VERSION);
+		String version = ptm.getMetadata(Constants.METADATA_KEY_DATASET_VERSION);
 		
 		String id = null;
 		if (version!=null) {

@@ -16,7 +16,7 @@ public class LabcasProductVersioner extends MetadataBasedFileVersioner {
 	//private String filePathSpec = "/[SiteShortName]/[ProductReceivedDate]/[OrganName]/[InstrumentId]/[Filename]";
 	//private String filePathSpec = "/[LabNumber]/[Method]/[RoundNumber]";
 	//private String filePathSpec = "/[DatasetId]/";
-	private String filePathSpec = "/[ProductType]/[DatasetId]/[Version]/[Filename]";
+	private String filePathSpec = "/[ProductType]/[DatasetId]/[DatasetVersion]/[Filename]";
 
 	
     public LabcasProductVersioner() {

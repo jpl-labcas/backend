@@ -185,18 +185,18 @@ class LabcasClient(object):
         #    self.printProduct(result)
             
         # query for all possible versions of this dataset
-        response = self.solrServerProxy.query('*:*', fq=['CAS.ProductTypeName:%s' % productType], start=0, rows=0, facet='true', facet_field='Version')
-        versions = response.facet_counts['facet_fields']['Version']
+        response = self.solrServerProxy.query('*:*', fq=['CAS.ProductTypeName:%s' % productType], start=0, rows=0, facet='true', facet_field='DatasetVersion')
+        versions = response.facet_counts['facet_fields']['DatasetVersion']
         last_version = 0
         for key, value in versions.items():
             # NOTE: facet keys span the whole index, but their counts are specific to this search
             if int(value)>0:
-                print "\nVersion number %s has %s files" % (key, value)
+                print "\nDataset Version number %s has %s files" % (key, value)
                 if int(key) > last_version:
                     last_version = int(key)
             
         # query for all files for a specific version
-        response = self.solrServerProxy.query('*:*', fq=['CAS.ProductTypeName:%s' % productType,'Version:%s' % last_version ], start=0)
+        response = self.solrServerProxy.query('*:*', fq=['CAS.ProductTypeName:%s' % productType,'DatasetVersion:%s' % last_version ], start=0)
         print "\nLatest version: %s, number of files: %s, listing them all:" % (last_version, response.numFound)
         for result in response.results:
             self.printProduct(result)
