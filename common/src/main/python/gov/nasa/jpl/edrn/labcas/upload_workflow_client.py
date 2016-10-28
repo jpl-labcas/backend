@@ -4,7 +4,8 @@ from gov.nasa.jpl.edrn.labcas.labcas_client import LabcasClient
 
 if __name__ == '__main__':
         
-    datasetId = 'mydatadir'
+    productType = 'MyData'
+    datasetId = 'mydatadir' # must match directory name in $LABCAS_STAGING
     labcasClient = LabcasClient()
     
     # print out workflow definition
@@ -14,8 +15,8 @@ if __name__ == '__main__':
     
     # required metadata fields
     #./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-upload --metaData 
-    # --key DatasetId mydata --key DatasetName 'My Data' --key Description 'My own data' 
-    # --key ProtocolId 1 --key LeadPI 'John Doe' --key ProtocolName 'GSTP1 Methylation' 
+    # --key DatasetId mydata --key ProductType 'MyData' --key Description 'My own data' 
+    # --key ProtocolId 1 --key LeadPI 'John Doe' --key ProtocolName 'GSTP1 Methylation' --key OrganSite Lung --key OwnerPrincipal EDRN_CANCER_GROUP
     # --key DataCustodian 'Rich Smith' --key DataCustodianEmail 'rich.smith@pubmed.gov' --key CollaborativeGroup 'Prostate and Urologic'
     metadata = { 'ProductType':'MyData',
                  'Description':'My precious data',
@@ -30,25 +31,25 @@ if __name__ == '__main__':
     } 
     
 
-    # upload dataset staged in directory 'mydata'
+    # upload dataset staged in directory 'mydatadir'
     labcasClient.uploadCollection(datasetId, metadata)
 
     # update the dataset metadata WITHOUT generating a new version
     metadata['ProtocolId'] = '99'
-    #labcasClient.uploadCollection(datasetId, metadata)
+    labcasClient.uploadCollection(datasetId, metadata)
     
     # update dataset metadata while generating a new version
     metadata['LeadPI'] = 'Mister X'
-    #labcasClient.uploadCollection(datasetId, metadata, newVersion=True)
+    labcasClient.uploadCollection(datasetId, metadata, newVersion=True)
 
     # list all product types in File manager
-    #labcasClient.listProductTypes()
+    labcasClient.listProductTypes()
     
     # query the product types from the XML/RPC File Manager interface
-    #labcasClient.getProductTypeByName(datasetId)
+    labcasClient.getProductTypeByName(productType)
     
     # or equivalently
-    #labcasClient.getProductTypeById("urn:edrn:%s" % datasetId)
+    labcasClient.getProductTypeById("urn:edrn:%s" % productType)
     
-    # list all products for given dataset == product type
-    #labcasClient.listProducts(datasetId)
+    # list all products for given product type
+    labcasClient.listProducts(productType)

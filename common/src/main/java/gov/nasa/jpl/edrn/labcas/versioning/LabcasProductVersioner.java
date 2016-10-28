@@ -14,7 +14,10 @@ import org.apache.oodt.cas.metadata.Metadata;
 public class LabcasProductVersioner extends MetadataBasedFileVersioner {
 	
 	//private String filePathSpec = "/[SiteShortName]/[ProductReceivedDate]/[OrganName]/[InstrumentId]/[Filename]";
+	//private String filePathSpec = "/[LabNumber]/[Method]/[RoundNumber]";
+	//private String filePathSpec = "/[DatasetId]/";
 	private String filePathSpec = "/[ProductType]/[DatasetId]/[Version]/[Filename]";
+
 	
     public LabcasProductVersioner() {
         setFlatProducts(true);

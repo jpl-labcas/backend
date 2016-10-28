@@ -43,35 +43,24 @@ public class FileManagerUtils {
 	private static final Logger LOG = Logger.getLogger(FileManagerUtils.class.getName());
 	
 	/**
-	 * FIXME
-	 * Method to upload a new collection to the File Manager, creating a corresponding product type;
-	 * or, upload a new version of the same dataset, overriding the metadata for the same product type.
+	 * Method to create the XML configuration for a new Product Type.
+	 * 
 	 * @param dataset
 	 * @param coreMetadata
 	 * @throws Exception
 	 */
-	public static String uploadProductType(String productTypeName, Metadata productTypeMetadata) throws Exception {
+	public static void createProductType(String productTypeName, Metadata productTypeMetadata) throws Exception {
 				
-		// build product type
-		//String productTypeName = FileManagerUtils.getProductTypeName(dataset);
-		
-		// retrieve additional dataset metadata from file DatasetMetadata.xml
-		//Metadata datasetMetadata = FileManagerUtils.readDatasetMetadata( datasetId );
-		
-		// merge dataset specific metadata with core metadata
-		//datasetMetadata.addMetadata(coreMetadata);
 		
 		// transfer metadata field 'Description' to product type description, if found
-		String productTypeDescription = productTypeName; // default
+		String productTypeDescription = productTypeName; // default product type description = product type name
 		if (productTypeMetadata.containsKey(Constants.METADATA_KEY_DESCRIPTION)) {
 			productTypeDescription = productTypeMetadata.getMetadata(Constants.METADATA_KEY_DESCRIPTION);
 			productTypeMetadata.removeMetadata(Constants.METADATA_KEY_DESCRIPTION);
 		}
 		
 		// create product type directory with the same name
-		//String parentDataset = coreMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
 		File productTypeDir = FileManagerUtils.getProductTypeArchiveDir(productTypeName);
-		LOG.info("Using product type archive dir="+productTypeDir);
 		File policyDir = new File(productTypeDir, "policy");
 		if (!policyDir.exists()) {
 			policyDir.mkdirs();
@@ -94,7 +83,6 @@ public class FileManagerUtils {
 		File productTypesXmlFile = new File(policyDir, "product-types.xml");
 		FileManagerUtils.makeProductTypesXmlFile(productTypesXmlFile, productTypeName, productTypeDescription, productTypeMetadata);
 
-		return productTypeName;
 
 	}
 		
@@ -130,13 +118,14 @@ public class FileManagerUtils {
 	 * Utility function to determine the latest version of an archived dataset.
 	 * If not found, the latest version is set to 0.
 	 */
-	public static int findLatestDatasetVersion(final String datasetName, final String parentDatasetName) {
+	public static int findLatestDatasetVersion(final String productTypeName, final String datasetId) {
 		
-		File datasetDir = FileManagerUtils.getProductTypeArchiveDir(datasetName);
+		File productTypeDir = FileManagerUtils.getProductTypeArchiveDir(productTypeName);
+		File datasetDir = new File(productTypeDir, datasetId);
+		LOG.fine("Looking for dataset versions in "+datasetDir.getAbsolutePath());
 		
         int version = 0;
         if (datasetDir.exists()) {           
-	        LOG.fine("Looking for dataset versions in "+datasetDir.getAbsolutePath());
 	
 	        // list "version" sub-directories
 	        String[] directories = datasetDir.list(new FilenameFilter() {
@@ -160,6 +149,49 @@ public class FileManagerUtils {
 		
 	}
 	
+	/** 
+	 * Method to possibly increment the dataset version based on the "new version" flag.
+	 * @param version
+	 * @param metadata
+	 * @return
+	 */
+	public static int getNextVersion(int version, Metadata metadata) {
+        
+		if (version==0) {  // dataset does not yet exist -> assign first version
+        	version = 1; 
+        } else {              // keep the same version unless the flag is set
+        	if (Boolean.parseBoolean(metadata.getMetadata(Constants.METADATA_KEY_NEW_VERSION))) {
+        		version += 1; // increment version
+        		metadata.removeMetadata(Constants.METADATA_KEY_NEW_VERSION); // remove the flag
+        	}
+        }
+        
+        return version;
+	}
+	
+	/**
+	 * Method to cleanup the older .met files from the dataset staging directory.
+	 * @param datasetId
+	 */
+	public static void cleanupStagingDir(String datasetId) {
+		
+        // remove all .met files from staging directory - probably a leftover of a previous workflow submission
+        String stagingDir = System.getenv(Constants.ENV_LABCAS_STAGING) + "/" + datasetId;
+        LOG.fine("Cleaning up dataset staging directory: "+stagingDir);
+        String[] metFiles = new File(stagingDir).list(new FilenameFilter() {
+                  @Override
+                  public boolean accept(File current, String name) {
+                    return new File(current, name).getAbsolutePath().endsWith(Constants.OODT_METADATA_EXTENSION);
+                  }
+                });
+        for (String metFile : metFiles) {
+        	File _metFile = new File(stagingDir, metFile);
+        	LOG.fine("Deleting older metadata file: "+_metFile.getAbsolutePath());
+        	_metFile.delete();
+        }
+		
+	}
+	
 	/**
 	 * Utility method that reads the additional dataset metadata 
 	 * from the file DatasetMetadata.xmlmet located in the dataset staging directory.
@@ -178,8 +210,8 @@ public class FileManagerUtils {
 	}
 	
 	/**
-	 * Utility method that reads the core dataset metadata from the task configuration,
-	 * and populates it with values from the workflow instance metadata 
+	 * Utility method that reads the product type metadata fields from the task configuration,
+	 * and populates them with values from the workflow instance metadata 
 	 * (supplied when the workflow is submitted).
 	 * @return
 	 */
@@ -276,17 +308,6 @@ public class FileManagerUtils {
 	}
 	
 	
-	/**
-	 * Constructs the product type name from a dataset identifier.
-	 * @param dataset
-	 * @return
-	 */
-	private static String getProductTypeName(String dataset) {
-		
-		//return WordUtils.capitalize(dataset).replaceAll("\\s+", "_");
-		return dataset; // product type name == dataset identifier
-		
-	}
 	
 	/**
 	 * Utility method to create the file "elements.xml".
