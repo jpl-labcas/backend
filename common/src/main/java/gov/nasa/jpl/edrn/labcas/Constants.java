@@ -28,6 +28,9 @@ public interface Constants {
 	public final static String METADATA_KEY_FILE_LOCATION = "FileLocation";
 	public final static String METADATA_KEY_FILE_NAME = "Filename";
 	public final static String METADATA_KEY_PRODUCT_NAME = "ProductName";
+	// FIXME: will be replaced with same values in CoreMetKeys.java
+	public final static String METADATA_KEY_PRODUCT_TYPE = "ProductType";
+
 	
 	// dataset-level metadata file
 	public final static String METADATA_FILE = "DatasetMetadata.xmlmet";
@@ -47,8 +50,6 @@ public interface Constants {
 	public final static String PREFIX = "cas";
 	public final static String NS = "http://oodt.apache.org/components/cas";
 	
-	// FIXME: will be replaced with same values in CoreMetKeys.java
-	public final static String PRODUCT_TYPE = "ProductType";
 	
 	public final static String EDRN_PREFIX = "urn:edrn:";
 	public final static String LABCAS_PRODUCT_TYPE = "LabcasProduct";

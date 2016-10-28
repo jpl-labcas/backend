@@ -41,8 +41,8 @@ public class LabcasUploadDatasetTaskInstance implements WorkflowTaskInstance {
 			
 			// retrieve product type from configuration metadata
 			// also needed at file-level metadata for ingestion
-			String productTypeName = datasetMetadata.getMetadata(Constants.PRODUCT_TYPE);
-			metadata.replaceMetadata(Constants.PRODUCT_TYPE, productTypeName); // transfer to product level metadata
+			String productTypeName = datasetMetadata.getMetadata(Constants.METADATA_KEY_PRODUCT_TYPE);
+			metadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName); // transfer to product level metadata
 			LOG.info("Using productType="+productTypeName );
 			
 			// retrieve dataset identifier from XML/RPC parameters

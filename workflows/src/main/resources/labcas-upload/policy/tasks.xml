@@ -28,8 +28,8 @@
       
     <requiredMetFields>
     
-      <metfield name="ProductTypeName" />
-      <metfield name="ProductTypeDescription" />
+      <metfield name="ProductType" />
+      <metfield name="Description" />
       <metfield name="DatasetId" />
     
       <metfield name="ProtocolName" />

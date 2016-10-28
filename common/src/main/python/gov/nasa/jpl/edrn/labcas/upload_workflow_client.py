@@ -4,7 +4,7 @@ from gov.nasa.jpl.edrn.labcas.labcas_client import LabcasClient
 
 if __name__ == '__main__':
         
-    datasetId = 'mydata'
+    datasetId = 'mydatadir'
     labcasClient = LabcasClient()
     
     # print out workflow definition
@@ -17,8 +17,8 @@ if __name__ == '__main__':
     # --key DatasetId mydata --key DatasetName 'My Data' --key Description 'My own data' 
     # --key ProtocolId 1 --key LeadPI 'John Doe' --key ProtocolName 'GSTP1 Methylation' 
     # --key DataCustodian 'Rich Smith' --key DataCustodianEmail 'rich.smith@pubmed.gov' --key CollaborativeGroup 'Prostate and Urologic'
-    metadata = { 'ProductTypeName':'MyData',
-                 'ProductTypeDescription':'My precious data',
+    metadata = { 'ProductType':'MyData',
+                 'Description':'My precious data',
                  'ProtocolId':'1',
                  'ProtocolName':'GSTP1 Methylation',
                  'LeadPI':'John Doe',

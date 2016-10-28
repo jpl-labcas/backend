@@ -13,10 +13,12 @@ import gov.nasa.jpl.edrn.labcas.Constants;
 import gov.nasa.jpl.edrn.labcas.utils.FileManagerUtils;
 
 /**
- * Task that initializes the upload of a new data Collection (aka ProductType) into LabCAS:
- * - the ProductType name must be supplied in the HTTP request
- * - the DatasetId must also be supplied in the HTTP request (and is typically equal to the directory name)
- * No metadata is retrieved from the task static configuration.
+ * Task that initializes the upload of a new data Collection (aka ProductType) into LabCAS. 
+ * The following core metadata fields must be supplied as part of the XML/RPC invocation:
+ * - the ProductType name
+ * - the ProductType description
+ * - the DatasetId (typically equal to the directory name)
+ * Other ProductType metadata is also populated from the request parameters.
  * 
  * @author luca
  *
@@ -38,11 +40,11 @@ public class LabcasUploadCollectionTaskInstance implements WorkflowTaskInstance 
 		try {
 			
 			// retrieve metadata from XML/RPC parameters
-			
-			String productTypeName = metadata.getMetadata(Constants.METADATA_KEY_PRODUCT_TYPE_NAME);
-			metadata.replaceMetadata(Constants.PRODUCT_TYPE, productTypeName); // transfer to product level metadata as "ProductType", needed by ingestion
-			LOG.info("Using productTypeName="+productTypeName);
-			
+			String productTypeName = metadata.getMetadata(Constants.METADATA_KEY_PRODUCT_TYPE);
+			if (productTypeName.contains(" ")) {  // enforce no spaces
+				throw new WorkflowTaskInstanceException("ProductType cannot contain spaces");
+			}
+
 			String datasetId = metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
 			if (datasetId.contains(" ")) {  // enforce no spaces
 				throw new WorkflowTaskInstanceException("DatasetId cannot contain spaces");
@@ -64,7 +66,7 @@ public class LabcasUploadCollectionTaskInstance implements WorkflowTaskInstance 
 			Metadata datasetMetadata = new Metadata();
 			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId);
 			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_NAME, datasetId);
-			datasetMetadata.replaceMetadata(Constants.PRODUCT_TYPE, productTypeName);
+			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName);
 			
 	        // add  version to dataset metadata (used for generating product unique identifiers)
 			//String parentDatasetId = datasetMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
