@@ -13,7 +13,7 @@ import gov.nasa.jpl.edrn.labcas.utils.FileManagerUtils;
 /**
  * Task that initializes the upload of a new data Collection (aka ProductType) into LabCAS. 
  * The following core metadata fields must be supplied as part of the XML/RPC invocation:
- * - the ProductType name
+ * - the ProductType title --> used to generate the ProductType name and id
  * - the ProductType description
  * - the DatasetId (typically equal to the directory name)
  * Other ProductType metadata is also populated from the request parameters.
@@ -38,10 +38,12 @@ public class LabcasUploadCollectionTaskInstance implements WorkflowTaskInstance 
 		try {
 			
 			// retrieve metadata from XML/RPC parameters
-			String productTypeName = metadata.getMetadata(Constants.METADATA_KEY_PRODUCT_TYPE);
+			String title =  metadata.getMetadata(Constants.METADATA_KEY_TITLE);
+			String productTypeName = title.replaceAll("\\s+", "_");
 			if (productTypeName.contains(" ")) {  // enforce no spaces
 				throw new WorkflowTaskInstanceException("ProductType cannot contain spaces");
 			}
+			metadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName); // needed for file ingestion
 
 			String datasetId = metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
 			if (datasetId.contains(" ")) {  // enforce no spaces
@@ -50,6 +52,9 @@ public class LabcasUploadCollectionTaskInstance implements WorkflowTaskInstance 
 			
 			// populate product type metadata from workflow configuration and XML/RPC parameters
 			Metadata productTypeMetadata = FileManagerUtils.readConfigMetadata(metadata, config);
+			
+			// remove DatasetId from product type metadata
+			productTypeMetadata.removeMetadata(Constants.METADATA_KEY_DATASET_ID);
 			
 			// create or update the File Manager product type
 			FileManagerUtils.createProductType(productTypeName, productTypeMetadata);

@@ -28,7 +28,7 @@
       
     <requiredMetFields>
     
-      <metfield name="ProductType" />
+      <metfield name="Title" />
       <metfield name="Description" />
       <metfield name="DatasetId" />
     

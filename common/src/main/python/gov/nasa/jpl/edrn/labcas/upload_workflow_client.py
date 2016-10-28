@@ -4,7 +4,8 @@ from gov.nasa.jpl.edrn.labcas.labcas_client import LabcasClient
 
 if __name__ == '__main__':
         
-    productType = 'MyData'
+    title = 'My Data'
+    productType = title.replace(' ','_')
     datasetId = 'mydatadir' # must match directory name in $LABCAS_STAGING
     labcasClient = LabcasClient()
     
@@ -18,7 +19,7 @@ if __name__ == '__main__':
     # --key DatasetId mydata --key ProductType 'MyData' --key Description 'My own data' 
     # --key ProtocolId 1 --key LeadPI 'John Doe' --key ProtocolName 'GSTP1 Methylation' --key OrganSite Lung --key OwnerPrincipal EDRN_CANCER_GROUP
     # --key DataCustodian 'Rich Smith' --key DataCustodianEmail 'rich.smith@pubmed.gov' --key CollaborativeGroup 'Prostate and Urologic'
-    metadata = { 'ProductType':'MyData',
+    metadata = { 'Title':title,
                  'Description':'My precious data',
                  'ProtocolId':'1',
                  'ProtocolName':'GSTP1 Methylation',

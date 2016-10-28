@@ -12,14 +12,14 @@
          "Description": product type "description"
          "DatasetId": dataset identifier
     -->      
-    <property name="input.dataset.ProductType.type" value="http://www.w3.org/2001/XMLSchema/string" />
-    <property name="input.dataset.ProductType.title" value="Data Collection Name" />
-    <property name="input.dataset.ProductType.description" value="Short name for this data collection (one word, no spaces)." />
-    <property name="input.dataset.ProductType.required" value="true" />
+    <property name="input.dataset.Title.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.dataset.Title.title" value="Data Collection Name" />
+    <property name="input.dataset.Title.description" value="Short name for this data collection (one or a few words only)." />
+    <property name="input.dataset.Title.required" value="true" />
     
     <property name="input.dataset.Description.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#text" />
     <property name="input.dataset.Description.title" value="Data Collection Description" />
-    <property name="input.dataset.Description.description" value="Short description for this data collection (no more than a few sentences)." />
+    <property name="input.dataset.Description.description" value="Short description for this data collection (a few sentences)." />
     <property name="input.dataset.Description.required" value="true" />
     
     <property name="input.dataset.DatasetId.type" value="http://www.w3.org/2001/XMLSchema/string" />
