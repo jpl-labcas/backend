@@ -16,13 +16,13 @@ import gov.nasa.jpl.edrn.labcas.Constants;
  *
  */
 public class ProductTypeDotVersionDotProductIdGenerator implements ProductIdGenerator {
-	
+		
 	public String generateId(Product product) {
 		
 		ProductType pt = product.getProductType();
 		Metadata ptm = pt.getTypeMetadata();
 		String version = ptm.getMetadata(Constants.METADATA_KEY_DATASET_VERSION);
-		
+				
 		String id = null;
 		if (version!=null) {
 			// example: "mydata.1.file1.txt"
