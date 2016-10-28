@@ -2,7 +2,6 @@
 <metadataList>
 
     <metadata key="DatasetId" val="[DatasetId]"/>
-    <metadata key="ParentDatasetId" val="[ParentDatasetId]"/>
     <metadata key="Version" val="[Version]"/>    
 
     <metadata key="LeadPI" val="[LeadPI]"/>

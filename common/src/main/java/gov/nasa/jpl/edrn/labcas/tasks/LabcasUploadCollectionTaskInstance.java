@@ -64,6 +64,7 @@ public class LabcasUploadCollectionTaskInstance implements WorkflowTaskInstance 
 
 			// populate dataset metadata
 			Metadata datasetMetadata = new Metadata();
+			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_ID, productTypeName + "," + datasetId);
 			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId);
 			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_NAME, datasetId); // dataset name == dataset id
 			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE_NAME, productTypeName);

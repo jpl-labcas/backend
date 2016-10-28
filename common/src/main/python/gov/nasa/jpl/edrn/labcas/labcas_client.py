@@ -127,29 +127,23 @@ class LabcasClient(object):
                     datasetName = typeMetadata['DatasetName'][0]
                 except KeyError:
                     datasetName = None
-                if typeMetadata.get('ParentDatasetId', None):
-                    parentDatasetId = typeMetadata['ParentDatasetId'][0]
-                else:
-                    parentDatasetId = None
-                if parentDatasetId is None or parentDatasetId in BUILTIN_PRODUCTS:
                 
-                    description = productTypeDict['description']
-                    if typeMetadata.get('OrganSite', None):
-                        organSite = typeMetadata['OrganSite'][0]
-                    else:
-                        organSite = None
-                    if typeMetadata.get('LeadPI', None):
-                        leadPI = typeMetadata['LeadPI'][0]
-                    else:
-                        leadPI = None
-                    
-                    topLevelProductTypes[datasetId] = { 'name': name,
-                                                        'description':  description,
-                                                        'datasetId': datasetId,
-                                                        'datasetName': datasetName,
-                                                        'parentDatasetId': parentDatasetId,
-                                                        'organSite': organSite,
-                                                        'leadPI':leadPI }
+                description = productTypeDict['description']
+                if typeMetadata.get('OrganSite', None):
+                    organSite = typeMetadata['OrganSite'][0]
+                else:
+                    organSite = None
+                if typeMetadata.get('LeadPI', None):
+                    leadPI = typeMetadata['LeadPI'][0]
+                else:
+                    leadPI = None
+                
+                topLevelProductTypes[datasetId] = { 'name': name,
+                                                    'description':  description,
+                                                    'datasetId': datasetId,
+                                                    'datasetName': datasetName,
+                                                    'organSite': organSite,
+                                                    'leadPI':leadPI }
                 
                 
         return topLevelProductTypes
