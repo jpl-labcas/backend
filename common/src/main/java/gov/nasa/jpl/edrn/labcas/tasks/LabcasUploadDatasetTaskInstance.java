@@ -13,22 +13,16 @@ import gov.nasa.jpl.edrn.labcas.Constants;
 import gov.nasa.jpl.edrn.labcas.utils.FileManagerUtils;
 
 /**
- * Task used to initialize a LabCAS crawler workflow 
- * to upload a new dataset, or a new version of a dataset.
- * 
- * o it creates or updates a product type for the dataset to be uploaded
- * o it uses the task configuration parameter of the form "init.field...." to define the product type metadata
- * o if found, it adds all metadata fields contained in the file DatasetMetadata.xmlmet to the above product type metadata
- * o it parses the target archive directory and determines the dataset version
- * o it augments the file level metadata with the dataset id and version
- * o cleans up the previously generated metadata files
+ * Task that initializes the upload of a new Dataset within a given Collection (aka ProductType):
+ * o the ProductType name must be supplied as part of the task configuration metadata.
+ * o the DatasetId is passed as part of the XML/RPC HTTP request.
  * 
  * @author luca
  *
  */
-public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
+public class LabcasUploadDatasetTaskInstance implements WorkflowTaskInstance {
 	
-	private static final Logger LOG = Logger.getLogger(LabcasUploadInitTaskInstance.class.getName());
+	private static final Logger LOG = Logger.getLogger(LabcasUploadDatasetTaskInstance.class.getName());
 	
 	@Override
 	public void run(Metadata metadata, WorkflowTaskConfiguration config) throws WorkflowTaskInstanceException {
@@ -42,22 +36,21 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 		        
 		try {
 			
+			// populate dataset metadata from workflow configuration
+			Metadata datasetMetadata = FileManagerUtils.readConfigMetadata(metadata, config);
+			
+			// retrieve product type from configuration metadata
+			// also needed at file-level metadata for ingestion
+			String productTypeName = datasetMetadata.getMetadata(Constants.PRODUCT_TYPE);
+			metadata.replaceMetadata(Constants.PRODUCT_TYPE, productTypeName); // transfer to product level metadata
+			LOG.info("Using productType="+productTypeName );
+			
 			// retrieve dataset identifier from XML/RPC parameters
 			String datasetId = metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
 			// enforce no spaces
 			if (datasetId.contains(" ")) {
 				throw new WorkflowTaskInstanceException("DatasetId cannot contain spaces");
 			}
-			
-			// populate dataset metadata from workflow configuration
-			Metadata datasetMetadata = FileManagerUtils.readConfigMetadata(metadata, config);
-			
-			// retrieve product type from dataset metadata
-			// also needed at file-level metadata for ingestion
-			String productTypeName = datasetMetadata.getMetadata(Constants.PRODUCT_TYPE);
-			metadata.replaceMetadata(Constants.PRODUCT_TYPE, productTypeName); // transfer to product level metadata
-			LOG.info("Using productTypeName="+productTypeName );
-
 						
 	        // add dataset version to product type metadata (used for generating product unique identifiers)
 			//String parentDatasetId = datasetMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
@@ -73,7 +66,7 @@ public class LabcasUploadInitTaskInstance implements WorkflowTaskInstance {
 	        	}
 	        }
 	        datasetMetadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version); // product type metadata
-	        metadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version);            // workflow (-> poroduct) metadata
+	        metadata.replaceMetadata(Constants.METADATA_KEY_VERSION, ""+version);        // workflow (-> product) metadata
 	        LOG.fine("Using dataset version=: "+version);
 
 						

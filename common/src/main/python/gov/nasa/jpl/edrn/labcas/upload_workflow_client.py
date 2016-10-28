@@ -17,37 +17,38 @@ if __name__ == '__main__':
     # --key DatasetId mydata --key DatasetName 'My Data' --key Description 'My own data' 
     # --key ProtocolId 1 --key LeadPI 'John Doe' --key ProtocolName 'GSTP1 Methylation' 
     # --key DataCustodian 'Rich Smith' --key DataCustodianEmail 'rich.smith@pubmed.gov' --key CollaborativeGroup 'Prostate and Urologic'
-    metadata = { 'Description':'My own data',
-                 'DatasetName':'My Data',
+    metadata = { 'ProductTypeName':'MyData',
+                 'ProductTypeDescription':'My precious data',
                  'ProtocolId':'1',
                  'ProtocolName':'GSTP1 Methylation',
                  'LeadPI':'John Doe',
                  'DataCustodian':'Rich Smith',
                  'DataCustodianEmail':'rich.smith@pubmed.gov',
                  'CollaborativeGroup':'Prostate and Urologic',
+                 'OrganSite':'Lung',
                  'OwnerPrincipal':'EDRN_CANCER_GROUP',
     } 
     
 
     # upload dataset staged in directory 'mydata'
-    labcasClient.uploadDataset(datasetId, metadata)
+    labcasClient.uploadCollection(datasetId, metadata)
 
     # update the dataset metadata WITHOUT generating a new version
     metadata['ProtocolId'] = '99'
-    labcasClient.uploadDataset(datasetId, metadata)
+    #labcasClient.uploadCollection(datasetId, metadata)
     
     # update dataset metadata while generating a new version
     metadata['LeadPI'] = 'Mister X'
-    labcasClient.uploadDataset(datasetId, metadata, newVersion=True)
+    #labcasClient.uploadCollection(datasetId, metadata, newVersion=True)
 
     # list all product types in File manager
-    labcasClient.listProductTypes()
+    #labcasClient.listProductTypes()
     
     # query the product types from the XML/RPC File Manager interface
-    labcasClient.getProductTypeByName(datasetId)
+    #labcasClient.getProductTypeByName(datasetId)
     
     # or equivalently
-    labcasClient.getProductTypeById("urn:edrn:%s" % datasetId)
+    #labcasClient.getProductTypeById("urn:edrn:%s" % datasetId)
     
     # list all products for given dataset == product type
-    labcasClient.listProducts(datasetId)
+    #labcasClient.listProducts(datasetId)

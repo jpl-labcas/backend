@@ -43,38 +43,36 @@ public class FileManagerUtils {
 	private static final Logger LOG = Logger.getLogger(FileManagerUtils.class.getName());
 	
 	/**
-	 * Method to upload a new dataset to the File Manager, creating a corresponding product type;
+	 * FIXME
+	 * Method to upload a new collection to the File Manager, creating a corresponding product type;
 	 * or, upload a new version of the same dataset, overriding the metadata for the same product type.
 	 * @param dataset
 	 * @param coreMetadata
 	 * @throws Exception
 	 */
-	public static String uploadDataset(String dataset, Metadata coreMetadata) throws Exception {
+	public static String uploadProductType(String productTypeName, Metadata productTypeMetadata) throws Exception {
 				
 		// build product type
-		String productTypeName = FileManagerUtils.getProductTypeName(dataset);
+		//String productTypeName = FileManagerUtils.getProductTypeName(dataset);
 		
 		// retrieve additional dataset metadata from file DatasetMetadata.xml
-		Metadata datasetMetadata = FileManagerUtils.readDatasetMetadata( dataset );
+		//Metadata datasetMetadata = FileManagerUtils.readDatasetMetadata( datasetId );
 		
 		// merge dataset specific metadata with core metadata
-		datasetMetadata.addMetadata(coreMetadata);
+		//datasetMetadata.addMetadata(coreMetadata);
 		
-		// transfer metadata field 'Description' to dataset description, if found
-		// or copy value from DatasetName, if found
-		String datasetDescription = dataset; // default
-		if (datasetMetadata.containsKey(Constants.METADATA_KEY_DESCRIPTION)) {
-			datasetDescription = datasetMetadata.getMetadata(Constants.METADATA_KEY_DESCRIPTION);
-			datasetMetadata.removeMetadata(Constants.METADATA_KEY_DESCRIPTION);
-			
-		} else if (coreMetadata.containsKey(Constants.METADATA_KEY_DATASET_NAME)) {
-			datasetDescription = coreMetadata.getMetadata(Constants.METADATA_KEY_DATASET_NAME);
+		// transfer metadata field 'Description' to product type description, if found
+		String productTypeDescription = productTypeName; // default
+		if (productTypeMetadata.containsKey(Constants.METADATA_KEY_DESCRIPTION)) {
+			productTypeDescription = productTypeMetadata.getMetadata(Constants.METADATA_KEY_DESCRIPTION);
+			productTypeMetadata.removeMetadata(Constants.METADATA_KEY_DESCRIPTION);
 		}
 		
 		// create product type directory with the same name
-		String parentDataset = coreMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
-		File datasetDir = FileManagerUtils.getDatasetArchiveDir(dataset, parentDataset);
-		File policyDir = new File(datasetDir, "policy");
+		//String parentDataset = coreMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
+		File productTypeDir = FileManagerUtils.getProductTypeArchiveDir(productTypeName);
+		LOG.info("Using product type archive dir="+productTypeDir);
+		File policyDir = new File(productTypeDir, "policy");
 		if (!policyDir.exists()) {
 			policyDir.mkdirs();
 		}
@@ -88,16 +86,13 @@ public class FileManagerUtils {
 		// create file "product-type-element-map.xml" (if not existing already)
 		File productTypeElementMapXmlFile = new File(policyDir, "product-type-element-map.xml");
 		if (!productTypeElementMapXmlFile.exists()) {
-			String parentProductTypeName = Constants.ECAS_PRODUCT_TYPE; // default parent product type
-			if (coreMetadata.containsKey(Constants.METADATA_KEY_PARENT_DATASET_ID)) {
-				parentProductTypeName = coreMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
-			}
+			String parentProductTypeName = Constants.LABCAS_PRODUCT_TYPE; // default parent product type
 			FileManagerUtils.makeProductTypeElementMapXmlFile(productTypeElementMapXmlFile, productTypeName, parentProductTypeName);
 		}
 
 		// create "product-types.xml" (override each time)
 		File productTypesXmlFile = new File(policyDir, "product-types.xml");
-		FileManagerUtils.makeProductTypesXmlFile(productTypesXmlFile, productTypeName, datasetDescription, datasetMetadata);
+		FileManagerUtils.makeProductTypesXmlFile(productTypesXmlFile, productTypeName, productTypeDescription, productTypeMetadata);
 
 		return productTypeName;
 
@@ -137,7 +132,7 @@ public class FileManagerUtils {
 	 */
 	public static int findLatestDatasetVersion(final String datasetName, final String parentDatasetName) {
 		
-		File datasetDir = FileManagerUtils.getDatasetArchiveDir(datasetName, parentDatasetName);
+		File datasetDir = FileManagerUtils.getProductTypeArchiveDir(datasetName);
 		
         int version = 0;
         if (datasetDir.exists()) {           
@@ -267,19 +262,16 @@ public class FileManagerUtils {
 	}
 	
 	/**
-	 * Retrieves the directory where an uploaded dataset will be archived.
+	 * Retrieves the directory where an uploaded product type will be archived.
 	 * 
 	 * @param datasetName
 	 * @return
 	 */
-	public static File getDatasetArchiveDir(final String datasetName, final String parentDatasetName) {
+	public static File getProductTypeArchiveDir(final String productTypeName) {
 		
 		String archiveDir = System.getenv(Constants.ENV_LABCAS_ARCHIVE);
-		if (!parentDatasetName.equals(Constants.ECAS_PRODUCT_TYPE) && !parentDatasetName.equals(Constants.LABCAS_PRODUCT_TYPE) ) {
-			archiveDir += "/" + parentDatasetName;
-		}
-		File datasetDir = new File(archiveDir, datasetName); 
-		return datasetDir;
+		File productTypeDir = new File(archiveDir, productTypeName); 
+		return productTypeDir;
 		
 	}
 	
@@ -368,15 +360,8 @@ public class FileManagerUtils {
         rootElement.appendChild(typeElement);
         
         // <repository path="file://[LABCAS_ARCHIVE]"/>
-        // or:
-        // <repository path="file://[LABCAS_ARCHIVE]/[ParentDatasetId]"/>
         Element repositoryElement = xmlDocument.createElement("repository");
-        String parentDatasetId = metadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
-        if (parentDatasetId.equals(Constants.ECAS_PRODUCT_TYPE) || parentDatasetId.equals(Constants.LABCAS_PRODUCT_TYPE)) {
-        	repositoryElement.setAttribute("path", REPOSITORY);
-        } else {
-        	repositoryElement.setAttribute("path", REPOSITORY+"/"+parentDatasetId);
-        }
+        repositoryElement.setAttribute("path", REPOSITORY);
         typeElement.appendChild(repositoryElement);
         
         // <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner"/>

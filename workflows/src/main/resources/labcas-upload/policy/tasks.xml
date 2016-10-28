@@ -19,29 +19,28 @@
 -->
 <cas:tasks xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
-  <task id="urn:edrn:LabcasUploadInitTask" name="LabcasUploadInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasUploadInitTaskInstance">
+  <task id="urn:edrn:LabcasUploadInitTask" name="LabcasUploadInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasUploadCollectionTaskInstance">
   
     <conditions />
-    
+        
     <!-- include external labcas metadata configuration -->
     &labcas_config;
       
     <requiredMetFields>
     
+      <metfield name="ProductTypeName" />
+      <metfield name="ProductTypeDescription" />
+      <metfield name="DatasetId" />
+    
       <metfield name="ProtocolName" />
       <metfield name="ProtocolId" />
-      <metfield name="DatasetName" />
-      <metfield name="DatasetDescription" />
       <metfield name="LeadPI" />
       <metfield name="DataCustodian" />
       <metfield name="DataCustodianEmail" />
       <metfield name="CollaborativeGroup" />
       <metfield name="OrganSite" />
       <metfield name="OwnerPrincipal" />
-      
-      <metfield name="DatasetId" />
-      <!-- <metfield name="Description" /> -->
-      
+            
     </requiredMetFields>
     
   </task>

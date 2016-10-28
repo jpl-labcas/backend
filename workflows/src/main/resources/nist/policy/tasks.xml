@@ -17,7 +17,7 @@
 <cas:tasks xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
   <!-- standard LabcasUploadInitTaskInstance task configured with NIST specific metadata  -->
-  <task id="urn:edrn:NistInitTask" name="NistInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasUploadInitTaskInstance">
+  <task id="urn:edrn:NistInitTask" name="NistInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasUploadDatasetTaskInstance">
   
     <conditions />
     

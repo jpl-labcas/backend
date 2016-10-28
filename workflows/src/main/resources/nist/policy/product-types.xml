@@ -18,7 +18,7 @@
 <cas:producttypes xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
   <type id="urn:edrn:NistProduct" name="NistProduct">
-    <repository path="file://[LABCAS_ARCHIVE]/NistProduct" />
+    <repository path="file://[LABCAS_ARCHIVE]" />
     <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner" />
     <description>Product published through NIST pipeline.</description>
     <metExtractors>

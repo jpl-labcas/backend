@@ -62,7 +62,7 @@ class LabcasClient(object):
                 break
         print response
         
-    def uploadDataset(self, datasetId, metadata, newVersion=False):
+    def uploadCollection(self, datasetId, metadata, newVersion=False):
         
         # add 'DatasetId' key, value to other metadata
         metadata['DatasetId'] = datasetId

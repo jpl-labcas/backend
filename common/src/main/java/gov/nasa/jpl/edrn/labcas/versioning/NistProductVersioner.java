@@ -11,6 +11,7 @@ import org.apache.oodt.cas.metadata.Metadata;
  * 
  * @author Luca Cinquini
  */
+@Deprecated
 public class NistProductVersioner extends MetadataBasedFileVersioner {
 	
 	//private String filePathSpec = "/[LabNumber]/[Method]/[RoundNumber]";
