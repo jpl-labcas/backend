@@ -440,5 +440,19 @@ public class FileManagerUtils {
         XmlUtils.xmlToFile(xmlDocument, filepath);
 		
 	}
+	
+	/**
+	 * Utility method to print out the content of a metadata object.
+	 * @param metadata
+	 */
+	public static void printMetadata(Metadata metadata) {
+
+        for (String key : metadata.getAllKeys()) {
+        	for (String val : metadata.getAllMetadata(key)) {
+        		LOG.info("==> Metadata key="+key+" value="+val);
+        	}
+        }
+
+	}
 
 }

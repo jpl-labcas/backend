@@ -26,24 +26,16 @@ public class LabcasUploadDatasetTaskInstance implements WorkflowTaskInstance {
 	
 	@Override
 	public void run(Metadata metadata, WorkflowTaskConfiguration config) throws WorkflowTaskInstanceException {
-		
-		// debug: print all workflow instance metadata
-        for (String key : metadata.getAllKeys()) {
-        	for (String val : metadata.getAllMetadata(key)) {
-        		LOG.fine("==> Input metadata key="+key+" value="+val);
-        	}
-        }
-		        
+				        
 		try {
 			
-			// populate dataset metadata from workflow configuration
+			// populate dataset metadata from workflow configuration and XML/RPC parameters
 			Metadata datasetMetadata = FileManagerUtils.readConfigMetadata(metadata, config);
 			
 			// retrieve product type from configuration metadata
 			// also needed at file-level metadata for ingestion
 			String productTypeName = datasetMetadata.getMetadata(Constants.METADATA_KEY_PRODUCT_TYPE);
 			metadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName); // transfer to product level metadata
-			LOG.info("Using productType="+productTypeName );
 			
 			// retrieve dataset identifier from XML/RPC parameters
 			String datasetId = metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
@@ -51,25 +43,12 @@ public class LabcasUploadDatasetTaskInstance implements WorkflowTaskInstance {
 			if (datasetId.contains(" ")) {
 				throw new WorkflowTaskInstanceException("DatasetId cannot contain spaces");
 			}
-						
-	        // add dataset version to product type metadata (used for generating product unique identifiers)
-			//String parentDatasetId = datasetMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
-	        //int version = FileManagerUtils.findLatestDatasetVersion( datasetId, parentDatasetId );
-	        // FIXME
-	        int version = 0;
-	        if (version==0) {  // dataset does not yet exist -> assign first version
-	        	version = 1; 
-	        } else {              // keep the same version unless the flag is set
-	        	if (Boolean.parseBoolean(metadata.getMetadata(Constants.METADATA_KEY_NEW_VERSION))) {
-	        		version += 1; // increment version
-	        		metadata.removeMetadata(Constants.METADATA_KEY_NEW_VERSION); // remove the flag
-	        	}
-	        }
-	        datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+version); // product type metadata
-	        metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+version);        // workflow (-> product) metadata
-	        LOG.fine("Using dataset version=: "+version);
-
-						
+							        
+	        // add  version to dataset metadata (used for generating product unique identifiers)
+	        int version = FileManagerUtils.getNextVersion( FileManagerUtils.findLatestDatasetVersion( productTypeName, datasetId ), metadata);
+	        datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+version); // dataset metadata
+	        metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+version);        // product metadata
+	
 			// copy all product type metadata to product metadata
 	        for (String key : datasetMetadata.getAllKeys()) {
 	        	if (!metadata.containsKey(key)) {
@@ -78,22 +57,8 @@ public class LabcasUploadDatasetTaskInstance implements WorkflowTaskInstance {
 	        	}
 	        }
 			
-			// reload the catalog configuration so that the new product type is available for publishing
-			//FileManagerUtils.reload();
-	                        
-	        // remove all .met files from staging directory - probably a leftover of a previous workflow submission
-	        String stagingDir = System.getenv(Constants.ENV_LABCAS_STAGING) + "/" + datasetId;
-	        String[] metFiles = new File(stagingDir).list(new FilenameFilter() {
-	                  @Override
-	                  public boolean accept(File current, String name) {
-	                    return new File(current, name).getAbsolutePath().endsWith(Constants.OODT_METADATA_EXTENSION);
-	                  }
-	                });
-	        for (String metFile : metFiles) {
-	        	File _metFile = new File(stagingDir, metFile);
-	        	LOG.fine("Deleting older metadata file: "+_metFile.getAbsolutePath());
-	        	_metFile.delete();
-	        }
+			// remove all .met files from staging directory - probably a leftover of a previous workflow submission
+			FileManagerUtils.cleanupStagingDir(datasetId);
 		
 		} catch(Exception e) {
 			e.printStackTrace();

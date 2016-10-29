@@ -27,14 +27,7 @@ public class LabcasUploadCollectionTaskInstance implements WorkflowTaskInstance 
 		
 	@Override
 	public void run(Metadata metadata, WorkflowTaskConfiguration config) throws WorkflowTaskInstanceException {
-		
-		// debug: print all workflow instance metadata
-        for (String key : metadata.getAllKeys()) {
-        	for (String val : metadata.getAllMetadata(key)) {
-        		LOG.fine("==> Input metadata key="+key+" value="+val);
-        	}
-        }
-		        
+				        
 		try {
 			
 			// retrieve metadata from XML/RPC parameters
