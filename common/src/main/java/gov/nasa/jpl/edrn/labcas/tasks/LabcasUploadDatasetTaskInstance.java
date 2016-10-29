@@ -26,7 +26,9 @@ public class LabcasUploadDatasetTaskInstance implements WorkflowTaskInstance {
 	
 	@Override
 	public void run(Metadata metadata, WorkflowTaskConfiguration config) throws WorkflowTaskInstanceException {
-				        
+		
+		//FileManagerUtils.printMetadata(metadata);
+		
 		try {
 			
 			// populate dataset metadata from workflow configuration and XML/RPC parameters
@@ -48,7 +50,7 @@ public class LabcasUploadDatasetTaskInstance implements WorkflowTaskInstance {
 	        int version = FileManagerUtils.getNextVersion( FileManagerUtils.findLatestDatasetVersion( productTypeName, datasetId ), metadata);
 	        datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+version); // dataset metadata
 	        metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+version);        // product metadata
-	
+	        
 			// copy all product type metadata to product metadata
 	        for (String key : datasetMetadata.getAllKeys()) {
 	        	if (!metadata.containsKey(key)) {

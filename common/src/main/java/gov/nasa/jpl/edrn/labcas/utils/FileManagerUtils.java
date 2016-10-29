@@ -125,7 +125,7 @@ public class FileManagerUtils {
 		LOG.fine("Looking for dataset versions in "+datasetDir.getAbsolutePath());
 		
         int version = 0;
-        if (datasetDir.exists()) {           
+        if (datasetDir.exists()) {      
 	
 	        // list "version" sub-directories
 	        String[] directories = datasetDir.list(new FilenameFilter() {
@@ -145,6 +145,7 @@ public class FileManagerUtils {
 	        }    
         }
         
+        LOG.info("Current dataset version: "+version);
         return version;
 		
 	}

@@ -13,21 +13,31 @@ if __name__ == '__main__':
     #               --key ModelNumber XYZ123 --key DataProcessingProtocols 'Crunching data' 
     #               --key OwnerGroup Lab005_OwnerPrincipal
     labcasClient = LabcasClient()
-    wInstId = labcasClient.executeWorkflow(['urn:edrn:NistInitTask',
-                                            'urn:edrn:NistConvertTask',
-                                            'urn:edrn:NistExecTask',
-                                            'urn:edrn:NistCrawlTask'], 
-                                           {'DatasetId':'Lab005_C_R03',
-                                            'LabNumber':'005',
-                                            'Method':'C',
-                                            'RoundNumber':'003',
-                                            'LeadPI':'Johns', 
-                                            'DataCollectionDate':'20160101',
-                                            #'SampleProcessingProtocols':'With water and ammonia',
-                                            #'InstrumentationTechnologyCode':'NGS', 
-                                            #'Manufacturer':'TexasInstruments',
-                                            #'ModelNumber':'XYZ123',
-                                            #'DataProcessingProtocols':'Crunching data',
-                                            'OwnerPrincipal':'Lab005' } )
+
+    workflowTasks = ['urn:edrn:NistInitTask',
+                     'urn:edrn:NistConvertTask',
+                     'urn:edrn:NistExecTask',
+                     'urn:edrn:NistCrawlTask']
+    
+    metadata = {'DatasetId':'Lab005_C_R03',
+                'LabNumber':'005',
+                'Method':'C',
+                'RoundNumber':'003',
+                'LeadPI':'Johns', 
+                'DataCollectionDate':'20160101',
+                'NewVersion':'true',
+                'OwnerPrincipal':'Lab005' }
+
+    # upload dataset without changing the version
+    wInstId = labcasClient.executeWorkflow(workflowTasks, metadata)
     # monitor workflow instance
     labcasClient.waitForCompletion(wInstId)
+
+    # upload new version of same dataset, fix MetaData
+    metadata['NewVersion']='true'
+    metadata['LeadPI']='Smith'
+    wInstId = labcasClient.executeWorkflow(workflowTasks, metadata)
+    # monitor workflow instance
+    labcasClient.waitForCompletion(wInstId)
+
+    
