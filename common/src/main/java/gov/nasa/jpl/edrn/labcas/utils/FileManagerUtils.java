@@ -22,9 +22,6 @@ import gov.nasa.jpl.edrn.labcas.extractors.XmlFileMetExtractor;
 
 /**
  * Class that contains common functionality to interact with the FileManager.
- * 
- * @author luca
- *
  */
 public class FileManagerUtils {
 	
@@ -51,7 +48,6 @@ public class FileManagerUtils {
 	 */
 	public static void createProductType(String productTypeName, Metadata productTypeMetadata) throws Exception {
 				
-		
 		// transfer metadata field 'Description' to product type description, if found
 		String productTypeDescription = productTypeName; // default product type description = product type name
 		if (productTypeMetadata.containsKey(Constants.METADATA_KEY_DESCRIPTION)) {
@@ -82,7 +78,6 @@ public class FileManagerUtils {
 		// create "product-types.xml" (override each time)
 		File productTypesXmlFile = new File(policyDir, "product-types.xml");
 		FileManagerUtils.makeProductTypesXmlFile(productTypesXmlFile, productTypeName, productTypeDescription, productTypeMetadata);
-
 
 	}
 		
@@ -151,7 +146,7 @@ public class FileManagerUtils {
 	}
 	
 	/** 
-	 * Method to possibly increment the dataset version based on the "new version" flag.
+	 * Method to possibly increment the dataset version based on the "NewVersion" flag.
 	 * @param version
 	 * @param metadata
 	 * @return
@@ -166,8 +161,8 @@ public class FileManagerUtils {
         		metadata.removeMetadata(Constants.METADATA_KEY_NEW_VERSION); // remove the flag
         	}
         }
-        
         return version;
+        
 	}
 	
 	/**
@@ -196,6 +191,7 @@ public class FileManagerUtils {
 	/**
 	 * Utility method that reads the additional dataset metadata 
 	 * from the file DatasetMetadata.xmlmet located in the dataset staging directory.
+	 * NOTE: currently not used.
 	 * 
 	 * @param datasetName
 	 * @return
@@ -211,49 +207,47 @@ public class FileManagerUtils {
 	}
 	
 	/**
-	 * Utility method that reads the product type metadata fields from the task configuration,
-	 * and populates them with values from the workflow instance metadata 
-	 * (supplied when the workflow is submitted).
+	 * Utility method that reads metadata keys from the task configuration,
+	 * and populates them with values from given metadata object. 
 	 * @return
 	 */
 	public static Metadata readConfigMetadata(Metadata metadata, WorkflowTaskConfiguration config) {
 		
-		// product type metadata
-		Metadata productTypeMetadata = new Metadata();
+		// new metadata object
+		Metadata newMetadata = new Metadata();
         
-        // extract product type metadata keys from task configuration parameters of the form "init.field...."
+        // extract metadata keys from task configuration parameters of the form "init.field...."
         // example of input metadata key: 
         // <property name="input.dataset.ProtocolId.type" value="integer" />
         // <property name="input.dataset.ProtocolId.title" value="Protocol ID" />
 		// or fixed metadata key:
 		// <property name="dataset.ParentDatasetId" value="NIST" />
-        Set<String> productTypeMetadataKeys = new HashSet<String>();
+        Set<String> newMetadataKeys = new HashSet<String>();
         for (Object objKey : config.getProperties().keySet()) {
             String key = (String) objKey;
             String value = config.getProperties().getProperty(key);
             LOG.fine("Workflow configuration property: key="+key+" value="+value);
             if (key.toLowerCase().startsWith("input.dataset.")) {
             	String[] parts = key.split("\\."); 
-            	productTypeMetadataKeys.add(parts[2]);
+            	newMetadataKeys.add(parts[2]);
             } else if (key.toLowerCase().startsWith("dataset.")) {
             	String[] parts = key.split("\\."); 
-            	productTypeMetadata.addMetadata(parts[1], GeneralUtils.removeNonAsciiCharacters(value));
+            	newMetadata.addMetadata(parts[1], GeneralUtils.removeNonAsciiCharacters(value));
             }
         }
         
-        // populate core dataset metadata values from client supplied metadata
-       
-        for (String key : productTypeMetadataKeys) {
+        // populate new metadata values from client supplied metadata
+        for (String key : newMetadataKeys) {
         	if (metadata.containsKey(key)) {
         		// Note: OODT split input metadata "My Data" as separate values "My", "Data"
         		// must merge the values back
         		List<String> values = metadata.getAllMetadata(key);
         		String value = StringUtils.join(values, " ");
-        		productTypeMetadata.addMetadata(key, GeneralUtils.removeNonAsciiCharacters(value));
+        		newMetadata.addMetadata(key, GeneralUtils.removeNonAsciiCharacters(value));
         	}
         }
         
-        return productTypeMetadata;
+        return newMetadata;
 	}
 	
 	/**
@@ -307,7 +301,6 @@ public class FileManagerUtils {
 		return productTypeDir;
 		
 	}
-	
 	
 	
 	/**
