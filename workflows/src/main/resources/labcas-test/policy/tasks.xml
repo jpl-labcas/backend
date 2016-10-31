@@ -31,6 +31,7 @@
       <property name="input.dataset.experiment.max" value="99" />
       <property name="input.dataset.experiment.title" value="Experiment" />
       <property name="input.dataset.experiment.description" value="The experiment sequential number" />
+      <property name="input.dataset.experiment.required" value="true" />
       
       <property name="input.dataset.species.type" value="string" />
       <property name="input.dataset.species.title" value="Species" />
@@ -38,6 +39,7 @@
       <property name="input.dataset.species.value.1" value="humans" />
       <property name="input.dataset.species.value.2" value="snakes" />
       <property name="input.dataset.species.value.3" value="sharks" />
+      <property name="input.dataset.species.required" value="true" />
       
       <!-- output products -->
       <property name="output.product.type" value="urn:edrn:LabcasTestProduct"/>
