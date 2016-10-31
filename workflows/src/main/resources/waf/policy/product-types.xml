@@ -22,11 +22,11 @@
     <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner" />
     <description>Lung images collected for patients at the University of Colorado Health Science Center.</description>
     <metExtractors>
-      <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
+      <extractor class="gov.nasa.jpl.edrn.labcas.extractors.LabcasCoreMetExtractor">
         <configuration>
           <property name="nsAware" value="true" />
           <property name="elementNs" value="CAS" />
-          <property name="elements" value="ProductReceivedTime,ProductName,ProductId,ProductType" />
+          <property name="elements" value="ProductReceivedTime,ProductName,ProductId,ProductType,DatasetId" />
         </configuration>
       </extractor>
       <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor" />
