@@ -25,15 +25,15 @@
       <property name="dataset.ProductType" value="LabcasTestProduct" />
     
       <!-- input parameters -->
-      
-      <property name="input.dataset.experiment.type" value="integer" />
+            
+      <property name="input.dataset.experiment.type" value="http://www.w3.org/2001/XMLSchema/integer" />
       <property name="input.dataset.experiment.min" value="1" />
       <property name="input.dataset.experiment.max" value="99" />
       <property name="input.dataset.experiment.title" value="Experiment" />
       <property name="input.dataset.experiment.description" value="The experiment sequential number" />
       <property name="input.dataset.experiment.required" value="true" />
       
-      <property name="input.dataset.species.type" value="string" />
+      <property name="input.dataset.species.type" value="http://www.w3.org/2001/XMLSchema/string" />
       <property name="input.dataset.species.title" value="Species" />
       <property name="input.dataset.species.description" value="The species that was tested" />
       <property name="input.dataset.species.value.1" value="humans" />
