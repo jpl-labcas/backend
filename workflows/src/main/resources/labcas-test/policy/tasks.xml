@@ -26,18 +26,18 @@
     
       <!-- input parameters -->
       
-      <property name="input.experiment.type" value="integer" />
-      <property name="input.experiment.min" value="1" />
-      <property name="input.experiment.max" value="99" />
-      <property name="input.experiment.title" value="Experiment" />
-      <property name="input.experiment.description" value="The experiment sequential number" />
+      <property name="input.dataset.experiment.type" value="integer" />
+      <property name="input.dataset.experiment.min" value="1" />
+      <property name="input.dataset.experiment.max" value="99" />
+      <property name="input.dataset.experiment.title" value="Experiment" />
+      <property name="input.dataset.experiment.description" value="The experiment sequential number" />
       
-      <property name="input.species.type" value="string" />
-      <property name="input.species.title" value="Species" />
-      <property name="input.species.description" value="The species that was tested" />
-      <property name="input.species.value.1" value="humans" />
-      <property name="input.species.value.2" value="snakes" />
-      <property name="input.species.value.3" value="sharks" />
+      <property name="input.dataset.species.type" value="string" />
+      <property name="input.dataset.species.title" value="Species" />
+      <property name="input.dataset.species.description" value="The species that was tested" />
+      <property name="input.dataset.species.value.1" value="humans" />
+      <property name="input.dataset.species.value.2" value="snakes" />
+      <property name="input.dataset.species.value.3" value="sharks" />
       
       <!-- output products -->
       <property name="output.product.type" value="urn:edrn:LabcasTestProduct"/>
