@@ -54,10 +54,13 @@ public interface Constants {
 	public final static String PREFIX = "cas";
 	public final static String NS = "http://oodt.apache.org/components/cas";
 	
-	
 	public final static String EDRN_PREFIX = "urn:edrn:";
 	public final static String LABCAS_PRODUCT_TYPE = "LabcasProduct";
 	public final static String ECAS_PRODUCT_TYPE = "EcasProduct";
+	
+	// mark file used to trigger acquisition of DatasetId from metadata
+	// filename is such that this file is harvested first of all
+	public final static String LABCAS_DATASET_INFO_FILE = "000_labcas_info.txt";
 	
 
 	

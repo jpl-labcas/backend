@@ -6,6 +6,8 @@
 		<cmd>cd [PGE_ROOT]/labcas-test</cmd>
 		<cmd>mkdir -p output</cmd>
 		<cmd>echo 'xyz' > output/labcas-test-output.txt</cmd>
+        <!-- create info file to trigger dataset id storage at thread local scope  -->
+        <cmd>touch output/000_labcas_info.txt</cmd>
 	</exe>
 
 	<customMetadata>
@@ -18,7 +20,7 @@
 	<output>
 		<dir path="[PGE_ROOT]/labcas-test/output" createBeforeExe="false">
 			<!-- metadata extractors matching specific files -->
-			<files regExp=".*output\.txt"
+			<files regExp=".*\.txt"
 				metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
 				args="[LABCAS_HOME]/workflows/labcas-test/pge-configs/metout.xml" />
 		</dir>
