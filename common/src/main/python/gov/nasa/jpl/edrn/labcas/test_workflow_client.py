@@ -13,3 +13,6 @@ if __name__ == '__main__':
 
     # monitor workflow instance
     labcasClient.waitForCompletion(wInstId)
+
+    # list all files of this product type
+    labcasClient.listProducts('LabcasTestProduct')

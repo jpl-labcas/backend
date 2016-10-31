@@ -1,3 +1,16 @@
+<!-- 
+ name: LabcasTestWorkflow
+ 
+ event: labcas-test
+ 
+ description: Workflow that generates a test output file of type LabcasTestProduct. 
+              A new DatasetId is generated every time the workflow is run.
+ 
+ data:
+    Collection: LabcasTestProduct
+    Dataset: newly generated UUID
+    Products: single file labcas-test-output.txt
+ -->
 <cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="LabcasTestWorkflow" id="urn:edrn:LabcasTestWorkflow">
 
   <tasks>

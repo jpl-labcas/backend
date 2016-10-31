@@ -2,6 +2,7 @@ package gov.nasa.jpl.edrn.labcas.tasks;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.apache.oodt.cas.metadata.Metadata;
@@ -40,9 +41,14 @@ public class LabcasUploadDatasetTaskInstance implements WorkflowTaskInstance {
 			metadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName); // transfer to product level metadata
 			
 			// retrieve dataset identifier from XML/RPC parameters
+			// or generate a new unique one
 			String datasetId = metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
+			if (datasetId==null) {
+				datasetId = UUID.randomUUID().toString();
+				metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId); 
+				datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId); 
 			// enforce no spaces
-			if (datasetId.contains(" ")) {
+			} else if (datasetId.contains(" ")) {
 				throw new WorkflowTaskInstanceException("DatasetId cannot contain spaces");
 			}
 							        

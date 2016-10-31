@@ -17,7 +17,7 @@
 -->
 <cas:producttypemap xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
- <type id="urn:edrn:LabcasTestFile" parent="urn:oodt:GenericFile">
+ <type id="urn:edrn:LabcasTestProduct" parent="urn:oodt:GenericFile">
    <element id="PI" />
    <element id="experiment" />
    <element id="gene" />

@@ -16,11 +16,13 @@
 -->
 <cas:tasks xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
-  <task id="urn:edrn:LabcasTestInit" name="LabcasTestInit" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasInitTaskInstance">
+  <task id="urn:edrn:LabcasTestInit" name="LabcasTestInit" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasUploadDatasetTaskInstance">
   
     <conditions />
   
     <configuration>
+    
+      <property name="dataset.ProductType" value="LabcasTestProduct" />
     
       <!-- input parameters -->
       
@@ -38,7 +40,7 @@
       <property name="input.species.value.3" value="sharks" />
       
       <!-- output products -->
-      <property name="output.product.type" value="urn:edrn:LabcasTestFile"/>
+      <property name="output.product.type" value="urn:edrn:LabcasTestProduct"/>
       
     </configuration>
     

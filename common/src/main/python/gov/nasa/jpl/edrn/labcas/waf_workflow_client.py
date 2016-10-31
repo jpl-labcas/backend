@@ -22,5 +22,5 @@ if __name__ == '__main__':
         # monitor workflow instance
         labcasClient.waitForCompletion(wInstId)
         
-        # list all products for given dataset == product type
+        # list all products for given product type
         labcasClient.listProducts(productType)
