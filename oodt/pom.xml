@@ -201,6 +201,26 @@
               <overwrite>true</overwrite>
             </configuration>
           </execution>
+          <execution>
+            <id>copy-crawler-config</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${oodt.dir}/cas-crawler-${oodt.version}/policy</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/src/main/resources</directory>
+                  <includes>
+                    <include>crawler-config.xml</include>
+                    <include>labcas-action-beans.xml</include>
+                  </includes>
+                </resource>
+              </resources>
+              <overwrite>true</overwrite>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 

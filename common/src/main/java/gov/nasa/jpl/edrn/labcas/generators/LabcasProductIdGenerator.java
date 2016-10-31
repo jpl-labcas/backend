@@ -44,19 +44,24 @@ public class LabcasProductIdGenerator implements ProductIdGenerator {
 			}
 		} 
 		LOG.fine("Product type="+pt.getName()+", using DatasetId="+datasetId);
-		Metadata ptm = pt.getTypeMetadata();
-		String version = ptm.getMetadata(Constants.METADATA_KEY_DATASET_VERSION);
 				
-		String id = null;
-		if (version!=null) {
-			// example: "mydata.dataset-id.1.file1.txt"
-			id = pt.getName()+"."+datasetId+"."+version+"."+product.getProductName();
-		} else {
-			// example: "mydata.dataset-id.file1.txt"
-			id = pt.getName()+"."+datasetId+"."+product.getProductName();
-		}
+		// NOTE: DatasetVersion not available in product-level metadata, 
+		// but it could be stored in datasetIdStore if necessary...
+		return generateId(pt.getName(), datasetId, product.getProductName());
 		
-		return id;
+	}
+	
+	/**
+	 * Method that combines the product fields into a unique identifier.
+	 * @param productName
+	 * @param datasetId
+	 * @param version
+	 * @param productName
+	 * @return
+	 */
+	public static String generateId(String productTypeName, String datasetId, String productName) {
+		
+		return productTypeName+"."+datasetId+"."+productName;
 		
 	}
 	
