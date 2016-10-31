@@ -42,9 +42,9 @@
             <configuration>
             <property name="mustBeOlderThanInSecs" value="1"/>
             <!-- publish data generated into the JOBS directory -->
-            <property name="filepath" value="[PGE_ROOT]/rnaseq/jobs/$DatasetId/thout/gene.counts" envReplace="true" />
-            <!-- publish data from the shared archive directory -->
-            <!-- <property name="filepath"  value="[RNASEQ_DATA_DIR]/$DatasetId/thout/gene.counts" envReplace="true" /> -->
+            <!-- FIXMERNA <property name="filepath" value="[PGE_ROOT]/rnaseq/jobs/$DatasetId/thout/gene.counts" envReplace="true" /> -->
+            <!-- OR publish data from the shared archive directory -->
+            <property name="filepath"  value="[RNASEQ_DATA_DIR]/$DatasetId/thout/gene.counts" envReplace="true" />
         </configuration>
   </condition>
 

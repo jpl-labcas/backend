@@ -17,7 +17,7 @@
 <cas:tasks xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
   <!-- standard LabcasUploadInitTaskInstance task configured with RNA Sequence specific metadata  -->
-  <task id="urn:edrn:RnaSeqInitTask" name="RnaSeqInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasUploadInitTaskInstance">
+  <task id="urn:edrn:RnaSeqInitTask" name="RnaSeqInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasUploadDatasetTaskInstance">
   
     <conditions />
     
@@ -27,7 +27,7 @@
       <property name="workflow.order" value="3" />
     
       <!-- fixed dataset metadata -->
-      <property name="dataset.ParentDatasetId" value="RnaSeqProduct" />
+      <property name="dataset.ProductType" value="RnaSeqProduct" />
       <property name="dataset.LeadPI" value="Chris Amos" />
       <property name="dataset.QAState" value="Public" />
       <property name="dataset.CollaborativeGroup" value="MCL" />
@@ -103,6 +103,7 @@
           
     <requiredMetFields>
     
+      <metfield name="DatasetId" />
       <metfield name="Title" />
       <metfield name="OrganSite" />
       <metfield name="AgeAtDiagnosis" />
@@ -112,7 +113,6 @@
       <metfield name="ReferenceId" />
       <metfield name="ReferenceUrl" />
       <metfield name="OwnerPrincipal" />
-      <metfield name="DatasetId" />
       <metfield name="GenomeIndex" />
             
     </requiredMetFields>

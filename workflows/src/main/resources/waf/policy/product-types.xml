@@ -32,26 +32,14 @@
       <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor" />
     </metExtractors>
     
-    <!-- core LabcasProduct fields -->
+    <!-- LabCAS core metadata -->
     <metadata>
-      <keyval>
-        <key>DatasetId</key>
-        <val>UnivColoLungImage</val>
-      </keyval>
       <keyval>
         <key>Description</key>
         <val>University of Colorado Lung Image</val>
       </keyval>
-      <keyval>
-        <key>Version</key>
-        <val>1</val>
-      </keyval>
-      <keyval>
-        <key>ParentDatasetId</key>
-        <val>LabcasProduct</val>
-      </keyval>
       
-      <!-- additional UnivColoLungImage fields -->
+      <!-- CDEs metadata -->
       <keyval>
         <key>LeadPI</key>
         <val>Wilbur A. Frankin</val>

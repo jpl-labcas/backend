@@ -18,7 +18,7 @@
 <cas:producttypes xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
   <type id="urn:edrn:RnaSeqProduct" name="RnaSeqProduct">
-    <repository path="file://[LABCAS_ARCHIVE]/RnaSeqProduct" />
+    <repository path="file://[LABCAS_ARCHIVE]" />
     <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner" />
     <description>The transcriptional landscape and mutational profile of lung adenocarcinoma</description>
    
@@ -34,25 +34,14 @@
     </metExtractors>
     
     <metadata>
+    
       <!-- minimal LabCAS metadata -->
       <keyval>
-        <key>DatasetId</key>
-        <val>RnaSeqProduct</val>
-      </keyval>
-      <keyval>
-        <key>ParentDatasetId</key>
-        <val>EcasProduct</val>
-      </keyval>
-      <keyval>
-        <key>Version</key>
-        <val>1</val>
-      </keyval>
-      <keyval>
         <key>Description</key>
-        <val>RNA Sequence Data Series GSE40419</val>
+        <val>RNA Sequencing Data</val>
       </keyval>
       
-      <!--  ECAS metadata -->
+      <!-- CDEs metadata -->
       <keyval>
         <key>LeadPI</key>
         <val>Chris Amos</val>
