@@ -4,9 +4,9 @@
     <customMetadata>
       <metadata key="ProductionDateTime" val="[DATE.UTC]" />
       <!-- copy from JOBS output directory -->
-      <!-- <metadata key="JobDir" val="[PGE_ROOT]/rnaseq/jobs/[DatasetId]" /> FIXMERNA -->
+      <metadata key="JobDir" val="[PGE_ROOT]/rnaseq/jobs/[DatasetId]" />
       <!-- OR: copy from RNASEQ_DATA_DIR archive directory -->
-      <metadata key="JobDir" val="[RNASEQ_DATA_DIR]/[DatasetId]" />
+      <!-- <metadata key="JobDir" val="[RNASEQ_DATA_DIR]/[DatasetId]" /> -->
       
     </customMetadata>
 
