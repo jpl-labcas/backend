@@ -6,7 +6,7 @@
 		<cmd>cd [PGE_ROOT]/labcas-test</cmd>
 		<cmd>mkdir -p output</cmd>
 		<cmd>echo 'xyz' > output/labcas-test-output.txt</cmd>
-        <!-- create info file to trigger dataset id storage at thread local scope  -->
+        <!-- create info file to trigger acquisition of dataset id  -->
         <cmd>touch output/000_labcas_info.txt</cmd>
 	</exe>
 

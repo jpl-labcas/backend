@@ -18,6 +18,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
+import gov.nasa.jpl.edrn.labcas.extractors.LabcasCoreMetExtractor;
 import gov.nasa.jpl.edrn.labcas.extractors.XmlFileMetExtractor;
 
 /**
@@ -393,6 +394,23 @@ public class FileManagerUtils {
         Element metExtractorsElement = xmlDocument.createElement("metExtractors");
         typeElement.appendChild(metExtractorsElement);
                 
+        // <extractor class="gov.nasa.jpl.edrn.labcas.extractors.LabcasCoreMetExtractor"> 
+        //   <configuration>
+        //      <property name="nsAware" value="true" />
+        //      <property name="elementNs" value="CAS" />
+        //      <property name="elements" value="ProductReceivedTime,ProductName,ProductId,ProductType,WorkflowName,DatasetId" />
+        //   </configuration>
+        // </extractor>
+        Element labcasMetExtractorElement = xmlDocument.createElement("extractor");
+        labcasMetExtractorElement.setAttribute("class", LabcasCoreMetExtractor.class.getCanonicalName());
+        Element configElement = xmlDocument.createElement("configuration");
+        makePropertyElement(xmlDocument, configElement, "nsAware", "true");
+        makePropertyElement(xmlDocument, configElement, "elementNs", "CAS");
+        makePropertyElement(xmlDocument, configElement, "elements", 
+        		"ProductReceivedTime,ProductName,ProductId,ProductType,WorkflowName,DatasetId");
+        labcasMetExtractorElement.appendChild(configElement);
+        metExtractorsElement.appendChild(labcasMetExtractorElement);
+        
         // <extractor class="gov.nasa.jpl.edrn.labcas.extractors.XmlFileMetExtractor">
         Element extractor3Element = xmlDocument.createElement("extractor");
         extractor3Element.setAttribute("class", XmlFileMetExtractor.class.getCanonicalName());
@@ -433,6 +451,15 @@ public class FileManagerUtils {
         // write out the file
         XmlUtils.xmlToFile(xmlDocument, filepath);
 		
+	}
+	
+	private static void makePropertyElement(Document xmlDocument, Element parentElement, 
+			                                String elementAttributeName, String elementAttributeValue ) {
+		
+       	Element propertyElement = xmlDocument.createElement("property");
+       	propertyElement.setAttribute(elementAttributeName, elementAttributeValue);
+       	parentElement.appendChild(propertyElement);
+       	
 	}
 	
 	/**

@@ -4,7 +4,8 @@
 	<!-- PGE commands -->
 	<exe dir="[JobDir]" shell="/bin/bash">
 		<cmd>cd [LABCAS_STAGING]/[DatasetId]</cmd>
-		<cmd>ls -l</cmd>
+		<!-- create info file to trigger acquisition of dataset id  -->
+        <cmd>touch 000_labcas_info.txt</cmd>
 	</exe>
 
 	<customMetadata>

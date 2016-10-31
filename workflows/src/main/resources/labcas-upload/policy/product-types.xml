@@ -22,11 +22,11 @@
     <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner" />
     <description>Generic files managed by LabCAS.</description>
     <metExtractors>
-      <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
+      <extractor class="gov.nasa.jpl.edrn.labcas.extractors.LabcasCoreMetExtractor"> 
         <configuration>
           <property name="nsAware" value="true" />
           <property name="elementNs" value="CAS" />
-          <property name="elements" value="ProductReceivedTime,ProductName,ProductId,ProductType,WorkflowName" />
+          <property name="elements" value="ProductReceivedTime,ProductName,ProductId,ProductType,WorkflowName,DatasetId" />
         </configuration>
       </extractor>
       <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor" />
