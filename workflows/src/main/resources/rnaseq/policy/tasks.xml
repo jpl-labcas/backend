@@ -17,7 +17,7 @@
 <cas:tasks xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
   <!-- standard LabcasUploadInitTaskInstance task configured with RNA Sequence specific metadata  -->
-  <task id="urn:edrn:RnaSeqInitTask" name="RnaSeqInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasUploadDatasetTaskInstance">
+  <task id="urn:edrn:RnaSeqInitTask" name="RnaSeqInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasInitDatasetTaskInstance">
   
     <conditions />
     

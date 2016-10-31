@@ -19,7 +19,7 @@
 -->
 <cas:tasks xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
-  <task id="urn:edrn:LabcasUploadInitTask" name="LabcasUploadInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasUploadCollectionTaskInstance">
+  <task id="urn:edrn:LabcasUploadInitTask" name="LabcasUploadInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasInitCollectionTaskInstance">
   
     <conditions />
         

@@ -1,7 +1,5 @@
 package gov.nasa.jpl.edrn.labcas.tasks;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -21,9 +19,9 @@ import gov.nasa.jpl.edrn.labcas.utils.FileManagerUtils;
  * @author luca
  *
  */
-public class LabcasUploadDatasetTaskInstance implements WorkflowTaskInstance {
+public class LabcasInitDatasetTaskInstance implements WorkflowTaskInstance {
 	
-	private static final Logger LOG = Logger.getLogger(LabcasUploadDatasetTaskInstance.class.getName());
+	private static final Logger LOG = Logger.getLogger(LabcasInitDatasetTaskInstance.class.getName());
 	
 	@Override
 	public void run(Metadata metadata, WorkflowTaskConfiguration config) throws WorkflowTaskInstanceException {

@@ -21,9 +21,9 @@ import gov.nasa.jpl.edrn.labcas.utils.FileManagerUtils;
  * @author luca
  *
  */
-public class LabcasUploadCollectionTaskInstance implements WorkflowTaskInstance {
+public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 	
-	private static final Logger LOG = Logger.getLogger(LabcasUploadCollectionTaskInstance.class.getName());
+	private static final Logger LOG = Logger.getLogger(LabcasInitCollectionTaskInstance.class.getName());
 		
 	@Override
 	public void run(Metadata metadata, WorkflowTaskConfiguration config) throws WorkflowTaskInstanceException {
