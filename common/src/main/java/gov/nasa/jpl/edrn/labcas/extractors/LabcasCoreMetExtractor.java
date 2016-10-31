@@ -29,8 +29,7 @@ public class LabcasCoreMetExtractor extends CoreMetExtractor {
 		String productTypeName = _met.getMetadata(Constants.METADATA_KEY_PRODUCT_TYPE);
 		if (productTypeName!=null && datasetId != null) {
 			
-			LOG.fine("Storing ProductType="+productTypeName+" --> DatasetId="+datasetId
-					+" at thread local scope for thread="+Thread.currentThread().getId());
+			LOG.fine("Storing ProductType="+productTypeName+" --> DatasetId="+datasetId+" at static scope for later use");
 			LabcasProductIdGenerator.setDatasetId(productTypeName, datasetId);
 			
 		}

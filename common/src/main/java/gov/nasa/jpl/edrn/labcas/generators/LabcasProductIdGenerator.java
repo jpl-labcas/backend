@@ -17,43 +17,33 @@ import gov.nasa.jpl.edrn.labcas.Constants;
  * which guarantees a unique identifier for a product type, dataset, version and file.
  * 
  * Because the generateId() signature does not allow access to the product metadata,
- * the DatasetId must be stored in a thread-local map keyed to the specific product type name.
+ * the DatasetId must be stored in a static map keyed to the specific product type name.
  * 
  * @author cinquini
  *
  */
 public class LabcasProductIdGenerator implements ProductIdGenerator {
 	
-	// dataset information is stored at thread-local scope 
-	// and populated by metadata extractor client the first time it is called
+	// dataset information is stored at static scope 
+	// and populated by the metadata extractor client the first time it is called
 	// Map: ProductTypeName --> latest DatasetId to publish
-	private static final ThreadLocal<Map<String,String>> datasetIdStore = new ThreadLocal<Map<String,String>>();
+	private static final Map<String,String> datasetIdStore = new HashMap<String, String>();
 	
 	private static final Logger LOG = Logger.getLogger(LabcasProductIdGenerator.class.getName());
-	
-	/**
-	 * Static constructor initializes the specific thread-local store object.
-	 */
-	static {
-		datasetIdStore.set( new HashMap<String, String>() );
-		LOG.info("SET THE MAP");
-	}
 		
 	public String generateId(Product product) {
 		
 		ProductType pt = product.getProductType();
 		String datasetId = null; // use 'null' for mark file LABCAS_DATASET_INFO_FILE
 		if (!product.getProductName().equals(Constants.LABCAS_DATASET_INFO_FILE)) {
-			Map<String, String> dmap = datasetIdStore.get();
-			if (dmap.containsKey(pt.getName())) {
-				datasetId = dmap.get(pt.getName());
+			if (datasetIdStore.containsKey(pt.getName())) {
+				datasetId = datasetIdStore.get(pt.getName());
 			} else {
 				throw new RuntimeException("Cannot retrieve DatasetId for product type name="+pt.getName()
 				                          +", product name="+product.getProductName());
 			}
 		} 
-		LOG.fine("Product type="+pt.getName()+", using DatasetId="+datasetId
-				+" from thread local scope from thread="+Thread.currentThread().getId());
+		LOG.fine("Product type="+pt.getName()+", using DatasetId="+datasetId);
 		Metadata ptm = pt.getTypeMetadata();
 		String version = ptm.getMetadata(Constants.METADATA_KEY_DATASET_VERSION);
 				
@@ -71,16 +61,11 @@ public class LabcasProductIdGenerator implements ProductIdGenerator {
 	}
 	
 	/**
-	 * Method to store a datasetId at thread local scope.
+	 * Method to store the next DatasetId into the static map.
 	 * @param datasetId
 	 */
-	public static void setDatasetId(final String productTypeName, final String datasetId) {
-		Map<String, String> dmap = datasetIdStore.get();
-		LOG.info("Map is equal to:"+ dmap);
-		if (dmap==null) {
-			datasetIdStore.set( new HashMap<String, String>() );
-		}
-		datasetIdStore.get().put(productTypeName, datasetId);
+	public static synchronized void setDatasetId(final String productTypeName, final String datasetId) {
+		datasetIdStore.put(productTypeName, datasetId);
 	}
 
 }
