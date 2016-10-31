@@ -45,29 +45,18 @@
       <property name="dataset.ProtocolId" value="1000206" />
       <property name="dataset.ProtocolName" value="Lung Imaging Study" />
       
-      
-      <!-- default dataset metadata -->
-      <!-- <property name="dataset.Version" value="1" /> -->
-      
-    
+          
       <!-- input dataset metadata -->
       <property name="input.dataset.DatasetId.type" value="http://www.w3.org/2001/XMLSchema/string" />
       <property name="input.dataset.DatasetId.title" value="Dataset Identifier" />
       <property name="input.dataset.DatasetId.description" value="Enter a unique identifier for this data" />
       <property name="input.dataset.DatasetId.required" value="true" />
-      
-      <property name="input.dataset.DatasetName.type" value="http://www.w3.org/2001/XMLSchema/string" />
-      <property name="input.dataset.DatasetName.title" value="Dataset Name" />
-      <property name="input.dataset.DatasetName.description" value="Short description for this dataset (one sentence)." />
-      <property name="input.dataset.DatasetName.required" value="true" />
-      
-                  
+                        
     </configuration>
           
     <requiredMetFields>
     
       <metfield name="DatasetId" />
-      <metfield name="DatasetName" />
       
     </requiredMetFields>
     

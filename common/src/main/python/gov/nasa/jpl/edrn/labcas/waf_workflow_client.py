@@ -17,8 +17,7 @@ if __name__ == '__main__':
         labcasClient = LabcasClient()
         wInstId = labcasClient.executeWorkflow(['urn:edrn:WafInitTask',
                                                 'urn:edrn:WafCrawlTask'], 
-                                               {'DatasetId':datasetId,
-                                                'DatasetName':datasetId }, 
+                                               { 'DatasetId':datasetId },
                                                )
         # monitor workflow instance
         labcasClient.waitForCompletion(wInstId)
