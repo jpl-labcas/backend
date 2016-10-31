@@ -6,7 +6,9 @@ from gov.nasa.jpl.edrn.labcas.labcas_client import LabcasClient
 if __name__ == '__main__':
 
     # upload these datasets    
-    datasetIds = ['UCHSC_1001', 'UCHSC_1060']
+    #datasetIds = ['UCHSC_1467', 'UCHSC_8798']
+    datasetIds = ['UCHSC_1467']
+    productType = 'UnivColoLungImage'
     
     for datasetId in datasetIds:
     
@@ -15,10 +17,11 @@ if __name__ == '__main__':
         labcasClient = LabcasClient()
         wInstId = labcasClient.executeWorkflow(['urn:edrn:WafInitTask',
                                                 'urn:edrn:WafCrawlTask'], 
-                                               {'DatasetId':datasetId,} 
+                                               {'DatasetId':datasetId,
+                                                'DatasetName':datasetId }, 
                                                )
         # monitor workflow instance
         labcasClient.waitForCompletion(wInstId)
         
         # list all products for given dataset == product type
-        labcasClient.listProducts(datasetId)
+        labcasClient.listProducts(productType)

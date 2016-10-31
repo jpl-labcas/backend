@@ -18,7 +18,7 @@
 <cas:producttypes xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
   <type id="urn:edrn:UnivColoLungImage" name="UnivColoLungImage">
-    <repository path="file://[LABCAS_ARCHIVE]/UnivColoLungImage" />
+    <repository path="file://[LABCAS_ARCHIVE]" />
     <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner" />
     <description>Lung images collected for patients at the University of Colorado Health Science Center.</description>
     <metExtractors>

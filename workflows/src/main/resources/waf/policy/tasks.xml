@@ -17,7 +17,7 @@
 <cas:tasks xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
   <!-- standard LabcasUploadInitTaskInstance task configured with WAF specific metadata  -->
-  <task id="urn:edrn:WafInitTask" name="WafInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasUploadInitTaskInstance">
+  <task id="urn:edrn:WafInitTask" name="WafInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasUploadDatasetTaskInstance">
   
     <conditions />
     
@@ -27,7 +27,7 @@
       <property name="workflow.order" value="4" />
     
       <!-- fixed dataset metadata -->
-      <property name="dataset.ParentDatasetId" value="UnivColoLungImage" />
+      <property name="dataset.ProductType" value="UnivColoLungImage" />
       
       <!-- FIXME: the following fields should be inherited from the Parent dataset 
            instead of being hard-wired here -->
