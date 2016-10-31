@@ -9,13 +9,15 @@
 	<!-- PGE commands -->
 	<exe dir="[StagingDir]" shell="/bin/bash">
         <cmd>cd [StagingDir]</cmd>
-		<cmd>ls -l</cmd>
+		<!-- create info file to trigger acquisition of dataset id  -->
+        <cmd>touch 000_labcas_info.txt</cmd>
 	</exe>
 
 	<!-- CAS Crawler directives -->
 	<output>
 		<dir path="[LABCAS_STAGING]/[DatasetId]" createBeforeExe="false">
 			<!-- metadata extractors matching specific files -->
+            <files regExp=".*\.txt" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[LABCAS_HOME]/workflows/rnaseq/pge-configs/metout.xml" />
             <files regExp=".*\.sra" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[LABCAS_HOME]/workflows/rnaseq/pge-configs/metout.xml" />
             <files regExp=".*\.fastq" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[LABCAS_HOME]/workflows/rnaseq/pge-configs/metout.xml" />
             <files regExp=".*\.bt2" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[LABCAS_HOME]/workflows/rnaseq/pge-configs/metout.xml" />
