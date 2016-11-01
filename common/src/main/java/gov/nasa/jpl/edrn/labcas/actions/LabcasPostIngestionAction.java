@@ -11,11 +11,12 @@ import org.apache.oodt.cas.metadata.Metadata;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
 import gov.nasa.jpl.edrn.labcas.generators.LabcasProductIdGenerator;
+import gov.nasa.jpl.edrn.labcas.utils.SolrUtils;
 
 /**
- * Class that executes necessary cleanup after successful ingestion of products.
- * Specifically, this file unpublishes the file '000_labcas_info.txt'
- * that was published to seed the DatasetId for all following values.
+ * Class that is executed after a product (aka file) is succesfully ingested into OODT. Specifically:
+ * - the marker file '000_labcas_info.txt' is immediately unpublished from Solr core 'oodt-fm'
+ * - all other files are published to the Solor core 'files'
  * 
  * @author cinquini
  *
@@ -28,8 +29,7 @@ public class LabcasPostIngestionAction extends CrawlerAction {
 	@Override
 	public boolean performAction(File product, Metadata productMetadata) throws CrawlerActionException {
 		
-		LOG.info("\n\nPerforming post-ingest-on-success action for file: "+product.getAbsolutePath());
-		// FileManagerUtils.printMetadata(productMetadata);
+		LOG.info("Performing post-ingest-on-success action for file: "+product.getAbsolutePath());
 		
 		// unpublish marker file
 		String productName = productMetadata.getMetadata(Constants.METADATA_KEY_PRODUCT_NAME);
@@ -52,11 +52,19 @@ public class LabcasPostIngestionAction extends CrawlerAction {
 				throw new CrawlerActionException( e.getMessage() );
 			}
 			
+		// publish product into Solr files core
+		} else {
+			
+			// publish product
+			try {
+				SolrUtils.publishProduct(productMetadata);
+			} catch (Exception e) {
+				throw new CrawlerActionException( e.getMessage() );
+			}
+			
 		}
 		
-		
-
-		// success
+		// return success status
 		return true;
 	}
 	

@@ -2,9 +2,12 @@ package gov.nasa.jpl.edrn.labcas.utils;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -24,11 +27,13 @@ import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.SolrInputDocument;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
+import gov.nasa.jpl.edrn.labcas.generators.LabcasProductIdGenerator;
 
 /**
  * Class containing general utilities to query/update the Solr index behind an OODT File Manager.
@@ -41,22 +46,25 @@ public class SolrUtils {
 	private final static Logger LOG = Logger.getLogger(SolrUtils.class.getName());
 	
 	// default value for SOLR URL
-	private static String SOLR_URL = "http://localhost:8983/solr/oodt-fm";
+	private static String SOLR_URL = "http://localhost:8983/solr/files"; // FIXME core
 	//private static String SOLR_URL = "http://localhost:8080/solr/oodt-fm";
+	
+	// list of OODT fields that are NOT transferred to the public Solr index
+	private static Set<String> IGNORED_FIELDS = new HashSet<String>(
+			Arrays.asList("WorkflowManagerUrl", "TaskId", "WorkflowInstId", "JobId",
+				          "WorkflowId", "WorkflowName", "ProcessingNode"));
+
 	
 	// IMPORTANT: must re-use the same SolrServer instance across all requests to prevent memory leaks
 	// see https://issues.apache.org/jira/browse/SOLR-861 
 	// this method instantiates the shared instance of SolrServer
 	private static SolrServer solrServer = null;
 	static {
-		if (System.getenv(Constants.ENV_SOLR_URL)!=null) {
-			SOLR_URL = System.getenv(Constants.ENV_SOLR_URL);
-			try {
-				solrServer = new CommonsHttpSolrServer( SOLR_URL );
-			} catch(MalformedURLException e) {
-				e.printStackTrace();
-				LOG.warning(e.getMessage());
-			}
+		try {
+			solrServer = new CommonsHttpSolrServer( SOLR_URL );
+		} catch(MalformedURLException e) {
+			e.printStackTrace();
+			LOG.warning(e.getMessage());
 		}
 	}
 
@@ -67,15 +75,17 @@ public class SolrUtils {
 	 * @param datasetVersion
 	 * @return
 	 */
-	public static List<String> queryAllProducts(String datasetName, int datasetVersion) {
+	public static List<String> queryAllProducts(String datasetId, String datasetVersion) {
 		
 		List<String> ids = new ArrayList<String>();
 		
 		// build Solr query
         SolrQuery request = new SolrQuery();
         request.setQuery("*:*");
-        request.addFilterQuery("Dataset:"+datasetName,"Version:"+datasetVersion);
+        request.addFilterQuery(Constants.METADATA_KEY_DATASET_ID+":"+datasetId,
+        		               Constants.METADATA_KEY_DATASET_VERSION+":"+datasetVersion);
         request.setRows(Constants.MAX_SOLR_ROWS);
+        LOG.fine("Executing Solr query: "+request.toString());
         
         // execute Solr query
         try {
@@ -87,7 +97,7 @@ public class SolrUtils {
 	            SolrDocument doc = iter.next();
 	            //LOG.fine(doc.toString());
 	            String id = (String) doc.getFieldValue("id"); 
-	            LOG.info("Retrieved Solr document id="+id);
+	            LOG.fine("Retrieved Solr document id="+id);
 	            ids.add(id);
 	        }
 	        
@@ -107,7 +117,7 @@ public class SolrUtils {
 	 * @param productName
 	 * @return
 	 */
-	public static String queryProduct(String datasetId, int datasetVersion, String productName) {
+	public static String queryProduct(String datasetId, String datasetVersion, String productName) {
 		
 		String id = null;
 		
@@ -138,6 +148,82 @@ public class SolrUtils {
         }
         
         return id;
+		
+	}
+	
+	/**
+	 * Method to publish an OODT product to Solr.
+	 * 
+	 * @param productMetadata
+	 * @throws Exception
+	 */
+	public static void publishProduct(Metadata productMetadata) throws Exception {
+		
+		SolrInputDocument doc = serializeProduct(productMetadata);
+		LOG.info("Publishing product id="+doc.getFieldValue("id"));
+		solrServer.add(doc);
+		solrServer.commit(); // FIXME: only at the very end
+		
+	}
+	
+	/**
+	 * Method that transforms OODT product level metadata into a Solr file input document.
+	 * 
+	 * @param productMetadata
+	 * @return
+	 * @throws Exception
+	 */
+	private static SolrInputDocument serializeProduct(Metadata productMetadata) throws Exception {
+		
+		FileManagerUtils.printMetadata(productMetadata);
+		
+		SolrInputDocument doc = new SolrInputDocument();
+		
+		// document unique identifier
+		String productId = LabcasProductIdGenerator.generateId(productMetadata.getMetadata(Constants.METADATA_KEY_PRODUCT_TYPE), 
+				                                               productMetadata.getMetadata(Constants.METADATA_KEY_DATASET_ID),
+                                                               productMetadata.getMetadata(Constants.METADATA_KEY_PRODUCT_NAME) );
+		doc.addField("id", productId);
+		
+		// serialize all metadata
+		for (String key : productMetadata.getAllKeys()) {
+			
+			// ignore OODT book-keeping fields
+			if (IGNORED_FIELDS.contains(key))  {
+				// do nothing
+				
+			// harvest Labcas core file attributes
+			} else if (key.equals("ProductType")) {
+				doc.addField("CollectionName", productMetadata.getMetadata(key));
+								
+			} else if (key.equals("DatasetId")) {
+				doc.addField("DatasetId", productMetadata.getMetadata(key));
+
+			} else if (key.equals("DatasetVersion")) {
+				doc.addField("DatasetVersion", productMetadata.getMetadata(key));
+				
+			} else if (key.equals("ProductName")) {
+				// ignore, same as Filename
+				
+			} else if (key.equals("FileLocation")) {
+				doc.addField("FileLocation", productMetadata.getMetadata(key));
+
+			} else if (key.equals("Filename")) {
+				doc.addField("FileName", productMetadata.getMetadata(key));
+				
+			} else if (key.equals("FileSize")) {
+				doc.addField("FileSize", productMetadata.getMetadata(key));
+
+			// transfer all other fields as-is
+			// generally multi-valued
+			} else {
+				for (String value : productMetadata.getAllMetadata(key)) {
+					doc.addField(key, value);
+				}
+			}
+		}
+		
+		return doc;
 		
 	}
 	
