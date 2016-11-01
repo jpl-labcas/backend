@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -46,7 +47,7 @@ public class SolrUtils {
 	private final static Logger LOG = Logger.getLogger(SolrUtils.class.getName());
 	
 	// default value for SOLR URL
-	private static String SOLR_URL = "http://localhost:8983/solr/files"; // FIXME core
+	private static String SOLR_URL = "http://localhost:8983/solr";
 	//private static String SOLR_URL = "http://localhost:8080/solr/oodt-fm";
 	
 	// list of OODT fields that are NOT transferred to the public Solr index
@@ -54,14 +55,20 @@ public class SolrUtils {
 			Arrays.asList("WorkflowManagerUrl", "TaskId", "WorkflowInstId", "JobId",
 				          "WorkflowId", "WorkflowName", "ProcessingNode"));
 
+	private final static String SOLR_CORE_COLLECTIONS = "collections";
+	private final static String SOLR_CORE_DATASETS = "datasets";
+	private final static String SOLR_CORE_FILES = "files";
 	
 	// IMPORTANT: must re-use the same SolrServer instance across all requests to prevent memory leaks
 	// see https://issues.apache.org/jira/browse/SOLR-861 
-	// this method instantiates the shared instance of SolrServer
-	private static SolrServer solrServer = null;
+	// this method instantiates the shared instances of SolrServer (one per core)
+	private static Map<String, SolrServer> solrServers = new HashMap<String, SolrServer>();
 	static {
 		try {
-			solrServer = new CommonsHttpSolrServer( SOLR_URL );
+			solrServers.put(SOLR_CORE_COLLECTIONS, new CommonsHttpSolrServer( SOLR_URL+"/"+SOLR_CORE_COLLECTIONS) );
+			solrServers.put(SOLR_CORE_DATASETS, new CommonsHttpSolrServer( SOLR_URL+"/"+SOLR_CORE_DATASETS) );
+			solrServers.put(SOLR_CORE_FILES, new CommonsHttpSolrServer( SOLR_URL+"/"+SOLR_CORE_FILES) );
+			
 		} catch(MalformedURLException e) {
 			e.printStackTrace();
 			LOG.warning(e.getMessage());
@@ -90,7 +97,7 @@ public class SolrUtils {
         // execute Solr query
         try {
 
-	        QueryResponse response = solrServer.query( request );
+	        QueryResponse response = solrServers.get(SOLR_CORE_FILES).query( request );
 	        SolrDocumentList docs = response.getResults();
 	        Iterator<SolrDocument> iter = docs.iterator();
 	        while (iter.hasNext()) {
@@ -132,7 +139,7 @@ public class SolrUtils {
         // execute Solr query
         try {
 
-	        QueryResponse response = solrServer.query( request );
+	        QueryResponse response = solrServers.get(SOLR_CORE_FILES).query( request );
 	        SolrDocumentList docs = response.getResults();
 	        Iterator<SolrDocument> iter = docs.iterator();
 	        while (iter.hasNext()) {
@@ -161,8 +168,8 @@ public class SolrUtils {
 		
 		SolrInputDocument doc = serializeProduct(productMetadata);
 		LOG.info("Publishing product id="+doc.getFieldValue("id"));
-		solrServer.add(doc);
-		solrServer.commit(); // FIXME: only at the very end
+		solrServers.get(SOLR_CORE_FILES).add(doc);
+		solrServers.get(SOLR_CORE_FILES).commit(); // FIXME: only at the very end
 		
 	}
 	
@@ -295,6 +302,7 @@ public class SolrUtils {
 	 * Utility method to POST an XML document to Solr
 	 * @param solrXmlDocument
 	 */
+	@Deprecated
 	public static void postSolrXml(String solrXmlDocument) {
 		
 	    //String strURL = "http://edrn-frontend.jpl.nasa.gov:8080/solr/oodt-fm/update?commit=true";
