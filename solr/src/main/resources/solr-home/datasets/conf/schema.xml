@@ -29,7 +29,7 @@
  http://wiki.apache.org/solr/SchemaXml
 -->
 
-<schema name="Labcas Solr File Manager schema" version="1.5" labcas_version="1.0">
+<schema name="LabCAS schema for datasets Solr core" version="1.5" labcas_version="1.0">
   <!-- attribute "name" is the name of this schema and is only used for display purposes.
        version="x.y" is Solr's version number for the schema syntax and 
        semantics.  It should not normally be changed by applications.
@@ -113,29 +113,11 @@
 
    <!-- LABCAS SCHEMA START -->
 
-   <!-- LabCAS core attributes(not required because they are added AFTER the record stub -->
-   <field name="DatasetId" type="string" indexed="true" stored="true" required="false" multiValued="false" />
-   <field name="DatasetVersion" type="int" indexed="true" stored="true" required="false" multiValued="false" />
-
-   <!-- core CAS product attributes -->
-   <field name="CAS.ProductId" type="string" indexed="true" stored="true" required="true" multiValued="false" />
-   <field name="CAS.ProductName" type="string" indexed="true" stored="true" required="true" multiValued="false" />
-   <field name="CAS.ProductTypeName" type="string" indexed="true" stored="true" required="true" multiValued="false" />
-   <field name="CAS.ProductTypeId" type="string" indexed="true" stored="true" required="true" multiValued="false" />
-   <field name="CAS.ProductReceivedTime" type="date" indexed="true" stored="true" required="false" multiValued="false" />
-   <field name="CAS.ProductStructure" type="string" indexed="true" stored="true" required="false" multiValued="false" />
-   <field name="CAS.ProductTransferStatus" type="string" indexed="true" stored="true" required="false" multiValued="false" />
-
-   <field name="CAS.RootReferenceOriginal" type="string" indexed="true" stored="true" required="false" multiValued="true" />
-   <field name="CAS.RootReferenceDatastore" type="string" indexed="true" stored="true" required="false" multiValued="true" />
-   <field name="CAS.RootReferenceFileSize" type="long" indexed="true" stored="true" required="false" multiValued="true" />
-   <field name="CAS.RootReferenceMimeType" type="string" indexed="true" stored="true" required="false" multiValued="true" />
-
-   <field name="CAS.ReferenceOriginal" type="string" indexed="true" stored="true" required="false" multiValued="true" />
-   <field name="CAS.ReferenceDatastore" type="string" indexed="true" stored="true" required="false" multiValued="true" />
-   <field name="CAS.ReferenceFileSize" type="long" indexed="true" stored="true" required="false" multiValued="true" />
-   <field name="CAS.ReferenceMimeType" type="string" indexed="true" stored="true" required="false" multiValued="true" />
-
+   <!-- LabCAS core attributes for datasets -->
+   <field name="CollectionName" type="string" indexed="true" stored="true" required="true" multiValued="false" />
+   <field name="DatasetName" type="string" indexed="true" stored="true" required="true" multiValued="false" />
+   <field name="DatasetVersion" type="int" indexed="true" stored="true" required="true" multiValued="false" />
+        
    <!-- all unspecified fields ending in 'Date' or 'Time' are interpreted as single-value dates  -->
    <field name="*Date" type="date" indexed="true" stored="true" required="false" multiValued="false" />
    <field name="*Time" type="date" indexed="true" stored="true" required="false" multiValued="false" />

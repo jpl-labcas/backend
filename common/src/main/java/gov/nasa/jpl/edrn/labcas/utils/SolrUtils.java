@@ -159,14 +159,32 @@ public class SolrUtils {
 	}
 	
 	/**
-	 * Method to publish an OODT product to Solr.
+	 * Method to publish dataset-level metadata to Solr.
 	 * 
 	 * @param productMetadata
 	 * @throws Exception
 	 */
-	public static void publishProduct(Metadata productMetadata) throws Exception {
+	public static void publishDataset(Metadata metadata) throws Exception {
 		
-		SolrInputDocument doc = serializeProduct(productMetadata);
+		FileManagerUtils.printMetadata(metadata);
+		SolrInputDocument doc = serializeDataset(metadata);
+		LOG.info("Publishing Solr dataset:"+doc.toString());
+		solrServers.get(SOLR_CORE_DATASETS).add(doc);
+		solrServers.get(SOLR_CORE_DATASETS).commit(); // FIXME: only at the very end
+
+	}
+	
+	/**
+	 * Method to publish an OODT product (aka file) to Solr.
+	 * 
+	 * @param metadata
+	 * @throws Exception
+	 */
+	public static void publishFile(Metadata metadata) throws Exception {
+		
+		// FileManagerUtils.printMetadata(productMetadata);
+		
+		SolrInputDocument doc = serializeFile(metadata);
 		LOG.info("Publishing product id="+doc.getFieldValue("id"));
 		solrServers.get(SOLR_CORE_FILES).add(doc);
 		solrServers.get(SOLR_CORE_FILES).commit(); // FIXME: only at the very end
@@ -174,26 +192,70 @@ public class SolrUtils {
 	}
 	
 	/**
-	 * Method that transforms OODT product level metadata into a Solr file input document.
-	 * 
-	 * @param productMetadata
+	 * Method that transforms OODT dataset level metadata into a Solr dataset input document.
+	 * @param metadata
 	 * @return
 	 * @throws Exception
 	 */
-	private static SolrInputDocument serializeProduct(Metadata productMetadata) throws Exception {
+	private static SolrInputDocument serializeDataset(Metadata metadata) throws Exception {
 		
-		FileManagerUtils.printMetadata(productMetadata);
+		SolrInputDocument doc = new SolrInputDocument();
+		
+		String datasetId = metadata.getMetadata(Constants.METADATA_KEY_PRODUCT_TYPE) 
+				         + "." 
+				         + metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
+		doc.setField("id", datasetId);
+		
+		// serialize all metadata
+		for (String key : metadata.getAllKeys()) {
+			
+			// ignore OODT book-keeping fields
+			if (IGNORED_FIELDS.contains(key))  {
+				// do nothing
+				
+			// harvest Labcas core dataset attributes
+			} else if (key.equals("ProductType")) {
+				doc.setField("CollectionName", metadata.getMetadata(key));
+
+			} else if (key.equals("DatasetId")) {
+				// ignore, id already built
+
+			} else if (key.equals("DatasetVersion")) {
+				doc.setField("DatasetVersion", metadata.getMetadata(key));
+				
+			// transfer all other fields as-is
+			// generally multi-valued
+			} else {
+				for (String value : metadata.getAllMetadata(key)) {
+					doc.addField(key, value);
+				}
+			}
+
+		}
+		
+		return doc;
+		
+	}
+	
+	/**
+	 * Method that transforms OODT product level metadata into a Solr file input document.
+	 * 
+	 * @param metadata
+	 * @return
+	 * @throws Exception
+	 */
+	private static SolrInputDocument serializeFile(Metadata metadata) throws Exception {
 		
 		SolrInputDocument doc = new SolrInputDocument();
 		
 		// document unique identifier
-		String productId = LabcasProductIdGenerator.generateId(productMetadata.getMetadata(Constants.METADATA_KEY_PRODUCT_TYPE), 
-				                                               productMetadata.getMetadata(Constants.METADATA_KEY_DATASET_ID),
-                                                               productMetadata.getMetadata(Constants.METADATA_KEY_PRODUCT_NAME) );
-		doc.addField("id", productId);
+		String productId = LabcasProductIdGenerator.generateId(metadata.getMetadata(Constants.METADATA_KEY_PRODUCT_TYPE), 
+				                                               metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID),
+                                                               metadata.getMetadata(Constants.METADATA_KEY_PRODUCT_NAME) );
+		doc.setField("id", productId);
 		
 		// serialize all metadata
-		for (String key : productMetadata.getAllKeys()) {
+		for (String key : metadata.getAllKeys()) {
 			
 			// ignore OODT book-keeping fields
 			if (IGNORED_FIELDS.contains(key))  {
@@ -201,30 +263,30 @@ public class SolrUtils {
 				
 			// harvest Labcas core file attributes
 			} else if (key.equals("ProductType")) {
-				doc.addField("CollectionName", productMetadata.getMetadata(key));
+				doc.setField("CollectionName", metadata.getMetadata(key));
 								
 			} else if (key.equals("DatasetId")) {
-				doc.addField("DatasetId", productMetadata.getMetadata(key));
+				doc.setField("DatasetId", metadata.getMetadata(key));
 
 			} else if (key.equals("DatasetVersion")) {
-				doc.addField("DatasetVersion", productMetadata.getMetadata(key));
+				doc.setField("DatasetVersion", metadata.getMetadata(key));
 				
 			} else if (key.equals("ProductName")) {
 				// ignore, same as Filename
 				
 			} else if (key.equals("FileLocation")) {
-				doc.addField("FileLocation", productMetadata.getMetadata(key));
+				doc.setField("FileLocation", metadata.getMetadata(key));
 
 			} else if (key.equals("Filename")) {
-				doc.addField("FileName", productMetadata.getMetadata(key));
+				doc.setField("FileName", metadata.getMetadata(key));
 				
 			} else if (key.equals("FileSize")) {
-				doc.addField("FileSize", productMetadata.getMetadata(key));
+				doc.setField("FileSize", metadata.getMetadata(key));
 
 			// transfer all other fields as-is
 			// generally multi-valued
 			} else {
-				for (String value : productMetadata.getAllMetadata(key)) {
+				for (String value : metadata.getAllMetadata(key)) {
 					doc.addField(key, value);
 				}
 			}

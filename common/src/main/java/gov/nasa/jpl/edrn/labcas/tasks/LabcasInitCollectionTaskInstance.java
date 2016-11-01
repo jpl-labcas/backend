@@ -9,6 +9,7 @@ import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceExcep
 
 import gov.nasa.jpl.edrn.labcas.Constants;
 import gov.nasa.jpl.edrn.labcas.utils.FileManagerUtils;
+import gov.nasa.jpl.edrn.labcas.utils.SolrUtils;
 
 /**
  * Task that initializes the upload of a new data Collection (aka ProductType) into LabCAS. 
@@ -57,10 +58,9 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 
 			// populate dataset metadata
 			Metadata datasetMetadata = new Metadata();
-			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_ID, productTypeName + "," + datasetId);
 			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId);
 			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_NAME, datasetId); // dataset name == dataset id
-			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE_NAME, productTypeName);
+			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName);
 			
 	        // add  version to dataset metadata (used for generating product unique identifiers)
 	        int version = FileManagerUtils.getNextVersion( FileManagerUtils.findLatestDatasetVersion( productTypeName, datasetId ), metadata);
@@ -77,7 +77,9 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 				        
 	        // remove all .met files from staging directory - probably a leftover of a previous workflow submission
 	        FileManagerUtils.cleanupStagingDir(datasetId);
-
+	        
+			// publish dataset to public Solr index
+			SolrUtils.publishDataset(datasetMetadata);
 		
 		} catch(Exception e) {
 			e.printStackTrace();

@@ -57,7 +57,7 @@ public class LabcasPostIngestionAction extends CrawlerAction {
 			
 			// publish product
 			try {
-				SolrUtils.publishProduct(productMetadata);
+				SolrUtils.publishFile(productMetadata);
 			} catch (Exception e) {
 				throw new CrawlerActionException( e.getMessage() );
 			}

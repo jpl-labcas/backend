@@ -10,6 +10,7 @@ import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceExcep
 
 import gov.nasa.jpl.edrn.labcas.Constants;
 import gov.nasa.jpl.edrn.labcas.utils.FileManagerUtils;
+import gov.nasa.jpl.edrn.labcas.utils.SolrUtils;
 
 /**
  * Task that initializes the upload of a new Dataset within a given Collection (aka ProductType):
@@ -49,6 +50,12 @@ public class LabcasInitDatasetTaskInstance implements WorkflowTaskInstance {
 			} else if (datasetId.contains(" ")) {
 				throw new WorkflowTaskInstanceException("DatasetId cannot contain spaces");
 			}
+			
+			// retrieve dataset name from XML/RPC parameters
+			// or use dataset id if not found
+			String datasetName = metadata.getMetadata(Constants.METADATA_KEY_DATASET_NAME);
+			if (datasetName==null) datasetName = datasetId;
+			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_NAME, datasetName); 
 							        
 	        // add  version to dataset metadata (used for generating product unique identifiers)
 	        int version = FileManagerUtils.getNextVersion( FileManagerUtils.findLatestDatasetVersion( productTypeName, datasetId ), metadata);
@@ -65,6 +72,9 @@ public class LabcasInitDatasetTaskInstance implements WorkflowTaskInstance {
 			
 			// remove all .met files from staging directory - probably a leftover of a previous workflow submission
 			FileManagerUtils.cleanupStagingDir(datasetId);
+			
+			// publish dataset to public Solr index
+			SolrUtils.publishDataset(datasetMetadata);
 		
 		} catch(Exception e) {
 			e.printStackTrace();
