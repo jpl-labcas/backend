@@ -1,5 +1,6 @@
 package gov.nasa.jpl.edrn.labcas.utils;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +22,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.apache.oodt.cas.filemgr.repository.XMLRepositoryManager;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -37,7 +40,7 @@ import gov.nasa.jpl.edrn.labcas.Constants;
 import gov.nasa.jpl.edrn.labcas.generators.LabcasProductIdGenerator;
 
 /**
- * Class containing general utilities to query/update the Solr index behind an OODT File Manager.
+ * Class containing general utilities to query/update the Solr index.
  * 
  * @author luca
  *
@@ -159,6 +162,45 @@ public class SolrUtils {
 	}
 	
 	/**
+	 * Method to publish an OODT ProductType (aka Collection) to Solr.
+	 * @param productType
+	 * @throws Exception
+	 */
+	public static void publishCollection(ProductType productType) throws Exception {
+		
+		FileManagerUtils.printMetadata(productType.getTypeMetadata());
+		SolrInputDocument doc = serializeCollection(productType);
+		LOG.info("Publishing Solr collection:"+doc.toString());
+		solrServers.get(SOLR_CORE_COLLECTIONS).add(doc);
+		solrServers.get(SOLR_CORE_COLLECTIONS).commit(); // FIXME: only at the very end
+		
+	}
+	
+	/**
+	 * Alternative method to publish collections into Solr
+	 * starting from the product-types.xml file located in the policy/ directory.
+	 * Note that a single XML file may contain more than one OODT proruct type.
+	 * 
+	 * @param productTypeFile
+	 * @throws Exception
+	 */
+	public static void publishCollection(File productTypesXmlFile) throws Exception {
+		
+		// parse XML file using OODT utilities
+		// must reference the policy directory, for example:
+		// "file:///usr/local/labcas_home/workflows/nist/policy/"
+		XMLRepositoryManager xmlRP = new XMLRepositoryManager(
+				Arrays.asList(new String[]{"file://"+productTypesXmlFile.getParent()}));
+		List<ProductType> productTypes = xmlRP.getProductTypes();
+
+		// publish new product type(s) to Solr
+		for (ProductType pt : productTypes) {
+			SolrUtils.publishCollection(pt);
+		}
+		
+	}
+	
+	/**
 	 * Method to publish dataset-level metadata to Solr.
 	 * 
 	 * @param productMetadata
@@ -189,6 +231,32 @@ public class SolrUtils {
 		solrServers.get(SOLR_CORE_FILES).add(doc);
 		solrServers.get(SOLR_CORE_FILES).commit(); // FIXME: only at the very end
 		
+	}
+	
+	/**
+	 * Method that transforms an OODT ProductType into a Solr collection input document.
+	 * @param metadata
+	 * @return
+	 * @throws Exception
+	 */
+	private static SolrInputDocument serializeCollection(ProductType productType) throws Exception {
+		
+		SolrInputDocument doc = new SolrInputDocument();
+		
+		doc.setField("id", productType.getProductTypeId());
+		doc.setField("CollectionName", productType.getName());
+		doc.setField("CollectionDescription", productType.getDescription());
+		
+		// serialize all metadata as-is
+		// generally multi-valued fields
+		Metadata metadata = productType.getTypeMetadata(); 
+		for (String key : metadata.getAllKeys()) {
+			for (String value : metadata.getAllMetadata(key)) {
+				doc.addField(key, value);
+			}
+		}
+		
+		return doc;
 	}
 	
 	/**
@@ -303,6 +371,7 @@ public class SolrUtils {
 	 * @param datasetMetadata
 	 * @return
 	 */
+	@Deprecated
 	public static String buildSolrXmlDocument(HashMap<String, Metadata> updateMetadataMap) throws Exception {
 		
         // create Solr/XML update document
@@ -389,6 +458,21 @@ public class SolrUtils {
 		    post.releaseConnection();
 	    }
 	    
+	}
+	
+	public static void main(String[] args) throws Exception {
+		
+		// FIXME: insert help
+		String productTypesXmlFilePath = args[0]; 
+		System.out.println("Parsing file: "+productTypesXmlFilePath);
+		File productTypesXmlFile = new File(productTypesXmlFilePath);
+		if (!productTypesXmlFile.exists()) {
+			throw new Exception("File "+productTypesXmlFilePath+" not found");
+		}
+		
+		// publish all product types in file
+		SolrUtils.publishCollection(productTypesXmlFile);
+		
 	}
 
 }
