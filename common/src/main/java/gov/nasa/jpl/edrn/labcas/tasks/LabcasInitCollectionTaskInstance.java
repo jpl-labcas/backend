@@ -55,6 +55,10 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 			
 			// reload the catalog configuration so that the new product type is available for publishing
 			FileManagerUtils.reload();
+			
+			// publish collection to the Solr index
+			// starting from the product type archive directory which also contains the "product-types.xml" file
+			SolrUtils.publishCollections( FileManagerUtils.getProductTypeArchiveDir(productTypeName) );
 
 			// populate dataset metadata
 			Metadata datasetMetadata = new Metadata();
