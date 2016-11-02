@@ -2,6 +2,7 @@ package gov.nasa.jpl.edrn.labcas.utils;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -25,6 +27,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.oodt.cas.filemgr.repository.XMLRepositoryManager;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.commons.io.DirectorySelector;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
@@ -177,23 +180,30 @@ public class SolrUtils {
 	}
 	
 	/**
-	 * Alternative method to publish collections into Solr
-	 * starting from the product-types.xml file located in the policy/ directory.
-	 * Note that a single XML file may contain more than one OODT proruct type.
+	 * Alternative method to publish collections into Solr starting from a top-level directory
+	 * and looking for "product-types.xml" in all sub-directories.
+	 * Note that a single XML file may contain more than one OODT product type.
 	 * 
 	 * @param productTypeFile
 	 * @throws Exception
 	 */
-	public static void publishCollection(File productTypesXmlFile) throws Exception {
+	public static void publishCollections(File rootDirectory) throws Exception {
 		
-		// parse XML file using OODT utilities
-		// must reference the policy directory, for example:
-		// "file:///usr/local/labcas_home/workflows/nist/policy/"
-		XMLRepositoryManager xmlRP = new XMLRepositoryManager(
-				Arrays.asList(new String[]{"file://"+productTypesXmlFile.getParent()}));
+		if (!rootDirectory.exists() || !rootDirectory.isDirectory()) {
+			throw new Exception("Invalid starting directory: "+rootDirectory.getAbsolutePath());
+		}
+		
+		// select policy sub-directories containing file "product-types.xml"
+		List<String> policyDirectories = new ArrayList<String>();
+		DirectorySelector dirsel = new DirectorySelector(
+				Arrays.asList( new String[] {"product-types.xml"} ));
+		policyDirectories.addAll( dirsel.traverseDir(new File(rootDirectory.toURI())) );
+					
+		// parse all XML files using OODT utilities
+		XMLRepositoryManager xmlRP = new XMLRepositoryManager(policyDirectories);
 		List<ProductType> productTypes = xmlRP.getProductTypes();
-
-		// publish new product type(s) to Solr
+		
+		// publish all new product types to Solr
 		for (ProductType pt : productTypes) {
 			SolrUtils.publishCollection(pt);
 		}
@@ -251,8 +261,12 @@ public class SolrUtils {
 		// generally multi-valued fields
 		Metadata metadata = productType.getTypeMetadata(); 
 		for (String key : metadata.getAllKeys()) {
-			for (String value : metadata.getAllMetadata(key)) {
-				doc.addField(key, value);
+			if (key.equals("Description")) {
+				// ignore, already have "CollectionDescription"
+			} else {
+				for (String value : metadata.getAllMetadata(key)) {
+					doc.addField(key, value);
+				}
 			}
 		}
 		
@@ -460,18 +474,22 @@ public class SolrUtils {
 	    
 	}
 	
+	/**
+	 * Command line method to publish all product types (aka collections) from a top-level directory.
+	 * Examples: 
+	 * java SolrUtils $LABCAS_HOME/workflows
+	 * java SolrUtils $LABCAS_ARCHIVE
+	 * 
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 		
 		// FIXME: insert help
-		String productTypesXmlFilePath = args[0]; 
-		System.out.println("Parsing file: "+productTypesXmlFilePath);
-		File productTypesXmlFile = new File(productTypesXmlFilePath);
-		if (!productTypesXmlFile.exists()) {
-			throw new Exception("File "+productTypesXmlFilePath+" not found");
-		}
+		String rootDirectory = args[0]; 
 		
 		// publish all product types in file
-		SolrUtils.publishCollection(productTypesXmlFile);
+		SolrUtils.publishCollections(new File(rootDirectory));
 		
 	}
 
