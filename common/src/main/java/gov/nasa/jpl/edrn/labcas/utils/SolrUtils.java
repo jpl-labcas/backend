@@ -175,7 +175,7 @@ public class SolrUtils {
 		SolrInputDocument doc = serializeCollection(productType);
 		LOG.info("Publishing Solr collection:"+doc.toString());
 		solrServers.get(SOLR_CORE_COLLECTIONS).add(doc);
-		solrServers.get(SOLR_CORE_COLLECTIONS).commit(); // FIXME: only at the very end
+		//solrServers.get(SOLR_CORE_COLLECTIONS).commit(); // use solr.autoSoftCommit.maxTime and solr.autoCommit.maxTime
 		
 	}
 	
@@ -222,7 +222,7 @@ public class SolrUtils {
 		SolrInputDocument doc = serializeDataset(metadata);
 		LOG.info("Publishing Solr dataset:"+doc.toString());
 		solrServers.get(SOLR_CORE_DATASETS).add(doc);
-		solrServers.get(SOLR_CORE_DATASETS).commit(); // FIXME: only at the very end
+		//solrServers.get(SOLR_CORE_COLLECTIONS).commit(); // use solr.autoSoftCommit.maxTime and solr.autoCommit.maxTime
 
 	}
 	
@@ -239,7 +239,7 @@ public class SolrUtils {
 		SolrInputDocument doc = serializeFile(metadata);
 		LOG.info("Publishing product id="+doc.getFieldValue("id"));
 		solrServers.get(SOLR_CORE_FILES).add(doc);
-		solrServers.get(SOLR_CORE_FILES).commit(); // FIXME: only at the very end
+		//solrServers.get(SOLR_CORE_COLLECTIONS).commit(); // use solr.autoSoftCommit.maxTime and solr.autoCommit.maxTime
 		
 	}
 	
