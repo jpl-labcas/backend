@@ -348,7 +348,9 @@ public class SolrUtils {
 				doc.setField("CollectionName", metadata.getMetadata(key));
 								
 			} else if (key.equals("DatasetId")) {
-				doc.setField("DatasetId", metadata.getMetadata(key));
+				// note: compose the unique dataset identifier
+				doc.setField("DatasetId", 
+						metadata.getMetadata("ProductType")+"."+metadata.getMetadata(key));
 
 			} else if (key.equals("DatasetVersion")) {
 				doc.setField("DatasetVersion", metadata.getMetadata(key));
@@ -476,9 +478,9 @@ public class SolrUtils {
 	
 	/**
 	 * Command line method to publish all product types (aka collections) from a top-level directory.
-	 * Examples: 
-	 * java SolrUtils $LABCAS_HOME/workflows
-	 * java SolrUtils $LABCAS_ARCHIVE
+	 * Examples (from $LABCAS_HOME/cas-filemgr directory): 
+	 * java -Djava.ext.dirs=lib gov.nasa.jpl.edrn.labcas.utils.SolrUtils $LABCAS_HOME/workflows
+	 * java -Djava.ext.dirs=lib gov.nasa.jpl.edrn.labcas.utils.SolrUtils $LABCAS_ARCHIVE
 	 * 
 	 * @param args
 	 * @throws Exception
