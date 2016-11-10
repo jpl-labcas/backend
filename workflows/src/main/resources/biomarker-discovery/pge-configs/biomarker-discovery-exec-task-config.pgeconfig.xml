@@ -3,15 +3,15 @@
 
   <!-- PGE commands -->
   <exe dir="[JobDir]" shell="/bin/bash">
-    <cmd>mkdir -p cv_loop_[ncv]/model_99</cmd>
-    <cmd>echo 'xyz' > cv_loop_[ncv]/model_99/feature_names.txt</cmd>
-    <cmd>echo 'xyz' > cv_loop_[ncv]/model_99/predictions.txt</cmd>
+    <cmd>mkdir -p cv_loop_[CrossValidationIterationNumber]/model_99</cmd>
+    <cmd>echo 'xyz' > cv_loop_[CrossValidationIterationNumber]/model_99/feature_names.txt</cmd>
+    <cmd>echo 'xyz' > cv_loop_[CrossValidationIterationNumber]/model_99/predictions.txt</cmd>
     <!-- create info file to trigger acquisition of dataset id  -->
-    <cmd>touch cv_loop_[ncv]/model_99/000_labcas_info.txt</cmd>
+    <cmd>touch cv_loop_[CrossValidationIterationNumber]/model_99/000_labcas_info.txt</cmd>
   </exe>
   <!-- <exe dir="[JobDir]" shell="/bin/bash">
     <cmd>cd /usr/local/rabbit</cmd>
-    <cmd>R \-\-no-save &lt; ./run_stock_pipeline_iter.R \-\-args [ncv]</cmd>
+    <cmd>R \-\-no-save &lt; ./run_stock_pipeline_iter.R \-\-args [CrossValidationIterationNumber]</cmd>
   </exe> -->
 
   <customMetadata>
@@ -21,7 +21,7 @@
 
   <!-- CAS Crawler directives -->
   <output>
-    <dir path="[JobDir]/cv_loop_[ncv]/model_99" createBeforeExe="false">
+    <dir path="[JobDir]/cv_loop_[CrossValidationIterationNumber]/model_99" createBeforeExe="false">
       <!-- metadata extractors matching specific files -->
       <files regExp=".*\.txt"
              metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"

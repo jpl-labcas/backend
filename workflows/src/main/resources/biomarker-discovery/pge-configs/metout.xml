@@ -4,8 +4,8 @@
     <metadata key="JobId" val="[JobId]"/>
     <metadata key="ProductType" val="BiomarkerDiscoveryProduct"/>
     <metadata key="ProductionDateTime" val="[ProductionDateTime]"/>
-    <metadata key="CrossValidationIteration" val="[ncv]"/>
     <metadata key="ProductName" val="[Filename]"/>
-    <metadata key="TrainingSet" val="[training_set]"/>
+    <metadata key="CrossValidationIterationNumber" val="[CrossValidationIterationNumber]"/>
+    <metadata key="TrainingSet" val="[TrainingSet]"/>
     
 </metadataList>
