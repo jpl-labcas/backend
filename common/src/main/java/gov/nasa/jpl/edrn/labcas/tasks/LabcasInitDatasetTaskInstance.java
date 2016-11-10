@@ -50,6 +50,7 @@ public class LabcasInitDatasetTaskInstance implements WorkflowTaskInstance {
 			} else if (datasetId.contains(" ")) {
 				throw new WorkflowTaskInstanceException("DatasetId cannot contain spaces");
 			}
+			LOG.info("Using DatasetId="+datasetId);
 			
 			// retrieve dataset name from XML/RPC parameters
 			// or use dataset id if not found

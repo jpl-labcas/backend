@@ -1,8 +1,0 @@
-<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="BiomarkerDiscoveryNodeWorkflow"
-	id="urn:edrn:BiomarkerDiscoveryNodeWorkflow">
-
-	<tasks>
-		<task id="urn:edrn:BiomarkerDiscoveryTask2" />
-	</tasks>
-
-</cas:workflow>
