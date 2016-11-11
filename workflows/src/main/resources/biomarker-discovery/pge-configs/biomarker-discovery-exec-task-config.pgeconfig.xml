@@ -10,7 +10,7 @@
     <cmd>touch cv_loop_[CrossValidationIterationNumber]/model_99/000_labcas_info.txt</cmd>
   </exe> -->
   <exe dir="[JobDir]" shell="/bin/bash">
-    <cmd>R --no-save &lt; [LABCAS_HOME]/workflows/src/main/resources/biomarker-discovery/pges/run_stock_pipeline_iter.R --args [CrossValidationIterationNumber]</cmd>
+    <cmd>R --no-save &lt; [LABCAS_HOME]/workflows/biomarker-discovery/pges/run_stock_pipeline_iter.R --args [CrossValidationIterationNumber]</cmd>
     <cmd>touch cv_loop_[CrossValidationIterationNumber]/model_99/000_labcas_info.txt</cmd>
   </exe>
 
