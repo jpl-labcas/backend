@@ -9,8 +9,7 @@
 	<!-- PGE commands -->
 	<exe dir="[StagingDir]" shell="/bin/bash">
         <cmd>cd [StagingDir]</cmd>
-		<!-- create info file to trigger acquisition of dataset id  -->
-        <cmd>touch 000_labcas_info.txt</cmd>
+        <cmd>ls -l</cmd>
 	</exe>
 
 	<!-- CAS Crawler directives -->

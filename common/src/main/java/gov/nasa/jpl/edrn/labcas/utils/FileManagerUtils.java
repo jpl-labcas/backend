@@ -18,7 +18,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
-import gov.nasa.jpl.edrn.labcas.extractors.LabcasCoreMetExtractor;
+import org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor;
 import gov.nasa.jpl.edrn.labcas.extractors.XmlFileMetExtractor;
 
 /**
@@ -398,7 +398,7 @@ public class FileManagerUtils {
         Element metExtractorsElement = xmlDocument.createElement("metExtractors");
         typeElement.appendChild(metExtractorsElement);
                 
-        // <extractor class="gov.nasa.jpl.edrn.labcas.extractors.LabcasCoreMetExtractor"> 
+        // <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor"> 
         //   <configuration>
         //      <property name="nsAware" value="true" />
         //      <property name="elementNs" value="CAS" />
@@ -406,7 +406,7 @@ public class FileManagerUtils {
         //   </configuration>
         // </extractor>
         Element labcasMetExtractorElement = xmlDocument.createElement("extractor");
-        labcasMetExtractorElement.setAttribute("class", LabcasCoreMetExtractor.class.getCanonicalName());
+        labcasMetExtractorElement.setAttribute("class", CoreMetExtractor.class.getCanonicalName());
         Element configElement = xmlDocument.createElement("configuration");
         makePropertyElement(xmlDocument, configElement, "nsAware", "true");
         makePropertyElement(xmlDocument, configElement, "elementNs", "CAS");

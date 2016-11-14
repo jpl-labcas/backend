@@ -331,9 +331,9 @@ public class SolrUtils {
 		SolrInputDocument doc = new SolrInputDocument();
 		
 		// document unique identifier
-		String productId = LabcasProductIdGenerator.generateId(metadata.getMetadata(Constants.METADATA_KEY_PRODUCT_TYPE), 
-				                                               metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID),
-                                                               metadata.getMetadata(Constants.METADATA_KEY_PRODUCT_NAME) );
+		String productId = SolrUtils.generateProductId(metadata.getMetadata(Constants.METADATA_KEY_PRODUCT_TYPE),
+				                                       metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID),
+				                                       metadata.getMetadata(Constants.METADATA_KEY_PRODUCT_NAME) );
 		doc.setField("id", productId);
 		
 		// serialize all metadata
@@ -378,6 +378,10 @@ public class SolrUtils {
 		
 		return doc;
 		
+	}
+	
+	public static String generateProductId(String productTypeName, String datasetId, String productName) {
+		return productTypeName + "." + datasetId + "." + productName;
 	}
 	
 	/**
