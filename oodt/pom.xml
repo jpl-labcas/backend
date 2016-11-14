@@ -154,9 +154,10 @@
               <outputDirectory>${oodt.dir}/cas-filemgr-${oodt.version}/etc</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.basedir}/src/main/resources</directory>
+                  <directory>${project.basedir}/src/main/resources/filemgr</directory>
                   <includes>
                     <include>filemgr.properties</include>
+                    <include>logging.properties</include>
                   </includes>
                 </resource>
               </resources>
@@ -173,9 +174,10 @@
               <outputDirectory>${oodt.dir}/cas-workflow-${oodt.version}/etc</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.basedir}/src/main/resources</directory>
+                  <directory>${project.basedir}/src/main/resources/workflow</directory>
                   <includes>
                     <include>workflow.properties</include>
+                    <include>logging.properties</include>
                   </includes>
                 </resource>
               </resources>
@@ -192,9 +194,10 @@
               <outputDirectory>${oodt.dir}/cas-resource-${oodt.version}/etc</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.basedir}/src/main/resources</directory>
+                  <directory>${project.basedir}/src/main/resources/resource</directory>
                   <includes>
                     <include>resource.properties</include>
+                    <include>logging.properties</include>
                   </includes>
                 </resource>
               </resources>
@@ -211,10 +214,11 @@
               <outputDirectory>${oodt.dir}/cas-crawler-${oodt.version}/policy</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.basedir}/src/main/resources</directory>
+                  <directory>${project.basedir}/src/main/resources/crawler</directory>
                   <includes>
                     <include>crawler-config.xml</include>
                     <include>labcas-action-beans.xml</include>
+                    <include>logging.properties</include>
                   </includes>
                 </resource>
               </resources>
