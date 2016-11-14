@@ -2,7 +2,6 @@ package gov.nasa.jpl.edrn.labcas.utils;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -40,7 +38,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
-import gov.nasa.jpl.edrn.labcas.generators.LabcasProductIdGenerator;
 
 /**
  * Class containing general utilities to query/update the Solr index.
@@ -53,7 +50,7 @@ public class SolrUtils {
 	private final static Logger LOG = Logger.getLogger(SolrUtils.class.getName());
 	
 	// default value for SOLR URL
-	private static String SOLR_URL = "http://localhost:8983/solr";
+	private static String SOLR_URL = "http://labcas-filemgr:8983/solr"; // FIXME
 	//private static String SOLR_URL = "http://localhost:8080/solr/oodt-fm";
 	
 	// list of OODT fields that are NOT transferred to the public Solr index
@@ -220,7 +217,7 @@ public class SolrUtils {
 		
 		FileManagerUtils.printMetadata(metadata);
 		SolrInputDocument doc = serializeDataset(metadata);
-		LOG.info("Publishing Solr dataset:"+doc.toString());
+		LOG.info("Publishing Solr dataset:"+doc.toString()+" to Solr core:"+solrServers.get(SOLR_CORE_DATASETS).toString());
 		solrServers.get(SOLR_CORE_DATASETS).add(doc);
 		//solrServers.get(SOLR_CORE_COLLECTIONS).commit(); // use solr.autoSoftCommit.maxTime and solr.autoCommit.maxTime
 
@@ -235,9 +232,8 @@ public class SolrUtils {
 	public static void publishFile(Metadata metadata) throws Exception {
 		
 		// FileManagerUtils.printMetadata(productMetadata);
-		
 		SolrInputDocument doc = serializeFile(metadata);
-		LOG.info("Publishing product id="+doc.getFieldValue("id"));
+		LOG.info("Publishing product id="+doc.getFieldValue("id")+" to Solr core:"+solrServers.get(SOLR_CORE_FILES).toString());
 		solrServers.get(SOLR_CORE_FILES).add(doc);
 		//solrServers.get(SOLR_CORE_COLLECTIONS).commit(); // use solr.autoSoftCommit.maxTime and solr.autoCommit.maxTime
 		

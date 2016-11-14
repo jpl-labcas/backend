@@ -2,14 +2,14 @@
 <pgeConfig>
 
   <!-- PGE commands -->
-  <!-- <exe dir="[JobDir]" shell="/bin/bash">
+  <exe dir="[JobDir]" shell="/bin/bash">
     <cmd>mkdir -p cv_loop_[CrossValidationIterationNumber]/model_99</cmd>
     <cmd>echo 'xyz' > cv_loop_[CrossValidationIterationNumber]/model_99/feature_names.txt</cmd>
     <cmd>echo 'xyz' > cv_loop_[CrossValidationIterationNumber]/model_99/predictions.txt</cmd>
-  </exe> -->
-  <exe dir="[JobDir]" shell="/bin/bash">
-    <cmd>R --no-save &lt; [LABCAS_HOME]/workflows/biomarker-discovery/pges/run_stock_pipeline_iter.R --args [CrossValidationIterationNumber]</cmd>
   </exe>
+<!--   <exe dir="[JobDir]" shell="/bin/bash">
+    <cmd>R \-\-no-save &lt; [LABCAS_HOME]/workflows/biomarker-discovery/pges/run_stock_pipeline_iter.R \-\-args [CrossValidationIterationNumber]</cmd>
+  </exe> -->
 
   <customMetadata>
     <metadata key="ProductionDateTime" val="[DATE.UTC]" />
