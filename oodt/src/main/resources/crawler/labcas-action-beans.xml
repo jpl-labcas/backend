@@ -22,7 +22,7 @@ the License.
 
   <!-- Solr Actions -->
   <bean id="LabcasPostIngestionAction" lazy-init="true" class="gov.nasa.jpl.edrn.labcas.actions.LabcasPostIngestionAction">
-    <property name="description" value="Unpublishes the labcas marker file" />
+    <property name="description" value="Publishes products to public 'files' Solr core" />
     <property name="fileManagerUrl" value="http://localhost:9000" />
     <property name="phases">
       <list>

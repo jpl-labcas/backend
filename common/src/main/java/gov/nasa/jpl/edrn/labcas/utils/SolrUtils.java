@@ -49,9 +49,8 @@ public class SolrUtils {
 		
 	private final static Logger LOG = Logger.getLogger(SolrUtils.class.getName());
 	
-	// default value for SOLR URL
-	private static String SOLR_URL = "http://labcas-filemgr:8983/solr"; // FIXME
-	//private static String SOLR_URL = "http://localhost:8080/solr/oodt-fm";
+	// default base Solr URL if $FILEMGR_URL is not set
+	private static String SOLR_URL = "http://localhost:8983/solr"; 
 	
 	// list of OODT fields that are NOT transferred to the public Solr index
 	private static Set<String> IGNORED_FIELDS = new HashSet<String>(
@@ -68,9 +67,15 @@ public class SolrUtils {
 	private static Map<String, SolrServer> solrServers = new HashMap<String, SolrServer>();
 	static {
 		try {
-			solrServers.put(SOLR_CORE_COLLECTIONS, new CommonsHttpSolrServer( SOLR_URL+"/"+SOLR_CORE_COLLECTIONS) );
-			solrServers.put(SOLR_CORE_DATASETS, new CommonsHttpSolrServer( SOLR_URL+"/"+SOLR_CORE_DATASETS) );
-			solrServers.put(SOLR_CORE_FILES, new CommonsHttpSolrServer( SOLR_URL+"/"+SOLR_CORE_FILES) );
+			
+			if (System.getenv("FILEMGR_URL")!=null) {
+				SOLR_URL = System.getenv("FILEMGR_URL").replaceAll("9000", "8983")+"/solr";
+			}
+			LOG.info("Using base SOLR_URL="+SOLR_URL);
+			
+			solrServers.put(SOLR_CORE_COLLECTIONS, new CommonsHttpSolrServer(SOLR_URL+"/"+SOLR_CORE_COLLECTIONS) );
+			solrServers.put(SOLR_CORE_DATASETS, new CommonsHttpSolrServer(SOLR_URL+"/"+SOLR_CORE_DATASETS) );
+			solrServers.put(SOLR_CORE_FILES, new CommonsHttpSolrServer(SOLR_URL+"/"+SOLR_CORE_FILES) );
 			
 		} catch(MalformedURLException e) {
 			e.printStackTrace();
@@ -217,7 +222,7 @@ public class SolrUtils {
 		
 		FileManagerUtils.printMetadata(metadata);
 		SolrInputDocument doc = serializeDataset(metadata);
-		LOG.info("Publishing Solr dataset:"+doc.toString()+" to Solr core:"+solrServers.get(SOLR_CORE_DATASETS).toString());
+		LOG.info("Publishing Solr dataset:"+doc.toString()+" to Solr core: "+SOLR_URL+"/"+SOLR_CORE_DATASETS);
 		solrServers.get(SOLR_CORE_DATASETS).add(doc);
 		//solrServers.get(SOLR_CORE_COLLECTIONS).commit(); // use solr.autoSoftCommit.maxTime and solr.autoCommit.maxTime
 
@@ -233,7 +238,7 @@ public class SolrUtils {
 		
 		// FileManagerUtils.printMetadata(productMetadata);
 		SolrInputDocument doc = serializeFile(metadata);
-		LOG.info("Publishing product id="+doc.getFieldValue("id")+" to Solr core:"+solrServers.get(SOLR_CORE_FILES).toString());
+		LOG.info("Publishing product id="+doc.getFieldValue("id")+" to Solr core: "+SOLR_URL+"/"+SOLR_CORE_FILES);
 		solrServers.get(SOLR_CORE_FILES).add(doc);
 		//solrServers.get(SOLR_CORE_COLLECTIONS).commit(); // use solr.autoSoftCommit.maxTime and solr.autoCommit.maxTime
 		
