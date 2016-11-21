@@ -28,7 +28,7 @@ if __name__ == '__main__':
                  'DataCustodianEmail':'rich.smith@pubmed.gov',
                  'CollaborativeGroup':'Prostate and Urologic',
                  'OrganSite':'Lung',
-                 'OwnerPrincipal':'EDRN_CANCER_GROUP',
+                 'OwnerPrincipal':'cn=Crichton Jet Propulsion Laboratory,dc=edrn,dc=jpl,dc=nasa,dc=gov',
     } 
     
 

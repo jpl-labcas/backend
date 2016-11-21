@@ -39,7 +39,7 @@
       <property name="dataset.ProtocolName" value="ABC" />
       <property name="dataset.Discipline" value="Pathology" />
       <property name="dataset.QAState" value="Public" />
-      <property name="dataset.OwnerPrincipal" value="WilburAFrankin" />
+      <property name="dataset.OwnerPrincipal" value="cn=Franklin University of Colorado Health Science Center,dc=edrn,dc=jpl,dc=nasa,dc=gov" />
       <!-- hyperlinks to: https://edrn.nci.nih.gov/sites/73-university-of-colorado-health-science-center -->
       <property name="dataset.SiteId" value="73" />
       <property name="dataset.ProtocolId" value="1000206" />

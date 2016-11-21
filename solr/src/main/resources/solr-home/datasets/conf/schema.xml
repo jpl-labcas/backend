@@ -117,6 +117,7 @@
    <field name="CollectionName" type="string" indexed="true" stored="true" required="true" multiValued="false" />
    <field name="DatasetName" type="string" indexed="true" stored="true" required="true" multiValued="false" />
    <field name="DatasetVersion" type="int" indexed="true" stored="true" required="true" multiValued="false" />
+   <field name="DatasetDescription" type="string" indexed="true" stored="true" required="false" multiValued="false" />
         
    <!-- all unspecified fields ending in 'Date' or 'Time' are interpreted as single-value dates  -->
    <field name="*Date" type="date" indexed="true" stored="true" required="false" multiValued="false" />
