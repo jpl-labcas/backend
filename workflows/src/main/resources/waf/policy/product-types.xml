@@ -50,7 +50,7 @@
       </keyval>
       <keyval>
         <key>OwnerPrincipal</key>
-        <val>WilburAFrankin</val>
+        <val>cn=Franklin University of Colorado Health Science Center,dc=edrn,dc=jpl,dc=nasa,dc=gov</val>
       </keyval>
       <keyval>
         <key>QAState</key>
