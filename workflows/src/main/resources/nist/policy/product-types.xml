@@ -39,6 +39,10 @@
         <key>Description</key>
         <val>NIST Laboratory Data</val>
       </keyval>
+      <keyval>
+        <key>OwnerPrincipal</key>
+        <val>cn=Pine National Institute of Standards and Technology,dc=edrn,dc=jpl,dc=nasa,dc=gov</val>
+      </keyval>
   
       <!-- CDEs -->
       <keyval>

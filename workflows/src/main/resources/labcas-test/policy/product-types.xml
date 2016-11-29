@@ -40,6 +40,10 @@
         <key>Description</key>
         <val>LabCAS test product</val>
       </keyval>
+      <keyval>
+        <key>OwnerPrincipal</key>
+        <val>uid=testuser,dc=edrn,dc=jpl,dc=nasa,dc=gov</val>
+      </keyval>
     </metadata>
   </type>
 

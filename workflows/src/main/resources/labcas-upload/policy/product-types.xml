@@ -36,6 +36,10 @@
         <key>Description</key>
         <val>Generic data product managed by LabCAS</val>
       </keyval>
+      <keyval>
+        <key>OwnerPrincipal</key>
+        <val>uid=testuser,dc=edrn,dc=jpl,dc=nasa,dc=gov</val>
+      </keyval>
     </metadata>
   </type>
   
@@ -57,6 +61,10 @@
       <keyval>
         <key>Description</key>
         <val>EDRN data product managed by LabCAS</val>
+      </keyval>
+      <keyval>
+        <key>OwnerPrincipal</key>
+        <val>uid=testuser,dc=edrn,dc=jpl,dc=nasa,dc=gov</val>
       </keyval>
     </metadata>
   </type>
