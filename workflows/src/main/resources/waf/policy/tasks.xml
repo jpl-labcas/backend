@@ -27,7 +27,7 @@
       <property name="workflow.order" value="4" />
     
       <!-- fixed dataset metadata -->
-      <property name="dataset.ProductType" value="UnivColoLungImage" />
+      <property name="dataset.ProductType" value="University_of_Colorado_Lung_Image" />
       
       <!-- FIXME: the following fields should be inherited from the Parent dataset 
            instead of being hard-wired here -->

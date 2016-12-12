@@ -27,7 +27,7 @@
     <dcElement />
   </element>
   
-  <!-- UnivColoLungImage elements -->
+  <!-- University_of_Colorado_Lung_Image elements -->
   <element id="LeadPI" name="Lead PI">
     <description>Lead Principal Investigator</description>
     <dcElement />

@@ -360,7 +360,10 @@ public class SolrUtils {
 				// ignore, same as Filename
 				
 			} else if (key.equals("FileLocation")) {
-				doc.setField("FileLocation", metadata.getMetadata(key));
+				// ignore, as it is the original location before archiving
+				
+			} else if (key.equals("FilePath")) {
+				doc.setField("FilePath", metadata.getMetadata(key));
 
 			} else if (key.equals("Filename")) {
 				doc.setField("FileName", metadata.getMetadata(key));

@@ -7,7 +7,7 @@
 <cas:producttypemap xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
   
-  <type id="urn:edrn:UnivColoLungImage" parent="urn:edrn:LabCAS_Product">
+  <type id="urn:edrn:University_of_Colorado_Lung_Image" parent="urn:edrn:LabCAS_Product">
   
     <element id="LeadPI" />
     <element id="OwnerPrincipal" />

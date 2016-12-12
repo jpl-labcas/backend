@@ -8,7 +8,7 @@ if __name__ == '__main__':
     # upload these datasets    
     #datasetIds = ['UCHSC_1467', 'UCHSC_8798']
     datasetIds = ['UCHSC_1467']
-    productType = 'UnivColoLungImage'
+    productType = 'University_of_Colorado_Lung_Image'
     
     for datasetId in datasetIds:
     

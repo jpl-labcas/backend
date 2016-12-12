@@ -23,7 +23,8 @@ public interface Constants {
 	public final static String METADATA_KEY_DATASET_NAME = "DatasetName";
 	public final static String METADATA_KEY_NEW_VERSION = "NewVersion";
 	
-	public final static String METADATA_KEY_FILE_LOCATION = "FileLocation";
+	public final static String METADATA_KEY_FILE_LOCATION = "FileLocation"; // points to original location
+	public final static String METADATA_KEY_FILE_PATH = "FilePath";          // points to archive location
 	public final static String METADATA_KEY_FILE_NAME = "Filename";
 	public final static String METADATA_KEY_PRODUCT_NAME = "ProductName";
 	// FIXME: will be replaced with same values in CoreMetKeys.java

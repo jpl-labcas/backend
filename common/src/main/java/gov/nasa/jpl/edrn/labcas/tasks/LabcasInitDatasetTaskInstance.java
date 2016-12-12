@@ -63,6 +63,11 @@ public class LabcasInitDatasetTaskInstance implements WorkflowTaskInstance {
 	        datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+version); // dataset metadata
 	        metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+version);        // product metadata
 	        
+	        // set final product archive directory (same as set by LabcasProductVersioner)
+	        metadata.replaceMetadata(Constants.METADATA_KEY_FILE_PATH, 
+	        		                 FileManagerUtils.getProductTypeArchiveDir(productTypeName)
+	        		                 +"/"+datasetId+"/"+version+"/");
+	        
 			// copy all product type metadata to product metadata
 	        for (String key : datasetMetadata.getAllKeys()) {
 	        	if (!metadata.containsKey(key)) {
