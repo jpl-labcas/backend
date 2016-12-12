@@ -22,7 +22,7 @@
   
     <configuration>
     
-      <property name="dataset.ProductType" value="LabcasTestProduct" />
+      <property name="dataset.ProductType" value="LabCAS_Test_Product" />
     
       <!-- input parameters -->
             
@@ -42,7 +42,7 @@
       <property name="input.dataset.species.required" value="true" />
       
       <!-- output products -->
-      <property name="output.product.type" value="urn:edrn:LabcasTestProduct"/>
+      <property name="output.product.type" value="urn:edrn:LabCAS_Test_Product"/>
       
     </configuration>
     

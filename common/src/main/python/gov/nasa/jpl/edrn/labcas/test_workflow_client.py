@@ -15,4 +15,4 @@ if __name__ == '__main__':
     labcasClient.waitForCompletion(wInstId)
 
     # list all files of this product type
-    labcasClient.listProducts('LabcasTestProduct')
+    labcasClient.listProducts('LabCAS_Test_Product')
