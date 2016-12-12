@@ -6,6 +6,6 @@
     <metadata key="ProductionDateTime" val="[ProductionDateTime]"/>
     <metadata key="ProductName" val="[Filename]"/>
     <metadata key="number_of_samples" val="10"/>
-    <metadata key="location" val=""/>
+    <metadata key="FileType" val="text/plain"/>
     
 </metadataList>
