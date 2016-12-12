@@ -6,7 +6,7 @@ if __name__ == '__main__':
         
     title = 'My Data'
     productType = title.replace(' ','_')
-    datasetId = 'mydatadir' # must match directory name in $LABCAS_STAGING
+    datasetId = 'My_Dataset' # must match directory name in $LABCAS_STAGING
     labcasClient = LabcasClient()
     
     # print out workflow definition
