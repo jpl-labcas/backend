@@ -120,7 +120,7 @@
    <field name="DatasetId" type="string" indexed="true" stored="true" required="true" multiValued="false" />
    <field name="DatasetVersion" type="int" indexed="true" stored="true" required="true" multiValued="false" />
   
-   <field name="FileLocation" type="string" indexed="true" stored="true" required="false" multiValued="false" />
+   <field name="FilePath" type="string" indexed="true" stored="true" required="false" multiValued="false" />
    <field name="FileName" type="string" indexed="true" stored="true" required="false" multiValued="false" />
    <field name="FileSize" type="long" indexed="true" stored="true" required="false" multiValued="false" />
       
