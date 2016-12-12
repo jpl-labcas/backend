@@ -359,11 +359,11 @@ public class SolrUtils {
 			} else if (key.equals("ProductName")) {
 				// ignore, same as Filename
 				
+			// must switch FileLocation with FilePath
 			} else if (key.equals("FileLocation")) {
 				// ignore, as it is the original location before archiving
-				
 			} else if (key.equals("FilePath")) {
-				doc.setField("FilePath", metadata.getMetadata(key));
+				doc.setField("FileLocation", metadata.getMetadata(key));
 
 			} else if (key.equals("Filename")) {
 				doc.setField("FileName", metadata.getMetadata(key));
