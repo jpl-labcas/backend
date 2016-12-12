@@ -254,7 +254,7 @@ public class SolrUtils {
 		
 		SolrInputDocument doc = new SolrInputDocument();
 		
-		doc.setField("id", productType.getProductTypeId());
+		doc.setField("id", productType.getProductTypeId().replaceAll(Constants.EDRN_PREFIX,"")); // note: remove "urn:edrn:"
 		doc.setField("CollectionName", productType.getName());
 		doc.setField("CollectionDescription", productType.getDescription());
 		

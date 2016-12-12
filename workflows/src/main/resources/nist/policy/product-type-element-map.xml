@@ -17,7 +17,7 @@
 -->
 <cas:producttypemap xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
- <type id="urn:edrn:NistProduct" parent="urn:oodt:LabcasProduct">
+ <type id="urn:edrn:NIST_Product" parent="urn:oodt:LabCAS_Product">
    <element id="LeadPI" />
    <element id="Instrument" />
    <element id="Lab" />

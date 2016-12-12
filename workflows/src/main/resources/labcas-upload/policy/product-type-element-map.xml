@@ -6,7 +6,7 @@
   OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. -->
 <cas:producttypemap xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
-  <type id="urn:edrn:LabcasProduct" parent="urn:oodt:GenericFile">
+  <type id="urn:edrn:LabCAS_Product" parent="urn:oodt:GenericFile">
   
     <element id="DatasetId" />
     <element id="ParentDatasetId" />
@@ -15,7 +15,7 @@
     
   </type>
   
-  <type id="urn:edrn:EcasProduct" parent="urn:edrn:LabcasProduct">
+  <type id="urn:edrn:ECAS_Product" parent="urn:edrn:LabCAS_Product">
   
     <element id="ProtocolName" />
     <element id="ProtocolId" />

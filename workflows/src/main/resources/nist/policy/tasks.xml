@@ -27,7 +27,7 @@
       <property name="workflow.order" value="2" />
     
       <!-- fixed dataset metadata -->
-      <property name="dataset.ProductType" value="NistProduct" />
+      <property name="dataset.ProductType" value="NIST_Product" />
       <property name="dataset.OwnerPrincipal" value="Plant National Institute of Standards and Technology" />
     
       <!-- input dataset metadata -->

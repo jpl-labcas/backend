@@ -6,7 +6,7 @@
   OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. -->
 <cas:elements xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
-  <!-- LabcasProduct elements -->
+  <!-- LabCAS_Product elements -->
   <element id="DatasetId" name="Dataset Identifier">
     <description>Unique identifier for this dataset (letters only, no spaces)</description>
     <dcElement />

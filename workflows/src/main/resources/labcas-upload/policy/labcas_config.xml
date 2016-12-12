@@ -192,6 +192,6 @@
     
 
     <!-- output products -->
-    <property name="output.product.type" value="urn:edrn:LabcasProduct"/>
+    <property name="output.product.type" value="urn:edrn:LabCAS_Product"/>
       
 </configuration>

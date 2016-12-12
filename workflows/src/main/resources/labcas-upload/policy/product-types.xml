@@ -17,7 +17,7 @@
 -->
 <cas:producttypes xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
-  <type id="urn:edrn:LabcasProduct" name="LabcasProduct">
+  <type id="urn:edrn:LabCAS_Product" name="LabCAS_Product">
     <repository path="file://[LABCAS_ARCHIVE]" />
     <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner" />
     <description>Generic files managed by LabCAS.</description>
@@ -43,7 +43,7 @@
     </metadata>
   </type>
   
-  <type id="urn:edrn:EcasProduct" name="EcasProduct">
+  <type id="urn:edrn:ECAS_Product" name="ECAS_Product">
     <repository path="file://[LABCAS_ARCHIVE]" />
     <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner" />
     <description>LabCAS files with ECAS metadata.</description>

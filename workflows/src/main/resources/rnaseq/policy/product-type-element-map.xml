@@ -17,7 +17,7 @@
 -->
 <cas:producttypemap xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
- <type id="urn:edrn:RnaSeqProduct" parent="urn:oodt:EcasProduct">
+ <type id="urn:edrn:RnaSeqProduct" parent="urn:oodt:ECAS_Product">
    <element id="Status" />
    <element id="Title" />
    <element id="Organism" />
