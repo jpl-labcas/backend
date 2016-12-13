@@ -2,6 +2,7 @@ package gov.nasa.jpl.edrn.labcas.utils;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.commons.io.DirectorySelector;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -60,6 +62,7 @@ public class SolrUtils {
 	private final static String SOLR_CORE_COLLECTIONS = "collections";
 	private final static String SOLR_CORE_DATASETS = "datasets";
 	private final static String SOLR_CORE_FILES = "files";
+	private final static String SOLR_CORE_OODT = "oodt-fm";
 	
 	// IMPORTANT: must re-use the same SolrServer instance across all requests to prevent memory leaks
 	// see https://issues.apache.org/jira/browse/SOLR-861 
@@ -76,6 +79,7 @@ public class SolrUtils {
 			solrServers.put(SOLR_CORE_COLLECTIONS, new CommonsHttpSolrServer(SOLR_URL+"/"+SOLR_CORE_COLLECTIONS) );
 			solrServers.put(SOLR_CORE_DATASETS, new CommonsHttpSolrServer(SOLR_URL+"/"+SOLR_CORE_DATASETS) );
 			solrServers.put(SOLR_CORE_FILES, new CommonsHttpSolrServer(SOLR_URL+"/"+SOLR_CORE_FILES) );
+			solrServers.put(SOLR_CORE_OODT, new CommonsHttpSolrServer(SOLR_URL+"/"+SOLR_CORE_OODT) );
 			
 		} catch(MalformedURLException e) {
 			e.printStackTrace();
@@ -122,6 +126,52 @@ public class SolrUtils {
         }
 		
 		return ids;
+		
+	}
+	
+	/**
+	 * Queries the OODT Solr catalog for the id of the product that matches the given metadata fields.
+	 * Returns null if no matching product is found.
+	 * 
+	 * @param metadata
+	 * @return
+	 */
+	public static String queryProductId(Metadata metadata) {
+		
+		String productId = null;
+		
+		try {
+		
+			// build Solr query
+	        SolrQuery request = new SolrQuery();
+	        request.setQuery("*:*");
+	        // query product by final archive location
+	        String fileUri = "file\\:" + metadata.getMetadata(Constants.METADATA_KEY_FILE_PATH) 
+	                                   + metadata.getMetadata(Constants.METADATA_KEY_FILE_NAME);
+	        LOG.info("Querying id for product with URI="+fileUri);
+	        // must encode value of parameter fq=...
+	        request.addFilterQuery(URLEncoder.encode("CAS.ReferenceDatastore:"+fileUri,"UTF-8"));
+	        request.addSortField(Constants.METADATA_KEY_TIMESTAMP, ORDER.desc); // retrieve the last entry with this filepath
+	        request.setRows(1); // retrieve only one result
+	        LOG.fine("Executing Solr query: "+request.toString());
+        
+	        // execute Solr query
+	        QueryResponse response = solrServers.get(SOLR_CORE_OODT).query( request );
+	        SolrDocumentList docs = response.getResults();
+	        Iterator<SolrDocument> iter = docs.iterator();
+	        while (iter.hasNext()) {
+	            SolrDocument doc = iter.next();
+	            productId = (String) doc.getFieldValue("id"); 
+	            LOG.fine("Retrieved Solr document id="+productId);
+	        }
+	        
+        } catch(Exception e) {
+        	e.printStackTrace();
+        	LOG.warning(e.getMessage()); // will return empty ids list
+        }
+		
+		return productId;
+        
 		
 	}
 	

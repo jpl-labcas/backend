@@ -6,6 +6,7 @@ import org.apache.oodt.cas.crawl.action.CrawlerAction;
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.metadata.Metadata;
 
+import gov.nasa.jpl.edrn.labcas.Constants;
 import gov.nasa.jpl.edrn.labcas.utils.SolrUtils;
 
 /**
@@ -24,16 +25,33 @@ public class LabcasPostIngestionAction extends CrawlerAction {
 	public boolean performAction(File product, Metadata productMetadata) throws CrawlerActionException {
 		
 		LOG.info("Performing post-ingest-on-success action for file: "+product.getAbsolutePath());
-					
-		// publish product
-		try {
-			SolrUtils.publishFile(productMetadata);
-		} catch (Exception e) {
-			throw new CrawlerActionException( e.getMessage() );
-		}	
 		
-		// return success status
-		return true;
+		// query OODT Solr catalog to retrieve the product id
+		// (which is not made available in the crawler API)
+		String productId = SolrUtils.queryProductId(productMetadata);
+		LOG.info("Retrieved product id="+productId);
+					
+		if (productId != null) {
+			
+			productMetadata.replaceMetadata(Constants.METADATA_KEY_DOWNLOAD_ID, productId);
+			
+			// publish product
+			try {
+				SolrUtils.publishFile(productMetadata);
+			} catch (Exception e) {
+				throw new CrawlerActionException( e.getMessage() );
+			}	
+			
+			// return success status
+			return true;
+			
+		} else {
+			
+			// return failure status
+			return false;
+			
+		}
+		
 		
 	}
 	

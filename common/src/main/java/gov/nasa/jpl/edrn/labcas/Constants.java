@@ -35,6 +35,8 @@ public interface Constants {
 	public final static String METADATA_KEY_DATASET_VERSION = "DatasetVersion";
 	public final static String METADATA_KEY_TITLE = "Title";
 	public final static String METADATA_KEY_DESCRIPTION = "Description";
+	public final static String METADATA_KEY_DOWNLOAD_ID = "DownloadId";
+	public final static String METADATA_KEY_TIMESTAMP = "timestamp";
 
 	
 	// dataset-level metadata file

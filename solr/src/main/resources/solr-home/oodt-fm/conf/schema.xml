@@ -112,8 +112,11 @@
    <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false" /> 
 
    <!-- LABCAS SCHEMA START -->
+   
+   <!-- The date that the metadata object was created or last modified - automatically set by Solr to the current time -->
+   <field name="timestamp" type="date" indexed="true" stored="true" required="false" multiValued="false" default="NOW" />
 
-   <!-- LabCAS core attributes(not required because they are added AFTER the record stub -->
+   <!-- LabCAS core attributes (not required because they are added AFTER the record stub -->
    <field name="DatasetId" type="string" indexed="true" stored="true" required="false" multiValued="false" />
    <field name="DatasetVersion" type="int" indexed="true" stored="true" required="false" multiValued="false" />
 
