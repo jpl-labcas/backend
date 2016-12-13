@@ -32,14 +32,14 @@
       <metfield name="Description" />
       <metfield name="DatasetId" />
     
-      <metfield name="ProtocolName" />
+      <!-- <metfield name="ProtocolName" />
       <metfield name="ProtocolId" />
       <metfield name="LeadPI" />
       <metfield name="DataCustodian" />
       <metfield name="DataCustodianEmail" />
       <metfield name="CollaborativeGroup" />
       <metfield name="OrganSite" />
-      <metfield name="OwnerPrincipal" />
+      <metfield name="OwnerPrincipal" /> -->
             
     </requiredMetFields>
     
