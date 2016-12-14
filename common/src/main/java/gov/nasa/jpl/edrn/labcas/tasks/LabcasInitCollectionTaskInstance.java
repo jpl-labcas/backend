@@ -69,7 +69,6 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 	        Metadata _datasetMetadata = FileManagerUtils.readDatasetMetadata(productTypeName, datasetId);
 	        datasetMetadata.addMetadata(_datasetMetadata);
 
-
 			// transfer Dataset* metadata from collection-level to to dataset-level
 	        for (String key : productTypeMetadata.getAllKeys()) {
 	        	if (key.startsWith("Dataset")) {
@@ -77,12 +76,23 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 	        		productTypeMetadata.removeMetadata(key);
 	        	}
 	        }
+	        
+	        // create or update the Collection==ProductType metadata, unless otherwise indicated
+	        boolean updateCollection = true;
+	        if ( metadata.containsKey(Constants.METADATA_KEY_UPDATE_COLLECTION)) {
+	        	updateCollection = Boolean.parseBoolean( metadata.getMetadata(Constants.METADATA_KEY_UPDATE_COLLECTION) );
+	        	LOG.info("\n\nupdateCollection="+updateCollection);
+	        }
 			
-			// create or update the File Manager product type
-			FileManagerUtils.createProductType(productTypeName, productTypeMetadata);
+	        if (updateCollection) {
+	        	
+				// create or update the File Manager product type
+				FileManagerUtils.createProductType(productTypeName, productTypeMetadata);
+				
+				// reload the catalog configuration so that the new product type is available for publishing
+				FileManagerUtils.reload();
 			
-			// reload the catalog configuration so that the new product type is available for publishing
-			FileManagerUtils.reload();
+	        }
 			
 	        // add version to dataset metadata (if metadata flag "newVersion" is present)
 	        int datasetVersion = FileManagerUtils.getNextVersion( FileManagerUtils.findLatestDatasetVersion( productTypeName, datasetId ), metadata);

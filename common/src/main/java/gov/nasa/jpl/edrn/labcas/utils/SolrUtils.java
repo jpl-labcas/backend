@@ -342,9 +342,6 @@ public class SolrUtils {
 	 */
 	private static SolrInputDocument serializeDataset(Metadata metadata) throws Exception {
 		
-		LOG.info("\n\n");
-		FileManagerUtils.printMetadata(metadata);
-		
 		SolrInputDocument doc = new SolrInputDocument();
 		
 		// build the composite dataset id

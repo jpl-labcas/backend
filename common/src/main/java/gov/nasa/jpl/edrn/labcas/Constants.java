@@ -20,27 +20,33 @@ public interface Constants {
 	// metadata keys
 	public final static String METADATA_KEY_COLLECTION_NAME = "CollectionName";
 	public final static String METADATA_KEY_COLLECTION_ID = "CollectionId";
-	public final static String METADATA_KEY_DATASET_NAME = "DatasetName";
-	
 	public final static String METADATA_KEY_COLLECTION_DESCRIPTION = "CollectionDescription";
+	
+	public final static String METADATA_KEY_DATASET_NAME = "DatasetName";
+	public final static String METADATA_KEY_DATASET_ID = "DatasetId";
 	public final static String METADATA_KEY_DATASET_DESCRIPTION = "DatasatDescription";
+	public final static String METADATA_KEY_DATASET_VERSION = "DatasetVersion";
 	
 	public final static String METADATA_KEY_PRODUCT_TYPE_NAME = "ProductTypeName";
-	public final static String METADATA_KEY_DATASET_ID = "DatasetId";
-	public final static String METADATA_KEY_NEW_VERSION = "NewVersion";
+	public final static String METADATA_KEY_PRODUCT_NAME = "ProductName";
+	public final static String METADATA_KEY_PRODUCT_TYPE = "ProductType";
+		
+	// flags
+	public final static String METADATA_KEY_NEW_VERSION = "NewVersion"; // default: false
+	public final static String METADATA_KEY_UPDATE_COLLECTION = "UpdateCollection"; // default: true
+	
 	
 	public final static String METADATA_KEY_FILE_LOCATION = "FileLocation"; // points to original location
 	public final static String METADATA_KEY_FILE_PATH = "FilePath";          // points to archive location
 	public final static String METADATA_KEY_FILE_NAME = "Filename";
-	public final static String METADATA_KEY_PRODUCT_NAME = "ProductName";
-	// FIXME: will be replaced with same values in CoreMetKeys.java
-	public final static String METADATA_KEY_PRODUCT_TYPE = "ProductType";
+	public final static String METADATA_KEY_FILE_TYPE = "FileType";
+	public final static String METADATA_KEY_FILE_SIZE = "FileSize";
+		
 	
 	public final static String METADATA_KEY_ID = "id";
 	public final static String METADATA_KEY_NAME = "Name";
-	public final static String METADATA_KEY_DATASET_VERSION = "DatasetVersion";
-	public final static String METADATA_KEY_TITLE = "Title";
-	public final static String METADATA_KEY_DESCRIPTION = "Description";
+	
+	//public final static String METADATA_KEY_DESCRIPTION = "Description";
 	public final static String METADATA_KEY_DOWNLOAD_ID = "DownloadId";
 	public final static String METADATA_KEY_TIMESTAMP = "timestamp";
 

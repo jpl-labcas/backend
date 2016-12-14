@@ -51,9 +51,9 @@ public class FileManagerUtils {
 				
 		// transfer metadata field 'Description' to product type description, if found
 		String productTypeDescription = productTypeName; // default product type description = product type name
-		if (productTypeMetadata.containsKey(Constants.METADATA_KEY_DESCRIPTION)) {
-			productTypeDescription = productTypeMetadata.getMetadata(Constants.METADATA_KEY_DESCRIPTION);
-			productTypeMetadata.removeMetadata(Constants.METADATA_KEY_DESCRIPTION);
+		if (productTypeMetadata.containsKey(Constants.METADATA_KEY_COLLECTION_DESCRIPTION)) {
+			productTypeDescription = productTypeMetadata.getMetadata(Constants.METADATA_KEY_COLLECTION_DESCRIPTION);
+			productTypeMetadata.removeMetadata(Constants.METADATA_KEY_COLLECTION_DESCRIPTION);
 		}
 		
 		// create product type directory with the same name

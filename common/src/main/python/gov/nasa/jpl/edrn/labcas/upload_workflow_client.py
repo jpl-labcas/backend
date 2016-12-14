@@ -37,10 +37,11 @@ if __name__ == '__main__':
                  'ProtocolId':'1',
                  'ProtocolName':'GSTP1 Methylation',
                  'LeadPI':'John Doe',
-                 'DataCustodian':'Rich Smith',
+                 'DataCustodian':'Ed Stark',
                  'DataCustodianEmail':'rich.smith@pubmed.gov',
                  'CollaborativeGroup':'Prostate and Urologic',
-                 'OrganSite':'Lung',
+                 'OrganSite':'Pancreas',
+                 'UpdateCollection':'true', # default value = true
                  
     } 
     
@@ -49,12 +50,12 @@ if __name__ == '__main__':
     labcasClient.uploadCollection(dataset_name, metadata)
 
     # update the dataset metadata WITHOUT generating a new version
-    #metadata['ProtocolId'] = '99'
-    #labcasClient.uploadCollection(datasetId, metadata)
+    metadata['ProtocolId'] = '99'
+    labcasClient.uploadCollection(dataset_name, metadata)
     
     # update dataset metadata while generating a new version
-    #metadata['LeadPI'] = 'Mister X'
-    #labcasClient.uploadCollection(datasetId, metadata, newVersion=True)
+    metadata['LeadPI'] = 'Mister X'
+    labcasClient.uploadCollection(dataset_name, metadata, newVersion=True)
 
     # list all product types in File manager
     labcasClient.listProductTypes()
