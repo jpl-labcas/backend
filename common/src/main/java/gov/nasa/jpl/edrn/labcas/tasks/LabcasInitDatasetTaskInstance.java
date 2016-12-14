@@ -77,7 +77,7 @@ public class LabcasInitDatasetTaskInstance implements WorkflowTaskInstance {
 	        }
 			
 			// remove all .met files from staging directory - probably a leftover of a previous workflow submission
-			FileManagerUtils.cleanupStagingDir(datasetId);
+			FileManagerUtils.cleanupStagingDir(productTypeName, datasetId);
 			
 			// publish dataset to public Solr index
 			SolrUtils.publishDataset(datasetMetadata);

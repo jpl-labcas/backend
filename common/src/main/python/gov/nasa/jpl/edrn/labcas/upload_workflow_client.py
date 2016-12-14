@@ -3,10 +3,17 @@
 from gov.nasa.jpl.edrn.labcas.labcas_client import LabcasClient
 
 if __name__ == '__main__':
-        
-    title = 'My Data'
-    productType = title.replace(' ','_')
-    datasetId = 'My_Dataset' # must match directory name in $LABCAS_STAGING
+    
+    # required input metadata    
+    collection_name = 'My Data Collection'
+    collection_description = 'This is my precious data collection'
+    dataset_name = 'Best Dataset'
+    dataset_description = 'The Best Dataset of this collection'
+    owner_principal = 'uid=testuser,dc=edrn,dc=jpl,dc=nasa,dc=gov',
+    
+    # NOTE" data must be uploaded to directory $LABCAS_STAGING/<product_type>/<dataset_id>
+    product_type = collection_name.replace(' ','_')
+    dataset_id = dataset_name.replace(' ','_') 
     labcasClient = LabcasClient()
     
     # print out workflow definition
@@ -19,8 +26,14 @@ if __name__ == '__main__':
     # --key DatasetId mydata --key ProductType 'MyData' --key Description 'My own data' 
     # --key ProtocolId 1 --key LeadPI 'John Doe' --key ProtocolName 'GSTP1 Methylation' --key OrganSite Lung --key OwnerPrincipal EDRN_CANCER_GROUP
     # --key DataCustodian 'Rich Smith' --key DataCustodianEmail 'rich.smith@pubmed.gov' --key CollaborativeGroup 'Prostate and Urologic'
-    metadata = { 'Title':title,
-                 'Description':'My precious data',
+    metadata = { # required metadata
+                 'CollectionName':collection_name,
+                 'CollectionDescription':collection_description,
+                 'DatasetName': dataset_name,
+                 'OwnerPrincipal': owner_principal,
+                 'DatasetDescription': dataset_description,
+                 
+                 # other metadata - applied by default to Dataset-level ?
                  'ProtocolId':'1',
                  'ProtocolName':'GSTP1 Methylation',
                  'LeadPI':'John Doe',
@@ -28,29 +41,29 @@ if __name__ == '__main__':
                  'DataCustodianEmail':'rich.smith@pubmed.gov',
                  'CollaborativeGroup':'Prostate and Urologic',
                  'OrganSite':'Lung',
-                 'OwnerPrincipal':'uid=testuser,dc=edrn,dc=jpl,dc=nasa,dc=gov',
+                 
     } 
     
 
-    # upload dataset staged in directory 'mydatadir'
-    labcasClient.uploadCollection(datasetId, metadata)
+    # upload dataset staged in directory $LABCAS_STAGING/<product_type>/<dataset_id>
+    labcasClient.uploadCollection(dataset_id, metadata)
 
     # update the dataset metadata WITHOUT generating a new version
-    metadata['ProtocolId'] = '99'
-    labcasClient.uploadCollection(datasetId, metadata)
+    #metadata['ProtocolId'] = '99'
+    #labcasClient.uploadCollection(datasetId, metadata)
     
     # update dataset metadata while generating a new version
-    metadata['LeadPI'] = 'Mister X'
-    labcasClient.uploadCollection(datasetId, metadata, newVersion=True)
+    #metadata['LeadPI'] = 'Mister X'
+    #labcasClient.uploadCollection(datasetId, metadata, newVersion=True)
 
     # list all product types in File manager
     labcasClient.listProductTypes()
     
     # query the product types from the XML/RPC File Manager interface
-    labcasClient.getProductTypeByName(productType)
+    labcasClient.getProductTypeByName(product_type)
     
     # or equivalently
-    labcasClient.getProductTypeById("urn:edrn:%s" % productType)
+    labcasClient.getProductTypeById("urn:edrn:%s" % product_type)
     
     # list all products for given product type
-    labcasClient.listProducts(productType)
+    labcasClient.listProducts(product_type)

@@ -12,22 +12,26 @@
          "Description": product type "description"
          "DatasetId": dataset identifier
     -->      
-    <property name="input.dataset.Title.type" value="http://www.w3.org/2001/XMLSchema/string" />
-    <property name="input.dataset.Title.title" value="Data Collection Name" />
-    <property name="input.dataset.Title.description" value="Short name for this data collection (one or a few words only)." />
-    <property name="input.dataset.Title.required" value="true" />
+    <property name="input.dataset.CollectionName.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.dataset.CollectionName.title" value="Data Collection Name" />
+    <property name="input.dataset.CollectionName.description" value="Short name for this data collection (one or a few words only)." />
+    <property name="input.dataset.CollectionName.required" value="true" />
     
-    <property name="input.dataset.Description.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#text" />
-    <property name="input.dataset.Description.title" value="Data Collection Description" />
-    <property name="input.dataset.Description.description" value="Short description for this data collection (a few sentences)." />
-    <property name="input.dataset.Description.required" value="true" />
+    <property name="input.dataset.CollectionDescription.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#text" />
+    <property name="input.dataset.CollectionDescription.title" value="Data Collection Description" />
+    <property name="input.dataset.CollectionDescription.description" value="Short description for this data collection (a few sentences)." />
+    <property name="input.dataset.CollectionDescription.required" value="true" />
     
-    <property name="input.dataset.DatasetId.type" value="http://www.w3.org/2001/XMLSchema/string" />
-    <property name="input.dataset.DatasetId.title" value="Dataset Identifier" />
-    <property name="input.dataset.DatasetId.description" 
-              value="Enter a unique identifier for this data. [Short Protocol Name]+[Site Abbreviation]+[PI Last Name]" />
+    <property name="input.dataset.DatasetName.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.dataset.DatasetName.title" value="Dataset Name" />
+    <property name="input.dataset.DatasetName.description" value="Short name for this dataset (one or a few words only)." />
     <property name="input.dataset.DatasetId.required" value="true" />
-        
+    
+    <property name="input.dataset.DatasetDescription.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#text" />
+    <property name="input.dataset.DatasetDescription.title" value="Dataset Description" />
+    <property name="input.dataset.DatasetDescription.description" value="Short description for this dataset (a few sentences)." />
+    <property name="input.dataset.DatasetDescription.required" value="true" />
+    
     
     <!--  ECAS metadata -->
     <property name="input.dataset.ProtocolName.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#protocolName" />

@@ -232,32 +232,37 @@ public class SolrUtils {
 	}
 	
 	/**
-	 * Alternative method to publish collections into Solr starting from a top-level directory
+	 * Alternative method to publish a collection into Solr starting from a top-level directory
 	 * and looking for "product-types.xml" in all sub-directories.
 	 * Note that a single XML file may contain more than one OODT product type.
 	 * 
 	 * @param productTypeFile
 	 * @throws Exception
 	 */
-	public static void publishCollections(File rootDirectory) throws Exception {
+	public static void publishCollection(File rootDirectory) {
 		
-		if (!rootDirectory.exists() || !rootDirectory.isDirectory()) {
-			throw new Exception("Invalid starting directory: "+rootDirectory.getAbsolutePath());
-		}
-		
-		// select policy sub-directories containing file "product-types.xml"
-		List<String> policyDirectories = new ArrayList<String>();
-		DirectorySelector dirsel = new DirectorySelector(
-				Arrays.asList( new String[] {"product-types.xml"} ));
-		policyDirectories.addAll( dirsel.traverseDir(new File(rootDirectory.toURI())) );
-					
-		// parse all XML files using OODT utilities
-		XMLRepositoryManager xmlRP = new XMLRepositoryManager(policyDirectories);
-		List<ProductType> productTypes = xmlRP.getProductTypes();
-		
-		// publish all new product types to Solr
-		for (ProductType pt : productTypes) {
-			SolrUtils.publishCollection(pt);
+		try {
+			if (!rootDirectory.exists() || !rootDirectory.isDirectory()) {
+				throw new Exception("Invalid starting directory: "+rootDirectory.getAbsolutePath());
+			}
+			
+			// select policy sub-directories containing file "product-types.xml"
+			List<String> policyDirectories = new ArrayList<String>();
+			DirectorySelector dirsel = new DirectorySelector(
+					Arrays.asList( new String[] {"product-types.xml"} ));
+			policyDirectories.addAll( dirsel.traverseDir(new File(rootDirectory.toURI())) );
+						
+			// parse all XML files using OODT utilities
+			XMLRepositoryManager xmlRP = new XMLRepositoryManager(policyDirectories);
+			List<ProductType> productTypes = xmlRP.getProductTypes();
+			
+			// publish all new product types to Solr
+			for (ProductType pt : productTypes) {
+				SolrUtils.publishCollection(pt);
+			}
+		} catch(Exception e) {
+			LOG.warning(e.getMessage());
+			e.printStackTrace();
 		}
 		
 	}
@@ -268,13 +273,18 @@ public class SolrUtils {
 	 * @param productMetadata
 	 * @throws Exception
 	 */
-	public static void publishDataset(Metadata metadata) throws Exception {
+	public static void publishDataset(Metadata metadata) {
 		
-		FileManagerUtils.printMetadata(metadata);
-		SolrInputDocument doc = serializeDataset(metadata);
-		LOG.info("Publishing Solr dataset:"+doc.toString()+" to Solr core: "+SOLR_URL+"/"+SOLR_CORE_DATASETS);
-		solrServers.get(SOLR_CORE_DATASETS).add(doc);
-		//solrServers.get(SOLR_CORE_COLLECTIONS).commit(); // use solr.autoSoftCommit.maxTime and solr.autoCommit.maxTime
+		try {
+			FileManagerUtils.printMetadata(metadata);
+			SolrInputDocument doc = serializeDataset(metadata);
+			LOG.info("Publishing Solr dataset:"+doc.toString()+" to Solr core: "+SOLR_URL+"/"+SOLR_CORE_DATASETS);
+			solrServers.get(SOLR_CORE_DATASETS).add(doc);
+			//solrServers.get(SOLR_CORE_COLLECTIONS).commit(); // use solr.autoSoftCommit.maxTime and solr.autoCommit.maxTime
+		} catch(Exception e) {
+			LOG.warning(e.getMessage());
+			e.printStackTrace();
+		}
 
 	}
 	
@@ -305,21 +315,21 @@ public class SolrUtils {
 		SolrInputDocument doc = new SolrInputDocument();
 		
 		doc.setField("id", productType.getProductTypeId().replaceAll(Constants.EDRN_PREFIX,"")); // note: remove "urn:edrn:"
-		doc.setField("CollectionName", productType.getName());
-		doc.setField("CollectionDescription", productType.getDescription());
 		
 		// serialize all metadata as-is
 		// generally multi-valued fields
-		Metadata metadata = productType.getTypeMetadata(); 
+		Metadata metadata = productType.getTypeMetadata(); 		
 		for (String key : metadata.getAllKeys()) {
-			if (key.equals("Description")) {
-				// ignore, already have "CollectionDescription"
-			} else {
-				for (String value : metadata.getAllMetadata(key)) {
-					doc.addField(key, value);
-				}
+			for (String value : metadata.getAllMetadata(key)) {
+				doc.addField(key, value);
 			}
 		}
+		
+		// set core fields if not existing
+		if (doc.getField(Constants.METADATA_KEY_COLLECTION_DESCRIPTION)==null)
+			doc.addField(Constants.METADATA_KEY_COLLECTION_DESCRIPTION, productType.getDescription());
+		if (doc.getField(Constants.METADATA_KEY_COLLECTION_NAME)==null)
+			doc.addField(Constants.METADATA_KEY_COLLECTION_NAME, productType.getName());
 		
 		return doc;
 	}
@@ -424,9 +434,9 @@ public class SolrUtils {
 			// transfer all other fields as-is
 			// generally multi-valued
 			} else {
-				for (String value : metadata.getAllMetadata(key)) {
-					doc.addField(key, value);
-				}
+				//for (String value : metadata.getAllMetadata(key)) {
+				//	doc.addField(key, value);
+				//}
 			}
 		}
 		

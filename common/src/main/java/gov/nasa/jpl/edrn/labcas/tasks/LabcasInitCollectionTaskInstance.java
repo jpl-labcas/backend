@@ -13,11 +13,18 @@ import gov.nasa.jpl.edrn.labcas.utils.SolrUtils;
 
 /**
  * Task that initializes the upload of a new data Collection (aka ProductType) into LabCAS. 
- * The following core metadata fields must be supplied as part of the XML/RPC invocation:
- * - the ProductType title --> used to generate the ProductType name and id
- * - the ProductType description
- * - the DatasetId (typically equal to the directory name)
- * Other ProductType metadata is also populated from the request parameters.
+ * 
+ * Required metadata:
+ * - CollectionName: generates ProductType with ' ' --> '_' substitution
+ * - DatasetName: generates DatasetId with ' ' --> '_' substitution
+ * - OwnerPrincipal
+ * 
+ * Optional metadata:
+ * - CollectionDescription
+ * - DatasetDescription
+ * 
+ * Other metadata from the request parameters becomes part of the Collection level (aka ProductType) metadata
+ * (unless it starts with Dataset* in which case it becomes part of the Dataset-level metadata).
  * 
  * @author luca
  *
@@ -31,24 +38,37 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 				        
 		try {
 			
-			// retrieve metadata from XML/RPC parameters
-			String title =  metadata.getMetadata(Constants.METADATA_KEY_TITLE);
-			String productTypeName = title.replaceAll("\\s+", "_");
-			if (productTypeName.contains(" ")) {  // enforce no spaces
-				throw new WorkflowTaskInstanceException("ProductType cannot contain spaces");
-			}
+			// NOTE: "metadata" is global workflow metadata, passed on through the workflow tasks
+			// on input, "metadata" contains (key, value) pairs supplied by client in XML/RPC invocation
+			
+			// generate "ProductType" name
+			String collectionName =  metadata.getMetadata(Constants.METADATA_KEY_COLLECTION_NAME);
+			String productTypeName = collectionName.replaceAll("\\s+", "_");
 			metadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName); // needed for file ingestion
-
-			String datasetId = metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
-			if (datasetId.contains(" ")) {  // enforce no spaces
-				throw new WorkflowTaskInstanceException("DatasetId cannot contain spaces");
-			}
+			metadata.removeMetadata(Constants.METADATA_KEY_COLLECTION_NAME);
+			
+			// generate "DatasetId" 
+			String datasetName = metadata.getMetadata(Constants.METADATA_KEY_DATASET_NAME);
+			String datasetId = datasetName.replaceAll("\\s+", "_");
+			metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId);
 			
 			// populate product type metadata from workflow configuration and XML/RPC parameters
 			Metadata productTypeMetadata = FileManagerUtils.readConfigMetadata(metadata, config);
 			
-			// remove DatasetId from product type metadata
-			productTypeMetadata.removeMetadata(Constants.METADATA_KEY_DATASET_ID);
+			// populate dataset metadata
+			Metadata datasetMetadata = new Metadata();
+			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId);
+			// dataset name == dataset id == original dataset name with whitespace removed
+			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_NAME, datasetId); 
+			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName);
+
+			// transfer Dataset* metadata from collection-level to to dataset-level
+	        for (String key : productTypeMetadata.getAllKeys()) {
+	        	if (key.startsWith("Dataset")) {
+	        		datasetMetadata.addMetadata(key, productTypeMetadata.getAllValues(key));
+	        		productTypeMetadata.removeMetadata(key);
+	        	}
+	        }
 			
 			// create or update the File Manager product type
 			FileManagerUtils.createProductType(productTypeName, productTypeMetadata);
@@ -56,43 +76,30 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 			// reload the catalog configuration so that the new product type is available for publishing
 			FileManagerUtils.reload();
 			
-			// publish collection to the Solr index
-			// starting from the product type archive directory which also contains the "product-types.xml" file
-			SolrUtils.publishCollections( FileManagerUtils.getProductTypeArchiveDir(productTypeName) );
-
-			// populate dataset metadata
-			Metadata datasetMetadata = new Metadata();
-			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId);
-			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_NAME, datasetId); // dataset name == dataset id
-			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName);
-			
-	        // add version to dataset metadata (used for generating product unique identifiers)
-	        int version = FileManagerUtils.getNextVersion( FileManagerUtils.findLatestDatasetVersion( productTypeName, datasetId ), metadata);
-	        datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+version); // dataset metadata
-	        metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+version);        // product metadata
+	        // add version to dataset metadata (if metadata flag "newVersion" is present)
+	        int datasetVersion = FileManagerUtils.getNextVersion( FileManagerUtils.findLatestDatasetVersion( productTypeName, datasetId ), metadata);
+	        datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+datasetVersion); // insert into dataset metadata
+	        metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+datasetVersion);        // insert into product metadata
+	        productTypeMetadata.removeMetadata(Constants.METADATA_KEY_NEW_VERSION);              // remove from collection metadata
+	        
+	        // optionally, add collection metadata from DatasetMetadata.xmlmet
 	        
 	        // optionally, add dataset metadata from DatasetMetadata.xmlmet
-	        Metadata _datasetMetadata = FileManagerUtils.readDatasetMetadata(datasetId);
+	        Metadata _datasetMetadata = FileManagerUtils.readDatasetMetadata(productTypeName, datasetId);
 	        datasetMetadata.addMetadata(_datasetMetadata);
 	        
 	        // set final product archive directory (same as set by LabcasProductVersioner)
 	        metadata.replaceMetadata(Constants.METADATA_KEY_FILE_PATH, 
-	        		                 FileManagerUtils.getProductTypeArchiveDir(productTypeName)
-	        		                 +"/"+datasetId+"/"+version+"/");
-
-						
-			// copy all product type metadata to product metadata
-	        //for (String key : productTypeMetadata.getAllKeys()) {
-	        //	if (!metadata.containsKey(key)) {
-	        //		LOG.fine("==> Copy metadata for key="+key+" from dataset-level to file-level.");
-	        //		metadata.addMetadata(key, productTypeMetadata.getAllMetadata(key));
-	        //	}
-	        //}
+	        		                 FileManagerUtils.getDatasetArchiveDir(productTypeName, datasetId, datasetVersion).getAbsolutePath());
 				        
 	        // remove all .met files from staging directory - probably a leftover of a previous workflow submission
-	        FileManagerUtils.cleanupStagingDir(datasetId);
+	        FileManagerUtils.cleanupStagingDir(productTypeName, datasetId);
 	        
-			// publish dataset to public Solr index
+			// publish collection to the public Solr index
+			// starting from the product type archive directory which contains the newly created "product-types.xml" file
+			SolrUtils.publishCollection( FileManagerUtils.getProductTypeArchiveDir(productTypeName) );
+
+			// publish dataset to the public Solr index
 			SolrUtils.publishDataset(datasetMetadata);
 		
 		} catch(Exception e) {

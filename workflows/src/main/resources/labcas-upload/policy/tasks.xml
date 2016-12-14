@@ -28,18 +28,10 @@
       
     <requiredMetFields>
     
-      <metfield name="Title" />
-      <metfield name="Description" />
-      <metfield name="DatasetId" />
-    
-      <!-- <metfield name="ProtocolName" />
-      <metfield name="ProtocolId" />
-      <metfield name="LeadPI" />
-      <metfield name="DataCustodian" />
-      <metfield name="DataCustodianEmail" />
-      <metfield name="CollaborativeGroup" />
-      <metfield name="OrganSite" />
-      <metfield name="OwnerPrincipal" /> -->
+      <metfield name="CollectionName" />
+      <metfield name="CollectionDescription" />
+      <metfield name="DatasetName" />
+      <metfield name="OwnerPrincipal"/>
             
     </requiredMetFields>
     
