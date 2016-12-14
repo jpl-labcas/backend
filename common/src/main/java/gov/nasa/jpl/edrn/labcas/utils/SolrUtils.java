@@ -326,10 +326,10 @@ public class SolrUtils {
 		}
 		
 		// set core fields if not existing
+		if (doc.getField(Constants.METADATA_KEY_COLLECTION_NAME)==null)
+			doc.addField(Constants.METADATA_KEY_COLLECTION_NAME, productType.getName().replaceAll("_", " "));
 		if (doc.getField(Constants.METADATA_KEY_COLLECTION_DESCRIPTION)==null)
 			doc.addField(Constants.METADATA_KEY_COLLECTION_DESCRIPTION, productType.getDescription());
-		if (doc.getField(Constants.METADATA_KEY_COLLECTION_NAME)==null)
-			doc.addField(Constants.METADATA_KEY_COLLECTION_NAME, productType.getName());
 		
 		return doc;
 	}
@@ -342,9 +342,13 @@ public class SolrUtils {
 	 */
 	private static SolrInputDocument serializeDataset(Metadata metadata) throws Exception {
 		
+		LOG.info("\n\n");
+		FileManagerUtils.printMetadata(metadata);
+		
 		SolrInputDocument doc = new SolrInputDocument();
 		
-		String datasetId = metadata.getMetadata(Constants.METADATA_KEY_PRODUCT_TYPE) 
+		// build the composite dataset id
+		String datasetId = metadata.getMetadata(Constants.METADATA_KEY_COLLECTION_ID) 
 				         + "." 
 				         + metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
 		doc.setField("id", datasetId);
@@ -358,7 +362,7 @@ public class SolrUtils {
 				
 			// harvest Labcas core dataset attributes
 			} else if (key.equals("ProductType")) {
-				doc.setField("CollectionName", metadata.getMetadata(key));
+				// ignore, already have "CollectionName" and "CollectionId"
 
 			} else if (key.equals("DatasetId")) {
 				// ignore, id already built
@@ -404,14 +408,20 @@ public class SolrUtils {
 			if (IGNORED_FIELDS.contains(key))  {
 				// do nothing
 				
-			// harvest Labcas core file attributes
 			} else if (key.equals("ProductType")) {
-				doc.setField("CollectionName", metadata.getMetadata(key));
+				doc.setField("CollectionId", metadata.getMetadata(key));
+				
+			// harvest Labcas core file attributes
+			} else if (key.equals("CollectionName")) {
+				doc.setField(key, metadata.getMetadata(key));
 								
 			} else if (key.equals("DatasetId")) {
 				// note: compose the unique dataset identifier
 				doc.setField("DatasetId", 
 						metadata.getMetadata("ProductType")+"."+metadata.getMetadata(key));
+				
+			} else if (key.equals("DatasetName")) {
+				doc.setField("DatasetName", metadata.getMetadata(key));
 
 			} else if (key.equals("DatasetVersion")) {
 				doc.setField("DatasetVersion", metadata.getMetadata(key));
@@ -430,6 +440,9 @@ public class SolrUtils {
 				
 			} else if (key.equals("FileSize")) {
 				doc.setField("FileSize", metadata.getMetadata(key));
+				
+			} else if (key.equals("DownloadId")) {
+				doc.setField("DownloadId", metadata.getMetadata(key));
 
 			// transfer all other fields as-is
 			// generally multi-valued

@@ -19,6 +19,7 @@ public interface Constants {
 		
 	// metadata keys
 	public final static String METADATA_KEY_COLLECTION_NAME = "CollectionName";
+	public final static String METADATA_KEY_COLLECTION_ID = "CollectionId";
 	public final static String METADATA_KEY_DATASET_NAME = "DatasetName";
 	
 	public final static String METADATA_KEY_COLLECTION_DESCRIPTION = "CollectionDescription";

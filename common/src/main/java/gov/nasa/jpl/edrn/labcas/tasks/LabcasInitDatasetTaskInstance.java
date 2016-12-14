@@ -55,7 +55,7 @@ public class LabcasInitDatasetTaskInstance implements WorkflowTaskInstance {
 			// retrieve dataset name from XML/RPC parameters
 			// or use dataset id if not found
 			String datasetName = metadata.getMetadata(Constants.METADATA_KEY_DATASET_NAME);
-			if (datasetName==null) datasetName = datasetId;
+			if (datasetName==null) datasetName = datasetId.replaceAll("_", " ");
 			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_NAME, datasetName); 
 							        
 	        // add  version to dataset metadata (used for generating product unique identifiers)

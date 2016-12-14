@@ -41,13 +41,12 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 			// NOTE: "metadata" is global workflow metadata, passed on through the workflow tasks
 			// on input, "metadata" contains (key, value) pairs supplied by client in XML/RPC invocation
 			
-			// generate "ProductType" name
+			// generate "ProductType" name from "CollectionName"
 			String collectionName =  metadata.getMetadata(Constants.METADATA_KEY_COLLECTION_NAME);
 			String productTypeName = collectionName.replaceAll("\\s+", "_");
 			metadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName); // needed for file ingestion
-			metadata.removeMetadata(Constants.METADATA_KEY_COLLECTION_NAME);
 			
-			// generate "DatasetId" 
+			// generate "DatasetId" from "DatasetName"
 			String datasetName = metadata.getMetadata(Constants.METADATA_KEY_DATASET_NAME);
 			String datasetId = datasetName.replaceAll("\\s+", "_");
 			metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId);
@@ -58,9 +57,9 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 			// populate dataset metadata
 			Metadata datasetMetadata = new Metadata();
 			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId);
-			// dataset name == dataset id == original dataset name with whitespace removed
-			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_NAME, datasetId); 
-			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName);
+			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_NAME, datasetName); 
+			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_COLLECTION_NAME, collectionName); 
+			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_COLLECTION_ID, productTypeName);
 			
 	        // optionally, add collection metadata from CollectionMetadata.xmlmet
 	        Metadata _productTypeMetadata = FileManagerUtils.readCollectionMetadata(productTypeName);

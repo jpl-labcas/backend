@@ -11,9 +11,9 @@ if __name__ == '__main__':
     dataset_description = 'The Best Dataset of this collection'
     owner_principal = 'uid=testuser,dc=edrn,dc=jpl,dc=nasa,dc=gov',
     
-    # NOTE" data must be uploaded to directory $LABCAS_STAGING/<product_type>/<dataset_id>
+    # NOTE: data must be uploaded to directory $LABCAS_STAGING/<product_type>/<dataset_id>
     product_type = collection_name.replace(' ','_')
-    dataset_id = dataset_name.replace(' ','_') 
+    #dataset_id = dataset_name.replace(' ','_') 
     labcasClient = LabcasClient()
     
     # print out workflow definition
@@ -46,7 +46,7 @@ if __name__ == '__main__':
     
 
     # upload dataset staged in directory $LABCAS_STAGING/<product_type>/<dataset_id>
-    labcasClient.uploadCollection(dataset_id, metadata)
+    labcasClient.uploadCollection(dataset_name, metadata)
 
     # update the dataset metadata WITHOUT generating a new version
     #metadata['ProtocolId'] = '99'
