@@ -193,6 +193,24 @@ public class FileManagerUtils {
 	}
 	
 	/**
+	 * Utility method that reads the additional collection metadata 
+	 * from the file CollectionMetadata.xmlmet located in the top-level collection staging directory.
+	 * NOTE: currently not used.
+	 * 
+	 * @param datasetName
+	 * @return
+	 * @throws IOException
+	 */
+	public static Metadata readCollectionMetadata(String productTypeName) {
+		
+        File stagingDir = getStagingDir(productTypeName);
+        File datasetMetadataFile = new File(stagingDir, Constants.COLLECTION_METADATA_FILE);
+    
+        return readMetadataFromFile(datasetMetadataFile);
+        
+	}
+	
+	/**
 	 * Utility method that reads the additional dataset metadata 
 	 * from the file DatasetMetadata.xmlmet located in the dataset staging directory.
 	 * NOTE: currently not used.
@@ -204,7 +222,7 @@ public class FileManagerUtils {
 	public static Metadata readDatasetMetadata(String productTypeName, String datasetId) {
 		
         File stagingDir = getStagingDir(productTypeName, datasetId);
-        File datasetMetadataFile = new File(stagingDir, Constants.METADATA_FILE);
+        File datasetMetadataFile = new File(stagingDir, Constants.DATASET_METADATA_FILE);
     
         return readMetadataFromFile(datasetMetadataFile);
         
@@ -320,16 +338,27 @@ public class FileManagerUtils {
 		
 	}
 	
+	
 	/**
-	 * Retrieves the directory where the data must be uploaded.
+	 * Retrieves the top-level dirtectory where data for a given collection must be staged.
+	 * @param productTypeName
+	 * @param datasetId
+	 * @return
+	 */
+	public static File getStagingDir(final String productTypeName) {
+		String dirPath = System.getenv(Constants.ENV_LABCAS_STAGING) + "/" + productTypeName;
+		return new File(dirPath);
+	}
+	
+	/**
+	 * Retrieves the directory where the data for a given dataset must be uploaded.
 	 * 
 	 * @param productTypeName
 	 * @param datasetId
 	 * @return
 	 */
 	public static File getStagingDir(final String productTypeName, final String datasetId) {
-		String dirPath = System.getenv(Constants.ENV_LABCAS_STAGING) 
-				       + "/" + productTypeName + "/" + datasetId;
+		String dirPath = System.getenv(Constants.ENV_LABCAS_STAGING) + "/" + productTypeName + "/" + datasetId;
 		return new File(dirPath);
 	}
 	

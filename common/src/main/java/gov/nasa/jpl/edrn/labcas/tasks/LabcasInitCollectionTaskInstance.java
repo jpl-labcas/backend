@@ -61,6 +61,15 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 			// dataset name == dataset id == original dataset name with whitespace removed
 			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_NAME, datasetId); 
 			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName);
+			
+	        // optionally, add collection metadata from CollectionMetadata.xmlmet
+	        Metadata _productTypeMetadata = FileManagerUtils.readCollectionMetadata(productTypeName);
+	        productTypeMetadata.addMetadata(_productTypeMetadata);
+
+	        // optionally, add dataset metadata from DatasetMetadata.xmlmet
+	        Metadata _datasetMetadata = FileManagerUtils.readDatasetMetadata(productTypeName, datasetId);
+	        datasetMetadata.addMetadata(_datasetMetadata);
+
 
 			// transfer Dataset* metadata from collection-level to to dataset-level
 	        for (String key : productTypeMetadata.getAllKeys()) {
@@ -81,13 +90,7 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 	        datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+datasetVersion); // insert into dataset metadata
 	        metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+datasetVersion);        // insert into product metadata
 	        productTypeMetadata.removeMetadata(Constants.METADATA_KEY_NEW_VERSION);              // remove from collection metadata
-	        
-	        // optionally, add collection metadata from DatasetMetadata.xmlmet
-	        
-	        // optionally, add dataset metadata from DatasetMetadata.xmlmet
-	        Metadata _datasetMetadata = FileManagerUtils.readDatasetMetadata(productTypeName, datasetId);
-	        datasetMetadata.addMetadata(_datasetMetadata);
-	        
+	        	        	        
 	        // set final product archive directory (same as set by LabcasProductVersioner)
 	        metadata.replaceMetadata(Constants.METADATA_KEY_FILE_PATH, 
 	        		                 FileManagerUtils.getDatasetArchiveDir(productTypeName, datasetId, datasetVersion).getAbsolutePath());

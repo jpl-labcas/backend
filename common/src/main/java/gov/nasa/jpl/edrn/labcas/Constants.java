@@ -44,8 +44,9 @@ public interface Constants {
 	public final static String METADATA_KEY_TIMESTAMP = "timestamp";
 
 	
-	// dataset-level metadata file
-	public final static String METADATA_FILE = "DatasetMetadata.xmlmet";
+	// files containing optional additional metadata
+	public final static String DATASET_METADATA_FILE = "DatasetMetadata.xmlmet";
+	public final static String COLLECTION_METADATA_FILE = "CollectionMetadata.xmlmet";
 	
 	// policy directory
 	public final static String POLICY = "policy";

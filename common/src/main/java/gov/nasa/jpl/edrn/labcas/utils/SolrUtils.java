@@ -559,7 +559,7 @@ public class SolrUtils {
 		String rootDirectory = args[0]; 
 		
 		// publish all product types in file
-		SolrUtils.publishCollections(new File(rootDirectory));
+		SolrUtils.publishCollection(new File(rootDirectory));
 		
 	}
 
