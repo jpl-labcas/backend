@@ -33,7 +33,7 @@ if __name__ == '__main__':
                  'OwnerPrincipal': owner_principal,
                  'DatasetDescription': dataset_description,
                  
-                 # other metadata - applied by default to Dataset-level ?
+                 # other metadata
                  'ProtocolId':'1',
                  'ProtocolName':'GSTP1 Methylation',
                  'LeadPI':'John Doe',

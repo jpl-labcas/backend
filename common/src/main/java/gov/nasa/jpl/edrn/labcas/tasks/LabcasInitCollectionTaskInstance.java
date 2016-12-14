@@ -51,8 +51,9 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 			String datasetId = datasetName.replaceAll("\\s+", "_");
 			metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId);
 			
-			// populate product type metadata from workflow configuration and XML/RPC parameters
-			Metadata productTypeMetadata = FileManagerUtils.readConfigMetadata(metadata, config);
+			// populate product type metadata from XML/RPC parameters
+			Metadata productTypeMetadata = new Metadata();
+			productTypeMetadata.addMetadata(metadata);
 			
 			// populate dataset metadata
 			Metadata datasetMetadata = new Metadata();

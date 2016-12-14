@@ -58,6 +58,10 @@ public class SolrUtils {
 	private static Set<String> IGNORED_FIELDS = new HashSet<String>(
 			Arrays.asList("WorkflowManagerUrl", "TaskId", "WorkflowInstId", "JobId",
 				          "WorkflowId", "WorkflowName", "ProcessingNode"));
+	
+	// list of OODT fields that are transferred with no changes to Solr
+	private static Set<String> PASS_THROUGH_FIELDS = new HashSet<String>( 
+			Arrays.asList("CollectionName", "DatasetName", "DatasetVersion", "DownloadId", "FileSize"));
 
 	private final static String SOLR_CORE_COLLECTIONS = "collections";
 	private final static String SOLR_CORE_DATASETS = "datasets";
@@ -320,9 +324,17 @@ public class SolrUtils {
 		// generally multi-valued fields
 		Metadata metadata = productType.getTypeMetadata(); 		
 		for (String key : metadata.getAllKeys()) {
-			for (String value : metadata.getAllMetadata(key)) {
-				doc.addField(key, value);
+			
+			// ignore OODT book-keeping fields
+			if (IGNORED_FIELDS.contains(key))  {
+				// do nothing
+				
+			} else {
+				for (String value : metadata.getAllMetadata(key)) {
+					doc.addField(key, value);
+				}
 			}
+			
 		}
 		
 		// set core fields if not existing
@@ -405,24 +417,17 @@ public class SolrUtils {
 			if (IGNORED_FIELDS.contains(key))  {
 				// do nothing
 				
+			// pass these fields with no changes
+			} else if (PASS_THROUGH_FIELDS.contains(key)) {
+				doc.setField(key, metadata.getMetadata(key));
+				
 			} else if (key.equals("ProductType")) {
 				doc.setField("CollectionId", metadata.getMetadata(key));
-				
-			// harvest Labcas core file attributes
-			} else if (key.equals("CollectionName")) {
-				doc.setField(key, metadata.getMetadata(key));
-								
+												
 			} else if (key.equals("DatasetId")) {
 				// note: compose the unique dataset identifier
-				doc.setField("DatasetId", 
-						metadata.getMetadata("ProductType")+"."+metadata.getMetadata(key));
-				
-			} else if (key.equals("DatasetName")) {
-				doc.setField("DatasetName", metadata.getMetadata(key));
-
-			} else if (key.equals("DatasetVersion")) {
-				doc.setField("DatasetVersion", metadata.getMetadata(key));
-				
+				doc.setField("DatasetId", metadata.getMetadata("ProductType")+"."+metadata.getMetadata(key));
+								
 			} else if (key.equals("ProductName")) {
 				// ignore, same as Filename
 				
@@ -433,14 +438,9 @@ public class SolrUtils {
 				doc.setField("FileLocation", metadata.getMetadata(key));
 
 			} else if (key.equals("Filename")) {
+				// change case
 				doc.setField("FileName", metadata.getMetadata(key));
 				
-			} else if (key.equals("FileSize")) {
-				doc.setField("FileSize", metadata.getMetadata(key));
-				
-			} else if (key.equals("DownloadId")) {
-				doc.setField("DownloadId", metadata.getMetadata(key));
-
 			// transfer all other fields as-is
 			// generally multi-valued
 			} else {
