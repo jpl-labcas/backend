@@ -3,19 +3,18 @@
 
 	<!-- PGE commands -->
 	<exe dir="[JobDir]" shell="/bin/bash">
-		<cmd>cd [LABCAS_STAGING]/[DatasetId]</cmd>
+		<cmd>cd [LABCAS_STAGING]/[ProductType]/[DatasetId]</cmd>
 		<cmd>ls -l</cmd>
 	</exe>
 
 	<customMetadata>
 		<metadata key="ProductionDateTime" val="[DATE.UTC]" />
-		<metadata key="JobDir"
-			val="[PGE_ROOT]/crawl/jobs/[DatasetId]" />
+		<metadata key="JobDir" val="[PGE_ROOT]/jobs/[ProductType]/[DatasetId]" />
 	</customMetadata>
 
 	<!-- CAS Crawler directives -->
 	<output>
-		<dir path="[LABCAS_STAGING]/[DatasetId]" createBeforeExe="false">
+		<dir path="[LABCAS_STAGING]/[ProductType]/[DatasetId]" createBeforeExe="false">
 			<!-- metadata extractors matching specific files -->
             <files regExp=".*\.txt" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[LABCAS_HOME]/workflows/nist/pge-configs/metout.xml" />
             <files regExp=".*\.csv" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[LABCAS_HOME]/workflows/nist/pge-configs/metout.xml" />
