@@ -6,7 +6,7 @@ if __name__ == '__main__':
     
     # submit workflow
     # ./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName nist 
-    #               --metaData --key DatasetId Lab005_C_R03 --key LabNumber 005 
+    #               --metaData --key DatasetName Lab005_C_R03 --key LabNumber 005 
     #               --key NormalizationMethod C --key RoundNumber 003 --key LeadPI Johns 
     #               --key DataCollectionDate 20160101 --key SampleProcessingProtocols 'With water and ammonia' 
     #               --key InstrumentationTechnologyCode NGS --key Manufacturer TexasInstruments 
@@ -19,14 +19,13 @@ if __name__ == '__main__':
                      'urn:edrn:NistExecTask',
                      'urn:edrn:NistCrawlTask']
     
-    metadata = {'DatasetId':'Lab005_C_R03',
+    metadata = {'DatasetName':'Lab005_C_R03',
                 'LabNumber':'005',
                 'Method':'C',
                 'RoundNumber':'003',
                 'LeadPI':'Johns', 
                 'DataCollectionDate':'20160101',
-                'NewVersion':'false',
-                'OwnerPrincipal':'Lab005' }
+                'NewVersion':'false' }
 
     # upload dataset without changing the version
     wInstId = labcasClient.executeWorkflow(workflowTasks, metadata)
@@ -39,5 +38,3 @@ if __name__ == '__main__':
     wInstId = labcasClient.executeWorkflow(workflowTasks, metadata)
     # monitor workflow instance
     labcasClient.waitForCompletion(wInstId)
-
-    

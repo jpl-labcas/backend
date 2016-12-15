@@ -27,14 +27,14 @@
       <property name="workflow.order" value="2" />
     
       <!-- fixed dataset metadata -->
-      <property name="dataset.ProductType" value="NIST_Product" />
-      <property name="dataset.OwnerPrincipal" value="Plant National Institute of Standards and Technology" />
+      <property name="dataset.CollectionName" value="NIST Product" />
+      <property name="dataset.OwnerPrincipal" value="cn=Pine National Institute of Standards and Technology,dc=edrn,dc=jpl,dc=nasa,dc=gov" />
     
       <!-- input dataset metadata -->
-      <property name="input.dataset.DatasetId.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#nistDatasetId" />
-      <property name="input.dataset.DatasetId.title" value="Dataset Identifier" />
-      <property name="input.dataset.DatasetId.description" value="Enter a unique identifier for this data" />
-      <property name="input.dataset.DatasetId.required" value="true" />
+      <property name="input.dataset.DatasetName.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#nistDatasetId" />
+      <property name="input.dataset.DatasetName.title" value="Dataset Name" />
+      <property name="input.dataset.DatasetName.description" value="Enter a unique short name for this dataset" />
+      <property name="input.dataset.DatasetName.required" value="true" />
       <!-- <property name="input.dataset.DatasetId.format" value="Lab[LabNumber]_[Method]_R[RoundNumber]" /> -->
       
       <property name="input.dataset.LabNumber.type" value="http://www.w3.org/2001/XMLSchema/string" />
@@ -97,7 +97,7 @@
           
     <requiredMetFields>
     
-      <metfield name="DatasetId" />
+      <metfield name="DatasetName" />
       <metfield name="LabNumber" />
       <metfield name="Method" />
       <metfield name="RoundNumber" />
