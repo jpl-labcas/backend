@@ -233,7 +233,6 @@ public class FileManagerUtils {
 	 * and populates them with values from given metadata object. 
 	 * @return
 	 */
-	@Deprecated
 	public static Metadata readConfigMetadata(Metadata metadata, WorkflowTaskConfiguration config) {
 		
 		// new metadata object

@@ -14,8 +14,9 @@ import gov.nasa.jpl.edrn.labcas.utils.SolrUtils;
 
 /**
  * Task that initializes the upload of a new Dataset within a given Collection (aka ProductType):
- * o the ProductType name must be supplied as part of the task configuration metadata.
- * o the DatasetId is passed as part of the XML/RPC HTTP request.
+ * 
+ * o the CollectionName name must be supplied as part of the task configuration metadata.
+ * o the DatasetName is passed as part of the XML/RPC HTTP request - or is automatically generated if missing
  * 
  * @author luca
  *
@@ -27,58 +28,54 @@ public class LabcasInitDatasetTaskInstance implements WorkflowTaskInstance {
 	@Override
 	public void run(Metadata metadata, WorkflowTaskConfiguration config) throws WorkflowTaskInstanceException {
 		
-		//FileManagerUtils.printMetadata(metadata);
+		// NOTE: "metadata" is global workflow metadata, passed on through the workflow tasks
+		// eventually it becomes product i.e. file levele metadata
 		
 		try {
 			
 			// populate dataset metadata from workflow configuration and XML/RPC parameters
 			Metadata datasetMetadata = FileManagerUtils.readConfigMetadata(metadata, config);
 			
-			// retrieve product type from configuration metadata
-			// also needed at file-level metadata for ingestion
-			String productTypeName = datasetMetadata.getMetadata(Constants.METADATA_KEY_PRODUCT_TYPE);
-			metadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName); // transfer to product level metadata
+			// generate "ProductType" name from "CollectionName"
+			String collectionName =  datasetMetadata.getMetadata(Constants.METADATA_KEY_COLLECTION_NAME);
+			String productTypeName = collectionName.replaceAll("\\s+", "_");
+			metadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName);      // needed for file ingestion by OODT
+			metadata.replaceMetadata(Constants.METADATA_KEY_COLLECTION_NAME, collectionName); 
 			
-			// retrieve dataset identifier from XML/RPC parameters
-			// or generate a new unique one
-			String datasetId = metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
-			if (datasetId==null) {
-				datasetId = UUID.randomUUID().toString();
-				metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId); 
-				datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId); 
-			// enforce no spaces
-			} else if (datasetId.contains(" ")) {
-				throw new WorkflowTaskInstanceException("DatasetId cannot contain spaces");
+			// generate "DatasetId" from "DatasetName", if passed through XML/RPC parameters
+			// otherwise generate a UUID
+			String datasetName = metadata.getMetadata(Constants.METADATA_KEY_DATASET_NAME);
+			String datasetId = null;
+			if (datasetName!=null) {
+				datasetId = datasetName.replaceAll("\\s+", "_");
+			} else {
+				datasetId  = UUID.randomUUID().toString();
+				datasetName = datasetId;
+				metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_NAME, datasetId); // datasetId == datasetName = UUID
 			}
+			metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId);
 			LOG.info("Using DatasetId="+datasetId);
 			
-			// retrieve dataset name from XML/RPC parameters
-			// or use dataset id if not found
-			String datasetName = metadata.getMetadata(Constants.METADATA_KEY_DATASET_NAME);
-			if (datasetName==null) datasetName = datasetId.replaceAll("_", " ");
+			// populate dataset metadata
+			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId);
 			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_NAME, datasetName); 
-							        
+			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_COLLECTION_NAME, collectionName); 
+			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_COLLECTION_ID, productTypeName);
+			
+	        // optionally, add dataset metadata from DatasetMetadata.xmlmet
+	        Metadata _datasetMetadata = FileManagerUtils.readDatasetMetadata(productTypeName, datasetId);
+	        datasetMetadata.addMetadata(_datasetMetadata);
+
+										        
 	        // add  version to dataset metadata (used for generating product unique identifiers)
-	        int version = FileManagerUtils.getNextVersion( FileManagerUtils.findLatestDatasetVersion( productTypeName, datasetId ), metadata);
-	        datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+version); // dataset metadata
-	        metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+version);        // product metadata
-	        
+	        int datasetVersion = FileManagerUtils.getNextVersion( FileManagerUtils.findLatestDatasetVersion( productTypeName, datasetId ), metadata);
+	        datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+datasetVersion); // dataset metadata
+	        metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+datasetVersion);        // product metadata
+	        	        
 	        // set final product archive directory (same as set by LabcasProductVersioner)
 	        metadata.replaceMetadata(Constants.METADATA_KEY_FILE_PATH, 
-	        		                 FileManagerUtils.getProductTypeArchiveDir(productTypeName)
-	        		                 +"/"+datasetId+"/"+version+"/");
+	        		                 FileManagerUtils.getDatasetArchiveDir(productTypeName, datasetId, datasetVersion).getAbsolutePath());
 	        
-			// copy all product type metadata to product metadata
-	        for (String key : datasetMetadata.getAllKeys()) {
-	        	if (!metadata.containsKey(key)) {
-	        		LOG.fine("==> Copy metadata for key="+key+" from dataset-level to file-level.");
-	        		metadata.addMetadata(key, datasetMetadata.getAllMetadata(key));
-	        	}
-	        }
-			
-			// remove all .met files from staging directory - probably a leftover of a previous workflow submission
-			FileManagerUtils.cleanupStagingDir(productTypeName, datasetId);
-			
 			// publish dataset to public Solr index
 			SolrUtils.publishDataset(datasetMetadata);
 		

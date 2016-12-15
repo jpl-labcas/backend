@@ -22,7 +22,7 @@
   
     <configuration>
     
-      <property name="dataset.ProductType" value="LabCAS_Test_Product" />
+      <property name="dataset.CollectionName" value="LabCAS Test Product" />
     
       <!-- input parameters -->
             
