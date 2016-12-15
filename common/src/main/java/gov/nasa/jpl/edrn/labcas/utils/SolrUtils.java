@@ -57,11 +57,16 @@ public class SolrUtils {
 	// list of OODT fields that are NOT transferred to the public Solr index
 	private static Set<String> IGNORED_FIELDS = new HashSet<String>(
 			Arrays.asList("WorkflowManagerUrl", "TaskId", "WorkflowInstId", "JobId",
-				          "WorkflowId", "WorkflowName", "ProcessingNode"));
+				          "WorkflowId", "WorkflowName", "ProcessingNode",
+				          Constants.METADATA_KEY_NEW_VERSION,
+				          Constants.METADATA_KEY_UPDATE_COLLECTION));
 	
 	// list of OODT fields that are transferred with no changes to Solr
+	// note that fields of type File* are also passed through by default
 	private static Set<String> PASS_THROUGH_FIELDS = new HashSet<String>( 
-			Arrays.asList("CollectionName", "DatasetName", "DatasetVersion", "DownloadId", "FileSize"));
+			Arrays.asList(Constants.METADATA_KEY_COLLECTION_NAME, 
+					      Constants.METADATA_KEY_DATASET_NAME,
+					      Constants.METADATA_KEY_DATASET_VERSION));
 
 	private final static String SOLR_CORE_COLLECTIONS = "collections";
 	private final static String SOLR_CORE_DATASETS = "datasets";
@@ -329,6 +334,9 @@ public class SolrUtils {
 			if (IGNORED_FIELDS.contains(key))  {
 				// do nothing
 				
+			} else if (key.equals(Constants.METADATA_KEY_PRODUCT_TYPE)) {
+				// ignore, same as collection "id"
+				
 			} else {
 				for (String value : metadata.getAllMetadata(key)) {
 					doc.addField(key, value);
@@ -441,12 +449,11 @@ public class SolrUtils {
 				// change case
 				doc.setField("FileName", metadata.getMetadata(key));
 				
-			// transfer all other fields as-is
-			// generally multi-valued
-			} else {
-				//for (String value : metadata.getAllMetadata(key)) {
-				//	doc.addField(key, value);
-				//}
+			// transfer File* metadata fields (generally multi-valued)
+			} else if (key.toLowerCase().startsWith("file")) {
+				for (String value : metadata.getAllMetadata(key)) {
+					doc.addField(key, value);
+				}
 			}
 		}
 		

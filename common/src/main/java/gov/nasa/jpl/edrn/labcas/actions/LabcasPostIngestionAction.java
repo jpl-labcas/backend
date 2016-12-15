@@ -33,7 +33,7 @@ public class LabcasPostIngestionAction extends CrawlerAction {
 					
 		if (productId != null) {
 			
-			productMetadata.replaceMetadata(Constants.METADATA_KEY_DOWNLOAD_ID, productId);
+			productMetadata.replaceMetadata(Constants.METADATA_KEY_FILE_DOWNLOAD_ID, productId);
 			
 			// publish product
 			try {

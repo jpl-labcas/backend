@@ -47,7 +47,7 @@ public interface Constants {
 	public final static String METADATA_KEY_NAME = "Name";
 	
 	//public final static String METADATA_KEY_DESCRIPTION = "Description";
-	public final static String METADATA_KEY_DOWNLOAD_ID = "DownloadId";
+	public final static String METADATA_KEY_FILE_DOWNLOAD_ID = "FileDownloadId";
 	public final static String METADATA_KEY_TIMESTAMP = "timestamp";
 
 	
