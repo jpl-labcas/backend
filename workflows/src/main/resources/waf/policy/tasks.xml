@@ -48,7 +48,7 @@
           
       <!-- input dataset metadata -->
       <property name="input.dataset.DatasetName.type" value="http://www.w3.org/2001/XMLSchema/string" />
-      <property name="input.dataset.DatasetName.title" value="Dataset Identifier" />
+      <property name="input.dataset.DatasetName.title" value="Dataset Name" />
       <property name="input.dataset.DatasetName.description" value="Enter a unique short name for this data" />
       <property name="input.dataset.DatasetName.required" value="true" />
                               
