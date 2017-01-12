@@ -22,7 +22,10 @@
   
     <configuration>
     
-      <property name="dataset.CollectionName" value="LabCAS Test Product" />
+      <!-- workflow configuration -->
+      <property name="CollectionName" value="LabCAS Test Product" />
+      <property name="UploadFiles" value="false" />
+      <property name="CollaborationGroup" value="EDRN" />
     
       <!-- input parameters -->
             

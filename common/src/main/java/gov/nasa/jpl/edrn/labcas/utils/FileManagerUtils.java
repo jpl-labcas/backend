@@ -238,12 +238,13 @@ public class FileManagerUtils {
 		// new metadata object
 		Metadata newMetadata = new Metadata();
         
-        // extract metadata keys from task configuration parameters of the form "init.field...."
+        // extract metadata keys from task configuration parameters of the form "input.field...."
         // example of input metadata key: 
         // <property name="input.dataset.ProtocolId.type" value="integer" />
         // <property name="input.dataset.ProtocolId.title" value="Protocol ID" />
 		// or fixed metadata key:
 		// <property name="dataset.ParentDatasetId" value="NIST" />
+		// <property name="CollectionName" value="NIST Product" />
         Set<String> newMetadataKeys = new HashSet<String>();
         for (Object objKey : config.getProperties().keySet()) {
             String key = (String) objKey;
@@ -255,6 +256,8 @@ public class FileManagerUtils {
             } else if (key.toLowerCase().startsWith("dataset.")) {
             	String[] parts = key.split("\\."); 
             	newMetadata.addMetadata(parts[1], GeneralUtils.removeNonAsciiCharacters(value));
+            } else {
+            	newMetadata.addMetadata(key, GeneralUtils.removeNonAsciiCharacters(value));
             }
         }
         

@@ -59,7 +59,9 @@ public class SolrUtils {
 			Arrays.asList("WorkflowManagerUrl", "TaskId", "WorkflowInstId", "JobId",
 				          "WorkflowId", "WorkflowName", "ProcessingNode",
 				          Constants.METADATA_KEY_NEW_VERSION,
-				          Constants.METADATA_KEY_UPDATE_COLLECTION));
+				          Constants.METADATA_KEY_UPDATE_COLLECTION,
+				          Constants.METADATA_KEY_UPLOAD_FILES,
+				          Constants.METADATA_KEY_WORKFLOW_ORDER));
 	
 	// list of OODT fields that are transferred with no changes to Solr
 	// note that fields of type File* are also passed through by default

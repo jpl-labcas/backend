@@ -34,6 +34,8 @@ public interface Constants {
 	// flags
 	public final static String METADATA_KEY_NEW_VERSION = "NewVersion"; // default: false
 	public final static String METADATA_KEY_UPDATE_COLLECTION = "UpdateCollection"; // default: true
+	public final static String METADATA_KEY_UPLOAD_FILES = "UploadFiles";
+	public final static String METADATA_KEY_WORKFLOW_ORDER = "workflow.order";
 	
 	
 	public final static String METADATA_KEY_FILE_LOCATION = "FileLocation"; // points to original location

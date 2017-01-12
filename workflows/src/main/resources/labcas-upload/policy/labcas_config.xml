@@ -194,6 +194,12 @@
     <property name="input.file.DateDatasetFrozen.description" value="Date when this file was frozen (yyyy/mm/dd)" />
     <property name="input.file.DateDatasetFrozen.required" value="false" />
     
+    <property name="input.dataset.CollaborationGroup.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.dataset.CollaborationGroup.title" value="Collaboration Group" />
+    <property name="input.dataset.CollaborationGroup.description" value="High level project funding these data" />
+    <property name="input.dataset.CollaborationGroup.required" value="false" />
+    <property name="input.dataset.CollaborationGroup.value.1" value="EDRN" />
+    <property name="input.dataset.CollaborationGroup.value.2" value="MCL" />
 
     <!-- output products -->
     <property name="output.product.type" value="urn:edrn:LabCAS_Product"/>

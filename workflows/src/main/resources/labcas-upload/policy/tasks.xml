@@ -21,6 +21,9 @@
 
   <task id="urn:edrn:LabcasUploadInitTask" name="LabcasUploadInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasInitCollectionTaskInstance">
   
+    <!-- Workflow Configuration -->
+    <property name="UploadFiles" value="true" />
+    
     <conditions />
         
     <!-- include external labcas metadata configuration -->
@@ -31,7 +34,9 @@
       <metfield name="CollectionName" />
       <metfield name="CollectionDescription" />
       <metfield name="DatasetName" />
+      
       <metfield name="OwnerPrincipal"/>
+      <metfield name="CollaborationGroup"/>
             
     </requiredMetFields>
     
