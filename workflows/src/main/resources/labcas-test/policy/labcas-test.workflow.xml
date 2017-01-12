@@ -11,7 +11,7 @@
     Dataset: newly generated UUID
     Products: single file labcas-test-output.txt
  -->
-<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="LabCAS Test dataset" id="urn:edrn:LabcasTestWorkflow">
+<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="LabCAS Test Workflow" id="urn:edrn:LabcasTestWorkflow">
 
   <tasks>
   	<task id="urn:edrn:LabcasTestInit" />
