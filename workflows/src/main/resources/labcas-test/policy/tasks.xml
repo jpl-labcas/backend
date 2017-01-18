@@ -25,7 +25,7 @@
       <!-- workflow configuration -->
       <property name="CollectionName" value="LabCAS Test Product" />
       <property name="UploadFiles" value="false" />
-      <property name="CollaborationGroup" value="EDRN" />
+      <property name="Consortium" value="EDRN" />
     
       <!-- input parameters -->
             
