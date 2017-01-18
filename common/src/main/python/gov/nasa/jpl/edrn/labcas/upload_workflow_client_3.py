@@ -40,8 +40,7 @@ if __name__ == '__main__':
                  'Institution': 'UC Davis',
                  'ImagingTechnique': 'TMA (Tissue Micro Array)',
                  'Project': 'CTIIP (Clinical and Translational Imaging Informatics Project)',
-                 'Species':'Mouse', 
-                 'FileType':'application/aperio',
+                 'Species':'Mouse'
                }
     
 
