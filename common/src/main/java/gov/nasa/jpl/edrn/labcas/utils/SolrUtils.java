@@ -459,27 +459,16 @@ public class SolrUtils {
 			}
 		}
 		
-		// detect FileType
-		doc.removeField(Constants.METADATA_KEY_FILE_TYPE);
-		List<String> fileTypes = getFileTypes( metadata.getMetadata("FilePath") );
-		for (String fileType : fileTypes) {
-			doc.addField("FileType", fileType);
+		// detect file mime type
+		String mimeType = MimeTypeUtils.getMimeType( metadata.getMetadata("Filename") );
+		if (mimeType != null) {
+			doc.setField(Constants.METADATA_KEY_FILE_TYPE, mimeType);
 		}
 		
 		return doc;
 		
 	}
 	
-	private static List<String> getFileTypes(String filePath) {
-		
-		LOG.info("Detecting FileType for product: "+filePath);
-		
-		List<String> fileTypes = new ArrayList<String>();
-		fileTypes.add("image/jpeg");
-		
-		return fileTypes;
-		
-	}
 	
 	public static String generateProductId(String productTypeName, String datasetId, String productName) {
 		return productTypeName + "." + datasetId + "." + productName;
