@@ -29,7 +29,7 @@
       <!-- workflow configuration -->
       <property name="CollectionName" value="NIST Product" />
       <property name="UploadFiles" value="true" />
-      <property name="CollaborationGroup" value="EDRN" />
+      <property name="Consortium" value="EDRN" />
       <property name="OwnerPrincipal" value="cn=Pine National Institute of Standards and Technology,dc=edrn,dc=jpl,dc=nasa,dc=gov" />
             
       <!-- input dataset metadata -->

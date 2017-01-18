@@ -29,7 +29,7 @@
       <!-- workflow configuration -->
       <property name="CollectionName" value="University of Colorado Lung Image" />
       <property name="UploadFiles" value="true" />
-      <property name="CollaborationGroup" value="MCL" />      
+      <property name="Consortium" value="MCL" />      
       <property name="OwnerPrincipal" value="cn=Franklin University of Colorado Health Science Center,dc=edrn,dc=jpl,dc=nasa,dc=gov" />
       
       <!-- FIXME: the following fields should be inherited from the Parent dataset 
