@@ -459,7 +459,25 @@ public class SolrUtils {
 			}
 		}
 		
+		// detect FileType
+		doc.removeField(Constants.METADATA_KEY_FILE_TYPE);
+		List<String> fileTypes = getFileTypes( metadata.getMetadata("FilePath") );
+		for (String fileType : fileTypes) {
+			doc.addField("FileType", fileType);
+		}
+		
 		return doc;
+		
+	}
+	
+	private static List<String> getFileTypes(String filePath) {
+		
+		LOG.info("Detecting FileType for product: "+filePath);
+		
+		List<String> fileTypes = new ArrayList<String>();
+		fileTypes.add("image/jpeg");
+		
+		return fileTypes;
 		
 	}
 	
