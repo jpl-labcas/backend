@@ -7,6 +7,7 @@ if __name__ == '__main__':
     collection_name = 'IPMN Lesions'
     collection_description = 'Lesions of Intraductal Papillary Mucinous Neoplasm'
     dataset_name = 'P1-06_H03'
+    #dataset_name = '2016_I_NCIU01'
     owner_principal = 'uid=anirban,dc=edrn,dc=jpl,dc=nasa,dc=gov'
     dataset_description = 'Lesions images'
 
