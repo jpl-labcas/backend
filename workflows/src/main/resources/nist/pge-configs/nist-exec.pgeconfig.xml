@@ -6,7 +6,7 @@
     <!-- must execute R script in a separate directory -->
     <cmd>cd [PGE_ROOT]/nist/pges</cmd>
     <!-- copy latest uploaded data -->
-    <cmd>cp [LABCAS_STAGING]/[DatasetId]/[DatasetId]*.txt .</cmd>
+    <cmd>cp [LABCAS_STAGING]/[ProductType]/[DatasetId]/[DatasetId]*.txt .</cmd>
     <!-- run R script (only for Labs 005-008) -->
     <!-- must use ((..)) notation because [...] is parsed by OODT for env replacement -->
     <cmd>
