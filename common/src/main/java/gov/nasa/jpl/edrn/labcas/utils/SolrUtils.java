@@ -162,7 +162,8 @@ public class SolrUtils {
 	                                   + metadata.getMetadata(Constants.METADATA_KEY_FILE_NAME);
 	        LOG.info("Querying id for product with URI="+fileUri);
 	        // must encode value of parameter fq=...
-	        request.addFilterQuery(URLEncoder.encode("CAS.ReferenceDatastore:"+fileUri,"UTF-8"));
+	        //request.addFilterQuery(URLEncoder.encode("CAS.ReferenceDatastore:"+fileUri,"UTF-8"));
+	        request.addFilterQuery("CAS.ReferenceDatastore:"+fileUri);
 	        request.addSortField(Constants.METADATA_KEY_TIMESTAMP, ORDER.desc); // retrieve the last entry with this filepath
 	        request.setRows(1); // retrieve only one result
 	        LOG.fine("Executing Solr query: "+request.toString());
