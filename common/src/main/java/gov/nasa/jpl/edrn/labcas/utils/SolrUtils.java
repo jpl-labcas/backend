@@ -158,6 +158,7 @@ public class SolrUtils {
 	        request.setQuery("*:*");
 	        // query product by final archive location
 	        String fileUri = "file\\:" + metadata.getMetadata(Constants.METADATA_KEY_FILE_PATH) 
+	                                   + "/"
 	                                   + metadata.getMetadata(Constants.METADATA_KEY_FILE_NAME);
 	        LOG.info("Querying id for product with URI="+fileUri);
 	        // must encode value of parameter fq=...
