@@ -1,0 +1,5 @@
+setwd(commandArgs()[6])
+specs=read.csv("specs/specs.csv", header=T)
+weighted.voting.models = rownames(specs[specs[, "classification"] == "weighted voting",])
+weighted.voting.models=paste("model", weighted.voting.models, sep="_")
+write.table(weighted.voting.models, "weightedVoting/weightedVoting.csv", row.names = F, col.names = F)
