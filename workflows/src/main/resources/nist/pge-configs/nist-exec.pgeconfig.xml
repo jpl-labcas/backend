@@ -13,12 +13,12 @@
          LabNumber=[LabNumber]
          if (( $LabNumber == '005' )) || (( $LabNumber == '006' )) || (( $LabNumber == '007' )) || (( $LabNumber == '008' ))
          then 
-            Rscript --vanilla SingleLab_SingleRound_C.R Lab[LabNumber]_[Method] R[RoundNumber] 
+            Rscript --vanilla SL_SR_6panels_w_table.R Lab[LabNumber]_[Method] R[RoundNumber] 
          fi
     </cmd>
-    <!-- move output back to stangin area -->
+    <!-- move output back to stanging area -->
     <!-- suppress error message if plot file does not exist -->
-    <cmd>mv Rplots.pdf [LABCAS_STAGING]/[DatasetId]/. 2&gt;/dev/null; true</cmd>
+    <cmd>mv Rplots.pdf [LABCAS_STAGING]/[ProductType]/[DatasetId]/. 2&gt;/dev/null; true</cmd>
     <!-- remove latest uploaded data -->
     <cmd>rm [DatasetId]*.txt</cmd>
   </exe>
