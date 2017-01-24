@@ -18,7 +18,8 @@
     </cmd>
     <!-- move output back to stanging area -->
     <!-- suppress error message if plot file does not exist -->
-    <cmd>mv Rplots.pdf [LABCAS_STAGING]/[ProductType]/[DatasetId]/. 2&gt;/dev/null; true</cmd>
+    <!-- <cmd>mv Rplots.pdf [LABCAS_STAGING]/[ProductType]/[DatasetId]/. 2&gt;/dev/null; true</cmd> -->
+    <cmd>rm Rplots.pdf</cmd>
     <cmd>mv [DatasetId]*.pdf [LABCAS_STAGING]/[ProductType]/[DatasetId]/. 2&gt;/dev/null; true</cmd>
     <!-- remove latest uploaded data -->
     <cmd>rm [DatasetId]*.txt</cmd>
