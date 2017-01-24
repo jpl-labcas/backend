@@ -20,10 +20,7 @@
 <cas:tasks xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
   <task id="urn:edrn:LabcasUploadInitTask" name="LabcasUploadInitTask" class="gov.nasa.jpl.edrn.labcas.tasks.LabcasInitCollectionTaskInstance">
-  
-    <!-- Workflow Configuration -->
-    <property name="UploadFiles" value="true" />
-    
+      
     <conditions />
         
     <!-- include external labcas metadata configuration -->

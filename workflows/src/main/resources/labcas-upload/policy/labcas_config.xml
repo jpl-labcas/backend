@@ -4,6 +4,7 @@
 
     <!--  UI workflow order -->
     <property name="workflow.order" value="1" />
+    <property name="UploadFiles" value="true" />
     
     <!-- dataset (aka product type) metadata -->    
     
