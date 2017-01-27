@@ -42,7 +42,7 @@ class LabcasClient(object):
         ''' Monitors a workflow instance until it completes.'''
     
         # wait for the server to instantiate this workflow before querying it
-        time.sleep(2) 
+        time.sleep(4) 
     
         # now use the workflow instance id to check for status, wait until completed
         running_status  = ['CREATED', 'QUEUED', 'STARTED', 'PAUSED']
