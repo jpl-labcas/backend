@@ -9,9 +9,11 @@
     <cmd>cp [LABCAS_STAGING]/[ProductType]/[DatasetId]/[DatasetId]*.txt .</cmd>
     <!-- run R script (only for Labs 005-008) -->
     <!-- must use ((..)) notation because [...] is parsed by OODT for env replacement -->
+    <!-- LabNumber=${LabNumber//0/} removes the two leading 0s -->
     <cmd>
          LabNumber=[LabNumber]
-         if (( $LabNumber == '005' )) || (( $LabNumber == '006' )) || (( $LabNumber == '007' )) || (( $LabNumber == '008' ))
+         LabNumber=${LabNumber//0/}
+         if (( $LabNumber == 5 )) || (( $LabNumber == 6 )) || (( $LabNumber == 7 )) || (( $LabNumber == 8 ))
          then 
             Rscript --vanilla SL_SR_6panels_w_table.R Lab[LabNumber]_[Method] R[RoundNumber] 
          fi
