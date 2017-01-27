@@ -7,7 +7,7 @@ if __name__ == '__main__':
     # submit workflow
     # ./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName nist 
     #               --metaData --key DatasetName Lab005_C_R03 --key LabNumber 005 
-    #               --key NormalizationMethod C --key RoundNumber 003 --key LeadPI Johns 
+    #               --key NormalizationMethod C --key RoundNumber 03 --key LeadPI Johns 
     #               --key DataCollectionDate 20160101 --key SampleProcessingProtocols 'With water and ammonia' 
     #               --key InstrumentationTechnologyCode NGS --key Manufacturer TexasInstruments 
     #               --key ModelNumber XYZ123 --key DataProcessingProtocols 'Crunching data' 
@@ -22,7 +22,7 @@ if __name__ == '__main__':
     metadata = {'DatasetName':'Lab005_C_R03',
                 'LabNumber':'005',
                 'Method':'C',
-                'RoundNumber':'003',
+                'RoundNumber':'03',
                 'LeadPI':'Johns', 
                 'DataCollectionDate':'20160101',
                 'NewVersion':'false' }
