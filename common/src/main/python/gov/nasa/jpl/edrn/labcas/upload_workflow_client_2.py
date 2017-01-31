@@ -35,7 +35,7 @@ if __name__ == '__main__':
                  # other metadata
                  'Consortium': 'MCL',
                  'Discipline': 'Pathology',
-                 'LeadPI': 'Maitra Anirban',
+                 'LeadPI': 'Anirban Maitra',
                  'QAState': 'Public',
                  'Organ': 'Pancreas',
                  'Institution': 'MD Anderson Cancer Center',
