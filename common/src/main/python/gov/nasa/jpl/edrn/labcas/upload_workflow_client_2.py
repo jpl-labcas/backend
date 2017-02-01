@@ -41,7 +41,8 @@ if __name__ == '__main__':
                  'Institution': 'MD Anderson Cancer Center',
                  'ImagingTechnique': 'TMA (Tissue Micro Array)',
                  'Project': 'N/A',
-                 'Species':'Human' 
+                 'Species':'Human',
+                 'DataCustodian':'Jaime Rodriquez',
 
                }
     
