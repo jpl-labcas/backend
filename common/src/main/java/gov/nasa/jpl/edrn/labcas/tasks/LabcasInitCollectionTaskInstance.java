@@ -71,9 +71,14 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 	        datasetMetadata.addMetadata(_datasetMetadata);
 
 			// transfer Dataset* metadata from collection-level to to dataset-level
+	        // do not override existing values
 	        for (String key : productTypeMetadata.getAllKeys()) {
 	        	if (key.startsWith("Dataset")) {
-	        		datasetMetadata.addMetadata(key, productTypeMetadata.getAllValues(key));
+	        		if (!datasetMetadata.containsKey(key)) {
+		        		for (String value : productTypeMetadata.getAllMetadata(key)) {
+		        			datasetMetadata.addMetadata(key, value);
+		        		}
+	        		}
 	        		productTypeMetadata.removeMetadata(key);
 	        	}
 	        }
