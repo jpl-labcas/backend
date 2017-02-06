@@ -161,12 +161,12 @@ public class SolrUtils {
 	                                   + "/"
 	                                   + metadata.getMetadata(Constants.METADATA_KEY_FILE_NAME);
 	        LOG.info("Querying id for product with URI="+fileUri);
-	        // must first enclose in "..." to execute a perfect string match (in case name contains spaces)
-	        // then must encode the full value of parameter fq=...
+	        // must enclose in "..." to execute a perfect string match (in case name contains spaces)
+	        // do NOT encode the value of parameter fq=... sincd SolrQuery will do it
 	        String fqval = "CAS.ReferenceDatastore:\""+fileUri+"\"";
 	        LOG.info("Querying for fq value="+fqval);
-	        request.addFilterQuery(URLEncoder.encode(fqval,"UTF-8"));
-	        //request.addFilterQuery(fqval);
+	        //request.addFilterQuery(URLEncoder.encode(fqval,"UTF-8"));
+	        request.addFilterQuery(fqval);
 	        request.addSortField(Constants.METADATA_KEY_TIMESTAMP, ORDER.desc); // retrieve the last entry with this filepath
 	        request.setRows(1); // retrieve only one result
 	        LOG.fine("Executing Solr query: "+request.toString());
