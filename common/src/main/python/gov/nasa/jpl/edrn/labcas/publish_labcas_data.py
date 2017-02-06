@@ -44,7 +44,11 @@ if __name__ == '__main__':
         for section in config.sections():
             for key, value in config.items(section):
                 print '\t%s = %s' % (key, value)
-                metadata[key] = value
+                # [Dataset] section: prefix all fields with 'Dataset:'
+                if section=='Dataset' and key != 'DatasetName' and key != 'DatasetDescription':
+                    metadata['Dataset:%s'%key] = value
+                else:
+                    metadata[key] = value
     except Exception as e:
         print "ERROR reading metadata configuration:"
         print e
