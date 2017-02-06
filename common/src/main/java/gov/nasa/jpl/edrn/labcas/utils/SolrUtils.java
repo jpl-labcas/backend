@@ -157,12 +157,12 @@ public class SolrUtils {
 	        SolrQuery request = new SolrQuery();
 	        request.setQuery("*:*");
 	        // query product by final archive location
+	        // note: appearently OODT encodes 'some' characters but not others in the filename:
+	        // must try to execute the exact same substitutions to have the Solr query succeds...
 	        String fileUri = "file:" + metadata.getMetadata(Constants.METADATA_KEY_FILE_PATH) 
-	                                   + "/"
-	                                   + metadata.getMetadata(Constants.METADATA_KEY_FILE_NAME);
+	                       + "/" + myencoding(metadata.getMetadata(Constants.METADATA_KEY_FILE_NAME));
 	        LOG.info("Querying id for product with URI="+fileUri);
 	        // must enclose in "..." to execute a perfect string match (in case name contains spaces)
-	        // do NOT encode the value of parameter fq=... sincd SolrQuery will do it
 	        String fqval = "CAS.ReferenceDatastore:\""+fileUri+"\"";
 	        LOG.info("Querying for fq value="+fqval);
 	        request.addFilterQuery(fqval);
@@ -187,6 +187,18 @@ public class SolrUtils {
 		
 		return productId;
         
+		
+	}
+	
+	/**
+	 * Utility method to try to duplicate the specific encoding done by OODT before storing a string
+	 * (which is NOT a complete URLEncoder.encode(s,"UTF-8");
+	 */
+	private static String myencoding(String s) {
+	
+		return s.replace(" ","%20")
+		        .replace("[","%5B")
+		        .replace("]","%5D");
 		
 	}
 	
