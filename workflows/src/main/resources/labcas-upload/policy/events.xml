@@ -19,5 +19,9 @@
   <event name="labcas-upload">
     <workflow id="urn:edrn:LabcasUploadWorkflow" />
   </event>
+  
+  <event name="labcas-upload2">
+    <workflow id="urn:edrn:LabcasUpload2Workflow" />
+  </event>
 
 </cas:workflowevents>

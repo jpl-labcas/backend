@@ -39,7 +39,7 @@
     
   </task>
 
-
+  <!-- publishes data from $LABCAS_STAGING to $LABCAS_ARCHIVE -->
   <task id="urn:edrn:LabcasUploadExecuteTask" name="LabcasUploadExecuteTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
   
     <conditions />
@@ -54,6 +54,27 @@
       <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true" />
       <property name="PCS_MetFileExtension" value="met" />
       <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
+      <property name="PCS_ActionRepoFile" value="file:[LABCAS_HOME]/cas-crawler/policy/crawler-config.xml" envReplace="true" />
+      <property name="PCS_ActionsIds" value="LabcasPostIngestionAction"/>
+    </configuration>
+    
+  </task>
+  
+  <!-- publishes data already in $LABCAS_ARCHIVE without moving them -->
+  <task id="urn:edrn:LabcasUpload2ExecuteTask" name="LabcasUpload2ExecuteTask" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+  
+    <conditions />
+  
+    <configuration>
+      <property name="PGETask_Name" value="LabcasUpload2ExecuteTask" />
+      <property name="PGETask_ConfigFilePath"
+        value="[LABCAS_HOME]/workflows/labcas-upload/pge-configs/labcas-upload2-execute-task-config.pgeconfig.xml"
+        envReplace="true" />
+      <property name="PGETask_DumpMetadata" value="true" />
+      <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
+      <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true" />
+      <property name="PCS_MetFileExtension" value="met" />
+      <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory" />
       <property name="PCS_ActionRepoFile" value="file:[LABCAS_HOME]/cas-crawler/policy/crawler-config.xml" envReplace="true" />
       <property name="PCS_ActionsIds" value="LabcasPostIngestionAction"/>
     </configuration>

@@ -62,7 +62,7 @@ class LabcasClient(object):
                 break
         print response
         
-    def uploadCollection(self, datasetId, metadata, newVersion=False):
+    def uploadCollection(self, datasetId, metadata, newVersion=False, inPlace=False):
         
         # add 'DatasetId' key, value to other metadata
         metadata['DatasetId'] = datasetId
@@ -75,7 +75,10 @@ class LabcasClient(object):
         #tf = serverProxy.workflowmgr.handleEvent('labcas-upload', { 'DatasetId':'mydata' } )
     
         # ... consequently, you must submit an equivalent dynamic workflow, which does return the workflow instance id
-        wInstId = self.workflowManagerServerProxy.workflowmgr.executeDynamicWorkflow( ['urn:edrn:LabcasUploadInitTask','urn:edrn:LabcasUploadExecuteTask'], 
+        if inPlace:
+            wInstId = self.workflowManagerServerProxy.workflowmgr.executeDynamicWorkflow( ['urn:edrn:LabcasUploadInitTask','urn:edrn:LabcasUpload2ExecuteTask'],                                                                           metadata )
+        else:
+            wInstId = self.workflowManagerServerProxy.workflowmgr.executeDynamicWorkflow( ['urn:edrn:LabcasUploadInitTask','urn:edrn:LabcasUploadExecuteTask'], 
                                                                                       metadata )
     
         # monitor workflow instance
