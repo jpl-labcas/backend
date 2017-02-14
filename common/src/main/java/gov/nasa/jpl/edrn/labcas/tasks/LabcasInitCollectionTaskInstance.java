@@ -89,7 +89,6 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 	        boolean updateCollection = true;
 	        if ( metadata.containsKey(Constants.METADATA_KEY_UPDATE_COLLECTION)) {
 	        	updateCollection = Boolean.parseBoolean( metadata.getMetadata(Constants.METADATA_KEY_UPDATE_COLLECTION) );
-	        	LOG.info("\n\nupdateCollection="+updateCollection);
 	        }
 			
 	        if (updateCollection) {
