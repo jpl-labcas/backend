@@ -117,7 +117,9 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 	        
 			// publish collection to the public Solr index
 			// starting from the product type archive directory which contains the newly created "product-types.xml" file
-			SolrUtils.publishCollection( FileManagerUtils.getProductTypeArchiveDir(productTypeName) );
+	        if (updateCollection) {
+	        	SolrUtils.publishCollection( FileManagerUtils.getProductTypeArchiveDir(productTypeName) );
+	        }
 
 			// publish dataset to the public Solr index
 			SolrUtils.publishDataset(datasetMetadata);
