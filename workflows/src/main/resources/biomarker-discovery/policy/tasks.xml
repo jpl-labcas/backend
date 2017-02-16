@@ -17,7 +17,7 @@
   
     <configuration>
     
-      <property name="dataset.ProductType" value="BiomarkerDiscoveryProduct" />
+      <property name="CollectionName" value="BiomarkerDiscoveryProduct" />
     
       <!-- input parameters -->
       
