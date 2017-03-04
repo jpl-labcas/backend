@@ -1,3 +1,4 @@
+**/*.pyc
 /bin
 .classpath
 .project
@@ -10,6 +11,5 @@
 **/*.zip
 **/*.tar
 **/*.tgz
-**/*.pyc
 **/*.class
 **/$*
