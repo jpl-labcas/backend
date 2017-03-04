@@ -55,7 +55,7 @@ if __name__ == '__main__':
             for key, value in config.items(section):
                 print '\t%s = %s' % (key, value)
                 # [Dataset] section: prefix all fields with 'Dataset:'
-                if section=='Dataset' and key != 'DatasetName' and key != 'DatasetDescription':
+                if section=='Dataset' and key != 'DatasetId' and key != 'DatasetName' and key != 'DatasetDescription':
                     metadata['Dataset:%s'%key] = value
                 else:
                     metadata[key] = value
@@ -70,7 +70,11 @@ if __name__ == '__main__':
             print 'Mandatory metadata field: %s is missing, exiting' % key
             sys.exit(-1)
             
-    dataset_name = metadata['DatasetName']
+    # use specific DatasetId or generate from DatasetName
+    try:
+        dataset_id = metadata.get('DatasetId')
+    except KeyError:
+        dataset_id = metadata.get('DatasetName')
     product_type = metadata['CollectionName'].replace(' ','_') # must match directory name in $LABCAS_STAGING
     
     # submit 'labcas-upload' workflow
@@ -84,7 +88,7 @@ if __name__ == '__main__':
         labcasClient.getWorkflowById("urn:edrn:LabcasUploadWorkflow")
 
     # upload dataset staged in directory 'mydatadir'
-    labcasClient.uploadCollection(dataset_name, metadata, inPlace=inPlace)
+    labcasClient.uploadCollection(dataset_id, metadata, inPlace=inPlace)
 
     # query the product types from the XML/RPC File Manager interface
     labcasClient.getProductTypeByName(product_type)

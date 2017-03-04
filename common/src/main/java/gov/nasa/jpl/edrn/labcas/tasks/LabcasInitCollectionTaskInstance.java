@@ -46,10 +46,13 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 			String productTypeName = collectionName.replaceAll("\\s+", "_");
 			metadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName); // needed for file ingestion
 			
-			// generate "DatasetId" from "DatasetName"
+			// retrieve DatasetId, or generate it from "DatasetName"
+			String datasetId = metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
 			String datasetName = metadata.getMetadata(Constants.METADATA_KEY_DATASET_NAME);
-			String datasetId = datasetName.replaceAll("\\s+", "_");
-			metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId);
+			if (datasetId==null) {
+				datasetId = datasetName.replaceAll("\\s+", "_");
+				metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId);
+			}
 			
 			// populate product type metadata from XML/RPC parameters
 			Metadata productTypeMetadata = new Metadata();
