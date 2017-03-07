@@ -74,7 +74,7 @@ if __name__ == '__main__':
     try:
         dataset_id = metadata['DatasetId']
     except KeyError:
-        dataset_id = metadata['DatasetName']
+        dataset_id = metadata['DatasetName'].replace(' ','_') # must match directory name in $LABCAS_STAGING
     product_type = metadata['CollectionName'].replace(' ','_') # must match directory name in $LABCAS_STAGING
     
     # submit 'labcas-upload' workflow
