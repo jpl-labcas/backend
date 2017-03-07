@@ -72,9 +72,9 @@ if __name__ == '__main__':
             
     # use specific DatasetId or generate from DatasetName
     try:
-        dataset_id = metadata.get('DatasetId')
+        dataset_id = metadata['DatasetId']
     except KeyError:
-        dataset_id = metadata.get('DatasetName')
+        dataset_id = metadata['DatasetName']
     product_type = metadata['CollectionName'].replace(' ','_') # must match directory name in $LABCAS_STAGING
     
     # submit 'labcas-upload' workflow

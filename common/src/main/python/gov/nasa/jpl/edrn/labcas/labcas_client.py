@@ -66,7 +66,7 @@ class LabcasClient(object):
         
         # add 'DatasetId' key, value to other metadata
         metadata['DatasetId'] = datasetId
-        
+                
         # optionally request a new version
         if newVersion:
             metadata['NewVersion'] = 'true'
@@ -76,10 +76,11 @@ class LabcasClient(object):
     
         # ... consequently, you must submit an equivalent dynamic workflow, which does return the workflow instance id
         if inPlace:
-            wInstId = self.workflowManagerServerProxy.workflowmgr.executeDynamicWorkflow( ['urn:edrn:LabcasUploadInitTask','urn:edrn:LabcasUpload2ExecuteTask'],                                                                           metadata )
+            wInstId = self.workflowManagerServerProxy.workflowmgr.executeDynamicWorkflow( ['urn:edrn:LabcasUploadInitTask','urn:edrn:LabcasUpload2ExecuteTask'],                                                                           
+                                                                                           metadata )
         else:
             wInstId = self.workflowManagerServerProxy.workflowmgr.executeDynamicWorkflow( ['urn:edrn:LabcasUploadInitTask','urn:edrn:LabcasUploadExecuteTask'], 
-                                                                                      metadata )
+                                                                                           metadata )
     
         # monitor workflow instance
         self.waitForCompletion(wInstId)
