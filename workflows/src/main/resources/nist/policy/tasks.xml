@@ -103,7 +103,6 @@
       <metfield name="LabNumber" />
       <metfield name="Method" />
       <metfield name="RoundNumber" />
-      <metfield name="LeadPI" />
       <metfield name="DataCollectionDate" />
       
     </requiredMetFields>

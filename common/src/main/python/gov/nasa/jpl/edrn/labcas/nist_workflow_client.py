@@ -23,9 +23,9 @@ if __name__ == '__main__':
                 'LabNumber':'005',
                 'Method':'C',
                 'RoundNumber':'03',
-                'LeadPI':'Johns', 
                 'DataCollectionDate':'20160101',
-                'NewVersion':'false' }
+                'NewVersion':'false',
+                'UpdateCollection':'false' }
 
     # upload dataset without changing the version
     wInstId = labcasClient.executeWorkflow(workflowTasks, metadata)
@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     # upload new version of same dataset, fix MetaData
     metadata['NewVersion']='true'
-    metadata['LeadPI']='Smith'
+    metadata['LeadPI']='Pine, Scott'
     wInstId = labcasClient.executeWorkflow(workflowTasks, metadata)
     # monitor workflow instance
     labcasClient.waitForCompletion(wInstId)

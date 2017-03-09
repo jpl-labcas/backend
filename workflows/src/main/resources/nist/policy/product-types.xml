@@ -20,7 +20,7 @@
   <type id="urn:edrn:NIST_Product" name="NIST_Product">
     <repository path="file://[LABCAS_ARCHIVE]" />
     <versioner class="gov.nasa.jpl.edrn.labcas.versioning.LabcasProductVersioner" />
-    <description>Product published through NIST pipeline.</description>
+    <description>NIST Laboratory Data</description>
     <metExtractors>
       <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
         <configuration>
@@ -31,43 +31,51 @@
       </extractor>
       <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor" />
     </metExtractors>
-    
-    <metadata>
 
-      <!-- LabCAS core metadata -->
-      <keyval>
-        <key>Description</key>
-        <val>NIST Laboratory Data</val>
-      </keyval>
-      <keyval>
-        <key>OwnerPrincipal</key>
-        <val>cn=Pine National Institute of Standards and Technology,dc=edrn,dc=jpl,dc=nasa,dc=gov</val>
-      </keyval>
-  
-      <!-- CDEs -->
+    <metadata>
       <keyval>
         <key>Discipline</key>
         <val>MicroRnaSequencing</val>
+      </keyval>
+      <keyval>
+        <key>Institution</key>
+        <val>NIST</val>
+      </keyval>
+      <keyval>
+        <key>InstitutionId</key>
+        <val>N/A</val>
       </keyval>
       <keyval>
         <key>LeadPI</key>
         <val>Scott Pine</val>
       </keyval>
       <keyval>
-        <key>ProtocolId</key>
-        <val>410</val>
+        <key>LeadPIId</key>
+        <val>N/A</val>
+      </keyval>
+      <keyval>
+        <key>Organ</key>
+        <val>Liver, Placenta, Brain</val>
+      </keyval>
+      <keyval>
+        <key>DataCustodian</key>
+        <val>Scott Pine</val>
+      </keyval>
+      <keyval>
+        <key>OwnerPrincipal</key>
+        <val>cn=Pine National Institute of Standards and Technology,dc=edrn,dc=jpl,dc=nasa,dc=gov</val>
+      </keyval>
+      <keyval>
+        <key>CollaborativeGroup</key>
+        <val>N/A</val>
       </keyval>
       <keyval>
         <key>ProtocolName</key>
         <val>Interlab Study of miRNA Measurement</val>
       </keyval>
       <keyval>
-        <key>OrganSite</key>
-        <val>Liver, Placenta, Brain</val>
-      </keyval>
-      <keyval>
-        <key>CollaborativeGroup</key>
-        <val>N/A</val>
+        <key>ProtocolId</key>
+        <val>410</val>
       </keyval>
 
     </metadata>
