@@ -1,5 +1,5 @@
 <?xml version="1.0" standalone="no" ?>
-<!DOCTYPE doc [ <!ENTITY labcas_config SYSTEM "../../workflows/labcas-upload/policy/labcas_config.xml"> ]>
+<!DOCTYPE doc [ <!ENTITY labcas_schema SYSTEM "../../workflows/labcas-upload/policy/labcas_schema.xml"> ]>
 
 <!--
   Licensed to the Apache Software Foundation (ASF) under one or more
@@ -24,17 +24,29 @@
     <conditions />
         
     <!-- include external labcas metadata configuration -->
-    &labcas_config;
+    &labcas_schema;
       
     <requiredMetFields>
     
+      <!-- collection -->
       <metfield name="CollectionName" />
       <metfield name="CollectionDescription" />
-      <metfield name="DatasetName" />
-      
+      <metfield name="Discipline" />
+      <metfield name="Institution" />
+      <metfield name="LeadPI" />
+      <metfield name="LeadPIId" />
+      <metfield name="Organ" />
+      <metfield name="OrganId" />
+      <metfield name="DataCustodian" />
       <metfield name="OwnerPrincipal"/>
+      <metfield name="CollaborativeGroup"/>
       <metfield name="Consortium"/>
-            
+      
+      <!-- dataset -->
+      <metfield name="DatasetName" />
+      <metfield name="DatasetDescription" />
+      <metfield name="Species" />
+      
     </requiredMetFields>
     
   </task>
