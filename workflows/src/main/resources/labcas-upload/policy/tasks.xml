@@ -33,6 +33,7 @@
       <metfield name="CollectionDescription" />
       <metfield name="Discipline" />
       <metfield name="Institution" />
+      <metfield name="InstitutionId" />
       <metfield name="LeadPI" />
       <metfield name="LeadPIId" />
       <metfield name="Organ" />
@@ -45,7 +46,6 @@
       <!-- dataset -->
       <metfield name="DatasetName" />
       <metfield name="DatasetDescription" />
-      <metfield name="Species" />
       
     </requiredMetFields>
     

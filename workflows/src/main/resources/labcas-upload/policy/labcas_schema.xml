@@ -104,7 +104,13 @@
     <property name="input.dataset.DatasetDescription.title" value="Dataset Description" />
     <property name="input.dataset.DatasetDescription.description" value="Short description for this dataset (a few sentences)." />
     <property name="input.dataset.DatasetDescription.required" value="true" />
-            
+    
+    <property name="input.dataset.Species.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#species" />
+    <property name="input.dataset.Species.title" value="Species" />
+    <property name="input.dataset.Species.description" value="Animal species for which this study was conducted" />
+    <property name="input.dataset.Species.required" value="true" />
+    
+        
     <property name="input.dataset.PubMedId.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#discipline" />
     <property name="input.dataset.PubMedId.title" value="Pub Med ID" />
     <property name="input.dataset.PubMedId.description" value="URL of PubMed publication" />
@@ -114,12 +120,7 @@
     <property name="input.dataset.ReferenceURL.title" value="Reference URL" />
     <property name="input.dataset.ReferenceURL.description" value="External URL of associated web site for these data" />
     <property name="input.dataset.ReferenceURL.required" value="false" />
-    
-    <property name="input.dataset.Species.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#species" />
-    <property name="input.dataset.Species.title" value="Species" />
-    <property name="input.dataset.Species.description" value="Animal species for which this study was conducted" />
-    <property name="input.dataset.Species.required" value="true" />
-    
+        
     <property name="input.file.Instrument.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.file.Instrument.title" value="Instrument" />
     <property name="input.file.Instrument.description" value="Instrument that was used to collect these data" />
