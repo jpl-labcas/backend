@@ -23,7 +23,7 @@
     <property name="input.dataset.Discipline.description" value="Medical discipline for this dataset (select one)" />
     <property name="input.dataset.Discipline.required" value="false" />
     
-    <property name="input.dataset.Institution.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#siteName" />
+    <property name="input.dataset.Institution.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.dataset.Institution.title" value="Institution" />
     <property name="input.dataset.Institution.description" value="Institution where the research was conducted (full name)" />
     <property name="input.dataset.Institution.required" value="true" />
