@@ -37,9 +37,12 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 	public void run(Metadata metadata, WorkflowTaskConfiguration config) throws WorkflowTaskInstanceException {
 				        
 		try {
-			
+							
 			// NOTE: "metadata" is global workflow metadata, passed on through the workflow tasks
-			// on input, "metadata" contains (key, value) pairs supplied by client in XML/RPC invocation
+			// on input, "metadata" contains (key, value) pairs supplied by client in XML/RPC invocation			
+			LOG.info("LabcasInitCollectionTaskInstance: input collectionName="+metadata.getMetadata(Constants.METADATA_KEY_COLLECTION_NAME));
+			LOG.info("LabcasInitCollectionTaskInstance: input datasetId="+metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID));
+			LOG.info("LabcasInitCollectionTaskInstance: input datasetName="+metadata.getMetadata(Constants.METADATA_KEY_DATASET_NAME));
 			
 			// generate "ProductType" name from "CollectionName"
 			String collectionName =  metadata.getMetadata(Constants.METADATA_KEY_COLLECTION_NAME);
@@ -53,6 +56,7 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 				datasetId = datasetName.replaceAll("\\s+", "_");
 				metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId);
 			}
+			LOG.info("LabcasInitCollectionTaskInstance: using datasetId="+metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID));
 			
 			// populate product type metadata from XML/RPC parameters
 			Metadata productTypeMetadata = new Metadata();
