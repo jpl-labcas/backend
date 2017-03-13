@@ -84,6 +84,11 @@
     <property name="input.dataset.CollaborativeGroup.description" value="Organ Collaborative Group (select one)" />
     <property name="input.dataset.CollaborativeGroup.required" value="true" />
         
+    <property name="input.dataset.QAState.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#collaborativeGroup" />
+    <property name="input.dataset.QAState.title" value="Public Data ?" />
+    <property name="input.dataset.QAState.description" value="Choose 'Public' to enable anybody to access" />
+    <property name="input.dataset.QAState.required" value="true" />
+    
   
     <!--  Dataset level metadata -->
     
