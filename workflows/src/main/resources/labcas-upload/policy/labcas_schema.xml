@@ -21,17 +21,17 @@
     <property name="input.dataset.Discipline.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#discipline" />
     <property name="input.dataset.Discipline.title" value="Discipline" />
     <property name="input.dataset.Discipline.description" value="Medical discipline for this dataset (select one)" />
-    <property name="input.dataset.Discipline.required" value="false" />
+    <property name="input.dataset.Discipline.required" value="true" />
     
-    <property name="input.dataset.Institution.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#partecipatingSite" />
+    <property name="input.dataset.Institution.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#participatingSite" />
     <property name="input.dataset.Institution.title" value="Institution" />
     <property name="input.dataset.Institution.description" value="Institution where the research was conducted (full name)" />
     <property name="input.dataset.Institution.required" value="true" />
     
-    <property name="input.dataset.InstitutionId.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#partecipatingSiteId" />
+    <property name="input.dataset.InstitutionId.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#participatingSiteId" />
     <property name="input.dataset.InstitutionId.title" value="Institution Unique Identifier" />
     <property name="input.dataset.InstitutionId.description" value="Institution Unique Identifier" />
-    <property name="input.dataset.InstitutionId.required" value="false" />
+    <property name="input.dataset.InstitutionId.required" value="true" />
     <property name="input.dataset.InstitutionId.visible" value="false" />
     
     <property name="input.dataset.LeadPI.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#principalInvestigator" />
@@ -39,10 +39,10 @@
     <property name="input.dataset.LeadPI.description" value="Begin typing an investigator name. A list of options will appear." />
     <property name="input.dataset.LeadPI.required" value="true" />
 
-    <property name="input.dataset.LeadPIId.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#principalInvestigator" />
+    <property name="input.dataset.LeadPIId.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#principalInvestigatorId" />
     <property name="input.dataset.LeadPIId.title" value="Lead PI Identifier" />
     <property name="input.dataset.LeadPIId.description" value="Lead PI Unique Identifier" />
-    <property name="input.dataset.LeadPIId.required" value="false" />
+    <property name="input.dataset.LeadPIId.required" value="true" />
     <property name="input.dataset.LeadPIId.visible" value="false" />
     
     <property name="input.dataset.Organ.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#organ" />
@@ -66,6 +66,7 @@
     <property name="input.dataset.ProtocolId.title" value="Protocol Identifier" />
     <property name="input.dataset.ProtocolId.description" value="Protocol Unique Identifier" />
     <property name="input.dataset.ProtocolId.required" value="false" />
+    <property name="input.dataset.ProtocolId.visible" value="false" />
     
     <property name="input.dataset.DataCustodian.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#currentLogin" />
     <property name="input.dataset.DataCustodian.title" value="Data Custodian" />
@@ -77,21 +78,12 @@
     <property name="input.dataset.OwnerPrincipal.description" 
               value="Select or remove the groups or individuals with whom you’d like to share this data." />
     <property name="input.dataset.OwnerPrincipal.required" value="true" />
-    <property name="input.dataset.OwnerPrincipal.visible" value="true" />
     
     <property name="input.dataset.CollaborativeGroup.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#collaborativeGroup" />
     <property name="input.dataset.CollaborativeGroup.title" value="Collaborative Group" />
     <property name="input.dataset.CollaborativeGroup.description" value="Organ Collaborative Group (select one)" />
     <property name="input.dataset.CollaborativeGroup.required" value="true" />
-    
-    <property name="input.dataset.Consortium.type" value="http://www.w3.org/2001/XMLSchema/string" />
-    <property name="input.dataset.Consortium.title" value="Consortium" />
-    <property name="input.dataset.Consortium.description" value="High level project funding these data" />
-    <property name="input.dataset.Consortium.required" value="true" />
-    <property name="input.dataset.Consortium.value.1" value="EDRN" />
-    <property name="input.dataset.Consortium.value.2" value="MCL" />
-    <property name="input.dataset.Consortium.visible" value="false" />
-    
+        
   
     <!--  Dataset level metadata -->
     
@@ -108,9 +100,8 @@
     <property name="input.dataset.Species.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#species" />
     <property name="input.dataset.Species.title" value="Species" />
     <property name="input.dataset.Species.description" value="Animal species for which this study was conducted" />
-    <property name="input.dataset.Species.required" value="true" />
+    <property name="input.dataset.Species.required" value="false" />
     
-        
     <property name="input.dataset.PubMedId.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.dataset.PubMedId.title" value="Pub Med ID" />
     <property name="input.dataset.PubMedId.description" value="URL of PubMed publication" />
@@ -121,42 +112,42 @@
     <property name="input.dataset.ReferenceURL.description" value="External URL of associated web site for these data" />
     <property name="input.dataset.ReferenceURL.required" value="false" />
         
-    <property name="input.file.Instrument.type" value="http://www.w3.org/2001/XMLSchema/string" />
-    <property name="input.file.Instrument.title" value="Instrument" />
-    <property name="input.file.Instrument.description" value="Instrument that was used to collect these data" />
-    <property name="input.file.Instrument.required" value="false" />
+    <property name="input.dataset.Instrument.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.dataset.Instrument.title" value="Instrument" />
+    <property name="input.dataset.Instrument.description" value="Instrument that was used to collect these data" />
+    <property name="input.dataset.Instrument.required" value="false" />
     
-    <property name="input.file.SpecimenType.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#specimenType" />
-    <property name="input.file.SpecimenType.title" value="Specimen Type" />
-    <property name="input.file.SpecimenType.description" value="The specimen type (select all that apply)" />
-    <property name="input.file.SpecimenType.required" value="false" />   
+    <property name="input.dataset.SpecimenType.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#specimenType" />
+    <property name="input.dataset.SpecimenType.title" value="Specimen Type" />
+    <property name="input.dataset.SpecimenType.description" value="The specimen type (select all that apply)" />
+    <property name="input.dataset.SpecimenType.required" value="false" />   
         
     <!-- File level metadata -->
     
     <property name="input.file.FileName.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.file.FileName.title" value="File Name" />
     <property name="input.file.FileName.description" value="The file name on storage" />
-    <property name="input.dataset.FileName.required" value="true" />
+    <property name="input.file.FileName.required" value="true" />
 
     <property name="input.file.FilePath.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.file.FilePath.title" value="File Path" />
     <property name="input.file.FilePath.description" value="The file path on storage" />
-    <property name="input.dataset.FilePath.required" value="true" />
+    <property name="input.file.FilePath.required" value="true" />
 
     <property name="input.file.FileType.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.file.FileType.title" value="File Type" />
     <property name="input.file.FileType.description" value="The file mime type" />
-    <property name="input.dataset.FileType.required" value="false" />
+    <property name="input.file.FileType.required" value="false" />
 
     <property name="input.file.FileDescription.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.file.FileDescription.title" value="File Name" />
     <property name="input.file.FileDescription.description" value="A short description for this file" />
-    <property name="input.dataset.FileDescription.required" value="false" />
+    <property name="input.file.FileDescription.required" value="false" />
 
     <property name="input.file.ProcessingLevel.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.file.ProcessingLevel.title" value="Raw or Processed" />
     <property name="input.file.ProcessingLevel.description" value="Wether this file contains raw or processed data" />
-    <property name="input.dataset.ProcessingLevel.required" value="false" />
+    <property name="input.file.ProcessingLevel.required" value="false" />
     
       
     <!-- output products -->
