@@ -65,7 +65,7 @@ if __name__ == '__main__':
         sys.exit(-1)
 
     # check mandatory fields
-    for key in ['CollectionName', 'CollectionDescription', 'DatasetName', 'OwnerPrincipal', 'Consortium']:
+    for key in ['CollectionName', 'CollectionDescription', 'DatasetName', 'OwnerPrincipal']:
         if not metadata.get(key, None):
             print 'Mandatory metadata field: %s is missing, exiting' % key
             sys.exit(-1)
