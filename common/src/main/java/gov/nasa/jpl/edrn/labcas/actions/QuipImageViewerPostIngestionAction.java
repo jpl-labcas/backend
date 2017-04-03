@@ -1,6 +1,7 @@
 package gov.nasa.jpl.edrn.labcas.actions;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,6 +16,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.oodt.cas.crawl.action.CrawlerAction;
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.metadata.Metadata;
+
+import gov.nasa.jpl.edrn.labcas.utils.GeneralUtils;
 
 /**
  * Class that publishes images of compatible type to the QUIP Image Viewer.
@@ -36,22 +39,11 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 	public boolean performAction(File product, Metadata productMetadata) throws CrawlerActionException {
 		
 		// determine file extension
-		String extension = "";
-		String fileName = product.getName();
-		int i = fileName.lastIndexOf('.');
-		if (i > 0) {
-		    extension = fileName.substring(i+1).toLowerCase();
-		}
+		String extension = GeneralUtils.getFileExtension(product).toLowerCase();
 		
+		// process compatible extensions
 		if (this.extensionsSet.contains(extension)) {
-			LOG.info("Performing QUIP publishing for file: "+product.getAbsolutePath());
-			
-			if (fileName.equals("EX10-0061-3N-PR.svs")) {
-				this.uploadFile(product);
-			}
-			
-		} else {
-			LOG.info("QUIP: extension NOT found="+extension);
+			this.uploadFile(product);
 		}
 		
 		// success
@@ -67,30 +59,35 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 		LOG.info("QUIP: uploading file: "+product.getAbsolutePath());
 
 		HttpClient httpclient = new DefaultHttpClient();
+		HttpEntity resEntity = null;
 		
 		try {
-						
-			// OLD API
 			
-			
-			HttpPost httppost = new HttpPost("http://localhost:6002/submitData");
+			HttpPost httppost = new HttpPost(this.quipImageViewerUrl);
 
-			String fileName = "/usr/local/labcas_staging/Team_37_CTIIP_Animal_Models/CTIIP-1.1b._Mouse/1/EX10-0061-3N-ER.svs";
-			FileBody bin = new FileBody(new File(fileName));
-			StringBody comment = new StringBody("EX10-0061-3N-ER-NEW");
+			FileBody upload = new FileBody(product);
+			StringBody case_id = new StringBody(product.getName());
 
 			MultipartEntity reqEntity = new MultipartEntity();
-			reqEntity.addPart("upload", bin);
-			reqEntity.addPart("case_id", comment);
+			reqEntity.addPart("upload", upload);
+			reqEntity.addPart("case_id", case_id);
 			httppost.setEntity(reqEntity);
 
 			HttpResponse response = httpclient.execute(httppost);
-			HttpEntity resEntity = response.getEntity();
-			//LOG.info("QUIP upload result="+resEntity.toString());
+			resEntity = response.getEntity();
+			LOG.info("QUIP upload result="+resEntity.toString());
 
 		} catch(Exception e) {
 			LOG.warning("QUIP upload resulted in error: "+e.getMessage());
-		} 
+			
+		} finally {
+			try {
+				if (resEntity != null) {
+					InputStream instream = resEntity.getContent();
+					instream.close();
+				}
+			} catch(Exception e) {}
+		}
 
     }
 	
