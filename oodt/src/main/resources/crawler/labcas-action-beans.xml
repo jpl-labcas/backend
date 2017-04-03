@@ -30,5 +30,17 @@ the License.
       </list>
     </property>
   </bean>
+  
+  <!-- QUIP Image Viewer -->
+  <bean id="QuipImageViewerPostIngestionAction" lazy-init="true" class="gov.nasa.jpl.edrn.labcas.actions.QuipImageViewerPostIngestionAction">
+    <property name="description" value="Publishes compatible files to the QUIP Image Viewer" />
+    <property name="quipImageViewerUrl" value="http://localhost:6002/submitData" />
+    <property name="extensions" value="svs" />
+    <property name="phases">
+      <list>
+        <value type="java.lang.String">postIngestSuccess</value>
+      </list>
+    </property>
+  </bean>
 
 </beans>

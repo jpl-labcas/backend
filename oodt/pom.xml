@@ -112,6 +112,17 @@
                   <artifactId>slf4j-api</artifactId>
                   <version>${slf4j.version}</version>
                 </artifactItem>
+                <!-- httpclient and httpmime needed for uploading files into QUIP image viewer -->
+                <artifactItem>
+                  <groupId>org.apache.httpcomponents</groupId>
+                  <artifactId>httpclient</artifactId>
+                  <version>${httpcomponents.version}</version>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.httpcomponents</groupId>
+                  <artifactId>httpmime</artifactId>
+                  <version>${httpcomponents.version}</version>
+                </artifactItem>                
               </artifactItems>
               <outputDirectory>${oodt.dir}/cas-workflow-${oodt.version}/lib</outputDirectory>
             </configuration>
