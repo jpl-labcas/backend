@@ -2,7 +2,6 @@ package gov.nasa.jpl.edrn.labcas.utils;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -438,6 +437,8 @@ public class SolrUtils {
 		
 		// serialize all metadata
 		for (String key : metadata.getAllKeys()) {
+			
+			//LOG.info("Metadata key="+key+" values="+metadata.getMetadata(key));
 			
 			// ignore OODT book-keeping fields
 			if (IGNORED_FIELDS.contains(key))  {

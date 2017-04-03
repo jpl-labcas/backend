@@ -21,6 +21,8 @@ import gov.nasa.jpl.edrn.labcas.utils.GeneralUtils;
 
 /**
  * Class that publishes images of compatible type to the QUIP Image Viewer.
+ * This class uses the env variable "LABCAS_HOST" 
+ * to set the proper host name for the QUIP viewer.
  * 
  * @author cinquini
  *
@@ -28,7 +30,10 @@ import gov.nasa.jpl.edrn.labcas.utils.GeneralUtils;
 public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 	
     // QUIP publishing endpoint
-    private String quipImageViewerUrl = "http://localhost:6002/submitData";
+    private String quipSubmitImageUrl = "http://localhost:6002/submitData";
+    
+    // QUIP display endpoint
+    private String quipViewImageUrl = "http://localhost:8000/camicroscope/osdCamicroscope.php?tissueId=";
     
 	// compatible file extensions
     private String extensions = "";
@@ -43,7 +48,7 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 		
 		// process compatible extensions
 		if (this.extensionsSet.contains(extension)) {
-			this.uploadFile(product);
+			this.uploadFile(product, productMetadata);
 		}
 		
 		// success
@@ -54,7 +59,7 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 	/**
 	 * Method to upload a file via a multi-part/form-data POST request to the QUIP server.
 	 */
-	private void uploadFile(File product) {
+	private void uploadFile(File product, Metadata productMetadata) {
 		
 		LOG.info("QUIP: uploading file: "+product.getAbsolutePath());
 
@@ -63,7 +68,7 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 		
 		try {
 			
-			HttpPost httppost = new HttpPost(this.quipImageViewerUrl);
+			HttpPost httppost = new HttpPost(this.quipSubmitImageUrl);
 
 			FileBody upload = new FileBody(product);
 			StringBody case_id = new StringBody(product.getName());
@@ -76,6 +81,9 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 			HttpResponse response = httpclient.execute(httppost);
 			resEntity = response.getEntity();
 			LOG.info("QUIP upload result="+resEntity.toString());
+			
+			// add URL to metadata
+			productMetadata.addMetadata("FileUrl", this.quipViewImageUrl + product.getName());
 
 		} catch(Exception e) {
 			LOG.warning("QUIP upload resulted in error: "+e.getMessage());
@@ -105,13 +113,35 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 		
 	}
 	
-    public void setQuipImageViewerUrl(String quipImageViewerUrl) {
-		this.quipImageViewerUrl = quipImageViewerUrl;
+	/**
+	 * Note: this method replaces LABCAS_HOST with the value obtained 
+	 * from the corresponding environment variable.
+	 * 
+	 * @param quipSubmitImageUrl
+	 */
+    public void setQuipSubmitImageUrl(String quipSubmitImageUrl) {
+		this.quipSubmitImageUrl = quipSubmitImageUrl;
+		if (System.getenv("LABCAS_HOST")!=null) {
+			this.quipSubmitImageUrl = this.quipSubmitImageUrl.replaceAll("LABCAS_HOST", System.getenv("LABCAS_HOST"));
+		}
 	}
 
 	public void setExtensions(String extensions) {
 		this.extensions = extensions;
 	}
+	
+	/**
+	 * Note: this method replaces LABCAS_HOST with the value obtained 
+	 * from the corresponding environment variable.
+	 * 
+	 * @param quipViewImageUrl
+	 */
+	public void setQuipViewImageUrl(String quipViewImageUrl) {
+		this.quipViewImageUrl = quipViewImageUrl;
+		if (System.getenv("LABCAS_HOST")!=null) {
+			this.quipViewImageUrl = this.quipViewImageUrl.replaceAll("LABCAS_HOST", System.getenv("LABCAS_HOST"));
+		}
 
+	}
 
 }
