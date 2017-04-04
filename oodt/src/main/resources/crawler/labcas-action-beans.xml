@@ -34,8 +34,8 @@ the License.
   <!-- QUIP Image Viewer -->
   <bean id="QuipImageViewerPostIngestionAction" lazy-init="true" class="gov.nasa.jpl.edrn.labcas.actions.QuipImageViewerPostIngestionAction">
     <property name="description" value="Publishes compatible files to the QUIP Image Viewer" />
-    <property name="quipSubmitImageUrl" value="http://LABCAS_HOST:6002/submitData" />
-    <property name="quipViewImageUrl" value="http://LABCAS_HOST:8000/camicroscope/osdCamicroscope.php?tissueId=" />
+    <property name="quipSubmitImageUrl" value="http://LABCAS_QUIP_SUBMIT_URL/submitData" />
+    <property name="quipViewImageUrl" value="http://LABCAS_QUIP_DISPLAY_URL/camicroscope/osdCamicroscope.php?tissueId=" />
     <property name="extensions" value="svs" />
     <property name="phases">
       <list>

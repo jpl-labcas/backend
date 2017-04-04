@@ -21,8 +21,8 @@ import gov.nasa.jpl.edrn.labcas.utils.GeneralUtils;
 
 /**
  * Class that publishes images of compatible type to the QUIP Image Viewer.
- * This class uses the env variable "LABCAS_HOST" 
- * to set the proper host name for the QUIP viewer.
+ * This class uses the env variables "LABCAS_QUIP_SUBMIT_URL", "LABCAS_QUIP_DISPLAY_URL"
+ * to reference the endpoints of the QUIP Image Viewer.
  * 
  * @author cinquini
  *
@@ -114,15 +114,15 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 	}
 	
 	/**
-	 * Note: this method replaces LABCAS_HOST with the value obtained 
+	 * Note: this method replaces LABCAS_QUIP_SUBMIT_URL with the value obtained 
 	 * from the corresponding environment variable.
 	 * 
 	 * @param quipSubmitImageUrl
 	 */
     public void setQuipSubmitImageUrl(String quipSubmitImageUrl) {
 		this.quipSubmitImageUrl = quipSubmitImageUrl;
-		if (System.getenv("LABCAS_HOST")!=null) {
-			this.quipSubmitImageUrl = this.quipSubmitImageUrl.replaceAll("LABCAS_HOST", System.getenv("LABCAS_HOST"));
+		if (System.getenv("LABCAS_QUIP_SUBMIT_URL")!=null) {
+			this.quipSubmitImageUrl = this.quipSubmitImageUrl.replaceAll("LABCAS_QUIP_SUBMIT_URL", System.getenv("LABCAS_QUIP_SUBMIT_URL"));
 		}
 	}
 
@@ -131,15 +131,15 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 	}
 	
 	/**
-	 * Note: this method replaces LABCAS_HOST with the value obtained 
+	 * Note: this method replaces LABCAS_QUIP_DISPLAY_URL with the value obtained 
 	 * from the corresponding environment variable.
 	 * 
 	 * @param quipViewImageUrl
 	 */
 	public void setQuipViewImageUrl(String quipViewImageUrl) {
 		this.quipViewImageUrl = quipViewImageUrl;
-		if (System.getenv("LABCAS_HOST")!=null) {
-			this.quipViewImageUrl = this.quipViewImageUrl.replaceAll("LABCAS_HOST", System.getenv("LABCAS_HOST"));
+		if (System.getenv("LABCAS_QUIP_DISPLAY_URL")!=null) {
+			this.quipViewImageUrl = this.quipViewImageUrl.replaceAll("LABCAS_QUIP_DISPLAY_URL", System.getenv("LABCAS_QUIP_DISPLAY_URL"));
 		}
 
 	}
