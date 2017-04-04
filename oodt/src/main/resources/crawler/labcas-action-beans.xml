@@ -34,20 +34,25 @@ the License.
   <!-- QUIP Image Viewer -->
   <bean id="QuipImageViewerPostIngestionAction" lazy-init="true" class="gov.nasa.jpl.edrn.labcas.actions.QuipImageViewerPostIngestionAction">
     <property name="description" value="Publishes compatible files to the QUIP Image Viewer" />
-    <property name="quipSubmitImageUrl" value="http://LABCAS_QUIP_SUBMIT_URL/submitData" />
-    <property name="quipViewImageUrl" value="http://LABCAS_QUIP_DISPLAY_URL/camicroscope/osdCamicroscope.php?tissueId=" />
     <property name="extensions" value="svs" />
+    <property name="properties" ref="labcasProperties"/>
     <property name="phases">
       <list>
         <value type="java.lang.String">postIngestSuccess</value>
       </list>
     </property>
-    <property name="properties" ref="labcasProperties"/>
   </bean>
   
   <bean id="labcasProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-    <property name="ignoreResourceNotFound"><value>true</value></property>
-    <property name="location" value="classpath:labcas.properties"/>
+    <property name="ignoreResourceNotFound" value="true" />
+    <!-- note: last location overrides previous ones -->
+    <property name="locations">
+      <list>
+          <value>classpath:labcas.properties</value>
+          <value>file:${LABCAS_HOME}/labcas.properties</value>
+          <value>file:${HOME}/labcas.properties</value>
+      </list>
+    </property>
   </bean>
 
 </beans>
