@@ -76,5 +76,7 @@ public interface Constants {
 	public final static String LABCAS_PRODUCT_TYPE = "LabcasProduct";
 	public final static String ECAS_PRODUCT_TYPE = "EcasProduct";
 	
+	// external URL types
+	public final static String URL_TYPE_CAMICROSCOPE = "caMicroscope Viewer";
 	
 }

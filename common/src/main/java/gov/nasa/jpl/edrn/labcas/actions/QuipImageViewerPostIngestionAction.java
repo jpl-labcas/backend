@@ -19,6 +19,7 @@ import org.apache.oodt.cas.crawl.action.CrawlerAction;
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.metadata.Metadata;
 
+import gov.nasa.jpl.edrn.labcas.Constants;
 import gov.nasa.jpl.edrn.labcas.utils.GeneralUtils;
 
 /**
@@ -85,7 +86,8 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 			LOG.info("QUIP upload result="+resEntity.toString());
 			
 			// add URL to metadata
-			productMetadata.addMetadata("FileUrl", this.quipViewImageUrl + "?tissueId=" + product.getName());
+			productMetadata.addMetadata("FileUrl", 
+					Constants.URL_TYPE_CAMICROSCOPE + "|" + this.quipViewImageUrl + "?tissueId=" + product.getName());
 
 		} catch(Exception e) {
 			LOG.warning("QUIP upload resulted in error: "+e.getMessage());
