@@ -42,6 +42,12 @@ the License.
         <value type="java.lang.String">postIngestSuccess</value>
       </list>
     </property>
+    <property name="properties" ref="labcasProperties"/>
+  </bean>
+  
+  <bean id="labcasProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <property name="ignoreResourceNotFound"><value>true</value></property>
+    <property name="location" value="classpath:labcas.properties"/>
   </bean>
 
 </beans>

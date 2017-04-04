@@ -3,6 +3,8 @@ package gov.nasa.jpl.edrn.labcas.actions;
 import java.io.File;
 import java.io.InputStream;
 import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.http.HttpEntity;
@@ -21,8 +23,6 @@ import gov.nasa.jpl.edrn.labcas.utils.GeneralUtils;
 
 /**
  * Class that publishes images of compatible type to the QUIP Image Viewer.
- * This class uses the env variables "LABCAS_QUIP_SUBMIT_URL", "LABCAS_QUIP_DISPLAY_URL"
- * to reference the endpoints of the QUIP Image Viewer.
  * 
  * @author cinquini
  *
@@ -39,6 +39,8 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
     private String extensions = "";
     
     private Set<String> extensionsSet = new HashSet<String>();
+    
+    private Properties properties = new Properties();
 
 	@Override
 	public boolean performAction(File product, Metadata productMetadata) throws CrawlerActionException {
@@ -101,47 +103,42 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 	
 	/**
 	 * Converts the 'extensions' String into a Set.
+	 * Also retrieves the QUIP server end-points from the properties values.
 	 */
 	@Override
 	public void validate() throws CrawlerActionException {
-				
+			
+		
 		String[] extensionsArray = extensions.split(",");
 		for (String ext : extensionsArray) {
 			extensionsSet.add(ext.toLowerCase());
 		}
 		LOG.info("QUIP will process these file extensions: "+extensionsSet);		
 		
+		// loop over properties
+        for(Entry<Object, Object> e : properties.entrySet()) {
+            LOG.info("QUIP will use this property: "+e);
+        }
+        
+        this.quipSubmitImageUrl = properties.getProperty("quipSubmitImageUrl");
+        this.quipViewImageUrl = properties.getProperty("quipViewImageUrl");
+		
 	}
 	
-	/**
-	 * Note: this method replaces LABCAS_QUIP_SUBMIT_URL with the value obtained 
-	 * from the corresponding environment variable.
-	 * 
-	 * @param quipSubmitImageUrl
-	 */
     public void setQuipSubmitImageUrl(String quipSubmitImageUrl) {
 		this.quipSubmitImageUrl = quipSubmitImageUrl;
-		if (System.getenv("LABCAS_QUIP_SUBMIT_URL")!=null) {
-			this.quipSubmitImageUrl = this.quipSubmitImageUrl.replaceAll("LABCAS_QUIP_SUBMIT_URL", System.getenv("LABCAS_QUIP_SUBMIT_URL"));
-		}
 	}
 
 	public void setExtensions(String extensions) {
 		this.extensions = extensions;
 	}
 	
-	/**
-	 * Note: this method replaces LABCAS_QUIP_DISPLAY_URL with the value obtained 
-	 * from the corresponding environment variable.
-	 * 
-	 * @param quipViewImageUrl
-	 */
 	public void setQuipViewImageUrl(String quipViewImageUrl) {
 		this.quipViewImageUrl = quipViewImageUrl;
-		if (System.getenv("LABCAS_QUIP_DISPLAY_URL")!=null) {
-			this.quipViewImageUrl = this.quipViewImageUrl.replaceAll("LABCAS_QUIP_DISPLAY_URL", System.getenv("LABCAS_QUIP_DISPLAY_URL"));
-		}
-
+	}
+	
+	public void setProperties(Properties properties) {
+		this.properties = properties;
 	}
 
 }
