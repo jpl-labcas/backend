@@ -106,9 +106,9 @@
             </configuration>
           </execution>
           
-          <!--  copy shell scripts -->
+          <!--  copy start/stop shell scripts -->
           <execution>
-            <id>copy-scripts</id>
+            <id>copy-startup-scripts</id>
             <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
@@ -120,6 +120,26 @@
                   <directory>${project.basedir}/src/main/scripts</directory>
                   <includes>
                     <include>*.sh</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          
+          <!--  copy other scripts -->
+          <execution>
+            <id>copy-other-scripts</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${install.dir}/etc</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/src/main/etc</directory>
+                  <includes>
+                    <include>*</include>
                   </includes>
                 </resource>
               </resources>
