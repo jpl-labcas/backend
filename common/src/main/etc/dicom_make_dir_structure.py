@@ -4,11 +4,11 @@ from glob import glob
 import dicom
 
 # collection root directory:
-collection_dir = '/usr/local/labcas_staging/CBIS-DDSM/'
+collection_dir = '/usr/local/labcas/backend/staging/CBIS-DDSM/'
 
 # dataset directory
 dataset = sys.argv[1]
-dataset_dir = '/usr/local/labcas_staging/CBIS-DDSM/%s' % dataset
+dataset_dir = '/usr/local/labcas/backend/staging/CBIS-DDSM/%s' % dataset
 
 # dataset version directory
 version_dir = '%s/1' % dataset_dir
