@@ -16,7 +16,11 @@
 	<!-- CAS Crawler directives -->
 	<output>
 		<dir path="[LABCAS_STAGING]/[ProductType]/[DatasetId]" createBeforeExe="false">
-			<!-- metadata extractors matching specific files -->
+			<!-- Metadata extractors matching specific files.
+                 Matching extractors will ALL be called in the sequence they are defined. -->
+            <files regExp=".*\.dcm"
+                   metFileWriterClass="gov.nasa.jpl.edrn.labcas.extractors.DicomMetExtractor"
+                   args="python [LABCAS_HOME]/etc/dicom_met_extractor.py" />
 			<files regExp=".*\.(?!met$|xmlmet$)[^.]+"
 				metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
 				args="[LABCAS_HOME]/workflows/labcas-upload/pge-configs/metout.xml" />
