@@ -1,6 +1,8 @@
 # Metadata extractor for DICOM files
 # Usage: python dicom_met_extractor.py <filepath.dcm>
 # Will extract metadata into the file: <filemath.dcm>.xmlmet
+# All metadata keys are prepended with "_File_" 
+# which will be removed before ingestion into the Solr index
 
 import sys
 import dicom
@@ -22,7 +24,7 @@ with open(met_filepath,'w') as file:
       if tag_name != 'PixelData' and tag_name!= 'LargestImagePixelValue' and tag_name != 'SmallestImagePixelValue': # skip binary data
          #print 'key=%s --> value=%s' % (tag_name, data_element.value)
          file.write('\t<keyval type="vector">\n')
-         file.write('\t\t<key>File%s</key>\n' % str(tag_name))
+         file.write('\t\t<key>_File_%s</key>\n' % str(tag_name))
          file.write('\t\t<val>%s</val>\n' % str(data_element.value))
          file.write('\t</keyval>\n')
 

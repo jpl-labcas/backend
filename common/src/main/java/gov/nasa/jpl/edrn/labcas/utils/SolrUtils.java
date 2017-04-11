@@ -468,10 +468,10 @@ public class SolrUtils {
 				// change case
 				doc.setField("FileName", metadata.getMetadata(key));
 				
-			// transfer File* metadata fields (generally multi-valued)
-			} else if (key.toLowerCase().startsWith("file")) {
+			// transfer File* and _File_* metadata fields (generally multi-valued)
+			} else if (key.toLowerCase().startsWith("file") || key.toLowerCase().startsWith("_file_")) {
 				for (String value : metadata.getAllMetadata(key)) {
-					doc.addField(key, value);
+					doc.addField(key.replaceAll("_File_", ""), value);
 				}
 			}
 		}
