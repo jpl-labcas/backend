@@ -56,7 +56,7 @@ def download_dataset(csv_file_path):
                     parts = truncated_file_path.split("\\")
                     sftp_path = "/".join(parts)
                     target_file_path = "%s/%s" % (target_dir, parts[-1])
-                    if not os.path.exists(target_file_path):
+                    if not os.path.exists(target_file_path) or os.path.getsize(target_file_path) == 0:
                         print "\tDownloading: %s to: %s" % (sftp_path, target_file_path)
                         try:
                             sftp_server.get(sftp_path, target_file_path)
