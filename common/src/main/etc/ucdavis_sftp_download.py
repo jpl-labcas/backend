@@ -51,8 +51,8 @@ def download_dataset(csv_file_path):
                 # examples of 'File Location':
                 # \\ap1314-dsr\Images2\MMHCC Image Archive\Human Breast\MC02-0720.sid.svs
                 # \\ap1314-dsr\Images3\MC04\MC04-0006.sid.svs
-                if 'Images2' in src_file_path:
-                    truncated_file_path = re.sub('.*Images\d','', src_file_path)
+                if 'Images' in src_file_path or 'Images2' in src_file_path:
+                    truncated_file_path = re.sub('.*Images\d?','', src_file_path)
                     parts = truncated_file_path.split("\\")
                     sftp_path = "/".join(parts)
                     target_file_path = "%s/%s" % (target_dir, parts[-1])
