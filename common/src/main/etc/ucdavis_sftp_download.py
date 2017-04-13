@@ -58,7 +58,10 @@ def download_dataset(csv_file_path):
                     target_file_path = "%s/%s" % (target_dir, parts[-1])
                     if not os.path.exists(target_file_path):
                         print "\tDownloading: %s to: %s" % (sftp_path, target_file_path)
-                        sftp_server.get(sftp_path, target_file_path)
+                        try:
+                            sftp_server.get(sftp_path, target_file_path)
+                        except Exception as e:
+                            print 'Error downloading: %s' % e.message
                     else:
                         print 'File %s : %s already exists, skipping' % (sftp_path, target_file_path)
             
