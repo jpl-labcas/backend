@@ -61,7 +61,7 @@ def download_dataset(csv_file_path):
                         try:
                             sftp_server.get(sftp_path, target_file_path)
                         except Exception as e:
-                            print 'Error downloading: %s' % e.message
+                            print 'Error downloading: %s' % e
                     else:
                         print 'File %s : %s already exists, skipping' % (sftp_path, target_file_path)
             
