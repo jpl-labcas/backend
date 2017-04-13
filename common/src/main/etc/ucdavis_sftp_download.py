@@ -63,7 +63,7 @@ def download_dataset(csv_file_path):
                         except Exception as e:
                             print 'Error downloading: %s' % e
                         # cleanup from crashed downloads so bad files don't get published
-                        if not os.path.exists(target_file_path) and os.path.getsize(target_file_path) == 0:
+                        if os.path.exists(target_file_path) and os.path.getsize(target_file_path) == 0:
                             os.remove(target_file_path)
                     else:
                         print 'File %s : %s already exists, skipping' % (sftp_path, target_file_path)
