@@ -1,5 +1,4 @@
-# Python script that lists recursively all contents of a remote SFTP site.
-
+# Python script to download the full content of a remote SFTP site.
 
 import sys
 import csv
@@ -21,8 +20,8 @@ if __name__ == "__main__":
     # open connection to the SFTP server
     sftp_server = pysftp.Connection(host=HOST, username=USERNAME, password=PASSWORD)
     
-    # do recursive listing
-    sftp_server.walktree('.', printit, printit, printit)
+    # download from the remote root directory to the current local directory
+    sftp_server.get_r('.', '.', preserve_mtime=True)
     
     # close the SFTP connection
     sftp_server.close()        
