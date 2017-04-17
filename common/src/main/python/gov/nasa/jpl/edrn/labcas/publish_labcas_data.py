@@ -57,19 +57,23 @@ if __name__ == '__main__':
     metadata = {}
     # aggregate metadata from all config files
     for config_file in config_files:
-        try:
-            config.read(config_file)
-            for section in config.sections():
-                for key, value in config.items(section):
-                    print '\t%s = %s' % (key, value)
-                    # [Dataset] section: prefix all fields with 'Dataset:'
-                    if section=='Dataset' and key != 'DatasetId' and key != 'DatasetName' and key != 'DatasetDescription':
-                        metadata['Dataset:%s'%key] = value
-                    else:
-                        metadata[key] = value
-        except Exception as e:
-            print "ERROR reading metadata configuration:"
-            print e
+        if os.path.isfile(config_file):
+            try:
+                config.read(config_file)
+                for section in config.sections():
+                    for key, value in config.items(section):
+                        print '\t%s = %s' % (key, value)
+                        # [Dataset] section: prefix all fields with 'Dataset:'
+                        if section=='Dataset' and key != 'DatasetId' and key != 'DatasetName' and key != 'DatasetDescription':
+                            metadata['Dataset:%s'%key] = value
+                        else:
+                            metadata[key] = value
+            except Exception as e:
+                print "ERROR reading metadata configuration:"
+                print e
+                sys.exit(-1)
+        else:
+            print "ERROR configuration file not found: %s" % config_file
             sys.exit(-1)
 
     # check mandatory fields
