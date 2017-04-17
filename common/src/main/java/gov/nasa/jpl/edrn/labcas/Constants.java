@@ -30,6 +30,9 @@ public interface Constants {
 	public final static String METADATA_KEY_PRODUCT_TYPE_NAME = "ProductTypeName";
 	public final static String METADATA_KEY_PRODUCT_NAME = "ProductName";
 	public final static String METADATA_KEY_PRODUCT_TYPE = "ProductType";
+	
+	// separates multiple metadata values for the same key
+	public final static String METADATA_KEY_SEPARATOR = "|";
 		
 	// flags
 	public final static String METADATA_KEY_NEW_VERSION = "NewVersion"; // default: false
