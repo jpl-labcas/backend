@@ -355,9 +355,8 @@ public class SolrUtils {
 				// ignore, same as collection "id"
 				
 			} else {
-				for (String value : metadata.getAllMetadata(key)) {
-					doc.addField(key, value);
-				}
+				// publish all other comma-separated values into multi-valued field
+				doc.addField(key, Arrays.asList(metadata.getAllMetadata(key)));
 			}
 			
 		}
@@ -404,12 +403,9 @@ public class SolrUtils {
 			} else if (key.equals("DatasetVersion")) {
 				doc.setField("DatasetVersion", metadata.getMetadata(key));
 				
-			// transfer all other fields as-is
-			// generally multi-valued
 			} else {
-				for (String value : metadata.getAllMetadata(key)) {
-					doc.addField(key, value);
-				}
+				// publish all other comma-separated values into multi-valued field
+				doc.addField(key, Arrays.asList(metadata.getAllMetadata(key)));
 			}
 
 		}
@@ -470,9 +466,10 @@ public class SolrUtils {
 				
 			// transfer File* and _File_* metadata fields (generally multi-valued)
 			} else if (key.toLowerCase().startsWith("file") || key.toLowerCase().startsWith("_file_")) {
-				for (String value : metadata.getAllMetadata(key)) {
-					doc.addField(key.replaceAll("_File_", ""), value);
-				}
+				
+				// publish all other comma-separated values into multi-valued field
+				doc.addField(key.replaceAll("_File_", ""), Arrays.asList(metadata.getAllMetadata(key)));
+				
 			}
 		}
 		
