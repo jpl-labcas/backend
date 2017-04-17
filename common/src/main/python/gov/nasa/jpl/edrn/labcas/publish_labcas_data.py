@@ -1,5 +1,6 @@
 # Python script to publish generic data to the local LabCAS server.
-# Metadata must be provided in a python-style configuration file.
+# Metadata must be provided in python-style configuration files (for the collection and dataset).
+# Collection and Dataset metadata can be specified in the same file, or in separate files
 # 
 # a) If the --in-place flag is NOT provided (the default case):
 #    - data must be pre-uploaded to the temporary directory $LABCAS_STAGING/<collection_id>/<dataset_id>
@@ -11,7 +12,7 @@
 #
 # Usage: python publish_labcas_data.py <path to configuration file> [--in-place]
 #
-# Example configuration file:
+# Example configuration file(s):
 #
 #[Collection]
 #CollectionName=RNA Sequencing
@@ -23,6 +24,7 @@
 #QAState=Public
 #Organ=Lung
 #Institution=Dartmouth
+
 #[Dataset]
 #DatasetName=ERR164503
 #DatasetDescription=ERR164503
@@ -39,30 +41,36 @@ if __name__ == '__main__':
         print 'Usage: python publish_labcas_data.py <path to configuration file> [--in-place]'
         sys.exit(-1)        
         
-    config_file = sys.argv[1]
-    inPlace = False # flag to invoke 'labcas-upload2' workflow to publish the files in-place
-    if len(sys.argv)==3 and sys.argv[2].lower()=='--in-place':
-        inPlace = True
+    # loop over command line arguments
+    inPlace = False   # flag to publish the files in-place
+    config_files = [] # list of configuration files
+    for arg in sys.argv[1:]:
+        if arg.lower()=='--in-place': # flag
+            inPlace = True
+        else:
+            config_files.append(arg)  # config file path
        
-    print 'Using configuration metadata: %s --in-place flag: %s' % (config_file, inPlace)
+    print 'Using configuration files: %s --in-place flag: %s' % (config_files, inPlace)
     config = ConfigParser.ConfigParser()
     # must set following line explicitly to preserve the case of configuration keys
     config.optionxform = str 
     metadata = {}
-    try:
-        config.read(config_file)
-        for section in config.sections():
-            for key, value in config.items(section):
-                print '\t%s = %s' % (key, value)
-                # [Dataset] section: prefix all fields with 'Dataset:'
-                if section=='Dataset' and key != 'DatasetId' and key != 'DatasetName' and key != 'DatasetDescription':
-                    metadata['Dataset:%s'%key] = value
-                else:
-                    metadata[key] = value
-    except Exception as e:
-        print "ERROR reading metadata configuration:"
-        print e
-        sys.exit(-1)
+    # aggregate metadata from all config files
+    for config_file in config_files:
+        try:
+            config.read(config_file)
+            for section in config.sections():
+                for key, value in config.items(section):
+                    print '\t%s = %s' % (key, value)
+                    # [Dataset] section: prefix all fields with 'Dataset:'
+                    if section=='Dataset' and key != 'DatasetId' and key != 'DatasetName' and key != 'DatasetDescription':
+                        metadata['Dataset:%s'%key] = value
+                    else:
+                        metadata[key] = value
+        except Exception as e:
+            print "ERROR reading metadata configuration:"
+            print e
+            sys.exit(-1)
 
     # check mandatory fields
     for key in ['CollectionName', 'CollectionDescription', 'DatasetName', 'OwnerPrincipal']:
