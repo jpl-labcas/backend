@@ -125,7 +125,7 @@
    <!-- DownloadId is needed to match records in OODT Solr catalog and enable downloads via the OODT Product Server -->
    <field name="FileDownloadId" type="string" indexed="true" stored="true" required="false" multiValued="false" />
   
-   <field name="FilePath" type="string" indexed="true" stored="true" required="false" multiValued="false" />
+   <field name="FileLocation" type="string" indexed="true" stored="true" required="false" multiValued="false" />
    <field name="FileName" type="string" indexed="true" stored="true" required="false" multiValued="false" />
    <field name="FileSize" type="long" indexed="true" stored="true" required="false" multiValued="false" />
       
