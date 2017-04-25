@@ -49,17 +49,22 @@ class LabcasClient(object):
         pge_task_status = ['STAGING INPUT', 'BUILDING CONFIG FILE', 'PGE EXEC', 'CRAWLING']
         finished_status = ['FINISHED', 'ERROR', 'METMISS']
         while (True):
-            response = self.workflowManagerServerProxy.workflowmgr.getWorkflowInstanceById(wInstId)
-            status = response['status']
-            if status in running_status or status in pge_task_status:
-                print 'Workflow instance=%s running with status=%s' % (wInstId, status)
-                time.sleep(1)
-            elif status in finished_status:
-                print 'Workflow instance=%s ended with status=%s' % (wInstId, status)
-                break
-            else:
-                print 'UNRECOGNIZED WORKFLOW STATUS: %s' % status
-                break
+            try:
+                response = self.workflowManagerServerProxy.workflowmgr.getWorkflowInstanceById(wInstId)
+                status = response['status']
+                if status in running_status or status in pge_task_status:
+                    print 'Workflow instance=%s running with status=%s' % (wInstId, status)
+                    time.sleep(1)
+                elif status in finished_status:
+                    print 'Workflow instance=%s ended with status=%s' % (wInstId, status)
+                    break
+                else:
+                    print 'UNRECOGNIZED WORKFLOW STATUS: %s' % status
+                    break
+            except xmlrpclib.Fault as e:
+                # must ignore XML-RPC exeptions that often arise when querying OODT for a specific workflow
+                # just try again with the same workflow identifier
+                print e
         print response
         
     def uploadCollection(self, datasetId, metadata, newVersion=False, inPlace=False):
