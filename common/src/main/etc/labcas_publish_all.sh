@@ -50,3 +50,18 @@ labcas_publish MMHCC_Image_Archive.cfg Mouse_Lung.cfg --in-place
 labcas_publish MMHCC_Image_Archive.cfg Mouse_Mammary.cfg --in-place
 labcas_publish MMHCC_Image_Archive.cfg Mouse_Normal_Histology.cfg --in-place
 labcas_publish MMHCC_Image_Archive.cfg Mouse_Prostate.cfg --in-place
+
+# MD_Anderson_Pancreas_IPMN_images
+cd /usr/local/labcas/src/labcas-metadata/MD_Anderson_Pancreas_IPMN_images
+labcas_publish IPMN_P1-06_H03.cfg
+
+# CBIS-DDSM
+cd /usr/local/labcas/src/labcas-metadata/CBIS-DDSM
+labcas_publish CBIS-DDSM.cfg Calc-Training_Full_Mammogram_Images.cfg --in-place
+labcas_publish CBIS-DDSM.cfg Mass-Training_Full_Mammogram_Images.cfg --in-place
+labcas_publish CBIS-DDSM.cfg Mass-Training_ROI_and_Cropped_Images.cfg --in-place
+
+# University_of_Colorado_Lung_Image
+#cd /usr/local/labcas/src/labcas-metadata/University_of_Colorado_Lung_Image
+#labcas_publish University_of_Colorado_Lung_Image.cfg UCHSC_1467.cfg --in-place
+#labcas_publish University_of_Colorado_Lung_Image.cfg UCHSC_8798.cfg --in-place
