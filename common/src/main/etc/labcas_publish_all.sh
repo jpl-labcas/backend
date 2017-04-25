@@ -65,3 +65,7 @@ labcas_publish CBIS-DDSM.cfg Mass-Training_ROI_and_Cropped_Images.cfg --in-place
 #cd /usr/local/labcas/src/labcas-metadata/University_of_Colorado_Lung_Image
 #labcas_publish University_of_Colorado_Lung_Image.cfg UCHSC_1467.cfg --in-place
 #labcas_publish University_of_Colorado_Lung_Image.cfg UCHSC_8798.cfg --in-place
+
+# RNA Sequencing
+cd /usr/local/labcas/src/labcas-backend/common/src/main/etc
+./publish_rnaseq_data.sh
