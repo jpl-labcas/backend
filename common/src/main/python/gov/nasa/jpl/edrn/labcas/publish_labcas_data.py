@@ -37,9 +37,9 @@ from gov.nasa.jpl.edrn.labcas.labcas_client import LabcasClient
 
 if __name__ == '__main__':
     
-    # parse configuration file for metadata    
+    # parse configuration files for metadata    
     if len(sys.argv)<2:
-        print 'Usage: python publish_labcas_data.py <path to configuration file> [--in-place]'
+        print 'Usage: python publish_labcas_data.py <path to configuration file>+ [--in-place]'
         sys.exit(-1)        
         
     # loop over command line arguments
