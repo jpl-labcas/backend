@@ -74,11 +74,12 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 			
 			HttpPost httppost = new HttpPost(this.quipSubmitImageUrl);
 
-			FileBody upload = new FileBody(product);
-			// NOTE: must create a UUID because filenames with non-standard characters
+			// NOTE: must rename the file on upload because non-standard characters
 			// (such as ' or ~) are not suitable for QUIP image identifiers
-			String uuid = UUID.randomUUID().toString();
-			StringBody case_id = new StringBody(uuid);
+			String filename = UUID.randomUUID().toString() + ".svs";
+			FileBody upload = new FileBody(product, filename, "application/octet-stream", "UTF-8");
+			            
+			StringBody case_id = new StringBody(filename);
 
 			MultipartEntity reqEntity = new MultipartEntity();
 			reqEntity.addPart("upload", upload);
@@ -90,7 +91,7 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 			LOG.info("QUIP upload result="+resEntity.toString());
 			
 			// add URL to metadata
-			productMetadata.addMetadata("FileUrl", this.quipViewImageUrl + "?tissueId=" + uuid);
+			productMetadata.addMetadata("FileUrl", this.quipViewImageUrl + "?tissueId=" + filename);
 			productMetadata.addMetadata("FileUrlType", Constants.URL_TYPE_CAMICROSCOPE );
 
 		} catch(Exception e) {
