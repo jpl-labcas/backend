@@ -86,8 +86,8 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 			LOG.info("QUIP upload result="+resEntity.toString());
 			
 			// add URL to metadata
-			productMetadata.addMetadata("FileUrl", 
-					Constants.URL_TYPE_CAMICROSCOPE + "|" + this.quipViewImageUrl + "?tissueId=" + product.getName());
+			productMetadata.addMetadata("FileUrl", this.quipViewImageUrl + "?tissueId=" + product.getName());
+			productMetadata.addMetadata("FileUrlType", Constants.URL_TYPE_CAMICROSCOPE );
 
 		} catch(Exception e) {
 			LOG.warning("QUIP upload resulted in error: "+e.getMessage());
