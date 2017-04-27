@@ -111,6 +111,24 @@
               </resources>
             </configuration>
           </execution>
+          <execution>
+            <id>copy-jar-to-fmprod</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${install.dir}/apache-tomcat/webapps/fmprod/WEB-INF/lib/</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/target</directory>
+                  <includes>
+                    <include>${parent.artifactId}-${artifactId}-${version}.jar</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
           
           <!--  copy start/stop shell scripts -->
           <execution>

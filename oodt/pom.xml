@@ -127,12 +127,12 @@
               <outputDirectory>${oodt.dir}/cas-workflow-${oodt.version}/lib</outputDirectory>
             </configuration>
           </execution>
-          <!-- copy fmprod war into Tomcat directory -->
+          <!-- unpack fmprod war into Tomcat directory -->
           <execution>
             <id>install-fmprod</id>
             <phase>install</phase>
             <goals>
-              <goal>copy</goal>
+              <goal>unpack</goal>
             </goals>
             <configuration>
               <artifactItems>
@@ -142,7 +142,7 @@
                   <version>${oodt.version}</version>
                   <type>war</type>
                   <overWrite>true</overWrite>
-                  <outputDirectory>${install.dir}/apache-tomcat/webapps</outputDirectory>
+                  <outputDirectory>${install.dir}/apache-tomcat/webapps/fmprod/</outputDirectory>
                   <destFileName>fmprod.war</destFileName>
                 </artifactItem>
           	</artifactItems>
@@ -230,6 +230,26 @@
                     <include>crawler-config.xml</include>
                     <include>labcas-action-beans.xml</include>
                     <include>logging.properties</include>
+                  </includes>
+                </resource>
+              </resources>
+              <overwrite>true</overwrite>
+            </configuration>
+          </execution>
+          <!-- install modified web.xml (with AuthorizationFilter) into fmprod -->
+          <execution>
+            <id>copy-web-xml</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${install.dir}/apache-tomcat/webapps/fmprod/WEB-INF/</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/src/main/resources/fmprod</directory>
+                  <includes>
+                    <include>web.xml</include>
                   </includes>
                 </resource>
               </resources>
