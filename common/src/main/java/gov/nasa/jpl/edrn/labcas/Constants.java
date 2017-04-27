@@ -82,4 +82,11 @@ public interface Constants {
 	// external URL types
 	public final static String URL_TYPE_CAMICROSCOPE = "caMicroscope Viewer";
 	
+	// HTTP REQUEST PARAMETERS
+	public final static String PARAMETER_PRODUCT_ID = "productID";
+	
+	// HTTP COOKIES
+	public final static String COOKIE_PRODUCT_ID_NAME = "labcasProductIDcookie";
+	public final static int COOKIE_PRODUCT_ID_LIFETIME = 3600*24; // one hour // FIXME
+	
 }
