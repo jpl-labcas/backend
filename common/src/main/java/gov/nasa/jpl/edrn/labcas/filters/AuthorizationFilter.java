@@ -48,6 +48,7 @@ public class AuthorizationFilter implements Filter {
 		if (LOG.isDebugEnabled()) LOG.debug("Establishing access control for productId="+productId);
 		
 		// FIXME: set cookie for that productID
+		/**
 		final Cookie _cookie = new Cookie(Constants.COOKIE_PRODUCT_ID_NAME, productId);
 		//_cookie.setSecure(true);
 		_cookie.setMaxAge(Constants.COOKIE_PRODUCT_ID_LIFETIME);
@@ -57,6 +58,7 @@ public class AuthorizationFilter implements Filter {
 		_cookie.setPath("/");                // cookie will be sent to all pages in web application
 		if (LOG.isDebugEnabled()) LOG.debug("Set cookie name="+_cookie.getName()+" value="+_cookie.getValue());
 		resp.addCookie(_cookie);
+		*/
 		
 		// retrieve cookie to check authorization
 		Cookie[] cookies = req.getCookies();

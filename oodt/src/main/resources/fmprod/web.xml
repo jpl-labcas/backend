@@ -29,6 +29,7 @@
   <filter-mapping>
     <filter-name>authorizationFilter</filter-name>
     <url-pattern>/data</url-pattern>
+    <url-pattern>/dataset</url-pattern>
   </filter-mapping>
 
   <servlet>
