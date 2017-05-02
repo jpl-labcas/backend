@@ -51,6 +51,22 @@ labcas_publish MMHCC_Image_Archive.cfg Mouse_Mammary.cfg --in-place
 labcas_publish MMHCC_Image_Archive.cfg Mouse_Normal_Histology.cfg --in-place
 labcas_publish MMHCC_Image_Archive.cfg Mouse_Prostate.cfg --in-place
 
+# UC Davis MMHCC_III
+labcas_publish MMHCC_III.cfg Abate-Shen_2010.cfg --in-place
+labcas_publish MMHCC_III.cfg Charles_Roberts_001.cfg --in-place
+labcas_publish MMHCC_III.cfg Charles_Roberts_002.cfg --in-place
+labcas_publish MMHCC_III.cfg ColoRectal_Cancer_Study_Set.cfg --in-place
+labcas_publish MMHCC_III.cfg Cory_Abate-Shen.cfg --in-place
+labcas_publish MMHCC_III.cfg David_Gutmann.cfg --in-place
+labcas_publish MMHCC_III.cfg Diego_Castrillon.cfg --in-place
+labcas_publish MMHCC_III.cfg Lynda_Chin_1.cfg --in-place
+labcas_publish MMHCC_III.cfg Lynda_Chin_2.cfg --in-place
+labcas_publish MMHCC_III.cfg Paul_Lambert.cfg --in-place
+labcas_publish MMHCC_III.cfg Scott_Lowe.cfg --in-place
+labcas_publish MMHCC_III.cfg Tyler_Jacks_1.cfg --in-place
+labcas_publish MMHCC_III.cfg Tyler_Jacks_2.cfg --in-place
+
+
 # MD_Anderson_Pancreas_IPMN_images
 cd /usr/local/labcas/src/labcas-metadata/MD_Anderson_Pancreas_IPMN_images
 labcas_publish IPMN_P1-06_H03.cfg
