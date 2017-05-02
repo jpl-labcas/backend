@@ -20,11 +20,8 @@ USERNAME = os.environ['SFTP_USERNAME']
 PASSWORD = os.environ['SFTP_PASSWORD']
 
 # function to download all files in a dataset from the SFTP server
-def download_dataset(csv_file_path):
-    
-    # open connection to the SFTP server
-    sftp_server = pysftp.Connection(host=HOST, username=USERNAME, password=PASSWORD)
-    
+def download_dataset(sftp_server, csv_file_path):
+        
     # get the directory and file listing
     #remote_listing = sftp_server.listdir()
     # prints out the directories and files, line by line
@@ -72,16 +69,23 @@ def download_dataset(csv_file_path):
             except KeyError as e:
                 print 'WARNING: File Location not found for row: %s' % row
 
-    # close the SFTP connection
-    sftp_server.close()
 
 
 # main script
 if __name__ == "__main__":
+    
+    # open connection to the SFTP server
+    # NOTE that the SFTP server only allows less than 20 connections in 4 minutes
+    # so the connection must be re-used across several datasets
+    sftp_server = pysftp.Connection(host=HOST, username=USERNAME, password=PASSWORD)
 
     # loop over all CSV files under root directory
     root_target_dir = sys.argv[1]
     csv_file_paths = [y for x in os.walk(root_target_dir) for y in glob(os.path.join(x[0], '*.csv'))]
     for csv_file_path in csv_file_paths:    
-        download_dataset(csv_file_path) 
+        download_dataset(sftp_server, csv_file_path) 
+        
+    # close the SFTP connection
+    sftp_server.close()
+
         
