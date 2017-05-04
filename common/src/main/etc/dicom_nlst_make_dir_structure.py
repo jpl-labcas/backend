@@ -7,8 +7,8 @@ from shutil import copyfile
 import dicom
 
 # data directories before and after re-organization
-source_dir = '/labcas-data/NLST/byID-copy/'
-target_dir = '/labcas-data/NLST/byID-copy-new/'
+source_dir = '/labcas-data/NLST-copy/'
+target_dir = '/labcas-data/NLST-copy-processed/'
 
 # loop over source sub-directories
 for subdir in os.listdir(source_dir):
