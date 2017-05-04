@@ -21,11 +21,12 @@ with open(met_filepath,'w') as file:
    # loop over input metadata fields
    for tag_name in tag_names:
       data_element = ds.data_element(tag_name)
-      if tag_name != 'PixelData' and tag_name!= 'LargestImagePixelValue' and tag_name != 'SmallestImagePixelValue': # skip binary data
-         #print 'key=%s --> value=%s' % (tag_name, data_element.value)
-         file.write('\t<keyval type="vector">\n')
-         file.write('\t\t<key>_File_%s</key>\n' % str(tag_name))
-         file.write('\t\t<val>%s</val>\n' % str(data_element.value))
-         file.write('\t</keyval>\n')
+      if data_element:
+          if tag_name != 'PixelData' and tag_name!= 'LargestImagePixelValue' and tag_name != 'SmallestImagePixelValue': # skip binary data
+             #print 'key=%s --> value=%s' % (tag_name, data_element.value)
+             file.write('\t<keyval type="vector">\n')
+             file.write('\t\t<key>_File_%s</key>\n' % str(tag_name))
+             file.write('\t\t<val>%s</val>\n' % str(data_element.value))
+             file.write('\t</keyval>\n')
 
    file.write('</cas:metadata>\n')
