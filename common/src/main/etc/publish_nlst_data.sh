@@ -26,7 +26,7 @@ for subdir in $DATA_DIR/* ; do
       first=false
     fi
     # publish dataset
-    #python $LABCAS_SRC/common/src/main/python/gov/nasa/jpl/edrn/labcas/publish_labcas_data.py  $METADATA_DIR/NLST.cfg  $METADATA_DIR/$dataset.cfg --in-place
+    python $LABCAS_SRC/common/src/main/python/gov/nasa/jpl/edrn/labcas/publish_labcas_data.py  $METADATA_DIR/NLST.cfg  $METADATA_DIR/$dataset.cfg --in-place
     # wait
     sleep 5
   fi
