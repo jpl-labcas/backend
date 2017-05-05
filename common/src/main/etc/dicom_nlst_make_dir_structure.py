@@ -24,6 +24,7 @@ for subdir in os.listdir(source_dir):
   target_subdir = '%s%s/1' % (target_dir, subdir)
   if not os.path.exists(target_subdir):
     os.makedirs(target_subdir)
+  peopledb.write("%s\n" % subdir)
 
   # open person file
   person_file = '%s%s/%s.txt' % (target_dir, subdir, subdir)
@@ -57,7 +58,6 @@ for subdir in os.listdir(source_dir):
 
        # write file hierarchy into database file
        persondb.write("%s %s %s %s\n" % (subdir, study_id, series_id, dst_file) )
-       peopledb.write("%s\n" % subdir)
 
     except Exception as e:
         print 'Error while processing file: %s' % src_file
