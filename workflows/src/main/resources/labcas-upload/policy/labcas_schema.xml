@@ -5,89 +5,104 @@
     <!--  UI workflow order -->
     <property name="workflow.order" value="1" />
     <property name="UploadFiles" value="true" />
-    
+        
     <!-- Collection level metadata -->    
     
     <property name="input.dataset.CollectionName.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.dataset.CollectionName.title" value="Data Collection Name" />
     <property name="input.dataset.CollectionName.description" value="Short name for this data collection (one or a few words only)." />
     <property name="input.dataset.CollectionName.required" value="true" />
+    <property name="input.dataset.CollectionName.order" value="1" />
     
     <property name="input.dataset.CollectionDescription.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#text" />
     <property name="input.dataset.CollectionDescription.title" value="Data Collection Description" />
     <property name="input.dataset.CollectionDescription.description" value="Short description for this data collection (a few sentences)." />
     <property name="input.dataset.CollectionDescription.required" value="true" />
+    <property name="input.dataset.CollectionDescription.order" value="2" />
     
     <property name="input.dataset.Discipline.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#discipline" />
     <property name="input.dataset.Discipline.title" value="Discipline" />
     <property name="input.dataset.Discipline.description" value="Medical discipline for this dataset (select one)" />
     <property name="input.dataset.Discipline.required" value="true" />
+    <property name="input.dataset.Discipline.order" value="3" />
     
     <property name="input.dataset.Institution.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#participatingSite" />
     <property name="input.dataset.Institution.title" value="Institution" />
     <property name="input.dataset.Institution.description" value="Institution where the research was conducted (full name)" />
     <property name="input.dataset.Institution.required" value="true" />
+    <property name="input.dataset.Institution.order" value="4" />
     
     <property name="input.dataset.InstitutionId.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#participatingSiteId" />
     <property name="input.dataset.InstitutionId.title" value="Institution Unique Identifier" />
     <property name="input.dataset.InstitutionId.description" value="Institution Unique Identifier" />
     <property name="input.dataset.InstitutionId.required" value="true" />
     <property name="input.dataset.InstitutionId.visible" value="false" />
+    <property name="input.dataset.InstitutionId.order" value="5" />
     
     <property name="input.dataset.LeadPI.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#principalInvestigator" />
     <property name="input.dataset.LeadPI.title" value="Lead PI" />
     <property name="input.dataset.LeadPI.description" value="Begin typing an investigator name. A list of options will appear." />
     <property name="input.dataset.LeadPI.required" value="true" />
+    <property name="input.dataset.LeadPI.order" value="6" />
 
     <property name="input.dataset.LeadPIId.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#principalInvestigatorId" />
     <property name="input.dataset.LeadPIId.title" value="Lead PI Identifier" />
     <property name="input.dataset.LeadPIId.description" value="Lead PI Unique Identifier" />
     <property name="input.dataset.LeadPIId.required" value="true" />
     <property name="input.dataset.LeadPIId.visible" value="false" />
+    <property name="input.dataset.LeadPIId.order" value="7" />
     
     <property name="input.dataset.Organ.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#organ" />
     <property name="input.dataset.Organ.title" value="Organ" />
     <property name="input.dataset.Organ.description" value="Organ (select all that apply)" />
     <property name="input.dataset.Organ.required" value="true" />
+    <property name="input.dataset.Organ.order" value="8" />
 
     <property name="input.dataset.OrganId.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#organId" />
     <property name="input.dataset.OrganId.title" value="Organ Identifier" />
     <property name="input.dataset.OrganId.description" value="Organ Unique Identifier" />
     <property name="input.dataset.OrganId.required" value="true" />
     <property name="input.dataset.OrganId.visible" value="false" />
-    
-    <property name="input.dataset.ProtocolName.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#protocolName" />
-    <property name="input.dataset.ProtocolName.title" value="Protocol Name" />
-    <property name="input.dataset.ProtocolName.description" 
-              value="Begin typing a protocol name or id. A list of options will appear. Don’t see the protocol you want? Email edrn-ic@jpl.nasa.gov" />
-    <property name="input.dataset.ProtocolName.required" value="false" />
-    
-    <property name="input.dataset.ProtocolId.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#protocolId" />
-    <property name="input.dataset.ProtocolId.title" value="Protocol Identifier" />
-    <property name="input.dataset.ProtocolId.description" value="Protocol Unique Identifier" />
-    <property name="input.dataset.ProtocolId.required" value="false" />
-    <property name="input.dataset.ProtocolId.visible" value="false" />
-    
+    <property name="input.dataset.OrganId.order" value="9" />
+        
     <property name="input.dataset.DataCustodian.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#currentLogin" />
     <property name="input.dataset.DataCustodian.title" value="Data Custodian" />
     <property name="input.dataset.DataCustodian.description" value="Name of the dataset custodian in 'Last, First' format" />
     <property name="input.dataset.DataCustodian.required" value="true" />
+    <property name="input.dataset.DataCustodian.order" value="10" />
     
     <property name="input.dataset.OwnerPrincipal.type" value="urn:ldap:attributes:dn" />
     <property name="input.dataset.OwnerPrincipal.title" value="Share data with..." />
     <property name="input.dataset.OwnerPrincipal.description" 
               value="Select or remove the groups or individuals with whom you’d like to share this data." />
     <property name="input.dataset.OwnerPrincipal.required" value="true" />
+    <property name="input.dataset.OwnerPrincipal.order" value="11" />
     
     <property name="input.dataset.CollaborativeGroup.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#collaborativeGroup" />
     <property name="input.dataset.CollaborativeGroup.title" value="Collaborative Group" />
     <property name="input.dataset.CollaborativeGroup.description" value="Organ Collaborative Group (select one)" />
     <property name="input.dataset.CollaborativeGroup.required" value="true" />
+    <property name="input.dataset.CollaborativeGroup.order" value="12" />
         
     <property name="input.dataset.QAState.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#qaState" />
     <property name="input.dataset.QAState.title" value="Public Data ?" />
     <property name="input.dataset.QAState.description" value="Choose 'Public' to enable anybody to access" />
     <property name="input.dataset.QAState.required" value="false" />
+    <property name="input.dataset.QAState.order" value="13" />
+    
+    <property name="input.dataset.ProtocolName.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#protocolName" />
+    <property name="input.dataset.ProtocolName.title" value="Protocol Name" />
+    <property name="input.dataset.ProtocolName.description" 
+              value="Begin typing a protocol name or id. A list of options will appear. Don’t see the protocol you want? Email edrn-ic@jpl.nasa.gov" />
+    <property name="input.dataset.ProtocolName.required" value="false" />
+    <property name="input.dataset.ProtocolName.order" value="14" />
+    
+    <property name="input.dataset.ProtocolId.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#protocolId" />
+    <property name="input.dataset.ProtocolId.title" value="Protocol Identifier" />
+    <property name="input.dataset.ProtocolId.description" value="Protocol Unique Identifier" />
+    <property name="input.dataset.ProtocolId.required" value="false" />
+    <property name="input.dataset.ProtocolId.visible" value="false" />
+    <property name="input.dataset.ProtocolId.order" value="15" />
     
   
     <!--  Dataset level metadata -->
@@ -95,37 +110,59 @@
     <property name="input.dataset.DatasetName.type" value="http://www.w3.org/2001/XMLSchema/string" />
     <property name="input.dataset.DatasetName.title" value="Dataset Name" />
     <property name="input.dataset.DatasetName.description" value="Short name for this dataset (one or a few words only)." />
+    <property name="input.dataset.DatasetName.required" value="true" /> 
+    <property name="input.dataset.DatasetName.visible" value="true" /> 
+    <property name="input.dataset.DatasetName.order" value="16" />  
+
+    <property name="input.dataset.DatasetId.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.dataset.DatasetId.title" value="Dataset Identifier" />
+    <property name="input.dataset.DatasetId.description" value="Unique dataset identifier" />
     <property name="input.dataset.DatasetId.required" value="true" />
+    <property name="input.dataset.DatasetId.visible" value="false" />
+    <property name="input.dataset.DatasetId.order" value="17" />
     
     <property name="input.dataset.DatasetDescription.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#text" />
     <property name="input.dataset.DatasetDescription.title" value="Dataset Description" />
     <property name="input.dataset.DatasetDescription.description" value="Short description for this dataset (a few sentences)." />
     <property name="input.dataset.DatasetDescription.required" value="true" />
+    <property name="input.dataset.DatasetDescription.visible" value="true" />
+    <property name="input.dataset.DatasetDescription.order" value="18" />
     
     <property name="input.dataset.Species.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#species" />
     <property name="input.dataset.Species.title" value="Species" />
     <property name="input.dataset.Species.description" value="Animal species for which this study was conducted" />
     <property name="input.dataset.Species.required" value="false" />
-    
-    <property name="input.dataset.PubMedId.type" value="http://www.w3.org/2001/XMLSchema/string" />
-    <property name="input.dataset.PubMedId.title" value="Pub Med ID" />
-    <property name="input.dataset.PubMedId.description" value="URL of PubMed publication" />
-    <property name="input.dataset.PubMedId.required" value="false" />
-        
-    <property name="input.dataset.ReferenceURL.type" value="http://www.w3.org/2001/XMLSchema/url" />
-    <property name="input.dataset.ReferenceURL.title" value="Reference URL" />
-    <property name="input.dataset.ReferenceURL.description" value="External URL of associated web site for these data" />
-    <property name="input.dataset.ReferenceURL.required" value="false" />
-        
-    <property name="input.dataset.Instrument.type" value="http://www.w3.org/2001/XMLSchema/string" />
-    <property name="input.dataset.Instrument.title" value="Instrument" />
-    <property name="input.dataset.Instrument.description" value="Instrument that was used to collect these data" />
-    <property name="input.dataset.Instrument.required" value="false" />
+    <property name="input.dataset.Species.visible" value="true" />
+    <property name="input.dataset.Species.order" value="19" />
     
     <property name="input.dataset.SpecimenType.type" value="http://cancer.jpl.nasa.gov/xml/schema/types.xml#specimenType" />
     <property name="input.dataset.SpecimenType.title" value="Specimen Type" />
     <property name="input.dataset.SpecimenType.description" value="The specimen type (select all that apply)" />
     <property name="input.dataset.SpecimenType.required" value="false" />   
+    <property name="input.dataset.SpecimenType.visible" value="true" />   
+    <property name="input.dataset.SpecimenType.order" value="20" />   
+    
+    <property name="input.dataset.PubMedId.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.dataset.PubMedId.title" value="Pub Med ID" />
+    <property name="input.dataset.PubMedId.description" value="URL of PubMed publication" />
+    <property name="input.dataset.PubMedId.required" value="false" />
+    <property name="input.dataset.PubMedId.visible" value="true" />
+    <property name="input.dataset.PubMedId.order" value="21" />
+        
+    <property name="input.dataset.ReferenceURL.type" value="http://www.w3.org/2001/XMLSchema/url" />
+    <property name="input.dataset.ReferenceURL.title" value="Reference URL" />
+    <property name="input.dataset.ReferenceURL.description" value="External URL of associated web site for these data" />
+    <property name="input.dataset.ReferenceURL.required" value="false" />
+    <property name="input.dataset.ReferenceURL.visible" value="true" />
+    <property name="input.dataset.ReferenceURL.order" value="22" />
+        
+    <property name="input.dataset.Instrument.type" value="http://www.w3.org/2001/XMLSchema/string" />
+    <property name="input.dataset.Instrument.title" value="Instrument" />
+    <property name="input.dataset.Instrument.description" value="Instrument that was used to collect these data" />
+    <property name="input.dataset.Instrument.required" value="false" />
+    <property name="input.dataset.Instrument.visible" value="true" />
+    <property name="input.dataset.Instrument.order" value="23" />
+    
         
     <!-- File level metadata -->
     
