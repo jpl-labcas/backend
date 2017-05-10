@@ -57,7 +57,7 @@ public class FileManagerUtils {
 		}
 		
 		// create product type directory with the same name
-		File productTypeDir = FileManagerUtils.getProductTypeArchiveDir(productTypeName);
+		File productTypeDir = FileManagerUtils.getProductTypeDefinitionDir(productTypeName);
 		File policyDir = new File(productTypeDir, "policy");
 		if (!policyDir.exists()) {
 			policyDir.mkdirs();
@@ -310,6 +310,21 @@ public class FileManagerUtils {
         }
         
         return metadata;
+		
+	}
+	
+	/**
+	 * Retrieves the top-level directory where the product type policies are contained,
+	 * currently implemented as $LABCAS_HOME/products
+	 * 
+	 * @param datasetName
+	 * @return
+	 */
+	public static File getProductTypeDefinitionDir(final String productTypeName) {
+		
+		File productsDir = new File(System.getenv(Constants.ENV_LABCAS_HOME), "products");
+		File productTypeDefDir = new File(productsDir, productTypeName); 
+		return productTypeDefDir;
 		
 	}
 	
