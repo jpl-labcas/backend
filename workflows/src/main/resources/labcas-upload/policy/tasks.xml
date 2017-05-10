@@ -41,6 +41,8 @@
       <metfield name="DataCustodian" />
       <metfield name="OwnerPrincipal"/>
       <metfield name="CollaborativeGroup"/>
+      <metfield name="ProtocolName"/>
+      <metfield name="ProtocolId"/>
       
       <!-- dataset -->
       <metfield name="DatasetName" />
