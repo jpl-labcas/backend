@@ -28,7 +28,7 @@
   </filter>
   <filter-mapping>
     <filter-name>authorizationFilter</filter-name>
-    <url-pattern>/data</url-pattern>
+    <url-pattern>/dataFIXME</url-pattern>
     <url-pattern>/datasetFIXME</url-pattern>
   </filter-mapping>
 
