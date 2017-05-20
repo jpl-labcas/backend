@@ -35,7 +35,7 @@
     <metadata>
       <keyval>
         <key>Discipline</key>
-        <val>MicroRnaSequencing</val>
+        <val>Measurement Assurance</val>
       </keyval>
       <keyval>
         <key>Institution</key>
@@ -55,7 +55,11 @@
       </keyval>
       <keyval>
         <key>Organ</key>
-        <val>Liver, Placenta, Brain</val>
+        <val>Liver | Placenta | Brain</val>
+      </keyval>
+      <keyval>
+        <key>OrganId</key>
+        <val>0 | 0 | 0</val>
       </keyval>
       <keyval>
         <key>DataCustodian</key>
@@ -77,7 +81,18 @@
         <key>ProtocolId</key>
         <val>410</val>
       </keyval>
-
+      <keyval>
+        <key>QAState</key>
+        <val>Private</val>
+      </keyval>
+      <keyval>
+        <key>Consortium</key>
+        <val>EDRN</val>
+      </keyval>
+      <keyval>
+        <key>SpecimenType</key>
+        <val>Blood</val>
+      </keyval>
     </metadata>
   </type>
 
