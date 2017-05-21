@@ -43,7 +43,7 @@
       </keyval>
       <keyval>
         <key>InstitutionId</key>
-        <val>N/A</val>
+        <val>611</val>
       </keyval>
       <keyval>
         <key>LeadPI</key>
@@ -51,7 +51,7 @@
       </keyval>
       <keyval>
         <key>LeadPIId</key>
-        <val>N/A</val>
+        <val>2944</val>
       </keyval>
       <keyval>
         <key>Organ</key>
@@ -59,7 +59,7 @@
       </keyval>
       <keyval>
         <key>OrganId</key>
-        <val>0 | 0 | 0</val>
+        <val>10 | 0 | 3</val>
       </keyval>
       <keyval>
         <key>DataCustodian</key>
@@ -71,7 +71,7 @@
       </keyval>
       <keyval>
         <key>CollaborativeGroup</key>
-        <val>N/A</val>
+        <val>Lung and Upper Aerodigestive</val>
       </keyval>
       <keyval>
         <key>ProtocolName</key>
