@@ -107,7 +107,7 @@
       <metfield name="DatasetName" />
       <metfield name="LabNumber" />
       <metfield name="ProtocolName" />
-      <metfield name="RoundNumber" />
+      <metfield name="SampleId" />
       <metfield name="DataCollectionDate" />
       
     </requiredMetFields>
