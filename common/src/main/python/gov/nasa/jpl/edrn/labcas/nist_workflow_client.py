@@ -19,10 +19,11 @@ if __name__ == '__main__':
                      'urn:edrn:NistExecTask',
                      'urn:edrn:NistCrawlTask']
     
-    metadata = {'DatasetName':'Lab005_C_R03',
-                'LabNumber':'005',
-                'Method':'C',
-                'RoundNumber':'03',
+    metadata = {'DatasetId':'Lab001A_NIST03',
+                'DatasetName':'Lab001A NIST03',
+                'LabNumber':'001',
+                'ProtocolName':'Lab001A',
+                'SampleId':'NIST03',
                 'DataCollectionDate':'20160101',
                 'NewVersion':'false',
                 'UpdateCollection':'false' }
@@ -33,8 +34,8 @@ if __name__ == '__main__':
     labcasClient.waitForCompletion(wInstId)
 
     # upload new version of same dataset, fix MetaData
-    metadata['NewVersion']='true'
-    metadata['LeadPI']='Pine, Scott'
-    wInstId = labcasClient.executeWorkflow(workflowTasks, metadata)
+    #metadata['NewVersion']='true'
+    #metadata['LeadPI']='Pine, Scott'
+    #wInstId = labcasClient.executeWorkflow(workflowTasks, metadata)
     # monitor workflow instance
-    labcasClient.waitForCompletion(wInstId)
+    #labcasClient.waitForCompletion(wInstId)

@@ -38,7 +38,7 @@
       <property name="input.dataset.DatasetName.description" value="Enter a unique short name for this dataset" />
       <property name="input.dataset.DatasetName.required" value="true" />
       <property name="input.dataset.DatasetName.order" value="1" />  
-      <!-- <property name="input.dataset.DatasetId.format" value="Lab[LabNumber]_[Method]_R[RoundNumber]" /> -->
+      <!-- <property name="input.dataset.DatasetId.format" value="Lab[LabNumber]_[ProtocolName]_R[RoundNumber]" /> -->
       
       <property name="input.dataset.LabNumber.type" value="http://www.w3.org/2001/XMLSchema/string" />
       <property name="input.dataset.LabNumber.title" value="Lab Number" />
@@ -54,33 +54,31 @@
       <property name="input.dataset.LabNumber.value.7" value="007" />
       <property name="input.dataset.LabNumber.value.8" value="008" />
       
-      <property name="input.dataset.Method.type" value="http://www.w3.org/2001/XMLSchema/string" />
-      <property name="input.dataset.Method.title" value="Method" />
-      <property name="input.dataset.Method.description" 
-                value="Choose A if this is the first time you submit the data, 
-                       or you are resubmitting data without significant changes to your method. 
-                       Choose a new letter (B, C, D, ...) when you resubmit the data after changing your method." />
-      <property name="input.dataset.Method.required" value="true" />
-      <property name="input.dataset.Method.order" value="3" />
-      <property name="input.dataset.Method.value.1" value="A" />
-      <property name="input.dataset.Method.value.2" value="B" />
-      <property name="input.dataset.Method.value.3" value="C" />
-      <property name="input.dataset.Method.value.4" value="D" />
-      <property name="input.dataset.Method.value.5" value="E" />
+      <property name="input.dataset.ProtocolName.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.ProtocolName.title" value="Protocol ID" />
+      <property name="input.dataset.ProtocolName.description" 
+                value="Choose the the correct protocol for your lab. Submit new protocols to the project PI." />
+      <property name="input.dataset.ProtocolName.required" value="true" />
+      <property name="input.dataset.ProtocolName.order" value="3" />
+      <property name="input.dataset.ProtocolName.value.1" value="Lab001A" />
+      <property name="input.dataset.ProtocolName.value.2" value="Lab003A" />
+      <property name="input.dataset.ProtocolName.value.3" value="Lab003B" />
+      <property name="input.dataset.ProtocolName.value.4" value="Lab004A" />
+      <property name="input.dataset.ProtocolName.value.5" value="Lab005A" />
+      <property name="input.dataset.ProtocolName.value.6" value="Lab006A" />
+      <property name="input.dataset.ProtocolName.value.7" value="Lab006B" />
+      <property name="input.dataset.ProtocolName.value.8" value="Lab007A" />
+      <property name="input.dataset.ProtocolName.value.8" value="Lab008A" />
       
-      <property name="input.dataset.RoundNumber.type" value="http://www.w3.org/2001/XMLSchema/string" />
-      <property name="input.dataset.RoundNumber.title" value="Round Number" />
-      <property name="input.dataset.RoundNumber.description" 
-                value="Submission number corresponding to a given inter-laboratory study. 
-                       Choose '00' if this data is NOT part of an inter-laboratory study." />
-      <property name="input.dataset.RoundNumber.required" value="true" />
-      <property name="input.dataset.RoundNumber.order" value="4" />
-      <!-- <property name="input.dataset.RoundNumber.value.1" value="01" /> -->
-      <!-- <property name="input.dataset.RoundNumber.value.2" value="02" /> -->
-      <property name="input.dataset.RoundNumber.value.1" value="03" />
-      <property name="input.dataset.RoundNumber.value.2" value="04" />
-      <property name="input.dataset.RoundNumber.value.3" value="05" />
-      <property name="input.dataset.RoundNumber.value.4" value="00" />
+      <property name="input.dataset.SampleId.type" value="http://www.w3.org/2001/XMLSchema/string" />
+      <property name="input.dataset.SampleId.title" value="Sample ID" />
+      <property name="input.dataset.SampleId.description" 
+                value="Sample ID corresponding to a given inter-laboratory study." />
+      <property name="input.dataset.SampleId.required" value="true" />
+      <property name="input.dataset.SampleId.order" value="4" />
+      <property name="input.dataset.SampleId.value.1" value="NIST03" />
+      <property name="input.dataset.SampleId.value.2" value="NIST04" />
+      <property name="input.dataset.SampleId.value.3" value="NIST05" />
             
       <property name="input.dataset.LeadPI.type" value="http://edrn.nci.nih.gov/xml/schema/types.xml#principalInvestigator" />
       <property name="input.dataset.LeadPI.title" value="Lead PI" />
@@ -108,7 +106,7 @@
     
       <metfield name="DatasetName" />
       <metfield name="LabNumber" />
-      <metfield name="Method" />
+      <metfield name="ProtocolName" />
       <metfield name="RoundNumber" />
       <metfield name="DataCollectionDate" />
       

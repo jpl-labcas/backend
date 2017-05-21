@@ -10,6 +10,7 @@
     <!-- run R script (only for Labs 005-008) -->
     <!-- must use ((..)) notation because [...] is parsed by OODT for env replacement -->
     <!-- LabNumber=${LabNumber//0/} removes the two leading 0s -->
+    <!-- was LabNumber=001, 002, ... -->
     <cmd>
          LabNumber=[LabNumber]
          LabNumber=${LabNumber//0/}
