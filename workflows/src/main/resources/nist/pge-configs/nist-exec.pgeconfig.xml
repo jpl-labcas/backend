@@ -16,7 +16,7 @@
          LabNumber=${LabNumber//0/}
          if (( $LabNumber == 5 )) || (( $LabNumber == 6 )) || (( $LabNumber == 7 )) || (( $LabNumber == 8 ))
          then 
-            Rscript --vanilla Dashboard.R [ProtocolName] [SampleId]
+            Rscript --vanilla Dashboard.R [LabNumber] [ProtocolName] [SampleId]
          fi
     </cmd>
     <!-- move output back to stanging area -->
