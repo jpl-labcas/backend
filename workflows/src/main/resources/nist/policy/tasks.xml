@@ -45,30 +45,42 @@
       <property name="input.dataset.LabNumber.description" value="Laboratory where the data was collected." />
       <property name="input.dataset.LabNumber.required" value="true" />
       <property name="input.dataset.LabNumber.order" value="2" />
-      <property name="input.dataset.LabNumber.value.1" value="001" />
-      <property name="input.dataset.LabNumber.value.2" value="002" />
-      <property name="input.dataset.LabNumber.value.3" value="003" />
-      <property name="input.dataset.LabNumber.value.4" value="004" />
-      <property name="input.dataset.LabNumber.value.5" value="005" />
-      <property name="input.dataset.LabNumber.value.6" value="006" />
-      <property name="input.dataset.LabNumber.value.7" value="007" />
-      <property name="input.dataset.LabNumber.value.8" value="008" />
+      <!-- <property name="input.dataset.LabNumber.value.1" value="Lab001" /> -->
+      <!-- <property name="input.dataset.LabNumber.value.2" value="Lab002" /> -->
+      <!-- <property name="input.dataset.LabNumber.value.3" value="Lab003" /> -->
+      <property name="input.dataset.LabNumber.value.4" value="Lab004" />
+      <property name="input.dataset.LabNumber.value.5" value="Lab005" />
+      <property name="input.dataset.LabNumber.value.6" value="Lab006" />
+      <property name="input.dataset.LabNumber.value.7" value="Lab007" />
+      <property name="input.dataset.LabNumber.value.8" value="Lab008" />
       
+      <!--
+      Protocol ID Technology  Submitted by  Uploaded filename
+      PCR001  PCR Lab001  Lab001A.pdf (tbd)
+      PCR002  PCR Lab003  Lab003A.pdf
+      PCR003  PCR Lab003  Lab003B.pdf
+      PCR004  PCR Lab004  Lab004A.pdf
+      HYB001  HYB Lab005  Lab005A.pdf
+      NGS001  NGS Lab006  Lab006A.pdf
+      NGS002  NGS Lab006  Lab006B.pdf
+      NGS003  NGS Lab007  Lab007A.pdf (tbd)
+      NGS004  NGS Lab008  Lab008A.pdf (tbd)
+      -->
       <property name="input.dataset.ProtocolName.type" value="http://www.w3.org/2001/XMLSchema/string" />
       <property name="input.dataset.ProtocolName.title" value="Protocol ID" />
       <property name="input.dataset.ProtocolName.description" 
                 value="Choose the the correct protocol for your lab. Submit new protocols to the project PI." />
       <property name="input.dataset.ProtocolName.required" value="true" />
       <property name="input.dataset.ProtocolName.order" value="3" />
-      <property name="input.dataset.ProtocolName.value.1" value="Lab001A" />
-      <property name="input.dataset.ProtocolName.value.2" value="Lab003A" />
-      <property name="input.dataset.ProtocolName.value.3" value="Lab003B" />
-      <property name="input.dataset.ProtocolName.value.4" value="Lab004A" />
-      <property name="input.dataset.ProtocolName.value.5" value="Lab005A" />
-      <property name="input.dataset.ProtocolName.value.6" value="Lab006A" />
-      <property name="input.dataset.ProtocolName.value.7" value="Lab006B" />
-      <property name="input.dataset.ProtocolName.value.8" value="Lab007A" />
-      <property name="input.dataset.ProtocolName.value.8" value="Lab008A" />
+      <property name="input.dataset.ProtocolName.value.1" value="PCR001" />
+      <property name="input.dataset.ProtocolName.value.2" value="PCR002" />
+      <property name="input.dataset.ProtocolName.value.3" value="PCR003" />
+      <property name="input.dataset.ProtocolName.value.4" value="PCR004" />
+      <property name="input.dataset.ProtocolName.value.5" value="HYB001" />
+      <property name="input.dataset.ProtocolName.value.6" value="NGS001" />
+      <property name="input.dataset.ProtocolName.value.7" value="NGS002" />
+      <property name="input.dataset.ProtocolName.value.8" value="NGS003" />
+      <property name="input.dataset.ProtocolName.value.8" value="NGS004" />
       
       <property name="input.dataset.SampleId.type" value="http://www.w3.org/2001/XMLSchema/string" />
       <property name="input.dataset.SampleId.title" value="Sample ID" />
