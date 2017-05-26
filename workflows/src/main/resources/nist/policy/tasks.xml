@@ -48,11 +48,11 @@
       <!-- <property name="input.dataset.LabNumber.value.1" value="Lab001" /> -->
       <!-- <property name="input.dataset.LabNumber.value.2" value="Lab002" /> -->
       <!-- <property name="input.dataset.LabNumber.value.3" value="Lab003" /> -->
-      <property name="input.dataset.LabNumber.value.4" value="Lab004" />
-      <property name="input.dataset.LabNumber.value.5" value="Lab005" />
-      <property name="input.dataset.LabNumber.value.6" value="Lab006" />
-      <property name="input.dataset.LabNumber.value.7" value="Lab007" />
-      <property name="input.dataset.LabNumber.value.8" value="Lab008" />
+      <property name="input.dataset.LabNumber.value.1" value="Lab004" />
+      <property name="input.dataset.LabNumber.value.2" value="Lab005" />
+      <property name="input.dataset.LabNumber.value.3" value="Lab006" />
+      <property name="input.dataset.LabNumber.value.4" value="Lab007" />
+      <property name="input.dataset.LabNumber.value.5" value="Lab008" />
       
       <!--
       Protocol ID Technology  Submitted by  Uploaded filename
