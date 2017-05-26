@@ -9,7 +9,7 @@
 
 	<customMetadata>
 		<metadata key="ProductionDateTime" val="[DATE.UTC]" />
-		<metadata key="JobDir" val="[PGE_ROOT]/jobs/[ProductType]/[DatasetId]" />
+		<metadata key="JobDir" val="[PGE_ROOT]/nist/jobs/[DatasetId]" />
 	</customMetadata>
 
 	<!-- CAS Crawler directives -->
