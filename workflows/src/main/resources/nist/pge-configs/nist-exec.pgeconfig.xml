@@ -12,12 +12,12 @@
     <!-- LabNumber=${LabNumber//0/} removes the two leading 0s -->
     <!-- was LabNumber=001, 002, ... -->
     <cmd>
-         LabNumber=[LabNumber]
-         LabNumber=${LabNumber//0/}
-         if (( $LabNumber == 5 )) || (( $LabNumber == 6 )) || (( $LabNumber == 7 )) || (( $LabNumber == 8 ))
-         then 
+         #LabNumber=[LabNumber]
+         #LabNumber=${LabNumber//0/}
+         #if (( $LabNumber == 5 )) || (( $LabNumber == 6 )) || (( $LabNumber == 7 )) || (( $LabNumber == 8 ))
+         #then 
             Rscript --vanilla Dashboard.R [LabNumber] [ProtocolName] [SampleId]
-         fi
+         #fi
     </cmd>
     <!-- move output back to stanging area -->
     <!-- suppress error message if plot file does not exist -->

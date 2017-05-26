@@ -19,10 +19,10 @@ if __name__ == '__main__':
                      'urn:edrn:NistExecTask',
                      'urn:edrn:NistCrawlTask']
     
-    metadata = {'DatasetId':'Lab008A_NIST03',
-                'DatasetName':'Lab008A NIST03',
-                'LabNumber':'008',
-                'ProtocolName':'Lab008A',
+    metadata = {'DatasetId':'Lab008_NGS004_NIST03',
+                'DatasetName':'Lab008 NGS004 NIST03',
+                'LabNumber':'Lab008',
+                'ProtocolName':'NGS004',
                 'SampleId':'NIST03',
                 'DataCollectionDate':'20160101',
                 'NewVersion':'false',
