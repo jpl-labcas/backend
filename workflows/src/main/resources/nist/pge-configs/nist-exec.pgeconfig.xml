@@ -7,10 +7,8 @@
     <cmd>
       cd [LABCAS_STAGING]/[ProductType]/[DatasetId]
       for filename in *.txt; do
-        if (( "$filename" != "[DatasetId].txt" )); then 
-          echo "mv $filename [DatasetId].txt"
-          mv $filename [DatasetId].txt
-        fi
+        echo "mv $filename [DatasetId].txt"
+        mv $filename [DatasetId].txt
       done
     </cmd>
     <!-- must execute R script in a separate directory -->
