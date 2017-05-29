@@ -15,7 +15,6 @@ if __name__ == '__main__':
     labcasClient = LabcasClient()
 
     workflowTasks = ['urn:edrn:NistInitTask',
-                     'urn:edrn:NistConvertTask',
                      'urn:edrn:NistExecTask',
                      'urn:edrn:NistCrawlTask']
     
