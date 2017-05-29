@@ -3,6 +3,14 @@
 
   <!-- PGE commands -->
   <exe dir="[JobDir]" shell="/bin/bash">
+    <!-- rename uploaded file according to standard convention -->
+    <cmd>
+      cd [LABCAS_STAGING]/[ProductType]/[DatasetId]
+      for filename in *.txt; do
+        echo "mv $filename [DatasetId].txt"
+        mv $filename [DatasetId].txt
+      done
+    </cmd>
     <!-- must execute R script in a separate directory -->
     <cmd>cd [PGE_ROOT]/nist/pges</cmd>
     <cmd>cp [LABCAS_STAGING]/[ProductType]/[DatasetId]/[DatasetId].txt .</cmd>
