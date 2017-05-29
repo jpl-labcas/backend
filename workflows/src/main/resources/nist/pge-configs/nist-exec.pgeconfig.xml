@@ -3,22 +3,21 @@
 
   <!-- PGE commands -->
   <exe dir="[JobDir]" shell="/bin/bash">
+    <!-- rename uploaded file according to standard conventtion -->
+    <cmd>
+      for filename in [LABCAS_STAGING]/[ProductType]/[DatasetId]/*; do
+        echo "mv $filename [LABCAS_STAGING]/[ProductType]/[DatasetId]/[DatasetId]*.txt"
+        mv $filename [LABCAS_STAGING]/[ProductType]/[DatasetId]/[DatasetId]*.txt
+      done
+    </cmd>
     <!-- must execute R script in a separate directory -->
     <cmd>cd [PGE_ROOT]/nist/pges</cmd>
-    <!-- copy latest uploaded data -->
     <cmd>cp [LABCAS_STAGING]/[ProductType]/[DatasetId]/[DatasetId]*.txt .</cmd>
     <!-- run R script (only for Labs 005-008) -->
     <!-- must use ((..)) notation because [...] is parsed by OODT for env replacement -->
     <!-- LabNumber=${LabNumber//0/} removes the two leading 0s -->
     <!-- was LabNumber=001, 002, ... -->
-    <cmd>
-         #LabNumber=[LabNumber]
-         #LabNumber=${LabNumber//0/}
-         #if (( $LabNumber == 5 )) || (( $LabNumber == 6 )) || (( $LabNumber == 7 )) || (( $LabNumber == 8 ))
-         #then 
-            Rscript --vanilla Dashboard.R [LabNumber] [ProtocolName] [SampleId]
-         #fi
-    </cmd>
+    <cmd>Rscript --vanilla Dashboard.R [LabNumber] [ProtocolName] [SampleId]</cmd>
     <!-- move output back to stanging area -->
     <!-- suppress error message if plot file does not exist -->
     <!-- <cmd>mv Rplots.pdf [LABCAS_STAGING]/[ProductType]/[DatasetId]/. 2&gt;/dev/null; true</cmd> -->
