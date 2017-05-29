@@ -3,16 +3,19 @@
 
   <!-- PGE commands -->
   <exe dir="[JobDir]" shell="/bin/bash">
-    <!-- rename uploaded file according to standard conventtion -->
+    <!-- rename uploaded file according to standard convention -->
     <cmd>
-      for filename in [LABCAS_STAGING]/[ProductType]/[DatasetId]/*; do
-        echo "mv $filename [LABCAS_STAGING]/[ProductType]/[DatasetId]/[DatasetId]*.txt"
-        mv $filename [LABCAS_STAGING]/[ProductType]/[DatasetId]/[DatasetId].txt
+      cd [LABCAS_STAGING]/[ProductType]/[DatasetId]
+      for filename in *.txt; do
+        if (( "$filename" != "[DatasetId].txt" )); then 
+          echo "mv $filename [DatasetId].txt"
+          mv $filename [DatasetId].txt
+        fi
       done
     </cmd>
     <!-- must execute R script in a separate directory -->
     <cmd>cd [PGE_ROOT]/nist/pges</cmd>
-    <cmd>cp [LABCAS_STAGING]/[ProductType]/[DatasetId]/[DatasetId]*.txt .</cmd>
+    <cmd>cp [LABCAS_STAGING]/[ProductType]/[DatasetId]/[DatasetId].txt .</cmd>
     <!-- run R script (only for Labs 005-008) -->
     <!-- must use ((..)) notation because [...] is parsed by OODT for env replacement -->
     <!-- LabNumber=${LabNumber//0/} removes the two leading 0s -->
