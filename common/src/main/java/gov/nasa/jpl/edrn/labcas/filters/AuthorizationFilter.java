@@ -84,7 +84,7 @@ public class AuthorizationFilter implements Filter {
 		    LOG.info("SETTING COOKIE VALUE TO:"+signature);
 		    
 			final Cookie _cookie = new Cookie(Constants.COOKIE_PRODUCT_ID_SIGNATURE, signature);
-			_cookie.setSecure(true);
+			//_cookie.setSecure(true);
 			_cookie.setMaxAge(Constants.COOKIE_PRODUCT_ID_LIFETIME);
 			final String url = req.getRequestURL().toString();
 			final URL reqURL = new URL(url);
