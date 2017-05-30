@@ -59,6 +59,33 @@ public class AuthorizationFilter implements Filter {
 		final String productId = request.getParameter(Constants.PARAMETER_PRODUCT_ID);
 		if (LOG.isDebugEnabled()) LOG.debug("Establishing access control for productId="+productId);
 		
+		
+		
+		// retrieve cookie to check authorization
+		Cookie[] cookies = req.getCookies();
+		if (cookies != null) {
+		      for (int i = 0; i < cookies.length; i++) {
+		          Cookie cookie=cookies[i];
+		          if (LOG.isInfoEnabled()) LOG.info("Found cookie="+cookie.getName()+" value="+cookie.getValue());
+		          if (cookie.getName().equals(Constants.COOKIE_PRODUCT_ID_SIGNATURE)) {
+		        	  
+		        	  if (LOG.isInfoEnabled()) LOG.info("Found authorization cookie: name="+cookie.getName()+" value="+cookie.getValue());
+		        	  		        		  
+		        		  // validate signature
+		        		  if (rsaUtils.verify(productId, cookie.getValue())) {
+		        			  
+		        			  if (LOG.isDebugEnabled()) LOG.debug("Cookie signature is valid");
+		        			  // request is authorized, keep processing
+		        			  chain.doFilter(request, response);
+		        		    	
+		        		  } else {
+		        		      if (LOG.isWarnEnabled()) LOG.warn("Cookie signature is NOT valid");
+		        		  }
+		        		  
+		          }
+		       }
+		 }
+		
 		// FIXME: set the cookie with signature
 		try {
 					    
@@ -79,31 +106,7 @@ public class AuthorizationFilter implements Filter {
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 		}
-		
-		
-		// retrieve cookie to check authorization
-		Cookie[] cookies = req.getCookies();
-		if (cookies != null) {
-		      for (int i = 0; i < cookies.length; i++) {
-		          Cookie cookie=cookies[i];
-		          if (cookie.getName().equals(Constants.COOKIE_PRODUCT_ID_SIGNATURE)) {
-		        	  
-		        	  if (LOG.isInfoEnabled()) LOG.info("Found authorization cookie: name="+cookie.getName()+" value="+cookie.getValue());
-		        	  		        		  
-		        		  // validate signature
-		        		  if (rsaUtils.verify(productId, cookie.getValue())) {
-		        			  
-		        			  if (LOG.isDebugEnabled()) LOG.debug("Cookie signature is valid");
-		        			  // request is authorized, keep processing
-		        			  chain.doFilter(request, response);
-		        		    	
-		        		  } else {
-		        		      if (LOG.isWarnEnabled()) LOG.warn("Cookie signature is NOT valid");
-		        		  }
-		        		  
-		          }
-		       }
-		 }
+
 				
    		// authorization cookie was NOT found, or signature validation failed
 		if (LOG.isDebugEnabled()) LOG.debug("Authorization failed for productID="+productId);
