@@ -1,14 +1,7 @@
 package gov.nasa.jpl.edrn.labcas.filters;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.Security;
-import java.security.Signature;
-import java.security.SignatureException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -19,12 +12,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.openssl.PEMReader;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
 import gov.nasa.jpl.edrn.labcas.utils.RsaUtils;
@@ -110,7 +100,8 @@ public class AuthorizationFilter implements Filter {
 				
    		// authorization cookie was NOT found, or signature validation failed
 		if (LOG.isDebugEnabled()) LOG.debug("Authorization failed for productID="+productId);
-   		resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Sorry, you are not authorized to download this product.");
+		chain.doFilter(request, response);
+   		//resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Sorry, you are not authorized to download this product.");
 
 	}
 
