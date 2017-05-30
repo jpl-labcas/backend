@@ -49,8 +49,6 @@ public class AuthorizationFilter implements Filter {
 		final String productId = request.getParameter(Constants.PARAMETER_PRODUCT_ID);
 		if (LOG.isDebugEnabled()) LOG.debug("Establishing access control for productId="+productId);
 		
-		
-		
 		// retrieve cookie to check authorization
 		Cookie[] cookies = req.getCookies();
 		if (cookies != null) {
@@ -66,7 +64,7 @@ public class AuthorizationFilter implements Filter {
 		        			  
 		        			  if (LOG.isDebugEnabled()) LOG.debug("Cookie signature is valid");
 		        			  // request is authorized, keep processing
-		        			  chain.doFilter(request, response);
+		        			  chain.doFilter(req, resp);
 		        		    	
 		        		  } else {
 		        		      if (LOG.isWarnEnabled()) LOG.warn("Cookie signature is NOT valid");
@@ -90,7 +88,8 @@ public class AuthorizationFilter implements Filter {
 			final URL reqURL = new URL(url);
 			_cookie.setDomain(reqURL.getHost()); // cookie sent to all applications on this host
 			_cookie.setPath("/");                // cookie will be sent to all pages in web application
-			if (LOG.isDebugEnabled()) LOG.debug("Set cookie name="+_cookie.getName()+" value="+_cookie.getValue());
+			if (LOG.isDebugEnabled()) LOG.debug("Set cookie name="+_cookie.getName()+" value="+_cookie.getValue()
+			                                   +" domain="+_cookie.getDomain()+" path="+_cookie.getPath());
 			resp.addCookie(_cookie);
 		
 		} catch (Exception e) {
@@ -100,7 +99,7 @@ public class AuthorizationFilter implements Filter {
 				
    		// authorization cookie was NOT found, or signature validation failed
 		if (LOG.isDebugEnabled()) LOG.debug("Authorization failed for productID="+productId);
-		chain.doFilter(request, response);
+		chain.doFilter(req, resp);
    		//resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Sorry, you are not authorized to download this product.");
 
 	}
