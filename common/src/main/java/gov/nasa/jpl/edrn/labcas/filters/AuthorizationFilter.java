@@ -1,7 +1,14 @@
 package gov.nasa.jpl.edrn.labcas.filters;
 
+import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
+import java.security.InvalidKeyException;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.Security;
+import java.security.Signature;
+import java.security.SignatureException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -12,9 +19,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.PEMReader;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
 
@@ -27,6 +37,7 @@ import gov.nasa.jpl.edrn.labcas.Constants;
 public class AuthorizationFilter implements Filter {
 	
 	private FilterConfig filterConfig;
+	private PublicKey pubKey = null;
 	
 	private final Log LOG = LogFactory.getLog(this.getClass());
 
@@ -65,25 +76,67 @@ public class AuthorizationFilter implements Filter {
 		if (cookies != null) {
 		      for (int i = 0; i < cookies.length; i++) {
 		          Cookie cookie=cookies[i];
-		          if (cookie.getName().equals(Constants.COOKIE_PRODUCT_ID_NAME)) {
-		        	  if (cookie.getValue().equals(productId)) {
-		        	   		// request is authorized, keep processing
-		        		    if (LOG.isDebugEnabled()) LOG.debug("Found authorization cookie: name="+cookie.getName()+" value="+cookie.getValue());
-		        	   		chain.doFilter(request, response);   
-		        	  }
+		          if (cookie.getName().equals(Constants.COOKIE_PRODUCT_ID_SIGNATURE)) {
+		        	  
+		        	  if (LOG.isDebugEnabled()) LOG.debug("Found authorization cookie: name="+cookie.getName()+" value="+cookie.getValue());
+		        	  
+		        	  try {
+		        		  
+		        		  // load public key
+		        		  Signature sg = Signature.getInstance("SHA1withRSA");
+		        		  sg.initVerify(pubKey);
+		        		  
+		        		  // read product id into signature instance
+		        		  sg.update(productId.getBytes());
+		        		  
+		        		  // validate signature
+		        		  if (sg.verify(DatatypeConverter.parseBase64Binary(cookie.getValue()))) {
+		        			  
+		        			  if (LOG.isDebugEnabled()) LOG.debug("Cookie signature is valid");
+		        			  // request is authorized, keep processing
+		        			  chain.doFilter(request, response);
+		        		    	
+		        		  } else {
+		        		      if (LOG.isWarnEnabled()) LOG.warn("Cookie signature is invalid");
+		        		  }
+		        		  
+		        		  
+		        	  } catch(SignatureException e1) {
+		        		LOG.error(e1.getMessage());
+		        	  } catch(NoSuchAlgorithmException e2) {
+		      			LOG.error(e2.getMessage());
+			      	  } catch(InvalidKeyException e3) {
+			      		LOG.error(e3.getMessage());
+			      	  }
+
 		          }
 		       }
 		 }
 				
-   		// authorization cookie was NOT found, return error
-		if (LOG.isDebugEnabled()) LOG.debug("Authorization cookie for productID="+productId+" not found");
+   		// authorization cookie was NOT found, or signature validation failed
+		if (LOG.isDebugEnabled()) LOG.debug("Authorization failed for productID="+productId+" not found");
    		resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Sorry, you are not authorized to download this product.");
 
 	}
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
+		
+		// read private key location from filter configuration
 		this.filterConfig = filterConfig;
+		String privateKeyFilePath = filterConfig.getInitParameter("privateKeyFilePath");
+		LOG.info("Using private key file: "+privateKeyFilePath);
+		
+	    // read private key into memory
+		try {
+		    Security.addProvider(new BouncyCastleProvider());
+		    PEMReader pemReader = new PEMReader(new FileReader(privateKeyFilePath));
+		    pubKey = ((KeyPair) pemReader.readObject()).getPublic();
+		    pemReader.close();
+		    		    
+		} catch(IOException e1) {
+			LOG.error(e1.getMessage());
+		} 
 	}
 
 }

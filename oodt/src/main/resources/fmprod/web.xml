@@ -25,11 +25,15 @@
   <filter>
     <filter-name>authorizationFilter</filter-name>
     <filter-class>gov.nasa.jpl.edrn.labcas.filters.AuthorizationFilter</filter-class>
+    <init-param>
+      <param-name>privateKeyFilePath</param-name>
+      <param-value>/Users/cinquini/ESGF_CONFIG/httpd/certs/hostkey.pem</param-value>
+    </init-param>
   </filter>
   <filter-mapping>
     <filter-name>authorizationFilter</filter-name>
-    <url-pattern>/dataFIXME</url-pattern>
-    <url-pattern>/datasetFIXME</url-pattern>
+    <url-pattern>/data</url-pattern>
+    <url-pattern>/dataset</url-pattern>
   </filter-mapping>
 
   <servlet>
