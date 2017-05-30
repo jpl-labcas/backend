@@ -72,6 +72,7 @@ public class AuthorizationFilter implements Filter {
 
 		
 		// retrieve cookie to check authorization
+		boolean authorized = false;
 		Cookie[] cookies = req.getCookies();
 		if (cookies != null) {
 		      for (int i = 0; i < cookies.length; i++) {
@@ -83,11 +84,8 @@ public class AuthorizationFilter implements Filter {
 		        	  		        		  
 		        		  // validate signature
 		        		  if (rsaUtils.verify(productId, cookie.getValue())) {
-		        			  
 		        			  if (LOG.isDebugEnabled()) LOG.debug("Cookie signature is valid");
-		        			  // request is authorized, keep processing
-		        			  chain.doFilter(req, resp);
-		        		    	
+		        		      authorized = true;
 		        		  } else {
 		        		      if (LOG.isWarnEnabled()) LOG.warn("Cookie signature is NOT valid");
 		        		  }
@@ -96,9 +94,14 @@ public class AuthorizationFilter implements Filter {
 		       }
 		 }
 				
-   		// authorization cookie was NOT found, or signature validation failed
-		if (LOG.isDebugEnabled()) LOG.debug("Authorization failed for productID="+productId);
-   		resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Sorry, you are not authorized to download this product.");
+		if (authorized) {
+			  // request is authorized, keep processing
+			  chain.doFilter(req, resp);
+		} else {
+			// authorization cookie was NOT found, or signature validation failed
+			if (LOG.isDebugEnabled()) LOG.debug("Authorization failed for productID="+productId);
+			resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Sorry, you are not authorized to download this product.");
+		}
 
 	}
 
