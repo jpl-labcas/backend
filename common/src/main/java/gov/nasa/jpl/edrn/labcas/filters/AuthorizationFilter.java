@@ -84,6 +84,8 @@ public class AuthorizationFilter implements Filter {
 			final Cookie _cookie = new Cookie(Constants.COOKIE_PRODUCT_ID_SIGNATURE, signature);
 			//_cookie.setSecure(true);
 			_cookie.setMaxAge(Constants.COOKIE_PRODUCT_ID_LIFETIME);
+			LOG.info("REMOTE HOST="+req.getRemoteHost());
+			LOG.info("REQUEST="+req.getRequestURL().toString());
 			final String url = req.getRequestURL().toString();
 			final URL reqURL = new URL(url);
 			_cookie.setDomain(reqURL.getHost()); // cookie sent to all applications on this host
