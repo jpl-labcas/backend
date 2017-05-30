@@ -2,6 +2,7 @@ package gov.nasa.jpl.edrn.labcas.filters;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -37,6 +38,7 @@ import gov.nasa.jpl.edrn.labcas.Constants;
 public class AuthorizationFilter implements Filter {
 	
 	private FilterConfig filterConfig;
+	String privateKeyFilePath = null;
 	private PublicKey pubKey = null;
 	
 	private final Log LOG = LogFactory.getLog(this.getClass());
@@ -58,18 +60,35 @@ public class AuthorizationFilter implements Filter {
 		final String productId = request.getParameter(Constants.PARAMETER_PRODUCT_ID);
 		if (LOG.isDebugEnabled()) LOG.debug("Establishing access control for productId="+productId);
 		
-		// FIXME: set cookie for that productID
-		/**
-		final Cookie _cookie = new Cookie(Constants.COOKIE_PRODUCT_ID_NAME, productId);
-		//_cookie.setSecure(true);
-		_cookie.setMaxAge(Constants.COOKIE_PRODUCT_ID_LIFETIME);
-		final String url = req.getRequestURL().toString();
-		final URL reqURL = new URL(url);
-		_cookie.setDomain(reqURL.getHost()); // cookie sent to all applications on this host
-		_cookie.setPath("/");                // cookie will be sent to all pages in web application
-		if (LOG.isDebugEnabled()) LOG.debug("Set cookie name="+_cookie.getName()+" value="+_cookie.getValue());
-		resp.addCookie(_cookie);
-		*/
+		// FIXME: set cookie containing the signature for the product id
+		try {
+			
+			PEMReader pemReader = new PEMReader(new FileReader(privateKeyFilePath));
+			KeyPair keys = (KeyPair) pemReader.readObject();
+			pemReader.close();
+			
+		    // sign the data
+		    Signature sg = Signature.getInstance("SHA1withRSA");
+		    sg.initSign(keys.getPrivate());
+		    sg.update(productId.getBytes());
+		    
+		    // add cookie with signed data
+		    String signature = DatatypeConverter.printBase64Binary(sg.sign());
+		    
+			final Cookie _cookie = new Cookie(Constants.COOKIE_PRODUCT_ID_SIGNATURE, signature);
+			//_cookie.setSecure(true);
+			_cookie.setMaxAge(Constants.COOKIE_PRODUCT_ID_LIFETIME);
+			final String url = req.getRequestURL().toString();
+			final URL reqURL = new URL(url);
+			_cookie.setDomain(reqURL.getHost()); // cookie sent to all applications on this host
+			_cookie.setPath("/");                // cookie will be sent to all pages in web application
+			if (LOG.isDebugEnabled()) LOG.debug("Set cookie name="+_cookie.getName()+" value="+_cookie.getValue());
+			resp.addCookie(_cookie);
+		
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+		}
+		
 		
 		// retrieve cookie to check authorization
 		Cookie[] cookies = req.getCookies();
@@ -114,7 +133,7 @@ public class AuthorizationFilter implements Filter {
 		 }
 				
    		// authorization cookie was NOT found, or signature validation failed
-		if (LOG.isDebugEnabled()) LOG.debug("Authorization failed for productID="+productId+" not found");
+		if (LOG.isDebugEnabled()) LOG.debug("Authorization failed for productID="+productId);
    		resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Sorry, you are not authorized to download this product.");
 
 	}
@@ -124,14 +143,14 @@ public class AuthorizationFilter implements Filter {
 		
 		// read private key location from filter configuration
 		this.filterConfig = filterConfig;
-		String privateKeyFilePath = filterConfig.getInitParameter("privateKeyFilePath");
+		this.privateKeyFilePath = filterConfig.getInitParameter("privateKeyFilePath");
 		LOG.info("Using private key file: "+privateKeyFilePath);
 		
 	    // read private key into memory
 		try {
 		    Security.addProvider(new BouncyCastleProvider());
 		    PEMReader pemReader = new PEMReader(new FileReader(privateKeyFilePath));
-		    pubKey = ((KeyPair) pemReader.readObject()).getPublic();
+		    this.pubKey = ((KeyPair) pemReader.readObject()).getPublic();
 		    pemReader.close();
 		    		    
 		} catch(IOException e1) {
