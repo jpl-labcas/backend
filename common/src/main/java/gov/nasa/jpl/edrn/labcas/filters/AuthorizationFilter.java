@@ -6,7 +6,6 @@ import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
 import java.security.Security;
 import java.security.Signature;
 import java.security.SignatureException;
@@ -28,6 +27,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
+import gov.nasa.jpl.edrn.labcas.utils.RsaUtils;
 
 /**
  * Filter that enforces proper authorization when downloading files from the OODT Product Server.
@@ -38,8 +38,7 @@ import gov.nasa.jpl.edrn.labcas.Constants;
 public class AuthorizationFilter implements Filter {
 	
 	private FilterConfig filterConfig;
-	String privateKeyFilePath = null;
-	private PublicKey pubKey = null;
+	RsaUtils rsaUtils;
 	
 	private final Log LOG = LogFactory.getLog(this.getClass());
 
@@ -60,23 +59,15 @@ public class AuthorizationFilter implements Filter {
 		final String productId = request.getParameter(Constants.PARAMETER_PRODUCT_ID);
 		if (LOG.isDebugEnabled()) LOG.debug("Establishing access control for productId="+productId);
 		
-		// FIXME: set cookie containing the signature for the product id
+		// FIXME: set the cookie with signature
 		try {
-			
-			PEMReader pemReader = new PEMReader(new FileReader(privateKeyFilePath));
-			KeyPair keys = (KeyPair) pemReader.readObject();
-			pemReader.close();
-			
-		    // sign the data
-		    Signature sg = Signature.getInstance("SHA1withRSA");
-		    sg.initSign(keys.getPrivate());
-		    sg.update(productId.getBytes());
-		    
+					    
 		    // add cookie with signed data
-		    String signature = DatatypeConverter.printBase64Binary(sg.sign());
+		    String signature = rsaUtils.sign(productId);
+		    LOG.info("SETTING COOKIE VALUE TO:"+signature);
 		    
 			final Cookie _cookie = new Cookie(Constants.COOKIE_PRODUCT_ID_SIGNATURE, signature);
-			//_cookie.setSecure(true);
+			_cookie.setSecure(true);
 			_cookie.setMaxAge(Constants.COOKIE_PRODUCT_ID_LIFETIME);
 			final String url = req.getRequestURL().toString();
 			final URL reqURL = new URL(url);
@@ -97,37 +88,19 @@ public class AuthorizationFilter implements Filter {
 		          Cookie cookie=cookies[i];
 		          if (cookie.getName().equals(Constants.COOKIE_PRODUCT_ID_SIGNATURE)) {
 		        	  
-		        	  if (LOG.isDebugEnabled()) LOG.debug("Found authorization cookie: name="+cookie.getName()+" value="+cookie.getValue());
-		        	  
-		        	  try {
-		        		  
-		        		  // load public key
-		        		  Signature sg = Signature.getInstance("SHA1withRSA");
-		        		  sg.initVerify(pubKey);
-		        		  
-		        		  // read product id into signature instance
-		        		  sg.update(productId.getBytes());
-		        		  
+		        	  if (LOG.isInfoEnabled()) LOG.info("Found authorization cookie: name="+cookie.getName()+" value="+cookie.getValue());
+		        	  		        		  
 		        		  // validate signature
-		        		  if (sg.verify(DatatypeConverter.parseBase64Binary(cookie.getValue()))) {
+		        		  if (rsaUtils.verify(productId, cookie.getValue())) {
 		        			  
 		        			  if (LOG.isDebugEnabled()) LOG.debug("Cookie signature is valid");
 		        			  // request is authorized, keep processing
 		        			  chain.doFilter(request, response);
 		        		    	
 		        		  } else {
-		        		      if (LOG.isWarnEnabled()) LOG.warn("Cookie signature is invalid");
+		        		      if (LOG.isWarnEnabled()) LOG.warn("Cookie signature is NOT valid");
 		        		  }
 		        		  
-		        		  
-		        	  } catch(SignatureException e1) {
-		        		LOG.error(e1.getMessage());
-		        	  } catch(NoSuchAlgorithmException e2) {
-		      			LOG.error(e2.getMessage());
-			      	  } catch(InvalidKeyException e3) {
-			      		LOG.error(e3.getMessage());
-			      	  }
-
 		          }
 		       }
 		 }
@@ -143,19 +116,11 @@ public class AuthorizationFilter implements Filter {
 		
 		// read private key location from filter configuration
 		this.filterConfig = filterConfig;
-		this.privateKeyFilePath = filterConfig.getInitParameter("privateKeyFilePath");
-		LOG.info("Using private key file: "+privateKeyFilePath);
 		
-	    // read private key into memory
-		try {
-		    Security.addProvider(new BouncyCastleProvider());
-		    PEMReader pemReader = new PEMReader(new FileReader(privateKeyFilePath));
-		    this.pubKey = ((KeyPair) pemReader.readObject()).getPublic();
-		    pemReader.close();
-		    		    
-		} catch(IOException e1) {
-			LOG.error(e1.getMessage());
-		} 
+		String privateKeyFilePath = filterConfig.getInitParameter("privateKeyFilePath");
+		LOG.info("Using private key file: "+privateKeyFilePath);
+		rsaUtils = new RsaUtils(privateKeyFilePath);
+		
 	}
 
 }
