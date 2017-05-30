@@ -49,13 +49,35 @@ public class AuthorizationFilter implements Filter {
 		final String productId = request.getParameter(Constants.PARAMETER_PRODUCT_ID);
 		if (LOG.isDebugEnabled()) LOG.debug("Establishing access control for productId="+productId);
 		
+		// FIXME: set the cookie with signature
+		try {
+					    
+		    // add cookie with signed data
+		    String signature = rsaUtils.sign(productId);
+		    
+			final Cookie _cookie = new Cookie(Constants.COOKIE_PRODUCT_ID_NAME, signature);
+			//_cookie.setSecure(true); // FIXME
+			_cookie.setMaxAge(Constants.COOKIE_PRODUCT_ID_LIFETIME);
+			final String url = req.getRequestURL().toString();
+			final URL reqURL = new URL(url);
+			_cookie.setDomain(reqURL.getHost()); // cookie sent to all applications on this host
+			_cookie.setPath("/");                // cookie will be sent to all pages in web application
+			if (LOG.isDebugEnabled()) LOG.debug("Set cookie name="+_cookie.getName()+" value="+_cookie.getValue()
+			                                   +" domain="+_cookie.getDomain()+" path="+_cookie.getPath()+" max age="+_cookie.getMaxAge());
+			resp.addCookie(_cookie);
+		
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+		}
+
+		
 		// retrieve cookie to check authorization
 		Cookie[] cookies = req.getCookies();
 		if (cookies != null) {
 		      for (int i = 0; i < cookies.length; i++) {
 		          Cookie cookie=cookies[i];
 		          if (LOG.isInfoEnabled()) LOG.info("Found cookie="+cookie.getName()+" value="+cookie.getValue());
-		          if (cookie.getName().equals(Constants.COOKIE_PRODUCT_ID_SIGNATURE)) {
+		          if (cookie.getName().equals(Constants.COOKIE_PRODUCT_ID_NAME)) {
 		        	  
 		        	  if (LOG.isInfoEnabled()) LOG.info("Found authorization cookie: name="+cookie.getName()+" value="+cookie.getValue());
 		        	  		        		  
@@ -73,36 +95,10 @@ public class AuthorizationFilter implements Filter {
 		          }
 		       }
 		 }
-		
-		// FIXME: set the cookie with signature
-		try {
-					    
-		    // add cookie with signed data
-		    String signature = rsaUtils.sign(productId);
-		    LOG.info("SETTING COOKIE VALUE TO:"+signature);
-		    
-			final Cookie _cookie = new Cookie(Constants.COOKIE_PRODUCT_ID_SIGNATURE, signature);
-			//_cookie.setSecure(true);
-			_cookie.setMaxAge(Constants.COOKIE_PRODUCT_ID_LIFETIME);
-			LOG.info("REMOTE HOST="+req.getRemoteHost());
-			LOG.info("REQUEST="+req.getRequestURL().toString());
-			final String url = req.getRequestURL().toString();
-			final URL reqURL = new URL(url);
-			_cookie.setDomain(reqURL.getHost()); // cookie sent to all applications on this host
-			_cookie.setPath("/");                // cookie will be sent to all pages in web application
-			if (LOG.isDebugEnabled()) LOG.debug("Set cookie name="+_cookie.getName()+" value="+_cookie.getValue()
-			                                   +" domain="+_cookie.getDomain()+" path="+_cookie.getPath());
-			resp.addCookie(_cookie);
-		
-		} catch (Exception e) {
-			LOG.error(e.getMessage());
-		}
-
 				
    		// authorization cookie was NOT found, or signature validation failed
 		if (LOG.isDebugEnabled()) LOG.debug("Authorization failed for productID="+productId);
-		chain.doFilter(req, resp);
-   		//resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Sorry, you are not authorized to download this product.");
+   		resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Sorry, you are not authorized to download this product.");
 
 	}
 
@@ -112,6 +108,7 @@ public class AuthorizationFilter implements Filter {
 		// read private key location from filter configuration
 		this.filterConfig = filterConfig;
 		
+		// create re-usable signing utility
 		String privateKeyFilePath = filterConfig.getInitParameter("privateKeyFilePath");
 		LOG.info("Using private key file: "+privateKeyFilePath);
 		rsaUtils = new RsaUtils(privateKeyFilePath);
