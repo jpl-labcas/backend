@@ -49,7 +49,8 @@ public class AuthorizationFilter implements Filter {
 		final String productId = request.getParameter(Constants.PARAMETER_PRODUCT_ID);
 		if (LOG.isDebugEnabled()) LOG.debug("Establishing access control for productId="+productId);
 		
-		// FIXME: set the cookie with signature
+		/**
+		 * Set authorization cookie.
 		try {
 					    
 		    // add cookie with signed data
@@ -68,7 +69,7 @@ public class AuthorizationFilter implements Filter {
 		
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
-		}
+		}*/
 
 		
 		// retrieve cookie to check authorization
