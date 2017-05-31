@@ -56,7 +56,7 @@ public class AuthorizationFilter implements Filter {
 		    String signature = rsaUtils.sign(productId);
 		    
 			final Cookie _cookie = new Cookie(Constants.COOKIE_PRODUCT_ID_NAME, signature);
-			//_cookie.setSecure(true); // FIXME
+			_cookie.setSecure(true); 
 			_cookie.setMaxAge(Constants.COOKIE_PRODUCT_ID_LIFETIME);
 			final String url = req.getRequestURL().toString();
 			final URL reqURL = new URL(url);
