@@ -38,7 +38,7 @@ class LabcasClient(object):
         # FIXME: pass metadata through: s.encode('ascii',errors='ignore')
         return self.workflowManagerServerProxy.workflowmgr.executeDynamicWorkflow(tasks, metadata)
         
-    def waitForCompletion(self, wInstId):
+    def waitForCompletion(self, wInstId, debug=False):
         ''' Monitors a workflow instance until it completes.'''
     
         # wait for the server to instantiate this workflow before querying it
@@ -65,9 +65,10 @@ class LabcasClient(object):
                 # must ignore XML-RPC exeptions that often arise when querying OODT for a specific workflow
                 # just try again with the same workflow identifier
                 print e
-        print response
+        if debug:
+           print response
         
-    def uploadCollection(self, datasetId, metadata, newVersion=False, inPlace=False):
+    def uploadCollection(self, datasetId, metadata, newVersion=False, inPlace=False, debug=False):
         
         # add 'DatasetId' key, value to other metadata
         metadata['DatasetId'] = datasetId
@@ -88,7 +89,7 @@ class LabcasClient(object):
                                                                                            metadata )
     
         # monitor workflow instance
-        self.waitForCompletion(wInstId)
+        self.waitForCompletion(wInstId, debug=debug)
         
     def getProductTypeByName(self, datasetName):
     

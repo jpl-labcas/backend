@@ -44,10 +44,13 @@ if __name__ == '__main__':
         
     # loop over command line arguments
     inPlace = False   # flag to publish the files in-place
+    debug = False     # flag to print additional information
     config_files = [] # list of configuration files
     for arg in sys.argv[1:]:
         if arg.lower()=='--in-place': # flag
             inPlace = True
+        elif arg.lower()=='--debug':  # flag
+            debug = True
         else:
             config_files.append(arg)  # config file path
        
@@ -95,19 +98,23 @@ if __name__ == '__main__':
     # print out workflow definition
     #labcasClient.getWorkflowsByEvent("labcas-upload")
     # or equivalently
-    if inPlace:
-        labcasClient.getWorkflowById("urn:edrn:LabcasUpload2Workflow")
-    else:
-        labcasClient.getWorkflowById("urn:edrn:LabcasUploadWorkflow")
+    if debug:
+       if inPlace:
+          labcasClient.getWorkflowById("urn:edrn:LabcasUpload2Workflow")
+       else:
+          labcasClient.getWorkflowById("urn:edrn:LabcasUploadWorkflow")
 
     # upload dataset staged in directory 'mydatadir'
-    labcasClient.uploadCollection(dataset_id, metadata, inPlace=inPlace)
+    labcasClient.uploadCollection(dataset_id, metadata, inPlace=inPlace, debug=debug)
 
     # query the product types from the XML/RPC File Manager interface
-    labcasClient.getProductTypeByName(product_type)
+    if debug:
+       labcasClient.getProductTypeByName(product_type)
     
     # or equivalently
-    labcasClient.getProductTypeById("urn:edrn:%s" % product_type)
+    if debug:
+       labcasClient.getProductTypeById("urn:edrn:%s" % product_type)
     
     # list all products for given product type
-    labcasClient.listProducts(product_type)
+    if debug:
+       labcasClient.listProducts(product_type)
