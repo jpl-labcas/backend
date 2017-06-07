@@ -51,6 +51,7 @@ public class AuthorizationFilter implements Filter {
 		
 		/**
 		 * Set authorization cookie.
+		 * */
 		try {
 					    
 		    // add cookie with signed data
@@ -69,7 +70,7 @@ public class AuthorizationFilter implements Filter {
 		
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
-		}*/
+		}
 
 		
 		// retrieve cookie to check authorization
@@ -84,7 +85,7 @@ public class AuthorizationFilter implements Filter {
 		        	  if (LOG.isInfoEnabled()) LOG.info("Found authorization cookie: name="+cookie.getName()+" value="+cookie.getValue());
 		        	  		        		  
 		        		  // validate signature
-		        	      String signature = "SmmRvNd023Fh7/3tcwtDifoDjUaMrJrVL27Ofewi8+r77fvwuFNjsBqIL/kRAH+6+t6KNF1IJamY0ErxHBSFx6XqnmZTbcokK/1GZk8BhLnFPBWKNBBhnR/FQIh4l6FVmZQw1BpTa4VI7Bd3PGQo9rjuIjAY2/IEC8Nhz+DUtqBjWLf9yESfWRi00CkNvNjLaOeYtmvukhSyaDH4IY6PHe1DMzApPULvN6OnrYbVbsqIuzlrz5oMX55BQ1NGKMIExVhlVcmbzqgum65exBNc0Gf8Jta3xTpZOa+SCde0oLAy7Gu3eLXs06+BQQe13p1g2q/i4fsecJIr/2Wr6QerAA==";
+		        	      String signature = cookie.getValue();
 		        		  if (rsaUtils.verify(productId, signature)) {
 		        			  if (LOG.isDebugEnabled()) LOG.debug("Cookie signature is valid");
 		        		      authorized = true;
