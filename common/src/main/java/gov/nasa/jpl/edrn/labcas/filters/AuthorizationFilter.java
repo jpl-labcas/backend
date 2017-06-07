@@ -51,7 +51,6 @@ public class AuthorizationFilter implements Filter {
 		
 		/**
 		 * Set authorization cookie.
-		 * */
 		try {
 					    
 		    // add cookie with signed data
@@ -70,7 +69,7 @@ public class AuthorizationFilter implements Filter {
 		
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
-		}
+		} */
 
 		
 		// retrieve cookie to check authorization
