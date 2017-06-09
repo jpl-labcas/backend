@@ -120,10 +120,14 @@ public class AuthorizationFilter implements Filter {
 		
 		// read private key location from filter configuration
 		this.filterConfig = filterConfig;
+		String privateKeyFilePath = filterConfig.getInitParameter("privateKeyFilePath");
+		
+		// replace env variable
+		String labcasHome = System.getenv(Constants.ENV_LABCAS_HOME);
+		privateKeyFilePath = privateKeyFilePath.replace("["+Constants.ENV_LABCAS_HOME+"]", labcasHome);
+		if (LOG.isInfoEnabled()) LOG.info("Using private key file: "+privateKeyFilePath);
 		
 		// create re-usable signing utility
-		String privateKeyFilePath = filterConfig.getInitParameter("privateKeyFilePath");
-		if (LOG.isInfoEnabled()) LOG.info("Using private key file: "+privateKeyFilePath);
 		rsaUtils = new RsaUtils(privateKeyFilePath);
 		
 	}

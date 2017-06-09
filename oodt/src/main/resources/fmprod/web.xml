@@ -27,7 +27,7 @@
     <filter-class>gov.nasa.jpl.edrn.labcas.filters.AuthorizationFilter</filter-class>
     <init-param>
       <param-name>privateKeyFilePath</param-name>
-      <param-value>/usr/local/labcas/backend/home/certs/hostkey.pem</param-value>
+      <param-value>[LABCAS_HOME]/certs/hostkey.pem</param-value>
     </init-param>
   </filter>
   <filter-mapping>
