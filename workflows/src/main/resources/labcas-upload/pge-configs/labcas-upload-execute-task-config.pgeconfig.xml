@@ -18,12 +18,18 @@
 		<dir path="[LABCAS_STAGING]/[ProductType]/[DatasetId]" createBeforeExe="false">
 			<!-- Metadata extractors matching specific files.
                  Matching extractors will ALL be called in the sequence they are defined. -->
+            <!-- extracts DICOM metadata from the file header -->
             <files regExp=".*\.dcm"
                    metFileWriterClass="gov.nasa.jpl.edrn.labcas.extractors.DicomMetExtractor"
                    args="python [LABCAS_HOME]/etc/dicom_met_extractor.py" />
+            <!-- writes out metadata specified in configuration file -->
 			<files regExp=".*\.(?!met$|xmlmet$)[^.]+"
-				metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
-				args="[LABCAS_HOME]/workflows/labcas-upload/pge-configs/metout.xml" />
+				   metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
+				   args="[LABCAS_HOME]/workflows/labcas-upload/pge-configs/metout.xml" />
+            <!-- extracts metadata from .xmlmet file -->
+            <files regExp=".*\.(?!met$|xmlmet$)[^.]+"
+                   metFileWriterClass="gov.nasa.jpl.edrn.labcas.extractors.XmlFileMetadataReader" />
+           
 		</dir>
 	</output>
 

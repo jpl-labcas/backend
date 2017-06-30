@@ -488,15 +488,6 @@ public class FileManagerUtils {
         labcasMetExtractorElement.appendChild(configElement);
         metExtractorsElement.appendChild(labcasMetExtractorElement);
         
-        // <extractor class="gov.nasa.jpl.edrn.labcas.extractors.XmlFileMetExtractor">
-        Element extractor3Element = xmlDocument.createElement("extractor");
-        extractor3Element.setAttribute("class", XmlFileMetExtractor.class.getCanonicalName());
-        metExtractorsElement.appendChild(extractor3Element);
-        
-        // <configuration>
-        Element configuration3Element = xmlDocument.createElement("configuration");
-        extractor3Element.appendChild(configuration3Element);
-
         // <metadata>
         Element metadataElement = xmlDocument.createElement("metadata");
         typeElement.appendChild(metadataElement);

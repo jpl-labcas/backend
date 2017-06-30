@@ -13,10 +13,8 @@ import gov.nasa.jpl.edrn.labcas.Constants;
 import gov.nasa.jpl.edrn.labcas.utils.FileManagerUtils;
 
 /**
- * Class responsible for writing product/file level metadata:
- * o reads all metadata from XML file <filename>.xmlmet in the same directory
- * o transfers product-level metadata fields: DatasetId, Version
- * o disregards all other product-level metadata
+ * Class responsible for reading additional metadata from the .met and .xmlmet files on the server.
+ * IMPORTANT: this class is currently NOT used.
  * 
  * @author luca
  *

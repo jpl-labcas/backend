@@ -19,6 +19,27 @@ HOST = "sftp.mousebiology.org"
 USERNAME = os.environ['SFTP_USERNAME']
 PASSWORD = os.environ['SFTP_PASSWORD']
 
+# dictionary of file-level metadata fields
+FILE_METADATA = {'Study Name/Number':'Study',
+                 'Experiment Name/Number':'Experiment',
+                 'Accession Number':'AccessionNumber',
+                 'Cohort':'Cohort',
+                 'Sub-Cohort':'Sub-Cohort',
+                 'Cohort Experimental Description':'CohortExperimentalDescription',
+                 'Diagnosis':'Diagnosis',
+                 'NCIT DIAGNOSIS CODE':'NCITDiagnosisCode',
+                 'NCIT ORGAN CODE':'NCITOrganCode',
+                 'NCIT PROCEDURE':'NCITProcedure',
+                 'Microscopic Description':'MicroscopicDescription',
+                 'Gross Description':'GrossDescription',
+                 'Animal Type':'AnimalType',
+                 'Organ System':'OrganSystem',
+                 'Organ Site':'OrganSite',
+                 'Gender':'Gender',
+                 'Parity':'Parity',
+                 'Fixative':'Fixative',
+                 'Stain':'Stain' }
+
 # function to download all files in a dataset from the SFTP server
 def download_dataset(sftp_server, csv_file_path):
         
@@ -45,6 +66,7 @@ def download_dataset(sftp_server, csv_file_path):
                 src_file_path=row['File Location']
                 print 'Detected src_file_path: %s' % src_file_path
                 
+                # 1) Download file from sftp_path to target_file_path
                 # examples of 'File Location':
                 # \\ap1314-dsr\Images2\MMHCC Image Archive\Human Breast\MC02-0720.sid.svs
                 # \\ap1314-dsr\Images3\MC04\MC04-0006.sid.svs
@@ -56,6 +78,7 @@ def download_dataset(sftp_server, csv_file_path):
                     target_file_path = "%s/%s" % (target_dir, parts[-1])
                     if not os.path.exists(target_file_path) or os.path.getsize(target_file_path) == 0:
                         print "\tDownloading: %s to: %s" % (sftp_path, target_file_path)
+                        '''FIXME
                         try:
                             sftp_server.get(sftp_path, target_file_path)
                         except Exception as e:
@@ -63,12 +86,32 @@ def download_dataset(sftp_server, csv_file_path):
                         # cleanup from crashed downloads so bad files don't get published
                         if os.path.exists(target_file_path) and os.path.getsize(target_file_path) == 0:
                             os.remove(target_file_path)
+                        '''
                     else:
                         print 'File %s : %s already exists, skipping' % (sftp_path, target_file_path)
+                        
+                #2) Extract file metadata from CSV file to target_file_path.xmlmet
+                if os.path.exists(target_file_path):
+                    extract_file_metadata(row, target_file_path +".xmlmet")
             
             except KeyError as e:
                 print 'WARNING: File Location not found for row: %s' % row
 
+# function to serialize CSV file metadata to XML
+def extract_file_metadata(metadata, met_filepath):
+    
+    # extract metadata, write output file
+    with open(met_filepath,'w') as file: 
+        file.write('<cas:metadata xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">\n')
+        for cvs_key, solr_key in FILE_METADATA.items():
+            if cvs_key in metadata and metadata.get(cvs_key, None) : # not null field value found in CSV row
+             print 'key=%s --> value=%s' % (cvs_key, metadata[cvs_key])
+             file.write('\t<keyval type="vector">\n')
+             file.write('\t\t<key>_File_%s</key>\n' % str(solr_key))
+             file.write('\t\t<val>%s</val>\n' % str(metadata[cvs_key]))
+             file.write('\t</keyval>\n')
+                
+        file.write('</cas:metadata>\n')
 
 
 # main script
@@ -77,7 +120,8 @@ if __name__ == "__main__":
     # open connection to the SFTP server
     # NOTE that the SFTP server only allows less than 20 connections in 4 minutes
     # so the connection must be re-used across several datasets
-    sftp_server = pysftp.Connection(host=HOST, username=USERNAME, password=PASSWORD)
+    #FIXME sftp_server = pysftp.Connection(host=HOST, username=USERNAME, password=PASSWORD)
+    sftp_server = None # FIXME
 
     # loop over all CSV files under root directory
     root_target_dir = sys.argv[1]
@@ -86,6 +130,6 @@ if __name__ == "__main__":
         download_dataset(sftp_server, csv_file_path) 
         
     # close the SFTP connection
-    sftp_server.close()
+    #FIXME sftp_server.close()
 
         

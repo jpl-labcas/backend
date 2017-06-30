@@ -61,12 +61,10 @@ public class DicomMetExtractor extends PcsMetFileWriter  {
 	    	}
 
         }
-
-        // read back the metadata written by the script
-        File xmlmetFile = new File(sciPgeCreatedDataFile.getAbsolutePath()+".xmlmet");
-        LOG.info("Reading metadata file: "+xmlmetFile.getAbsolutePath());
-        Metadata outmet = FileManagerUtils.readMetadataFromFile(xmlmetFile);
-        return outmet;
+        
+        // return no metadata
+        // the XML will be read again by a downstream extractor
+        return new Metadata();
         
     }
 
