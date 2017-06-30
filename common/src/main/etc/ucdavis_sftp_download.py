@@ -14,6 +14,7 @@ import os
 import pysftp
 import re
 from glob import glob
+from xml.sax.saxutils import escape
 
 HOST = "sftp.mousebiology.org"
 USERNAME = os.environ['SFTP_USERNAME']
@@ -108,7 +109,7 @@ def extract_file_metadata(metadata, met_filepath):
              print 'key=%s --> value=%s' % (cvs_key, metadata[cvs_key])
              file.write('\t<keyval type="vector">\n')
              file.write('\t\t<key>_File_%s</key>\n' % str(solr_key))
-             file.write('\t\t<val>%s</val>\n' % str(metadata[cvs_key]))
+             file.write('\t\t<val>%s</val>\n' % escape( str(metadata[cvs_key])) ) # NOTE: must escape XML entities such as & <> "
              file.write('\t</keyval>\n')
                 
         file.write('</cas:metadata>\n')
