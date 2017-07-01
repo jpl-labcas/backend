@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
@@ -297,7 +298,10 @@ public class FileManagerUtils {
     				for (String val : _metadata.getAllMetadata(key)) {
     					LOG.fine("\t==> Read metadata key=["+key+"] value=["+val+"]");
     					// sanitize the metadata fields
-    					metadata.addMetadata(key, GeneralUtils.removeNonAsciiCharacters(val) );
+    					metadata.addMetadata(key, 
+    							// must escape XML entities (&<>"') before setting the values which will
+    							// be sent as XML POST payload
+    							StringEscapeUtils.escapeXml(GeneralUtils.removeNonAsciiCharacters(val)));
     				}
      			 }
         		 
