@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
@@ -19,8 +20,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
-import org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor;
-import gov.nasa.jpl.edrn.labcas.extractors.XmlFileMetExtractor;
 
 /**
  * Class that contains common functionality to interact with the FileManager.

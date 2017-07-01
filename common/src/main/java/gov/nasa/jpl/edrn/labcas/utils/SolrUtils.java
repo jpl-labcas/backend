@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -481,6 +482,11 @@ public class SolrUtils {
 								
 				// publish all other "|" values into multi-valued field
 				for (String value : metadata.getAllMetadata(key)) {
+					
+					// in the metadata values, must transform "&amp;" back to "&"
+					// Solr client will take care of properly constructing the XML POST payload
+					value = StringEscapeUtils.unescapeXml(value);
+					
 					if (value.indexOf("|")>0) {
 						doc.addField(key.replaceAll("_File_", ""), Arrays.asList(value.split("\\s*\\|\\s*")));
 					} else {
