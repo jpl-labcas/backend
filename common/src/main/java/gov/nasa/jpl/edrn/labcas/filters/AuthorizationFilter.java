@@ -123,8 +123,7 @@ public class AuthorizationFilter implements Filter {
 		String privateKeyFilePath = filterConfig.getInitParameter("privateKeyFilePath");
 		
 		// replace env variable
-		String labcasHome = System.getenv(Constants.ENV_LABCAS_HOME);
-		privateKeyFilePath = privateKeyFilePath.replace("["+Constants.ENV_LABCAS_HOME+"]", labcasHome);
+		privateKeyFilePath = privateKeyFilePath.replace("[HOME]", System.getProperty("user.home"));
 		if (LOG.isInfoEnabled()) LOG.info("Using private key file: "+privateKeyFilePath);
 		
 		// create re-usable signing utility
