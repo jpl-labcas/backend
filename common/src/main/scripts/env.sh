@@ -2,6 +2,7 @@
 
 export OODT_HOME=$LABCAS_HOME
 export CATALINA_HOME=$LABCAS_HOME/apache-tomcat
+export JAVA_OPTS=-Xss2m
 
 export SOLR_DIR=$LABCAS_HOME
 export SOLR_HOME=$LABCAS_HOME/solr-home
