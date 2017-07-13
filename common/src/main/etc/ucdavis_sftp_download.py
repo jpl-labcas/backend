@@ -91,9 +91,9 @@ def download_dataset(sftp_server, csv_file_path):
                     else:
                         print 'File %s : %s already exists, skipping' % (sftp_path, target_file_path)
                         
-                #2) Extract file metadata from CSV file to target_file_path.xmlmet
-                if os.path.exists(target_file_path):
-                    extract_file_metadata(row, target_file_path +".xmlmet")
+                    #2) Extract file metadata from CSV file to target_file_path.xmlmet
+                    if os.path.exists(target_file_path):
+                        extract_file_metadata(row, target_file_path +".xmlmet")
             
             except KeyError as e:
                 print 'WARNING: File Location not found for row: %s' % row
