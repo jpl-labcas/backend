@@ -35,6 +35,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
+import org.jsoup.Jsoup;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -413,6 +414,10 @@ public class SolrUtils {
 			} else {
 				// publish all other "|" values into multi-valued field
 				for (String value : metadata.getAllMetadata(key)) {
+					
+					// must remove HTML tags from value
+					value = Jsoup.parse(value).text();
+
 					if (value.indexOf("|")>0) {
 						doc.addField(key, Arrays.asList(value.split("\\s*\\|\\s*")));
 					} else {
@@ -486,6 +491,9 @@ public class SolrUtils {
 					// in the metadata values, must transform "&amp;" back to "&"
 					// Solr client will take care of properly constructing the XML POST payload
 					value = StringEscapeUtils.unescapeXml(value);
+					
+					// also must remove HTML tags from value
+					value = Jsoup.parse(value).text();
 					
 					if (value.indexOf("|")>0) {
 						doc.addField(key.replaceAll("_File_", ""), Arrays.asList(value.split("\\s*\\|\\s*")));
