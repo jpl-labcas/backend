@@ -111,7 +111,7 @@ def extract_file_metadata(metadata, met_filepath):
         file.write('<cas:metadata xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">\n')
         for cvs_key, solr_key in FILE_METADATA.items():
             if cvs_key in metadata and metadata.get(cvs_key, None) : # not null field value found in CSV row
-             print 'key=%s --> value=%s' % (cvs_key, metadata[cvs_key])
+             #print 'key=%s --> value=%s' % (cvs_key, metadata[cvs_key])
              file.write('\t<keyval type="vector">\n')
              file.write('\t\t<key>_File_%s</key>\n' % str(solr_key))
              file.write('\t\t<val>%s</val>\n' % escape( str(metadata[cvs_key])) ) # NOTE: must escape XML entities such as & <> "
