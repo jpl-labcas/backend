@@ -78,7 +78,7 @@ def download_dataset(sftp_server, csv_file_path):
                 # examples of 'File Location':
                 # \\ap1314-dsr\Images2\MMHCC Image Archive\Human Breast\MC02-0720.sid.svs
                 # \\ap1314-dsr\Images3\MC04\MC04-0006.sid.svs
-                if 'images' in src_file_path.lower():
+                if 'images' in src_file_path.lower() and src_file_path.lower().ends_with('svs'):
                     #truncated_file_path = re.sub('.*(?i)images\d?','', src_file_path)
                     parts = src_file_path.split("\\")
                     sftp_path = "/".join(parts[3:]) # remove '\\ap1314-dsr'
@@ -116,8 +116,23 @@ def extract_file_metadata(metadata, met_filepath):
              file.write('\t\t<key>_File_%s</key>\n' % str(solr_key))
              file.write('\t\t<val>%s</val>\n' % escape( str(metadata[cvs_key])) ) # NOTE: must escape XML entities such as & <> "
              file.write('\t</keyval>\n')
+             
+        # write additional file 'description' field
+        desc_value = ''
+        if metadata.get('Description (Accession #)', None):
+            desc_value = metadata.get['Description (Accession #)'] + " "
+        if metadata.get('Stain',None):
+            desc_value += "Stain: %s" % metadata.get['Stain']
+        write_file_description(file, escape(str(desc_value)) ) # NOTE: must escape XML entities such as & <> "
                 
         file.write('</cas:metadata>\n')
+
+def write_file_description(file, desc_value):
+    
+    file.write('\t<keyval type="vector">\n')
+    file.write('\t\t<key>_File_Description</key>\n')
+    file.write('\t\t<val>%s</val>\n' % escape( str(desc_value) ) ) # NOTE: must escape XML entities such as & <> "
+    file.write('\t</keyval>\n')
 
 
 # main script
@@ -126,8 +141,7 @@ if __name__ == "__main__":
     # open connection to the SFTP server
     # NOTE that the SFTP server only allows less than 20 connections in 4 minutes
     # so the connection must be re-used across several datasets
-    #FIXME sftp_server = pysftp.Connection(host=HOST, username=USERNAME, password=PASSWORD)
-    sftp_server = None # FIXME
+    sftp_server = pysftp.Connection(host=HOST, username=USERNAME, password=PASSWORD)
 
     # loop over all CSV files under root directory
     root_target_dir = sys.argv[1]
