@@ -85,6 +85,7 @@ def download_dataset(sftp_server, csv_file_path):
                     sftp_path = "/".join(parts[3:]) # remove '\\ap1314-dsr'
                     sftp_path = sftp_path.replace('images', 'Images')
                     target_file_path = "%s/%s" % (target_dir, parts[-1])
+                    print 'Matching to target_file_path: %s' % target_file_path
                     if not os.path.exists(target_file_path) or os.path.getsize(target_file_path) == 0:
                         print "\tDownloading: %s to: %s" % (sftp_path, target_file_path)
                         try:
