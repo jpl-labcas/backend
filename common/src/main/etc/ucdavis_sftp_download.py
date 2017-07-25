@@ -24,6 +24,7 @@ PASSWORD = os.environ['SFTP_PASSWORD']
 FILE_METADATA = {'Study Name/Number':'Study',
                  'Experiment Name/Number':'Experiment',
                  'Accession Number':'AccessionNumber',
+                 'Data Group':'DataGroup',
                  'Cohort':'Cohort',
                  'Sub-Cohort':'Sub-Cohort',
                  'Cohort Experimental Description':'CohortExperimentalDescription',
@@ -33,14 +34,20 @@ FILE_METADATA = {'Study Name/Number':'Study',
                  'NCIT PROCEDURE':'NCITProcedure',
                  'Microscopic Description':'MicroscopicDescription',
                  'Gross Description':'GrossDescription',
+                 'Specimen ID':'SpecimenId',
                  'Animal Type':'AnimalType',
                  'Organ System':'OrganSystem',
                  'Organ Site':'OrganSite',
                  'Gender':'Gender',
                  'Parity':'Parity',
                  'Fixative':'Fixative',
-                 'Stain':'Stain' }
-
+                 'Description (Accession #)':'Accession#Description',
+                 'Stain':'Stain',
+                 'Quality Factor':'QualityFactor',
+                 'Captured Date':'CaptureDate',
+                 'Scan Status':'ScanStatus',
+                 'Image ID':'ImageId' }
+                 
 # function to download all files in a dataset from the SFTP server
 def download_dataset(sftp_server, csv_file_path):
         
@@ -71,7 +78,7 @@ def download_dataset(sftp_server, csv_file_path):
                 # examples of 'File Location':
                 # \\ap1314-dsr\Images2\MMHCC Image Archive\Human Breast\MC02-0720.sid.svs
                 # \\ap1314-dsr\Images3\MC04\MC04-0006.sid.svs
-                if 'images' in src_file_path.lower() or 'images2' in src_file_path.lower():
+                if 'images' in src_file_path.lower():
                     #truncated_file_path = re.sub('.*(?i)images\d?','', src_file_path)
                     parts = src_file_path.split("\\")
                     sftp_path = "/".join(parts[3:]) # remove '\\ap1314-dsr'
@@ -79,7 +86,6 @@ def download_dataset(sftp_server, csv_file_path):
                     target_file_path = "%s/%s" % (target_dir, parts[-1])
                     if not os.path.exists(target_file_path) or os.path.getsize(target_file_path) == 0:
                         print "\tDownloading: %s to: %s" % (sftp_path, target_file_path)
-                        '''FIXME
                         try:
                             sftp_server.get(sftp_path, target_file_path)
                         except Exception as e:
@@ -87,7 +93,6 @@ def download_dataset(sftp_server, csv_file_path):
                         # cleanup from crashed downloads so bad files don't get published
                         if os.path.exists(target_file_path) and os.path.getsize(target_file_path) == 0:
                             os.remove(target_file_path)
-                        '''
                     else:
                         print 'File %s : %s already exists, skipping' % (sftp_path, target_file_path)
                         
@@ -131,6 +136,6 @@ if __name__ == "__main__":
         download_dataset(sftp_server, csv_file_path) 
         
     # close the SFTP connection
-    #FIXME sftp_server.close()
+    sftp_server.close()
 
         
