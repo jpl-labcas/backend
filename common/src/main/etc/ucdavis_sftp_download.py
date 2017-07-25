@@ -57,6 +57,9 @@ def download_dataset(sftp_server, csv_file_path):
     #for i in remote_listing:
     #    print i
     
+    # keep track of files
+    files = []
+    
     print '\nReading CSV file: %s' % csv_file_path
     # output directory (must include version)
     target_dir = os.path.split(csv_file_path)[0] + "/1"
@@ -86,6 +89,12 @@ def download_dataset(sftp_server, csv_file_path):
                     sftp_path = sftp_path.replace('images', 'Images')
                     target_file_path = "%s/%s" % (target_dir, parts[-1])
                     print 'Matching to target_file_path: %s' % target_file_path
+                    
+                    if target_file_path in files:
+                        print 'Target file already found: %s' % target_file_path
+                    else:
+                        files.append(target_file_path)
+                        
                     if not os.path.exists(target_file_path) or os.path.getsize(target_file_path) == 0:
                         print "\tDownloading: %s to: %s" % (sftp_path, target_file_path)
                         try:
