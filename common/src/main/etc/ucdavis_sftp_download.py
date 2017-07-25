@@ -78,7 +78,7 @@ def download_dataset(sftp_server, csv_file_path):
                 # examples of 'File Location':
                 # \\ap1314-dsr\Images2\MMHCC Image Archive\Human Breast\MC02-0720.sid.svs
                 # \\ap1314-dsr\Images3\MC04\MC04-0006.sid.svs
-                if 'images' in src_file_path.lower() and src_file_path.lower().ends_with('svs'):
+                if 'images' in src_file_path.lower() and src_file_path.lower().endswith('svs'):
                     #truncated_file_path = re.sub('.*(?i)images\d?','', src_file_path)
                     parts = src_file_path.split("\\")
                     sftp_path = "/".join(parts[3:]) # remove '\\ap1314-dsr'
@@ -120,9 +120,9 @@ def extract_file_metadata(metadata, met_filepath):
         # write additional file 'description' field
         desc_value = ''
         if metadata.get('Description (Accession #)', None):
-            desc_value = metadata.get['Description (Accession #)'] + " "
+            desc_value = metadata['Description (Accession #)'] + " "
         if metadata.get('Stain',None):
-            desc_value += "Stain: %s" % metadata.get['Stain']
+            desc_value += "Stain: %s" % metadata['Stain']
         write_file_description(file, escape(str(desc_value)) ) # NOTE: must escape XML entities such as & <> "
                 
         file.write('</cas:metadata>\n')
