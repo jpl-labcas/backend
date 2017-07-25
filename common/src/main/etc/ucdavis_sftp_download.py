@@ -79,6 +79,7 @@ def download_dataset(sftp_server, csv_file_path):
                 # \\ap1314-dsr\Images2\MMHCC Image Archive\Human Breast\MC02-0720.sid.svs
                 # \\ap1314-dsr\Images3\MC04\MC04-0006.sid.svs
                 if 'images' in src_file_path.lower() and src_file_path.lower().endswith('svs'):
+                    print 'Attempting to download SVS file: %s' % src_file_path
                     #truncated_file_path = re.sub('.*(?i)images\d?','', src_file_path)
                     parts = src_file_path.split("\\")
                     sftp_path = "/".join(parts[3:]) # remove '\\ap1314-dsr'
