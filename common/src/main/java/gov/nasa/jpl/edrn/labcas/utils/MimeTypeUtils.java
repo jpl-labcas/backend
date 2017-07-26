@@ -69,7 +69,7 @@ public class MimeTypeUtils {
 	public static String getMimeType(final String filePath) {
 		
 		// remove possible compression extension
-		String _filePath = filePath.replace("\\.gz","").replace("\\.zip","").replace("\\.tar","");
+		String _filePath = filePath.replaceAll("\\.gz","").replaceAll("\\.zip","").replaceAll("\\.tar","");
 		LOG.info("Detecting FileType for product: "+_filePath);
 		String ext = FilenameUtils.getExtension(_filePath).toLowerCase();
 		
