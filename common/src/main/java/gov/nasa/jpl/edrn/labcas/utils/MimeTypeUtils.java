@@ -66,10 +66,12 @@ public class MimeTypeUtils {
 	 * @param filePath
 	 * @return
 	 */
-	public static String getMimeType(String filePath) {
+	public static String getMimeType(final String filePath) {
 		
-		LOG.info("Detecting FileType for product: "+filePath);
-		String ext = FilenameUtils.getExtension(filePath).toLowerCase();
+		// remove possible compression extension
+		String _filePath = filePath.replace("\\.gz","").replace("\\.zip","").replace("\\.tar","");
+		LOG.info("Detecting FileType for product: "+_filePath);
+		String ext = FilenameUtils.getExtension(_filePath).toLowerCase();
 		
 		if (mimeTypeMap.containsKey(ext)) {
 			return mimeTypeMap.get(ext);
