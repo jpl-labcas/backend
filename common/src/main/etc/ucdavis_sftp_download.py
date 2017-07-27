@@ -21,32 +21,32 @@ USERNAME = os.environ['SFTP_USERNAME']
 PASSWORD = os.environ['SFTP_PASSWORD']
 
 # dictionary of file-level metadata fields
-FILE_METADATA = {'Study Name/Number':'Study',
-                 'Experiment Name/Number':'Experiment',
-                 'Accession Number':'AccessionNumber',
-                 'Data Group':'DataGroup',
-                 'Cohort':'Cohort',
-                 'Sub-Cohort':'Sub-Cohort',
-                 'Cohort Experimental Description':'CohortExperimentalDescription',
-                 'Diagnosis':'Diagnosis',
-                 'NCIT DIAGNOSIS CODE':'NCITDiagnosisCode',
-                 'NCIT ORGAN CODE':'NCITOrganCode',
-                 'NCIT PROCEDURE':'NCITProcedure',
-                 'Microscopic Description':'MicroscopicDescription',
-                 'Gross Description':'GrossDescription',
-                 'Specimen ID':'SpecimenId',
-                 'Animal Type':'AnimalType',
-                 'Organ System':'OrganSystem',
-                 'Organ Site':'OrganSite',
-                 'Gender':'Gender',
-                 'Parity':'Parity',
-                 'Fixative':'Fixative',
-                 'Description (Accession #)':'Accession#Description',
-                 'Stain':'Stain',
-                 'Quality Factor':'QualityFactor',
-                 'Captured Date':'CaptureDate',
-                 'Scan Status':'ScanStatus',
-                 'Image ID':'ImageId' }
+FILE_METADATA = {'Study Name/Number':'labcas.pathology:Study',
+                 'Experiment Name/Number':'labcas.pathology:Experiment',
+                 'Accession Number':'labcas.pathology:AccessionNumber',
+                 'Data Group':'labcas.pathology:DataGroup',
+                 'Cohort':'labcas.pathology:Cohort',
+                 'Sub-Cohort':'labcas.pathology:Sub-Cohort',
+                 'Cohort Experimental Description':'labcas.pathology:CohortExperimentalDescription',
+                 'Diagnosis':'labcas.pathology:Diagnosis',
+                 'NCIT DIAGNOSIS CODE':'labcas.pathology:NCITDiagnosisCode',
+                 'NCIT ORGAN CODE':'labcas.pathology:NCITOrganCode',
+                 'NCIT PROCEDURE':'labcas.pathology:NCITProcedure',
+                 'Microscopic Description':'labcas.pathology:MicroscopicDescription',
+                 'Gross Description':'labcas.pathology:GrossDescription',
+                 'Specimen ID':'labcas.pathology:SpecimenId',
+                 'Animal Type':'labcas.pathology:AnimalType',
+                 'Organ System':'labcas.pathology:OrganSystem',
+                 'Organ Site':'labcas.pathology:OrganSite',
+                 'Gender':'labcas.pathology:Gender',
+                 'Parity':'labcas.pathology:Parity',
+                 'Fixative':'labcas.pathology:Fixative',
+                 'Description (Accession #)':'labcas.pathology:AccessionNumberDescription',
+                 'Stain':'labcas.pathology:Stain',
+                 'Quality Factor':'labcas.pathology:QualityFactor',
+                 'Captured Date':'labcas.pathology:CaptureDate',
+                 'Scan Status':'labcas.pathology:ScanStatus',
+                 'Image ID':'labcas.pathology:ImageId' }
                  
 # function to download all files in a dataset from the SFTP server
 def download_dataset(sftp_server, csv_file_path):
@@ -130,10 +130,10 @@ def extract_file_metadata(metadata, met_filepath):
              
         # write additional file 'description' field
         desc_value = ''
-        if metadata.get('Description (Accession #)', None):
-            desc_value = metadata['Description (Accession #)'] + " "
-        if metadata.get('Stain',None):
-            desc_value += "Stain: %s" % metadata['Stain']
+        if metadata.get('Accession Number', None):
+            desc_value = "Accession Number=%s" % metadata['Accession Number']
+        if metadata.get('Stain', None):
+            desc_value += ", stain=%s" % metadata['Stain']
         write_file_description(file, escape(str(desc_value)) ) # NOTE: must escape XML entities such as & <> "
                 
         file.write('</cas:metadata>\n')
