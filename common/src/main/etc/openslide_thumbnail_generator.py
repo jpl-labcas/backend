@@ -68,7 +68,7 @@ if __name__ == "__main__":
     generate_thumbnail(image_filepath, thumbnail_filepath)
     
     # print out metadata for calling program
-    print "_File_ThumbnailUrl=%s" % thumbnail_filepath.replace(thumbnail_root_dir, thumbnails_root_url)
+    print "FileThumbnailUrl=%s" % thumbnail_filepath.replace(thumbnail_root_dir, thumbnails_root_url)
     
     
 
