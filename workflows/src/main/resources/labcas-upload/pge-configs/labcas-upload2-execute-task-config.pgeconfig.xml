@@ -29,6 +29,10 @@
             <!-- extracts metadata from .xmlmet file -->
             <files regExp=".*\.(?!met$|xmlmet$)[^.]+"
                    metFileWriterClass="gov.nasa.jpl.edrn.labcas.extractors.XmlFileMetadataReader" />
+            <!-- generates thumbnail for OpenSlide compatible images -->
+            <files regExp=".*\.svs$"
+                   metFileWriterClass="gov.nasa.jpl.edrn.labcas.extractors.OpenSlideThumbnailGenerator"
+                   args="python [LABCAS_HOME]/etc/openslide_thumbnail_generator.py" />
 		</dir>
 	</output>
 

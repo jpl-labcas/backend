@@ -42,6 +42,9 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
     
     private Set<String> extensionsSet = new HashSet<String>();
     
+	/**
+	 * File ~/labcas.properties
+	 */
     private Properties properties = new Properties();
 
 	@Override
