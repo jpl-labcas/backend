@@ -47,6 +47,35 @@ FILE_METADATA = {'Study Name/Number':'labcas.pathology:Study',
                  'Captured Date':'labcas.pathology:CaptureDate',
                  'Scan Status':'labcas.pathology:ScanStatus',
                  'Image ID':'labcas.pathology:ImageId' }
+
+# maps for NCIT codes
+ncit_diagnosis_code = { 'C21667':'MIN',
+                        'C21679':'CANCER',
+                        'C29583':'EMT',
+                        'C21696':'OTHER',
+                        'C21662':'BENIGN NEOPLASM',
+                        'C3577':'MET IN LUNG',
+                        'C21652':'HYPERPLASIA_NOS' }
+
+ncit_organ_code = { 'C22549':'MuMAMMARY GLAND',
+                    'C12367':'MAMMARY GLAND',
+                    'C22600':'MuLUNG',
+                    'C12468':'LUNG',
+                    'C22671':'MuUTERUS',
+                    'C12405':'UTERUS',
+                    'C22515':'MuLIVER',
+                    'C12392':'LIVER' }
+
+ncit_procedure_code = { 'C15277':'MASTECTOMY',
+                        'C15755':'LUMPECTTOMY',
+                        'C15342':'TRANSPLANT',
+                        'C22490':'TUMOR CELL TRANSPLANT',
+                        'C68623':'NECROPSY',
+                        'C16490':'CYTOLOGY',
+                        'C15189':'BIOPSY',
+                        'C51698':'BIOPSY OF BREAST',
+                        'C15680':'CORE BIOPSY' }
+
                  
 # function to download all files in a dataset from the SFTP server
 def download_dataset(sftp_server, csv_file_path):
@@ -122,11 +151,20 @@ def extract_file_metadata(metadata, met_filepath):
         file.write('<cas:metadata xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">\n')
         for cvs_key, solr_key in FILE_METADATA.items():
             if cvs_key in metadata and metadata.get(cvs_key, None) : # not null field value found in CSV row
-             #print 'key=%s --> value=%s' % (cvs_key, metadata[cvs_key])
-             file.write('\t<keyval type="vector">\n')
-             file.write('\t\t<key>_File_%s</key>\n' % str(solr_key))
-             file.write('\t\t<val>%s</val>\n' % escape( str(metadata[cvs_key])) ) # NOTE: must escape XML entities such as & <> "
-             file.write('\t</keyval>\n')
+              value = str(metadata[cvs_key])
+              # map NCIT code to its value, or default to the code
+              if cvs_key == 'NCIT DIAGNOSIS CODE':
+                value  = ncit_diagnosis_code.get(value, default=value)
+              elif cvs_key == 'NCIT ORGAN CODE':
+                value  = ncit_organ_code.get(value, default=value)
+              elif cvs_key == 'NCIT PROCEDURE':
+                value  = ncit_procedure_code.get(value, default=value)
+              
+              #print 'key=%s --> value=%s' % (cvs_key, metadata[cvs_key])
+              file.write('\t<keyval type="vector">\n')
+              file.write('\t\t<key>_File_%s</key>\n' % str(solr_key))
+              file.write('\t\t<val>%s</val>\n' % escape( value ) ) # NOTE: must escape XML entities such as & <> "
+              file.write('\t</keyval>\n')
              
         # write additional file 'description' field
         desc_value = ''
