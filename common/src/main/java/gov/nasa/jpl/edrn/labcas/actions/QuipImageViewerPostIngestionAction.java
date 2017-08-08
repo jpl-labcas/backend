@@ -21,6 +21,7 @@ import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.metadata.Metadata;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
+import gov.nasa.jpl.edrn.labcas.utils.FileManagerUtils;
 import gov.nasa.jpl.edrn.labcas.utils.GeneralUtils;
 
 /**
@@ -49,13 +50,18 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 
 	@Override
 	public boolean performAction(File product, Metadata productMetadata) throws CrawlerActionException {
+				
+		// only proceed unless NOQUIP flag is set
+		if ( !productMetadata.containsKey(Constants.METADATA_KEY_NOQUIP) ) {
 		
-		// determine file extension
-		String extension = GeneralUtils.getFileExtension(product).toLowerCase();
-		
-		// process compatible extensions
-		if (this.extensionsSet.contains(extension)) {
-			this.uploadFile(product, productMetadata);
+			// determine file extension
+			String extension = GeneralUtils.getFileExtension(product).toLowerCase();
+			
+			// process compatible extensions
+			if (this.extensionsSet.contains(extension)) {
+				this.uploadFile(product, productMetadata);
+			}
+			
 		}
 		
 		// success
