@@ -16,6 +16,8 @@ import numpy as np
 
 from thumbnails import build_thumbnail_filepath
 
+REDUCTION_FACTORT = 50
+
 # Note: adapted from pydicom/contrib/pydicom_PIL.py
 def get_LUT_value(data, window, level):
     """Apply the RGB Look-Up Table for the given data and window/level value."""
@@ -64,13 +66,13 @@ def generate_thumbnail(image_filepath, thumbnail_filepath):
     
     # build thumbnail from image
     thumb = img.convert('L')
-    thumb.thumbnail( (size[0]/100, size[1]/100) )
+    thumb.thumbnail( (size[0]/REDUCTION_FACTORT, size[1]/REDUCTION_FACTORT) )
     
     # save file with desired path, format
     thumb.save(thumbnail_filepath, "png")
     
     # cleanup
-    img.close()
+    #img.close() # depending on PIL version close() method might not exist
 
 
 if __name__ == "__main__":
