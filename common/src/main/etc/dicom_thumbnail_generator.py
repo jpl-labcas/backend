@@ -2,7 +2,7 @@
 #
 # Usage: python openslide_thumbnail_generator.py <filepath.dcm> <thumbnail_root_dir> <thumbnail_root_url>
 #
-# Example: python dicom_thumbnail_generator.py/labcas-data/CBIS-DDSM/Calc-Training_Full_Mammogram_Images/1/1.3.6.1.4.1.9590.100.1.2.988185913537118118779345241081570907.dcm /data/EDRN/thumbnails http://localhost/thumbnails
+# Example: python dicom_thumbnail_generator.py /labcas-data/CBIS-DDSM/Calc-Training_Full_Mammogram_Images/1/1.3.6.1.4.1.9590.100.1.2.988185913537118118779345241081570907.dcm /data/EDRN/thumbnails http://localhost/thumbnails
 #
 # Will generate a thumbnail named <filepath>.png under the root directory specified in ~/labcas.properties.
 # The file location will be returned as "_File_ThumbnailUrl" where the prefix "_File_"

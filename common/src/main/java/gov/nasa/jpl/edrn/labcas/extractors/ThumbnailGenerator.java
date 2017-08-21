@@ -17,15 +17,15 @@ import org.apache.oodt.cas.pge.writers.PcsMetFileWriter;
 import org.apache.oodt.commons.exceptions.CommonsException;
 
 /**
- * Class that generates a thumbnail for images that can be read with the OpenSlide library.
- * This class is a wrapper to a python script that uses the Python OpenSlide bindings ("openslide-python")..
+ * Class that generates a thumbnail for images to be published to LabCAS.
+ * This class is a wrapper to a configurable python script that generates the thumbnail with image-specific libraries.
  * 
  * @author luca
  *
  */
-public class OpenSlideThumbnailGenerator extends PcsMetFileWriter  {
+public class ThumbnailGenerator extends PcsMetFileWriter  {
 	
-	private static final Logger LOG = Logger.getLogger(OpenSlideThumbnailGenerator.class.getName());
+	private static final Logger LOG = Logger.getLogger(ThumbnailGenerator.class.getName());
 	
 	/**
 	 * Configuration file located in user home directory
@@ -42,9 +42,9 @@ public class OpenSlideThumbnailGenerator extends PcsMetFileWriter  {
     private String thumbnailsRootUrl = "http://localhost/";
     
     /** Constructor reads in the thumbnails location, URLs from the configuration properties. */
-    public OpenSlideThumbnailGenerator() {
+    public ThumbnailGenerator() {
     	
-    	LOG.info("Initializing OpenSlideThumbnailGenerator");
+    	LOG.info("Initializing ThumbnailGenerator");
     	
     	try {
 			InputStream input = new FileInputStream(System.getProperty("user.home") + LABCAS_PROPERTIES);
@@ -68,7 +68,7 @@ public class OpenSlideThumbnailGenerator extends PcsMetFileWriter  {
     	
     	Metadata metadata = new Metadata();
     	
-    	LOG.info("Executing OpenSlideThumbnailGenerator for file: "+sciPgeCreatedDataFile.getAbsolutePath());
+    	LOG.info("Executing ThumbnailGenerator for file: "+sciPgeCreatedDataFile.getAbsolutePath());
     	
         for (Object arg : customArgs) {
         	

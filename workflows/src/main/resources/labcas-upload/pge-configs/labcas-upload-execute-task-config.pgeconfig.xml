@@ -31,8 +31,13 @@
                    metFileWriterClass="gov.nasa.jpl.edrn.labcas.extractors.XmlFileMetadataReader" />
             <!-- generates thumbnail for OpenSlide compatible images -->
             <files regExp=".*\.svs$"
-                   metFileWriterClass="gov.nasa.jpl.edrn.labcas.extractors.OpenSlideThumbnailGenerator"
+                   metFileWriterClass="gov.nasa.jpl.edrn.labcas.extractors.ThumbnailGenerator"
                    args="python [LABCAS_HOME]/etc/openslide_thumbnail_generator.py" />
+            <!-- generates thumbnail for DICOM images -->
+            <files regExp=".*\.dcm$"
+                   metFileWriterClass="gov.nasa.jpl.edrn.labcas.extractors.ThumbnailGenerator"
+                   args="python [LABCAS_HOME]/etc/dicom_thumbnail_generator.py" />
+                   
 		</dir>
 	</output>
 
