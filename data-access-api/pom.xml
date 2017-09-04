@@ -1,0 +1,65 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>data-access-api</artifactId>
+  <packaging>war</packaging>
+  <name>LabCAS Data Access API</name>
+
+  <parent>
+    <groupId>gov.nasa.jpl.edrn.labcas</groupId>
+    <artifactId>labcas-backend</artifactId>
+    <version>${labcas-backend.version}</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-servlet</artifactId>
+      <version>1.19</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+
+    <!-- assign name to war file -->
+    <finalName>${parent.artifactId}-${artifactId}</finalName>
+
+    <!-- copy war file to apache-tomcat directory -->
+    <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+
+          <execution>
+            <id>copy-war-to-tomcat</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${oodt.dir}/apache-tomcat/webapps</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/target</directory>
+                  <includes>
+                    <include>${parent.artifactId}-${artifactId}.war</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+  </build>
+
+</project>
