@@ -7,6 +7,28 @@ import javax.ws.rs.core.Response;
 
 public interface DownloadService {
 	
-	public Response downloadFiles(HttpServletRequest httpRequest, String q, List<String> fq, int start, int rows, String sort);
+	/**
+	 * 
+	 * @param httpRequest
+	 * @param q
+	 * @param fq
+	 * @param start
+	 * @param rows
+	 * @param sort
+	 * @return
+	 */
+	public Response downloadDatasets(HttpServletRequest httpRequest, String q, List<String> fq, int start, int rows);
+	
+	/**
+	 * 
+	 * @param httpRequest
+	 * @param q
+	 * @param fq
+	 * @param start
+	 * @param rows
+	 * @param sort
+	 * @return
+	 */
+	public Response downloadFiles(HttpServletRequest httpRequest, String q, List<String> fq, int start, int rows);
 
 }
