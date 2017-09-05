@@ -57,6 +57,8 @@ public class DownloadServiceImpl implements DownloadService {
 	// this method instantiates the shared instances of SolrServer (one per
 	// core)
 	private static Map<String, SolrServer> solrServers = new HashMap<String, SolrServer>();
+	
+	private String dataAccessApiBaseUrl = null;
 
 	static {
 		try {
@@ -76,7 +78,7 @@ public class DownloadServiceImpl implements DownloadService {
 		}
 	}
 
-	private String dataAccessApiBaseUrl = null;
+
 
 	/** Constructor reads base download URL from configuration properties. */
 	public DownloadServiceImpl() {
@@ -235,7 +237,6 @@ public class DownloadServiceImpl implements DownloadService {
 
 	}
 	
-
 	
 	/**
 	 * Method that executes a query for all files matching a set of DatasetIds or CollectionIds, 
