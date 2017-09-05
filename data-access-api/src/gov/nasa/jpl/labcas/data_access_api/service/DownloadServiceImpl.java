@@ -43,6 +43,7 @@ public class DownloadServiceImpl implements DownloadService {
 	private final static String SOLR_FIELD_ID = "id";
 	private final static String SOLR_FIELD_DATASET_ID = "DatasetId";
 	private final static String SOLR_FIELD_COLLECTION_ID = "CollectionId";
+	private final static int SOLR_MAX_NUM_FILES = 100;  // maximum number of files returned for each query
 
 	/**
 	 * Configuration file located in user home directory
@@ -63,8 +64,6 @@ public class DownloadServiceImpl implements DownloadService {
 			if (System.getenv("FILEMGR_URL") != null) {
 				SOLR_URL = System.getenv("FILEMGR_URL").replaceAll("9000", "8983") + "/solr";
 			}
-			// FIXME
-			SOLR_URL = "https://mcl-labcas.jpl.nasa.gov/solr";
 			LOG.info("Using base SOLR_URL=" + SOLR_URL);
 
 			solrServers.put(SOLR_CORE_COLLECTIONS, new CommonsHttpSolrServer(SOLR_URL + "/" + SOLR_CORE_COLLECTIONS));
@@ -111,6 +110,7 @@ public class DownloadServiceImpl implements DownloadService {
 		List<String> collectionIds = new ArrayList<String>();
 		try {
 
+			LOG.info("Executing Solr request to 'collections' core: "+request.toString());
 			QueryResponse response = solrServers.get(SOLR_CORE_COLLECTIONS).query(request);
 			this.extractIds(response, collectionIds);
 
@@ -121,29 +121,12 @@ public class DownloadServiceImpl implements DownloadService {
 			return Response.status(500).entity(e.getMessage()).build();
 		}
 
-		// final results document
-		String results = "";
-
+		// query for all files matching these collection ids
 		if (collectionIds.size() > 0) {
-			
-			SolrQuery request2 = this.buildFilesQuery(SOLR_FIELD_COLLECTION_ID, collectionIds);
-
-			// execute query to 'files' core
-			try {
-				
-				QueryResponse response = solrServers.get(SOLR_CORE_FILES).query(request2);
-				results = buildResultsDocument(response);
-				
-			} catch (Exception e) {
-				// send 500 "Internal Server Error" response
-				e.printStackTrace();
-				LOG.warning(e.getMessage());
-				return Response.status(500).entity(e.getMessage()).build();
-			}
-
+			return executeFilesQuery(SOLR_FIELD_COLLECTION_ID, collectionIds);
+		} else {
+			return Response.status(200).entity("").build();
 		}
-
-		return Response.status(200).entity(results).build();
 		
 	}
 
@@ -161,6 +144,7 @@ public class DownloadServiceImpl implements DownloadService {
 		List<String> datasetIds = new ArrayList<String>();
 		try {
 
+			LOG.info("Executing Solr request to 'datasets' core: "+request.toString());
 			QueryResponse response = solrServers.get(SOLR_CORE_DATASETS).query(request);
 			this.extractIds(response, datasetIds);
 
@@ -171,29 +155,13 @@ public class DownloadServiceImpl implements DownloadService {
 			return Response.status(500).entity(e.getMessage()).build();
 		}
 
-		// final results document
-		String results = "";
-
+		// query for all files matching these dataset ids
 		if (datasetIds.size() > 0) {
-			
-			SolrQuery request2 = this.buildFilesQuery(SOLR_FIELD_DATASET_ID, datasetIds);
-
-			// execute query to 'files' core
-			try {
-				
-				QueryResponse response = solrServers.get(SOLR_CORE_FILES).query(request2);
-				results = buildResultsDocument(response);
-				
-			} catch (Exception e) {
-				// send 500 "Internal Server Error" response
-				e.printStackTrace();
-				LOG.warning(e.getMessage());
-				return Response.status(500).entity(e.getMessage()).build();
-			}
-
+			return executeFilesQuery(SOLR_FIELD_DATASET_ID, datasetIds);
+		} else {
+			return Response.status(200).entity("").build();
 		}
 
-		return Response.status(200).entity(results).build();
 
 	}
 
@@ -262,11 +230,53 @@ public class DownloadServiceImpl implements DownloadService {
 		request.setFields( new String[] { SOLR_FIELD_ID } );
 		// always sort by result "id"
 		request.setSortField(SOLR_FIELD_ID, ORDER.desc);
-
-		LOG.info("Executing Solr request:"+request.toString());
 		
 		return request;
 
+	}
+	
+
+	
+	/**
+	 * Method that executes a query for all files matching a set of DatasetIds or CollectionIds, 
+	 * until all are returned.
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	private Response executeFilesQuery(final String idKey, final List<String> idValues) {
+		
+		try {
+			
+			String results = "";
+			SolrQuery request = this.buildFilesQuery(idKey, idValues);
+			int count = 0;
+			long numFound = 1;
+			while (count < numFound) {
+				
+				request.setStart(count);
+				LOG.info("Executing Solr request to 'files' core: "+request.toString());
+				QueryResponse response = solrServers.get(SOLR_CORE_FILES).query(request);
+				
+				SolrDocumentList docList =  response.getResults();
+				numFound = docList.getNumFound();
+				count += docList.size();
+				LOG.info("...number of results found: "+numFound);
+				
+				// keep adding results to the same document
+				results += buildResultsDocument(response);
+				
+			}
+	
+			return Response.status(200).entity(results).build();
+			
+		} catch(Exception e) {
+			// send 500 "Internal Server Error" response
+			e.printStackTrace();
+			LOG.warning(e.getMessage());
+			return Response.status(500).entity(e.getMessage()).build();
+		}
+		
 	}
 	
 	/**
@@ -290,10 +300,8 @@ public class DownloadServiceImpl implements DownloadService {
 		request.setQuery(idquery);
 		// add fields to be returned
 		request.setFields( new String[] { SOLR_FIELD_ID } );
-		// FIXME
-		request.setRows(10000);
+		request.setRows(SOLR_MAX_NUM_FILES);
 		
-		LOG.info("Executing Solr request:"+request.toString());
 		return request;
 		
 	}
