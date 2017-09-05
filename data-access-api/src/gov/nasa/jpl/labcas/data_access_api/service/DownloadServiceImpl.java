@@ -102,8 +102,49 @@ public class DownloadServiceImpl implements DownloadService {
 	@Path("/collections/select")
 	public Response downloadCollections(@Context HttpServletRequest httpRequest, @QueryParam("q") String q,
 			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
-		// FIXME
-		return null;
+		
+		// build Solr query to 'collections' core
+		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows);
+
+		// execute Solr query to 'collections' core
+		// extract matching collection ids
+		List<String> collectionIds = new ArrayList<String>();
+		try {
+
+			QueryResponse response = solrServers.get(SOLR_CORE_COLLECTIONS).query(request);
+			this.extractIds(response, collectionIds);
+
+		} catch (Exception e) {
+			// send 500 "Internal Server Error" response
+			e.printStackTrace();
+			LOG.warning(e.getMessage());
+			return Response.status(500).entity(e.getMessage()).build();
+		}
+
+		// final results document
+		String results = "";
+
+		if (collectionIds.size() > 0) {
+			
+			SolrQuery request2 = this.buildFilesQuery(SOLR_FIELD_COLLECTION_ID, collectionIds);
+
+			// execute query to 'files' core
+			try {
+				
+				QueryResponse response = solrServers.get(SOLR_CORE_FILES).query(request2);
+				results = buildResultsDocument(response);
+				
+			} catch (Exception e) {
+				// send 500 "Internal Server Error" response
+				e.printStackTrace();
+				LOG.warning(e.getMessage());
+				return Response.status(500).entity(e.getMessage()).build();
+			}
+
+		}
+
+		return Response.status(200).entity(results).build();
+		
 	}
 
 	@Override
