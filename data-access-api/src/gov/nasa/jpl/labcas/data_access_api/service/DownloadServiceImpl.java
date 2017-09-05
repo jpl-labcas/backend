@@ -43,7 +43,6 @@ public class DownloadServiceImpl implements DownloadService {
 	private final static String SOLR_FIELD_ID = "id";
 	private final static String SOLR_FIELD_DATASET_ID = "DatasetId";
 	private final static String SOLR_FIELD_COLLECTION_ID = "CollectionId";
-	private final static String SOLR_FIELD_FILE_DOWNLOAD_ID = "FileDownloadId";
 
 	/**
 	 * Configuration file located in user home directory
@@ -100,28 +99,29 @@ public class DownloadServiceImpl implements DownloadService {
 
 	@Override
 	@GET
+	@Path("/collections/select")
+	public Response downloadCollections(@Context HttpServletRequest httpRequest, @QueryParam("q") String q,
+			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
+		// FIXME
+		return null;
+	}
+
+	@Override
+	@GET
 	@Path("/datasets/select")
 	public Response downloadDatasets(@Context HttpServletRequest httpRequest, @QueryParam("q") String q,
 			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
 
 		// build Solr query to 'datasets' core
-		SolrQuery request = this.buildQuery(httpRequest, q, fq, start, rows);
-		// add field to be returned
-		String[] fields = new String[] { SOLR_FIELD_ID };
-		request.setFields(fields);
+		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows);
 
 		// execute Solr query to 'datasets' core
+		// extract matching dataset ids
 		List<String> datasetIds = new ArrayList<String>();
 		try {
+
 			QueryResponse response = solrServers.get(SOLR_CORE_DATASETS).query(request);
-			SolrDocumentList docs = response.getResults();
-			Iterator<SolrDocument> iter = docs.iterator();
-			while (iter.hasNext()) {
-				SolrDocument doc = iter.next();
-				LOG.info(doc.toString());
-				String id = (String) doc.getFieldValue(SOLR_FIELD_ID);
-				datasetIds.add(id);
-			}
+			this.extractIds(response, datasetIds);
 
 		} catch (Exception e) {
 			// send 500 "Internal Server Error" response
@@ -134,45 +134,15 @@ public class DownloadServiceImpl implements DownloadService {
 		String results = "";
 
 		if (datasetIds.size() > 0) {
-
-			// build Solr query to 'files' core
-			// example:
-			// /files/select?q=("MD_Anderson_Pancreas_IPMN_images.IPMN_P1-06_H03.IPMN
-			// P1-06_H03_[50545,12210]_component_data.tif" OR
-			// "MD_Anderson_Pancreas_IPMN_images.IPMN_P1-06_H03.IPMN
-			// P1-06_H03_[50545,12210]_image_with_all_seg.tif")
-			SolrQuery request2 = new SolrQuery();
-			String idquery = SOLR_FIELD_DATASET_ID + ":(";
-			for (int i = 0; i < datasetIds.size(); i++) {
-				if (i > 0) {
-					idquery += " OR ";
-				}
-				idquery += "\"" + datasetIds.get(i) + "\"";
-			}
-			idquery += ")";
-			LOG.info("Executing query=" + idquery);
-			request2.setQuery(idquery);
-			// add field to be returned
-			String[] fields2 = new String[] { SOLR_FIELD_ID, SOLR_FIELD_FILE_DOWNLOAD_ID };
-			request2.setFields(fields2);
-			// FIXME
-			request2.setRows(10000);
+			
+			SolrQuery request2 = this.buildFilesQuery(SOLR_FIELD_DATASET_ID, datasetIds);
 
 			// execute query to 'files' core
 			try {
-
-				LOG.info("Executing Solr query: " + request2.toString());
+				
 				QueryResponse response = solrServers.get(SOLR_CORE_FILES).query(request2);
-				SolrDocumentList docs = response.getResults();
-				Iterator<SolrDocument> iter = docs.iterator();
-				while (iter.hasNext()) {
-					SolrDocument doc = iter.next();
-					LOG.info(doc.toString());
-					String id = (String) doc.getFieldValue(SOLR_FIELD_ID);
-					String fdid = (String) doc.getFieldValue(SOLR_FIELD_FILE_DOWNLOAD_ID);
-					results += this.dataAccessApiBaseUrl + "?id=" + id + "&productID=" + fdid + "\n";
-				}
-
+				results = buildResultsDocument(response);
+				
 			} catch (Exception e) {
 				// send 500 "Internal Server Error" response
 				e.printStackTrace();
@@ -193,27 +163,15 @@ public class DownloadServiceImpl implements DownloadService {
 			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
 
 		// build Solr query
-		SolrQuery request = this.buildQuery(httpRequest, q, fq, start, rows);
-		// add field to be returned
-		String[] fields = new String[] { SOLR_FIELD_ID, SOLR_FIELD_FILE_DOWNLOAD_ID };
-		request.setFields(fields);
+		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows); 
 
 		// execute Solr query to 'files' core, build result document
 		String results = "";
 		try {
 
-			LOG.info("Executing Solr query: " + request.toString());
 			QueryResponse response = solrServers.get(SOLR_CORE_FILES).query(request);
-			SolrDocumentList docs = response.getResults();
-			Iterator<SolrDocument> iter = docs.iterator();
-			while (iter.hasNext()) {
-				SolrDocument doc = iter.next();
-				LOG.info(doc.toString());
-				String id = (String) doc.getFieldValue(SOLR_FIELD_ID);
-				String fdid = (String) doc.getFieldValue(SOLR_FIELD_FILE_DOWNLOAD_ID);
-				results += this.dataAccessApiBaseUrl + "?id=" + id + "&productID=" + fdid + "\n";
-			}
-
+			results = buildResultsDocument(response);
+			
 		} catch (Exception e) {
 			// send 500 "Internal Server Error" response
 			e.printStackTrace();
@@ -226,7 +184,8 @@ public class DownloadServiceImpl implements DownloadService {
 	}
 
 	/**
-	 * Method that converts the HTTP request parameters into a SolrQuery object.
+	 * Method that converts a query request to this service to a query request to the Solr server (for any core).
+	 * Example query: 
 	 * 
 	 * @param httpRequest
 	 * @param q
@@ -234,9 +193,10 @@ public class DownloadServiceImpl implements DownloadService {
 	 * @param start
 	 * @param rows
 	 * @param sort
+	 * @param fields
 	 * @return
 	 */
-	private SolrQuery buildQuery(final HttpServletRequest httpRequest, final String q, final List<String> fq,
+	private SolrQuery buildPassThroughQuery(final HttpServletRequest httpRequest, final String q, final List<String> fq,
 			final int start, final int rows) {
 
 		LOG.info("HTTP request URL=" + httpRequest.getRequestURL());
@@ -257,10 +217,81 @@ public class DownloadServiceImpl implements DownloadService {
 		if (rows > 0) {
 			request.setRows(rows);
 		}
+		// add fields to be returned
+		request.setFields( new String[] { SOLR_FIELD_ID } );
+		// always sort by result "id"
 		request.setSortField(SOLR_FIELD_ID, ORDER.desc);
 
+		LOG.info("Executing Solr request:"+request.toString());
+		
 		return request;
 
+	}
+	
+	/**
+	 * Method that builds a query for files matching a set of DatasetIds or CollectionIds.
+	 * 
+	 * Example: q=DatasetId%3A%28%22MD_Anderson_Pancreas_IPMN_images.IPMN_P1-06_H03%22%29&fl=id%2CFileDownloadId&rows=10000
+	 * 
+	 * @return
+	 */
+	private SolrQuery buildFilesQuery(final String idKey, final List<String> idValues) {
+		
+		SolrQuery request = new SolrQuery();
+		String idquery = idKey + ":(";
+		for (int i = 0; i < idValues.size(); i++) {
+			if (i > 0) {
+				idquery += " OR ";
+			}
+			idquery += "\"" + idValues.get(i) + "\"";
+		}
+		idquery += ")";
+		request.setQuery(idquery);
+		// add fields to be returned
+		request.setFields( new String[] { SOLR_FIELD_ID } );
+		// FIXME
+		request.setRows(10000);
+		
+		LOG.info("Executing Solr request:"+request.toString());
+		return request;
+		
+	}
+	
+	/**
+	 * Method that parses a Solr response to extract the result ids.
+	 * @param response
+	 * @param ids
+	 */
+	private void extractIds(final QueryResponse response, List<String> ids) {
+		SolrDocumentList docs = response.getResults();
+		Iterator<SolrDocument> iter = docs.iterator();
+		while (iter.hasNext()) {
+			SolrDocument doc = iter.next();
+			LOG.info(doc.toString());
+			String id = (String) doc.getFieldValue(SOLR_FIELD_ID);
+			ids.add(id);
+		}
+	}
+	
+	/**
+	 * Method that parses a Solr response from the 'files' core and builds a list of files download URLs.
+	 * 
+	 * @return
+	 */
+	private String buildResultsDocument(final QueryResponse response) {
+		
+		String results = "";
+		SolrDocumentList docs = response.getResults();
+		Iterator<SolrDocument> iter = docs.iterator();
+		while (iter.hasNext()) {
+			SolrDocument doc = iter.next();
+			LOG.fine(doc.toString());
+			String id = (String) doc.getFieldValue(SOLR_FIELD_ID);
+			results += this.dataAccessApiBaseUrl + "?id=" + id + "\n";
+		}
+		
+		return results;
+		
 	}
 
 }
