@@ -11,18 +11,21 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
 
+/**
+ * Filter that intercepts all requests to this service
+ * and verifies authentication versus the LDAP database.
+ * 
+ * @author Luca Cinquini
+ *
+ */
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
 	
 	private final static Logger LOG = Logger.getLogger(AuthenticationFilter.class.getName());
 	
-	private AuthenticationService authenticationService;
+	private AuthenticationService authenticationService = new AuthenticationService();
 	
-	public AuthenticationFilter(AuthenticationService authenticationService) {
-		this.authenticationService = new AuthenticationService();
-	}
-
 	@Override
 	public void filter(ContainerRequestContext containerRequest) throws WebApplicationException {
 		
@@ -30,10 +33,12 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		LOG.info("Establishing authentication: HTTP header="+authCredentials);
 
 		boolean authenticationStatus = authenticationService.authenticate(authCredentials);
+		LOG.info("Authentication="+authenticationStatus);
 
 		if (!authenticationStatus) {
 			throw new WebApplicationException(Status.UNAUTHORIZED);
 		}
+		// else proceed with normal filter chain
 
 	}
 }
