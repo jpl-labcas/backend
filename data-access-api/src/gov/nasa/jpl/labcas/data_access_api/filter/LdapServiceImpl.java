@@ -12,12 +12,12 @@ import javax.naming.directory.InitialDirContext;
 import org.apache.commons.codec.binary.Base64;
 
 /**
- * Service used to query the LDAP database.
+ * Service implementation used to query the LDAP database.
  * 
  * @author Luca Cinquini
  *
  */
-public class AuthenticationService {
+public class LdapServiceImpl implements LdapService {
 
 	private final static Logger LOG = Logger.getLogger(AuthenticationFilter.class.getName());
 
@@ -27,8 +27,9 @@ public class AuthenticationService {
 	
 	private final static String contextFactory = "com.sun.jndi.ldap.LdapCtxFactory";
 
-	public AuthenticationService() {}
+	public LdapServiceImpl() {}
 
+	@Override
 	public boolean authenticate(String authCredentials) {
 
 		if (null == authCredentials) {

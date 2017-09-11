@@ -24,7 +24,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 	
 	private final static Logger LOG = Logger.getLogger(AuthenticationFilter.class.getName());
 	
-	private AuthenticationService authenticationService = new AuthenticationService();
+	private LdapService authenticationService = new LdapServiceImpl();
 	
 	@Override
 	public void filter(ContainerRequestContext containerRequest) throws WebApplicationException {
