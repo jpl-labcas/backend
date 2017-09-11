@@ -5,6 +5,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 
+/**
+ * Service used to create list of files to be downloaded.
+ * 
+ * @author Luca Cinquini
+ *
+ */
 public interface DownloadService {
 	
 	/**
