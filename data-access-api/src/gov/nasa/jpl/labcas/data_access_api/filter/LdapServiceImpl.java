@@ -66,7 +66,7 @@ public class LdapServiceImpl implements LdapService {
 		final String password = tokenizer.nextToken();
 
 		// authenticate user by 'binding' to the LDAP server
-		String dn = LDAP_DN_PATTERN_PROPERTY.replaceAll("@USERNAME@", username);
+		String dn = this.ldapDnPattern.replaceAll("@USERNAME@", username);
 		LOG.info("Testing LDAP binding for: " + dn);
 		return bind(dn, password);
 

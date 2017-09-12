@@ -44,7 +44,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
 		
 		// build Solr query to 'collections' core
-		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows);
+		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows, null);
 
 		// execute Solr query to 'collections' core
 		// extract matching collection ids
@@ -78,7 +78,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
 
 		// build Solr query to 'datasets' core
-		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows);
+		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows, null);
 
 		// execute Solr query to 'datasets' core
 		// extract matching dataset ids
@@ -113,7 +113,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
 
 		// build Solr query
-		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows); 
+		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows, null); 
 
 		// execute Solr query to 'files' core, build result document
 		String results = "";

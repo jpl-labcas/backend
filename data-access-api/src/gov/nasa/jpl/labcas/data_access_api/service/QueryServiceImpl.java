@@ -35,14 +35,16 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 
 	@Override
 	public Response queryCollections(@Context HttpServletRequest httpRequest, @QueryParam("q") String q,
-			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
+			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows,
+			@QueryParam("sort") String sort) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Response queryDatasets(@Context HttpServletRequest httpRequest, @QueryParam("q") String q,
-			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
+			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows,
+			@QueryParam("sort") String sort) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -51,10 +53,11 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 	@GET
 	@Path("/files/select")
 	public Response queryFiles(@Context HttpServletRequest httpRequest, @QueryParam("q") String q,
-			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
+			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows, 
+			@QueryParam("sort") String sort) {
 		
 		// build Solr query
-		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows); 
+		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows, sort); 
 
 		// execute Solr query to 'files' core, build result document
 		String results = "";

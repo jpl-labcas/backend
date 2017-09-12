@@ -23,7 +23,7 @@ public interface QueryService {
 	 * @param rows
 	 * @return
 	 */
-	public Response queryCollections(HttpServletRequest httpRequest, String q, List<String> fq, int start, int rows);
+	public Response queryCollections(HttpServletRequest httpRequest, String q, List<String> fq, int start, int rows, String sort);
 	
 	/**
 	 * Method to query Solr for matching datasets.
@@ -35,7 +35,7 @@ public interface QueryService {
 	 * @param rows
 	 * @return
 	 */
-	public Response queryDatasets(HttpServletRequest httpRequest, String q, List<String> fq, int start, int rows);
+	public Response queryDatasets(HttpServletRequest httpRequest, String q, List<String> fq, int start, int rows, String sort);
 	
 	/**
 	 * Method to query Solr for matching files.
@@ -47,7 +47,7 @@ public interface QueryService {
 	 * @param rows
 	 * @return
 	 */
-	public Response queryFiles(HttpServletRequest httpRequest, String q, List<String> fq, int start, int rows);
+	public Response queryFiles(HttpServletRequest httpRequest, String q, List<String> fq, int start, int rows, String sort);
 
 
 }

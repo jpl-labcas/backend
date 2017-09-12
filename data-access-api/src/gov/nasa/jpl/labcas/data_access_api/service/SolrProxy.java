@@ -78,11 +78,11 @@ public class SolrProxy {
 	 */
 	protected SolrQuery buildPassThroughQuery(final HttpServletRequest httpRequest, 
 			                                  final String q, final List<String> fq,
-			                                  final int start, final int rows) {
+			                                  final int start, final int rows, final String sort) {
 
 		LOG.info("HTTP request URL=" + httpRequest.getRequestURL());
 		LOG.info("HTTP request query string=" + httpRequest.getQueryString());
-		LOG.info("HTTP request parameters q=" + q + " fq=" + fq + " start=" + start + " rows=" + rows);
+		LOG.info("HTTP request parameters q=" + q + " fq=" + fq + " start=" + start + " rows=" + rows + " sort="+sort);
 
 		// build Solr query
 		SolrQuery request = new SolrQuery();
@@ -103,9 +103,18 @@ public class SolrProxy {
 		// always sort by result "id"
 		request.setSortField(SOLR_FIELD_ID, ORDER.desc);
 		
+		// optional sorting
+		if (sort != null && !sort.isEmpty()) {
+			String[] sparts = sort.split("\\s+");
+			if (sparts[1].equalsIgnoreCase("asc")) {
+				request.setSortField(sparts[0], ORDER.asc);
+			} else {
+				request.setSortField(sparts[0], ORDER.desc);
+			}
+		}
+		
 		return request;
 
 	}
-
 
 }
