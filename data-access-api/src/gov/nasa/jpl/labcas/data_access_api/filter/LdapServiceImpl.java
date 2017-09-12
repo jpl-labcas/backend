@@ -11,6 +11,8 @@ import javax.naming.directory.InitialDirContext;
 
 import org.apache.commons.codec.binary.Base64;
 
+import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
+
 /**
  * Service implementation used to query the LDAP database.
  * 
@@ -21,13 +23,24 @@ public class LdapServiceImpl implements LdapService {
 
 	private final static Logger LOG = Logger.getLogger(AuthenticationFilter.class.getName());
 
-	// FIXME: read from ~/labcas.properties
-	private final static String ldapUsersUri = "ldaps://edrn.jpl.nasa.gov:636/ou=users,o=MCL";
-	private final static String ldapGroupsUri = "ldaps://edrn.jpl.nasa.gov:636/ou=groups,o=MCL";
+	// read from ~/labcas.properties
+	private final static String LDAP_USERS_URI_PROPERTY = "ldapUsersUri";
+	private final String ldapUsersUri;
+	private final static String LDAP_GROUPS_URI_PROPERTY = "ldapGroupsUri";
+	private final String ldapGroupsUri;
+	private final static String LDAP_DN_PATTERN_PROPERTY = "ldapDnPattern";
+	private final String ldapDnPattern;
+	
 	
 	private final static String contextFactory = "com.sun.jndi.ldap.LdapCtxFactory";
 
-	public LdapServiceImpl() {}
+	public LdapServiceImpl() {
+		
+		ldapUsersUri = Parameters.getParameterValue(LDAP_USERS_URI_PROPERTY);
+		ldapGroupsUri = Parameters.getParameterValue(LDAP_GROUPS_URI_PROPERTY);
+		ldapDnPattern = Parameters.getParameterValue(LDAP_DN_PATTERN_PROPERTY);
+		
+	}
 
 	@Override
 	public boolean authenticate(String authCredentials) {
@@ -53,8 +66,8 @@ public class LdapServiceImpl implements LdapService {
 		final String password = tokenizer.nextToken();
 
 		// authenticate user by 'binding' to the LDAP server
-		String dn = "uid=" + username + ",ou=users,o=MCL"; // FIXME
-		LOG.info("Testing LDAP binding for DN=" + dn + " password=...");
+		String dn = LDAP_DN_PATTERN_PROPERTY.replaceAll("@USERNAME@", username);
+		LOG.info("Testing LDAP binding for: " + dn);
 		return bind(dn, password);
 
 	}
