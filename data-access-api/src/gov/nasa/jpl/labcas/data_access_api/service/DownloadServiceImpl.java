@@ -19,14 +19,24 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 
+import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
+
 @Path("/")
 @Produces(MediaType.TEXT_PLAIN)
 public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 	
 	private final static Logger LOG = Logger.getLogger(DownloadServiceImpl.class.getName());
+	
+	// base URL to build the files download list
+	private final static String DATA_ACCESS_API_BASE_URL_PROPERTY = "dataAccessApiBaseUrl";
+	protected String dataAccessApiBaseUrl = null;
 
 	public DownloadServiceImpl() {
-		super();
+		
+		// read property from configuration file
+		this.dataAccessApiBaseUrl = Parameters.getParameterValue(DATA_ACCESS_API_BASE_URL_PROPERTY);
+		LOG.info("Using dataAccessApiBaseUrl=" + this.dataAccessApiBaseUrl);
+		
 	}
 
 	@Override

@@ -1,24 +1,20 @@
 package gov.nasa.jpl.labcas.data_access_api.service;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
+import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 
 /**
- * Class that proxies query/download requests to a multi-core Solr server.
+ * Base class to proxy query/download requests to a multi-core Solr server.
  * 
  * @author Luca Cinquini
  *
@@ -37,11 +33,6 @@ public class SolrProxy {
 	protected final static String SOLR_FIELD_COLLECTION_ID = "CollectionId";
 	protected final static int SOLR_MAX_NUM_FILES = 100;  // maximum number of files returned for each query
 
-	/**
-	 * Configuration file located in user home directory
-	 */
-	private final static String LABCAS_PROPERTIES = "/labcas.properties";
-	private final static String DATA_ACCESS_API_BASE_URL_PROPERTY = "dataAccessApiBaseUrl";
 
 	// IMPORTANT: must re-use the same SolrServer instance across all requests
 	// to prevent memory leaks
@@ -49,8 +40,6 @@ public class SolrProxy {
 	// this method instantiates the shared instances of SolrServer (one per
 	// core)
 	protected static Map<String, SolrServer> solrServers = new HashMap<String, SolrServer>();
-	
-	protected String dataAccessApiBaseUrl = null;
 
 	static {
 		try {
@@ -72,23 +61,7 @@ public class SolrProxy {
 		}
 	}
 	
-	/** Constructor reads base download URL from configuration properties. */
-	public SolrProxy() {
-
-		LOG.info("Initializing Solr connection properties");
-
-		try {
-			InputStream input = new FileInputStream(System.getProperty("user.home") + LABCAS_PROPERTIES);
-			Properties properties = new Properties();
-			properties.load(input);
-			this.dataAccessApiBaseUrl = properties.getProperty(DATA_ACCESS_API_BASE_URL_PROPERTY);
-			LOG.info("Using dataAccessApiBaseUrl=" + this.dataAccessApiBaseUrl);
-
-		} catch (IOException e) {
-			LOG.warning("Eroor reading property file: " + LABCAS_PROPERTIES);
-		}
-
-	}
+	public SolrProxy() {}
 	
 	/**
 	 * Method that converts a query request to this service to a query request to the Solr server (for any core).
