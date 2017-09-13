@@ -66,10 +66,14 @@ public class LdapServiceImpl implements LdapService {
 		final String password = tokenizer.nextToken();
 
 		// authenticate user by 'binding' to the LDAP server
-		String dn = this.ldapDnPattern.replaceAll("@USERNAME@", username);
+		String dn = getDn(username);
 		LOG.info("Testing LDAP binding for: " + dn);
 		return bind(dn, password);
 
+	}
+	
+	public String getDn(String username) {
+		return this.ldapDnPattern.replaceAll("@USERNAME@", username);
 	}
 
 	/**
@@ -80,7 +84,7 @@ public class LdapServiceImpl implements LdapService {
 	 * @return
 	 * @throws Exception
 	 */
-	private boolean bind(String dn, String password) {
+	protected boolean bind(String dn, String password) {
 
 		try {
 			
@@ -107,6 +111,25 @@ public class LdapServiceImpl implements LdapService {
 			return false;
 		}
 
+	}
+	
+	/**
+	 * Method to debug LDAP connection
+	 * 
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		
+		String username = args[0];
+		String password = args[1];
+		
+		LdapServiceImpl self = new LdapServiceImpl();
+		
+		String dn = self.getDn(username);
+		LOG.info("Testing LDAP binding for: " + dn);
+		boolean status = self.bind(dn, password);
+		LOG.info("Authentication status="+status);
+		
 	}
 
 }
