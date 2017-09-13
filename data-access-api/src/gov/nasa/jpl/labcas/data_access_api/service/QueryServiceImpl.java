@@ -1,21 +1,21 @@
 package gov.nasa.jpl.labcas.data_access_api.service;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.util.ClientUtils;
-import org.apache.solr.common.SolrDocumentList;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 /**
  * Service implementation to issue a query request to Solr.
@@ -26,7 +26,7 @@ import org.apache.solr.common.SolrDocumentList;
 @Path("/")
 @Produces(MediaType.TEXT_PLAIN)
 public class QueryServiceImpl extends SolrProxy implements QueryService {
-	
+
 	private final static Logger LOG = Logger.getLogger(QueryServiceImpl.class.getName());
 
 	public QueryServiceImpl() {
@@ -34,43 +34,57 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 	}
 
 	@Override
-	public Response queryCollections(@Context HttpServletRequest httpRequest, @QueryParam("q") String q,
-			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows,
-			@QueryParam("sort") String sort) {
-		// TODO Auto-generated method stub
-		return null;
+	@GET
+	@Path("/collections/select")
+	public Response queryCollections(@Context HttpServletRequest httpRequest) {
+		
+		return queryCore(httpRequest, SOLR_CORE_COLLECTIONS);
+		
 	}
 
 	@Override
-	public Response queryDatasets(@Context HttpServletRequest httpRequest, @QueryParam("q") String q,
-			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows,
-			@QueryParam("sort") String sort) {
-		// TODO Auto-generated method stub
-		return null;
+	@GET
+	@Path("/datasets/select")
+	public Response queryDatasets(@Context HttpServletRequest httpRequest) {
+		
+		return queryCore(httpRequest, SOLR_CORE_DATASETS);
+		
 	}
 
 	@Override
 	@GET
 	@Path("/files/select")
-	public Response queryFiles(@Context HttpServletRequest httpRequest, @QueryParam("q") String q,
-			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows, 
-			@QueryParam("sort") String sort) {
+	public Response queryFiles(@Context HttpServletRequest httpRequest) {
 		
-		// build Solr query
-		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows, sort); 
+		return queryCore(httpRequest, SOLR_CORE_FILES);
 
-		// execute Solr query to 'files' core, build result document
-		String results = "";
+	}
+	
+	/**
+	 * Proxies the HTTP request to a specific Solr core.
+	 * NOTE: this method uses the HTTPClient API directly 
+	 * because SolrJ does not allow to return the raw response document as JSON or XML
+	 * without a lot of processing.
+	 * 
+	 * @param httpRequest
+	 * @param core
+	 * @return
+	 */
+	private Response queryCore(@Context HttpServletRequest httpRequest, String core) {
+
 		try {
+			String baseUrl = getBaseUrl(core) + "/select";
+			String url = baseUrl + "?" + httpRequest.getQueryString();
+			CloseableHttpClient httpclient = HttpClients.createDefault();
+			LOG.info("Executing Solr HTTP request: " + url);
+			HttpGet httpGet = new HttpGet(url);
+			CloseableHttpResponse response = httpclient.execute(httpGet);
+			HttpEntity entity = response.getEntity();
 
-			QueryResponse response = solrServers.get(SOLR_CORE_FILES).query(request);
-			System.out.println("SOLR RESPONSE="+response.toString());
-			SolrDocumentList docs = response.getResults();
-			for (int i = 0; i < docs.size(); i++) {
-		        String xml = ClientUtils.toXML(ClientUtils.toSolrInputDocument(docs.get(i)));
-		        results += xml;
-		    }
-			
+			// return the same response to the client
+			String content = IOUtils.toString(entity.getContent(), "UTF-8");
+			return Response.status(response.getStatusLine().getStatusCode()).entity(content).build();
+
 		} catch (Exception e) {
 			// send 500 "Internal Server Error" response
 			e.printStackTrace();
@@ -78,9 +92,6 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 			return Response.status(500).entity(e.getMessage()).build();
 		}
 
-		return Response.status(200).entity(results).build();
-		
-		
 	}
 
 }

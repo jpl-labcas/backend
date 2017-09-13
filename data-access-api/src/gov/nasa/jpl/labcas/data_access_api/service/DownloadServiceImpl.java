@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -44,7 +45,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
 		
 		// build Solr query to 'collections' core
-		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows, null);
+		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows);
 
 		// execute Solr query to 'collections' core
 		// extract matching collection ids
@@ -78,7 +79,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
 
 		// build Solr query to 'datasets' core
-		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows, null);
+		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows);
 
 		// execute Solr query to 'datasets' core
 		// extract matching dataset ids
@@ -113,7 +114,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
 
 		// build Solr query
-		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows, null); 
+		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows); 
 
 		// execute Solr query to 'files' core, build result document
 		String results = "";
@@ -132,6 +133,51 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 		return Response.status(200).entity(results).build();
 
 	}
+	
+	
+	/**
+	 * Method that converts a query request to this service to a query request to the Solr server (for any core).
+	 * 
+	 * @param httpRequest
+	 * @param q
+	 * @param fq
+	 * @param start
+	 * @param rows
+	 * @param sort
+	 * @param fields
+	 * @return
+	 */
+	protected SolrQuery buildPassThroughQuery(final HttpServletRequest httpRequest, 
+			                                  final String q, final List<String> fq,
+			                                  final int start, final int rows) {
+
+		LOG.info("HTTP request URL=" + httpRequest.getRequestURL());
+		LOG.info("HTTP request query string=" + httpRequest.getQueryString());
+
+		// build Solr query
+		SolrQuery request = new SolrQuery();
+		if (q != null && !q.isEmpty()) {
+			request.setQuery(q);
+		}
+		if (fq != null && fq.size() > 0) {
+			request.setFilterQueries(fq.toArray(new String[fq.size()]));
+		}
+		if (start > 0) {
+			request.setStart(start);
+		}
+		if (rows > 0) {
+			request.setRows(rows);
+		}
+				
+		// return sorted "id" field
+		request.setFields( new String[] { SOLR_FIELD_ID } );
+		// always sort by result "id"
+		request.setSortField(SOLR_FIELD_ID, ORDER.desc);
+		
+		return request;
+
+	}
+
 	
 	
 	/**
