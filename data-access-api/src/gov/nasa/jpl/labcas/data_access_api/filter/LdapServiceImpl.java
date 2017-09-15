@@ -1,10 +1,8 @@
 package gov.nasa.jpl.labcas.data_access_api.filter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 import javax.naming.Context;
@@ -13,8 +11,6 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-
-import org.apache.commons.codec.binary.Base64;
 
 import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
 
@@ -49,6 +45,9 @@ public class LdapServiceImpl implements LdapService {
 		
 	}
 
+	/**
+	 * Authenticates a user by binding to LDAP with the given username and password.
+	 */
 	@Override
 	public boolean authenticate(String username, String password) {
 		
@@ -60,7 +59,7 @@ public class LdapServiceImpl implements LdapService {
 				return false;
 			} else {
 				// user found - test password
-				if (validate(dn, password)) {
+				if (validateUserCredentials(dn, password)) {
 					LOG.info("User: "+username+" authentication succedeed");
 					return true;
 				} else {
@@ -74,34 +73,46 @@ public class LdapServiceImpl implements LdapService {
 		}
 
 	}
-
+	
 	/**
-	 * Validates (dn, password) credentials versus the LDAP user database.
+	 * Queries LDAP for the groups a user belongs to,
+	 * using the LDAP administrator credentials.
 	 * 
 	 * @param dn
-	 * @param password
 	 * @return
 	 * @throws Exception
 	 */
-	protected boolean validate(String dn, String pwd) throws Exception {
-
+	@Override
+	public List<String> authorize(String userdn) {
+		
+		List<String> groups = new ArrayList<String>();
+		
 		try {
-			// create the initial context
-			DirContext ctx = ldapContext(dn, pwd, ldapUsersUri);
-			boolean result = ctx != null;
-	
-			if (ctx != null) {
-				ctx.close();
-			}
-			return result;
-			
-		} catch(Exception e) {
-			return false;
-		}
+		
+		DirContext ctx = ldapContext(ldapAdminDn, ldapAdminPassword, ldapGroupsUri);
 
+		String filter = "(&(objectClass=groupOfUniqueNames)(uniqueMember="+userdn+"))";
+		SearchControls ctrl = new SearchControls();
+		ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		NamingEnumeration<SearchResult> answer = ctx.search("", filter, ctrl);
+
+		if (answer.hasMore()) {
+			SearchResult result = (SearchResult) answer.next();
+			String groupdn = result.getNameInNamespace();
+			LOG.info("Found group="+groupdn);
+			groups.add(groupdn);
+		}
+		answer.close();
+		ctx.close();
+		
+		} catch(Exception e) {
+			LOG.info("Error while querying LDAP for groups: "+e.getMessage());
+		}
+		
+		return groups;
+		
 	}
 	
-
 	/**
 	 * Queries LDAP for a user's distinguished name,
 	 * using the LDAP administrator credentials.
@@ -134,41 +145,29 @@ public class LdapServiceImpl implements LdapService {
 	}
 	
 	/**
-	 * Queries LDAP for the groups a user belongs to,
-	 * using the LDAP administrator credentials.
+	 * Validates (dn, password) credentials versus the LDAP user database.
 	 * 
 	 * @param dn
+	 * @param password
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> authorize(String userdn) {
-		
-		List<String> groups = new ArrayList<String>();
-		
+	private boolean validateUserCredentials(String dn, String pwd) throws Exception {
+
 		try {
-		
-		DirContext ctx = ldapContext(ldapAdminDn, ldapAdminPassword, ldapGroupsUri);
-
-		String filter = "(&(objectClass=groupOfUniqueNames)(uniqueMember="+userdn+"))";
-		SearchControls ctrl = new SearchControls();
-		ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
-		NamingEnumeration<SearchResult> answer = ctx.search("", filter, ctrl);
-
-		if (answer.hasMore()) {
-			SearchResult result = (SearchResult) answer.next();
-			String groupdn = result.getNameInNamespace();
-			LOG.info("Found group="+groupdn);
-			groups.add(groupdn);
-		}
-		answer.close();
-		ctx.close();
-		
+			// create the initial context
+			DirContext ctx = ldapContext(dn, pwd, ldapUsersUri);
+			boolean result = ctx != null;
+	
+			if (ctx != null) {
+				ctx.close();
+			}
+			return result;
+			
 		} catch(Exception e) {
-			LOG.info("Error while querying LDAP for groups: "+e.getMessage());
+			return false;
 		}
-		
-		return groups;
-		
+
 	}
 	
 	/**
@@ -210,7 +209,7 @@ public class LdapServiceImpl implements LdapService {
 		if (dn != null) {
 			
 			// found user - test password
-			if ( self.validate( dn, password ) ) {
+			if ( self.validateUserCredentials( dn, password ) ) {
 				LOG.info( "User '" + user + "' authentication succeeded" );
 				
 				// retrieve groups
