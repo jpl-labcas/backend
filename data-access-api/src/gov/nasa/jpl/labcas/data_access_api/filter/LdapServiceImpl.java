@@ -1,7 +1,9 @@
 package gov.nasa.jpl.labcas.data_access_api.filter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
@@ -75,7 +77,7 @@ public class LdapServiceImpl implements LdapService {
 		
 		// look for user in LDAP database
 		try {
-			String dn = getUid( username );
+			String dn = getUserId( username );
 			if (dn==null) {
 				LOG.info("User: "+username+" not found");
 				return false;
@@ -112,7 +114,7 @@ public class LdapServiceImpl implements LdapService {
 
 		try {
 			// create the initial context
-			DirContext ctx = ldapContext(dn, pwd);
+			DirContext ctx = ldapContext(dn, pwd, ldapUsersUri);
 			boolean result = ctx != null;
 	
 			if (ctx != null) {
@@ -128,15 +130,16 @@ public class LdapServiceImpl implements LdapService {
 	
 
 	/**
-	 * Queries LDAP for given username using the admin credentials.
+	 * Queries LDAP for a user's distinguished name,
+	 * using the LDAP administrator credentials.
 	 * 
 	 * @param user
 	 * @return
 	 * @throws Exception
 	 */
-	private String getUid(String username) throws Exception {
+	private String getUserId(String username) throws Exception {
 		
-		DirContext ctx = ldapContext(ldapAdminDn, ldapAdminPassword);
+		DirContext ctx = ldapContext(ldapAdminDn, ldapAdminPassword, ldapUsersUri);
 
 		String filter = "(uid=" + username + ")";
 		SearchControls ctrl = new SearchControls();
@@ -158,17 +161,49 @@ public class LdapServiceImpl implements LdapService {
 	}
 	
 	/**
+	 * Queries LDAP for the groups a user belongs to,
+	 * using the LDAP administrator credentials.
+	 * 
+	 * @param dn
+	 * @return
+	 * @throws Exception
+	 */
+	private List<String> getUserGroups(String userdn) throws Exception {
+		
+		List<String> groups = new ArrayList<String>();
+		
+		DirContext ctx = ldapContext(ldapAdminDn, ldapAdminPassword, ldapGroupsUri);
+
+		String filter = "(&(objectClass=groupOfUniqueNames)(uniqueMember="+userdn+"))";
+		SearchControls ctrl = new SearchControls();
+		ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		NamingEnumeration<SearchResult> answer = ctx.search("", filter, ctrl);
+
+		if (answer.hasMore()) {
+			SearchResult result = (SearchResult) answer.next();
+			String groupdn = result.getNameInNamespace();
+			LOG.info("Found group="+groupdn);
+			groups.add(groupdn);
+		}
+		answer.close();
+		ctx.close();
+		
+		return groups;
+		
+	}
+	
+	/**
 	 * Creates an LDAP context using the given credentials.
 	 * 
 	 * @return
 	 * @throws Exception
 	 */
-	private DirContext ldapContext(String dn, String pwd) throws Exception {
+	private DirContext ldapContext(String dn, String pwd, String uri) throws Exception {
 		
 		Hashtable<String,String> env = new Hashtable <String,String>();
 		
 		env.put(Context.INITIAL_CONTEXT_FACTORY, contextFactory);
-		env.put(Context.PROVIDER_URL, ldapUsersUri);
+		env.put(Context.PROVIDER_URL, uri);
 		env.put(Context.SECURITY_AUTHENTICATION, "simple");
 		
 		// use the given credentials
@@ -191,13 +226,18 @@ public class LdapServiceImpl implements LdapService {
 		
 		// use admin credentials to find user
 		LdapServiceImpl self = new LdapServiceImpl();
-		String dn = self.getUid( user );
+		String dn = self.getUserId( user );
 		
 		if (dn != null) {
 			
 			// found user - test password
 			if ( self.bind( dn, password ) ) {
 				LOG.info( "User '" + user + "' authentication succeeded" );
+				
+				// retrieve groups
+				List<String> groups= self.getUserGroups(dn);
+				LOG.info("User groups="+groups);
+				
 			} else {
 				LOG.info( "User '" + user + "' authentication failed" );
 			}
