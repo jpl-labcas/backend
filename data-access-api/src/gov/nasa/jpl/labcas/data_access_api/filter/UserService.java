@@ -9,22 +9,22 @@ import java.util.List;
  * @author Luca Cinquini
  *
  */
-public interface LdapService {
+public interface UserService {
 
 	/**
-	 * Method to authenticate the user credentials.
+	 * Method to validate the user credentials.
 	 * 
 	 * @param username
 	 * @param password
-	 * @return
+	 * @return user DN if credentials are valid, null otherwise
 	 */
-	boolean authenticate(String username, String password);
+	String getValidUser(String username, String password);
 	
 	/**
 	 * Method to retrieve the groups a user belongs to.
 	 * @param userdn
 	 * @return
 	 */
-	List<String> authorize(String userdn);
+	List<String> getUserGroups(String userdn);
 
 }

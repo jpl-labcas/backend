@@ -15,12 +15,12 @@ import javax.naming.directory.SearchResult;
 import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
 
 /**
- * Service implementation used to query the LDAP database.
+ * Implementation of @see UserService that queries an LDAP database.
  * 
  * @author Luca Cinquini
  *
  */
-public class LdapServiceImpl implements LdapService {
+public class UserServiceLdapImpl implements UserService {
 
 	private final static Logger LOG = Logger.getLogger(AuthenticationFilter.class.getName());
 
@@ -36,7 +36,7 @@ public class LdapServiceImpl implements LdapService {
 	
 	private final static String contextFactory = "com.sun.jndi.ldap.LdapCtxFactory";
 
-	public LdapServiceImpl() {
+	public UserServiceLdapImpl() {
 		
 		ldapUsersUri = Parameters.getParameterValue(LDAP_USERS_URI_PROPERTY);
 		ldapGroupsUri = Parameters.getParameterValue(LDAP_GROUPS_URI_PROPERTY);
@@ -47,30 +47,32 @@ public class LdapServiceImpl implements LdapService {
 
 	/**
 	 * Authenticates a user by binding to LDAP with the given username and password.
+	 * Returns the user DN if the credentials are valid.
 	 */
 	@Override
-	public boolean authenticate(String username, String password) {
+	public String getValidUser(String username, String password) {
+		
+		String dn = null; // i.e. authentication = false
 		
 		// look for user in LDAP database
 		try {
-			String dn = getUserId( username );
+			dn = getUserId( username );
 			if (dn==null) {
 				LOG.info("User: "+username+" not found");
-				return false;
 			} else {
 				// user found - test password
 				if (validateUserCredentials(dn, password)) {
 					LOG.info("User: "+username+" authentication succedeed");
-					return true;
 				} else {
 					LOG.info("User: "+username+" authentication failed");
-					return false;
+					return null; // IMPORTANT: must return NULL, not the dn
 				}
 			}
 		} catch(Exception e) {
 			LOG.warning("Error while executing LDAP authentication: "+e.getMessage());
-			return false;
 		}
+		
+		return dn;
 
 	}
 	
@@ -83,27 +85,27 @@ public class LdapServiceImpl implements LdapService {
 	 * @throws Exception
 	 */
 	@Override
-	public List<String> authorize(String userdn) {
+	public List<String> getUserGroups(String userdn) {
 		
 		List<String> groups = new ArrayList<String>();
 		
 		try {
 		
-		DirContext ctx = ldapContext(ldapAdminDn, ldapAdminPassword, ldapGroupsUri);
-
-		String filter = "(&(objectClass=groupOfUniqueNames)(uniqueMember="+userdn+"))";
-		SearchControls ctrl = new SearchControls();
-		ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
-		NamingEnumeration<SearchResult> answer = ctx.search("", filter, ctrl);
-
-		if (answer.hasMore()) {
-			SearchResult result = (SearchResult) answer.next();
-			String groupdn = result.getNameInNamespace();
-			LOG.info("Found group="+groupdn);
-			groups.add(groupdn);
-		}
-		answer.close();
-		ctx.close();
+			DirContext ctx = ldapContext(ldapAdminDn, ldapAdminPassword, ldapGroupsUri);
+	
+			String filter = "(&(objectClass=groupOfUniqueNames)(uniqueMember="+userdn+"))";
+			SearchControls ctrl = new SearchControls();
+			ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
+			NamingEnumeration<SearchResult> answer = ctx.search("", filter, ctrl);
+	
+			if (answer.hasMore()) {
+				SearchResult result = (SearchResult) answer.next();
+				String groupdn = result.getNameInNamespace();
+				LOG.info("Found group="+groupdn);
+				groups.add(groupdn);
+			}
+			answer.close();
+			ctx.close();
 		
 		} catch(Exception e) {
 			LOG.info("Error while querying LDAP for groups: "+e.getMessage());
@@ -203,7 +205,7 @@ public class LdapServiceImpl implements LdapService {
 		String password = args[1];
 		
 		// use admin credentials to find user
-		LdapServiceImpl self = new LdapServiceImpl();
+		UserServiceLdapImpl self = new UserServiceLdapImpl();
 		String dn = self.getUserId( user );
 		
 		if (dn != null) {
@@ -213,7 +215,7 @@ public class LdapServiceImpl implements LdapService {
 				LOG.info( "User '" + user + "' authentication succeeded" );
 				
 				// retrieve groups
-				List<String> groups= self.authorize(dn);
+				List<String> groups= self.getUserGroups(dn);
 				LOG.info("User groups="+groups);
 				
 			} else {

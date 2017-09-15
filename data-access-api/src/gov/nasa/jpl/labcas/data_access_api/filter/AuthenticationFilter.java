@@ -28,12 +28,12 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 	
 	private final static Logger LOG = Logger.getLogger(AuthenticationFilter.class.getName());
 	
-	private LdapService authenticationService = new LdapServiceImpl();
+	private UserService authenticationService = new UserServiceLdapImpl();
 	
 	@Override
 	public void filter(ContainerRequestContext containerRequest) throws WebApplicationException {
 		
-		boolean isAuthenticated = false;
+		String userdn = null;
 		
 		// extract username and password from encoded HTTP 'Authorization' header
 		// header value format will be "Basic encodedstring" for Basic authentication.
@@ -55,8 +55,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 				final String username = tokenizer.nextToken();
 				final String password = tokenizer.nextToken();
 	
-				isAuthenticated = authenticationService.authenticate(username, password);
-				LOG.info("Authentication="+isAuthenticated);
+				userdn = authenticationService.getValidUser(username, password);
+				LOG.info("User DN = "+userdn);
 				
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -64,7 +64,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 			
 		}
 
-		if (!isAuthenticated) {
+		if (userdn==null) {
 			throw new WebApplicationException(Status.UNAUTHORIZED);
 		}
 		// else proceed with normal filter chain
