@@ -72,12 +72,27 @@ public class LdapServiceImpl implements LdapService {
 		final StringTokenizer tokenizer = new StringTokenizer(usernameAndPassword, ":");
 		final String username = tokenizer.nextToken();
 		final String password = tokenizer.nextToken();
-
-		// authenticate user by 'binding' to the LDAP server
-		String dn = buildDn(username);
-		//LOG.info("Testing LDAP binding for: " + dn);
-		LOG.info("Testing LDAP binding for: " + dn + " password="+password);
-		return bind(dn, password);
+		
+		// look for user in LDAP database
+		try {
+			String dn = getUid( username );
+			if (dn==null) {
+				LOG.info("User: "+username+" not found");
+				return false;
+			} else {
+				// user found - test password
+				if (bind(dn, password)) {
+					LOG.info("User: "+username+" authentication succedeed");
+					return true;
+				} else {
+					LOG.info("User: "+username+" authentication failed");
+					return false;
+				}
+			}
+		} catch(Exception e) {
+			LOG.warning("Error while querying LDAP: "+e.getMessage());
+			return false;
+		}
 
 	}
 	
@@ -93,20 +108,19 @@ public class LdapServiceImpl implements LdapService {
 	 * @return
 	 * @throws Exception
 	 */
-	protected boolean bind(String dn, String pwd) {
+	protected boolean bind(String dn, String pwd) throws Exception {
 
 		try {
-			
 			// create the initial context
 			DirContext ctx = ldapContext(dn, pwd);
 			boolean result = ctx != null;
-
-			if (ctx != null)
+	
+			if (ctx != null) {
 				ctx.close();
-
+			}
 			return result;
 			
-		} catch (Exception e) {
+		} catch(Exception e) {
 			return false;
 		}
 
@@ -183,19 +197,15 @@ public class LdapServiceImpl implements LdapService {
 			
 			// found user - test password
 			if ( self.bind( dn, password ) ) {
-				System.out.println( "User '" + user + "' authentication succeeded" );
+				LOG.info( "User '" + user + "' authentication succeeded" );
 			} else {
-				System.out.println( "User '" + user + "' authentication failed" );
+				LOG.info( "User '" + user + "' authentication failed" );
 			}
 			
 		} else {
-			System.out.println( "User '" + user + "' not found" );
+			LOG.info( "User '" + user + "' not found" );
 		}
-		
-		//LOG.info("Testing LDAP binding for: " + dn + " password="+password);
-		//boolean status = self.bind(dn, password);
-		//LOG.info("Authentication status="+status);
-		
+				
 	}
 
 }
