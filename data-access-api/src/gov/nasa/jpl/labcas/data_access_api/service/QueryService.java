@@ -28,7 +28,7 @@ public interface QueryService {
 	 * 
 	 * @return
 	 */
-	public Response queryDatasets(HttpServletRequest httpRequest);
+	public Response queryDatasets(HttpServletRequest httpRequest, ContainerRequestContext requestContext);
 
 	/**
 	 * Method to query Solr for matching files.
@@ -37,6 +37,6 @@ public interface QueryService {
 	 * 
 	 * @return
 	 */
-	public Response queryFiles(HttpServletRequest httpRequest);
+	public Response queryFiles(HttpServletRequest httpRequest, ContainerRequestContext requestContext);
 
 }

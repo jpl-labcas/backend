@@ -1,5 +1,9 @@
 package gov.nasa.jpl.labcas.data_access_api.service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,29 +44,26 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 	@GET
 	@Path("/collections/select")
 	public Response queryCollections(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext) {
-		
-		// FIXME
-		LOG.info("Retrieving from request context: user groups = "+requestContext.getProperty(AuthenticationFilter.USER_GROUPS_PROPERTY));
-		
-		return queryCore(httpRequest, SOLR_CORE_COLLECTIONS);
+				
+		return queryCore(httpRequest, requestContext, SOLR_CORE_COLLECTIONS);
 		
 	}
 
 	@Override
 	@GET
 	@Path("/datasets/select")
-	public Response queryDatasets(@Context HttpServletRequest httpRequest) {
+	public Response queryDatasets(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext) {
 		
-		return queryCore(httpRequest, SOLR_CORE_DATASETS);
+		return queryCore(httpRequest, requestContext, SOLR_CORE_DATASETS);
 		
 	}
 
 	@Override
 	@GET
 	@Path("/files/select")
-	public Response queryFiles(@Context HttpServletRequest httpRequest) {
+	public Response queryFiles(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext) {
 		
-		return queryCore(httpRequest, SOLR_CORE_FILES);
+		return queryCore(httpRequest, requestContext, SOLR_CORE_FILES);
 
 	}
 	
@@ -76,11 +77,11 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 	 * @param core
 	 * @return
 	 */
-	private Response queryCore(@Context HttpServletRequest httpRequest, String core) {
-
+	private Response queryCore(@Context HttpServletRequest httpRequest, ContainerRequestContext requestContext, String core) {
+		
 		try {
 			String baseUrl = getBaseUrl(core) + "/select";
-			String url = baseUrl + "?" + httpRequest.getQueryString();
+			String url = baseUrl + "?" + httpRequest.getQueryString() + getAccessControlString(requestContext);
 			CloseableHttpClient httpclient = HttpClients.createDefault();
 			LOG.info("Executing Solr HTTP request: " + url);
 			HttpGet httpGet = new HttpGet(url);
@@ -98,6 +99,49 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 			return Response.status(500).entity(e.getMessage()).build();
 		}
 
+	}
+	
+	/**
+	 * Method to build the access control constraint
+	 * Example: fq=OwnerPrincipal:("cn=Spira Boston University,ou=groups,o=MCL" OR "cn=Amos Geisel School of Medicine,ou=groups,o=MCL")
+	 * 
+	 * @param requestContext
+	 * @return
+	 */
+	private String getAccessControlString(ContainerRequestContext requestContext) throws UnsupportedEncodingException {
+		
+		@SuppressWarnings("unchecked")
+		List<String> ugroups = (List<String>)requestContext.getProperty(AuthenticationFilter.USER_GROUPS_PROPERTY);
+		LOG.info("Retrieving from request context: user groups = "+ugroups);
+		String fqv = "";
+		
+		// FIXME
+		ugroups = new ArrayList<String>();
+		ugroups.add("cn=Borowsky University of California Davis,ou=groups,o=MCL");
+		ugroups.add("cn=Spira Boston University,ou=groups,o=MCL");
+		
+		if (ugroups!=null && ugroups.size()>0) {
+			
+			if (ugroups.contains(superOwnerPrincipal)) {
+				// super user --> no query constraint
+				return "";
+			} else {
+				fqv = "OwnerPrincipal:(\""+publicOwnerPrincipal+"\"";
+				for (String ugroup : ugroups) {
+					fqv += " OR \"" + ugroup + "\"";
+				}
+				fqv += ")";
+			}
+			
+		} else {
+			// no groups --> can only read public data
+			fqv = "OwnerPrincipal:(\""+publicOwnerPrincipal+"\")";
+		}
+		
+		String fq = "&fq=" + URLEncoder.encode(fqv, "UTF-8");
+		LOG.info("Access control string: "+fq);
+		return fq;
+		
 	}
 
 }
