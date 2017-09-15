@@ -1,6 +1,7 @@
 package gov.nasa.jpl.labcas.data_access_api.service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Response;
 
 /**
@@ -18,7 +19,7 @@ public interface QueryService {
 	 * 
 	 * @return
 	 */
-	public Response queryCollections(HttpServletRequest httpRequest);
+	public Response queryCollections(HttpServletRequest httpRequest, ContainerRequestContext requestContext);
 
 	/**
 	 * Method to query Solr for matching datasets.

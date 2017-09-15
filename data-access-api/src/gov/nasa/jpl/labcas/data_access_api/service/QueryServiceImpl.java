@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -16,6 +17,8 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+
+import gov.nasa.jpl.labcas.data_access_api.filter.AuthenticationFilter;
 
 /**
  * Service implementation to issue a query request to Solr.
@@ -36,7 +39,10 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 	@Override
 	@GET
 	@Path("/collections/select")
-	public Response queryCollections(@Context HttpServletRequest httpRequest) {
+	public Response queryCollections(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext) {
+		
+		// FIXME
+		LOG.info("Retrieving from request context: user groups = "+requestContext.getProperty(AuthenticationFilter.USER_GROUPS_PROPERTY));
 		
 		return queryCore(httpRequest, SOLR_CORE_COLLECTIONS);
 		
