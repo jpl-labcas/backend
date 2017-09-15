@@ -110,37 +110,13 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 	 */
 	private String getAccessControlString(ContainerRequestContext requestContext) throws UnsupportedEncodingException {
 		
-		@SuppressWarnings("unchecked")
-		List<String> ugroups = (List<String>)requestContext.getProperty(AuthenticationFilter.USER_GROUPS_PROPERTY);
-		LOG.info("Retrieving from request context: user groups = "+ugroups);
-		String fqv = "";
-		
-		// FIXME
-		ugroups = new ArrayList<String>();
-		ugroups.add("cn=Borowsky University of California Davis,ou=groups,o=MCL");
-		ugroups.add("cn=Spira Boston University,ou=groups,o=MCL");
-		
-		if (ugroups!=null && ugroups.size()>0) {
-			
-			if (ugroups.contains(superOwnerPrincipal)) {
-				// super user --> no query constraint
-				return "";
-			} else {
-				fqv = "OwnerPrincipal:(\""+publicOwnerPrincipal+"\"";
-				for (String ugroup : ugroups) {
-					fqv += " OR \"" + ugroup + "\"";
-				}
-				fqv += ")";
-			}
-			
+		String fqv = getAccessControlQueryStringValue(requestContext);
+		if (!fqv.isEmpty()) {
+			// must URL-encode the parameter value
+			return "&fq="+URLEncoder.encode(fqv, "UTF-8");
 		} else {
-			// no groups --> can only read public data
-			fqv = "OwnerPrincipal:(\""+publicOwnerPrincipal+"\")";
+			return "";
 		}
-		
-		String fq = "&fq=" + URLEncoder.encode(fqv, "UTF-8");
-		LOG.info("Access control string: "+fq);
-		return fq;
 		
 	}
 

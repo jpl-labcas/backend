@@ -10,6 +10,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -41,16 +42,17 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 	@Override
 	@GET
 	@Path("/collections/download")
-	public Response downloadCollections(@Context HttpServletRequest httpRequest, @QueryParam("q") String q,
+	public Response downloadCollections(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext,
+			@QueryParam("q") String q,
 			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
 		
-		// build Solr query to 'collections' core
-		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows);
-
 		// execute Solr query to 'collections' core
 		// extract matching collection ids
 		List<String> collectionIds = new ArrayList<String>();
 		try {
+			
+			// build Solr query to 'collections' core
+			SolrQuery request = this.buildPassThroughQuery(httpRequest, requestContext, q, fq, start, rows);
 
 			LOG.info("Executing Solr request to 'collections' core: "+request.toString());
 			QueryResponse response = solrServers.get(SOLR_CORE_COLLECTIONS).query(request);
@@ -75,16 +77,18 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 	@Override
 	@GET
 	@Path("/datasets/download")
-	public Response downloadDatasets(@Context HttpServletRequest httpRequest, @QueryParam("q") String q,
+	public Response downloadDatasets(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext,
+			@QueryParam("q") String q,
 			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
 
-		// build Solr query to 'datasets' core
-		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows);
 
 		// execute Solr query to 'datasets' core
 		// extract matching dataset ids
 		List<String> datasetIds = new ArrayList<String>();
 		try {
+			
+			// build Solr query to 'datasets' core
+			SolrQuery request = this.buildPassThroughQuery(httpRequest, requestContext, q, fq, start, rows);
 
 			LOG.info("Executing Solr request to 'datasets' core: "+request.toString());
 			QueryResponse response = solrServers.get(SOLR_CORE_DATASETS).query(request);
@@ -110,15 +114,16 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 	@Override
 	@GET
 	@Path("/files/download")
-	public Response downloadFiles(@Context HttpServletRequest httpRequest, @QueryParam("q") String q,
+	public Response downloadFiles(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext,
+			@QueryParam("q") String q,
 			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
-
-		// build Solr query
-		SolrQuery request = this.buildPassThroughQuery(httpRequest, q, fq, start, rows); 
 
 		// execute Solr query to 'files' core, build result document
 		String results = "";
 		try {
+			
+			// build Solr query
+			SolrQuery request = this.buildPassThroughQuery(httpRequest, requestContext, q, fq, start, rows); 
 
 			QueryResponse response = solrServers.get(SOLR_CORE_FILES).query(request);
 			results = buildResultsDocument(response);
@@ -148,11 +153,19 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 	 * @return
 	 */
 	protected SolrQuery buildPassThroughQuery(final HttpServletRequest httpRequest, 
+			                                  final ContainerRequestContext requestContext,
 			                                  final String q, final List<String> fq,
-			                                  final int start, final int rows) {
+			                                  final int start, final int rows) throws Exception {
 
 		LOG.info("HTTP request URL=" + httpRequest.getRequestURL());
 		LOG.info("HTTP request query string=" + httpRequest.getQueryString());
+		
+		// enforce access control by adding OwnerPrincipal constraint
+		// encoding will be executed by SolrJ
+		String acfq = getAccessControlQueryStringValue(requestContext);
+		if (!acfq.isEmpty()) {
+			fq.add(acfq);
+		}
 
 		// build Solr query
 		SolrQuery request = new SolrQuery();

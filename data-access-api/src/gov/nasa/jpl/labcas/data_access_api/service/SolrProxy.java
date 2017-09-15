@@ -1,13 +1,20 @@
 package gov.nasa.jpl.labcas.data_access_api.service;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import javax.ws.rs.container.ContainerRequestContext;
 
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 
+import gov.nasa.jpl.labcas.data_access_api.filter.AuthenticationFilter;
 import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
 
 /**
@@ -70,9 +77,48 @@ public class SolrProxy {
 	 * @param core
 	 * @return
 	 */
-	static public String getBaseUrl(String core) {
+	static String getBaseUrl(String core) {
 		
 		return SOLR_URL + "/" + core;
+	}
+	
+	/**
+	 * Builds the query string to enforce access control.
+	 * @param contex
+	 * @return
+	 */
+	static String getAccessControlQueryStringValue(ContainerRequestContext requestContext) throws UnsupportedEncodingException {
+		
+		@SuppressWarnings("unchecked")
+		List<String> ugroups = (List<String>)requestContext.getProperty(AuthenticationFilter.USER_GROUPS_PROPERTY);
+		LOG.info("Retrieving from request context: user groups = "+ugroups);
+		String accessControlQueryStringValue = "";
+		
+		// FIXME
+		ugroups = new ArrayList<String>();
+		ugroups.add("cn=Borowsky University of California Davis,ou=groups,o=MCL");
+		ugroups.add("cn=Spira Boston University,ou=groups,o=MCL");
+		
+		if (ugroups!=null && ugroups.size()>0) {
+			
+			if (ugroups.contains(superOwnerPrincipal)) {
+				// super user --> no query constraint
+				return "";
+			} else {
+				accessControlQueryStringValue = "OwnerPrincipal:(\""+publicOwnerPrincipal+"\"";
+				for (String ugroup : ugroups) {
+					accessControlQueryStringValue += " OR \"" + ugroup + "\"";
+				}
+				accessControlQueryStringValue += ")";
+			}
+			
+		} else {
+			// no groups --> can only read public data
+			accessControlQueryStringValue = "OwnerPrincipal:(\""+publicOwnerPrincipal+"\")";
+		}
+		
+		return accessControlQueryStringValue;
+		
 	}
 	
 	public SolrProxy() {}
