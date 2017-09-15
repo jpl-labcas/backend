@@ -1,5 +1,7 @@
 package gov.nasa.jpl.labcas.data_access_api.filter;
 
+import java.util.List;
+
 /**
  * Specification of service used to query the 
  * LDAP (Lightweight Directory Access Protocol) database.
@@ -10,12 +12,19 @@ package gov.nasa.jpl.labcas.data_access_api.filter;
 public interface LdapService {
 
 	/**
-	 * Method to authenticate user credentials and retrieve the user groups.
+	 * Method to authenticate the user credentials.
 	 * 
 	 * @param username
 	 * @param password
 	 * @return
 	 */
 	boolean authenticate(String username, String password);
+	
+	/**
+	 * Method to retrieve the groups a user belongs to.
+	 * @param userdn
+	 * @return
+	 */
+	List<String> authorize(String userdn);
 
 }

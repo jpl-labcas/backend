@@ -33,8 +33,6 @@ public class LdapServiceImpl implements LdapService {
 	private final String ldapUsersUri;
 	private final static String LDAP_GROUPS_URI_PROPERTY = "ldapGroupsUri";
 	private final String ldapGroupsUri;
-	private final static String LDAP_DN_PATTERN_PROPERTY = "ldapDnPattern";
-	private final String ldapDnPattern;
 	private final static String LDAP_ADMIN_DN_PROPERTY = "ldapAdminDn";
 	private final String ldapAdminDn;
 	private final static String LDAP_ADMIN_PASSWORD = "ldapAdminPassword";
@@ -46,7 +44,6 @@ public class LdapServiceImpl implements LdapService {
 		
 		ldapUsersUri = Parameters.getParameterValue(LDAP_USERS_URI_PROPERTY);
 		ldapGroupsUri = Parameters.getParameterValue(LDAP_GROUPS_URI_PROPERTY);
-		ldapDnPattern = Parameters.getParameterValue(LDAP_DN_PATTERN_PROPERTY);
 		ldapAdminDn = Parameters.getParameterValue(LDAP_ADMIN_DN_PROPERTY);
 		ldapAdminPassword = Parameters.getParameterValue(LDAP_ADMIN_PASSWORD);
 		
@@ -72,15 +69,11 @@ public class LdapServiceImpl implements LdapService {
 				}
 			}
 		} catch(Exception e) {
-			LOG.warning("Error while querying LDAP: "+e.getMessage());
+			LOG.warning("Error while executing LDAP authentication: "+e.getMessage());
 			return false;
 		}
 
 	}
-	
-	//public String buildDn(String username) {
-	//	return this.ldapDnPattern.replaceAll("@USERNAME@", username);
-	//}
 
 	/**
 	 * Validates (dn, password) credentials versus the LDAP user database.
@@ -148,9 +141,11 @@ public class LdapServiceImpl implements LdapService {
 	 * @return
 	 * @throws Exception
 	 */
-	private List<String> getUserGroups(String userdn) throws Exception {
+	public List<String> authorize(String userdn) {
 		
 		List<String> groups = new ArrayList<String>();
+		
+		try {
 		
 		DirContext ctx = ldapContext(ldapAdminDn, ldapAdminPassword, ldapGroupsUri);
 
@@ -167,6 +162,10 @@ public class LdapServiceImpl implements LdapService {
 		}
 		answer.close();
 		ctx.close();
+		
+		} catch(Exception e) {
+			LOG.info("Error while querying LDAP for groups: "+e.getMessage());
+		}
 		
 		return groups;
 		
@@ -215,7 +214,7 @@ public class LdapServiceImpl implements LdapService {
 				LOG.info( "User '" + user + "' authentication succeeded" );
 				
 				// retrieve groups
-				List<String> groups= self.getUserGroups(dn);
+				List<String> groups= self.authorize(dn);
 				LOG.info("User groups="+groups);
 				
 			} else {
