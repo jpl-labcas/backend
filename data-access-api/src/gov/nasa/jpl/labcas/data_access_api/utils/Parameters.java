@@ -33,7 +33,11 @@ public class Parameters {
 			while (keys.hasMoreElements()) {
 			    String key = (String)keys.nextElement();
 			    String value = (String)properties.get(key);
-			    LOG.info("Using parameter key=" + key + " value=" + value);
+			    if (key.toLowerCase().contains("password")) {
+			    	LOG.info("Using parameter key=" + key + " value=....");
+			    } else {
+			    	LOG.info("Using parameter key=" + key + " value=" + value);
+			    }
 			}
 
 		} catch (IOException e) {
