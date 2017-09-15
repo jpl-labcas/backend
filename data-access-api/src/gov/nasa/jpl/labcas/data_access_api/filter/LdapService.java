@@ -10,11 +10,12 @@ package gov.nasa.jpl.labcas.data_access_api.filter;
 public interface LdapService {
 
 	/**
-	 * Method to authenticate user credentials.
+	 * Method to authenticate user credentials and retrieve the user groups.
 	 * 
-	 * @param authCredentials : single string of encoded credentials as supplied in the HTTP Basic Authentication header.
+	 * @param username
+	 * @param password
 	 * @return
 	 */
-	boolean authenticate(String authCredentials);
+	boolean authenticate(String username, String password);
 
 }

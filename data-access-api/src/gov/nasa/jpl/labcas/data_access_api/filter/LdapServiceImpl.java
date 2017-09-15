@@ -53,27 +53,7 @@ public class LdapServiceImpl implements LdapService {
 	}
 
 	@Override
-	public boolean authenticate(String authCredentials) {
-
-		if (null == authCredentials) {
-			return false;
-		}
-
-		// extract username and password from encoded HTTP 'Authorization' header
-		// header value format will be "Basic encodedstring" for Basic authentication.
-		// Example "Basic YWRtaW46YWRtaW4="
-		final String encodedUserPassword = authCredentials.replaceFirst("Basic" + " ", "");
-		String usernameAndPassword = null;
-		try {
-			byte[] decodedBytes = Base64.decodeBase64(encodedUserPassword.getBytes());
-			usernameAndPassword = new String(decodedBytes, "UTF-8");
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-		final StringTokenizer tokenizer = new StringTokenizer(usernameAndPassword, ":");
-		final String username = tokenizer.nextToken();
-		final String password = tokenizer.nextToken();
+	public boolean authenticate(String username, String password) {
 		
 		// look for user in LDAP database
 		try {
@@ -83,7 +63,7 @@ public class LdapServiceImpl implements LdapService {
 				return false;
 			} else {
 				// user found - test password
-				if (bind(dn, password)) {
+				if (validate(dn, password)) {
 					LOG.info("User: "+username+" authentication succedeed");
 					return true;
 				} else {
@@ -98,19 +78,19 @@ public class LdapServiceImpl implements LdapService {
 
 	}
 	
-	public String buildDn(String username) {
-		return this.ldapDnPattern.replaceAll("@USERNAME@", username);
-	}
+	//public String buildDn(String username) {
+	//	return this.ldapDnPattern.replaceAll("@USERNAME@", username);
+	//}
 
 	/**
-	 * Authenticates (dn, password) credentials versus the LDAP user database.
+	 * Validates (dn, password) credentials versus the LDAP user database.
 	 * 
 	 * @param dn
 	 * @param password
 	 * @return
 	 * @throws Exception
 	 */
-	protected boolean bind(String dn, String pwd) throws Exception {
+	protected boolean validate(String dn, String pwd) throws Exception {
 
 		try {
 			// create the initial context
@@ -231,7 +211,7 @@ public class LdapServiceImpl implements LdapService {
 		if (dn != null) {
 			
 			// found user - test password
-			if ( self.bind( dn, password ) ) {
+			if ( self.validate( dn, password ) ) {
 				LOG.info( "User '" + user + "' authentication succeeded" );
 				
 				// retrieve groups
