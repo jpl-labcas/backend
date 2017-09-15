@@ -93,22 +93,12 @@ public class LdapServiceImpl implements LdapService {
 	 * @return
 	 * @throws Exception
 	 */
-	protected boolean bind(String dn, String password) {
+	protected boolean bind(String dn, String pwd) {
 
 		try {
 			
-			// set up the environment for creating the initial context
-			Hashtable<String, String> env = new Hashtable<String, String>();
-			env.put(Context.INITIAL_CONTEXT_FACTORY, contextFactory);
-			env.put(Context.PROVIDER_URL, ldapUsersUri);
-			env.put(Context.SECURITY_AUTHENTICATION, "simple");
-			
-			// authentication parameters
-			env.put(Context.SECURITY_PRINCIPAL, dn);
-			env.put(Context.SECURITY_CREDENTIALS, password);
-
 			// create the initial context
-			DirContext ctx = new InitialDirContext(env);
+			DirContext ctx = ldapContext(dn, pwd);
 			boolean result = ctx != null;
 
 			if (ctx != null)
@@ -124,7 +114,7 @@ public class LdapServiceImpl implements LdapService {
 	
 
 	/**
-	 * Queries LDAP for given username.
+	 * Queries LDAP for given username using the admin credentials.
 	 * 
 	 * @param user
 	 * @return
@@ -132,7 +122,7 @@ public class LdapServiceImpl implements LdapService {
 	 */
 	private String getUid(String username) throws Exception {
 		
-		DirContext ctx = ldapContext();
+		DirContext ctx = ldapContext(ldapAdminDn, ldapAdminPassword);
 
 		String filter = "(uid=" + username + ")";
 		SearchControls ctrl = new SearchControls();
@@ -143,38 +133,37 @@ public class LdapServiceImpl implements LdapService {
 		if (answer.hasMore()) {
 			SearchResult result = (SearchResult) answer.next();
 			dn = result.getNameInNamespace();
-		}
-		else {
+		} else {
 			dn = null;
 		}
 		answer.close();
+		ctx.close();
+		
 		return dn;
 		
 	}
 	
 	/**
-	 * Creates an LDAP context using the administrator credentials.
+	 * Creates an LDAP context using the given credentials.
 	 * 
 	 * @return
 	 * @throws Exception
 	 */
-	private DirContext ldapContext () throws Exception {
+	private DirContext ldapContext(String dn, String pwd) throws Exception {
 		
 		Hashtable<String,String> env = new Hashtable <String,String>();
 		
-		// use LDAP admin credentials
-		env.put(Context.SECURITY_PRINCIPAL, ldapAdminDn);
-		env.put(Context.SECURITY_CREDENTIALS, ldapAdminPassword);
-	
-		return ldapContext(env);
-	}
-
-	private DirContext ldapContext (Hashtable <String,String>env) throws Exception {
 		env.put(Context.INITIAL_CONTEXT_FACTORY, contextFactory);
 		env.put(Context.PROVIDER_URL, ldapUsersUri);
-		DirContext ctx = new InitialDirContext(env);
-		return ctx;
+		env.put(Context.SECURITY_AUTHENTICATION, "simple");
+		
+		// use the given credentials
+		env.put(Context.SECURITY_PRINCIPAL, dn);
+		env.put(Context.SECURITY_CREDENTIALS, pwd);
+	
+		return new InitialDirContext(env);
 	}
+
 	
 	/**
 	 * Method to debug LDAP connection
