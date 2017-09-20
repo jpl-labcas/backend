@@ -25,6 +25,7 @@ public class LabcasPostIngestionAction extends CrawlerAction {
 	public boolean performAction(File product, Metadata productMetadata) throws CrawlerActionException {
 		
 		LOG.info("Performing post-ingest-on-success action for file: "+product.getAbsolutePath());
+		LOG.info("OwnerPrincipal: "+productMetadata.getMetadata(Constants.METADATA_KEY_OWNER_PRINCIPAL));
 		
 		// query OODT Solr catalog to retrieve the product id
 		// (which is not made available in the crawler API)

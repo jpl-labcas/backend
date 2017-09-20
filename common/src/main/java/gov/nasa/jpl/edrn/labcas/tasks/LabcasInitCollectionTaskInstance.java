@@ -92,6 +92,13 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 	        	}
 	        }
 	        
+	        // transfer OwnerPrincipal
+	        LOG.info("Setting Dataset OwnerPrincipal to:"+metadata.getMetadata(Constants.METADATA_KEY_OWNER_PRINCIPAL));
+	        if (metadata.containsKey(Constants.METADATA_KEY_OWNER_PRINCIPAL)) {
+	        	datasetMetadata.addMetadata(Constants.METADATA_KEY_OWNER_PRINCIPAL, 
+	        			                    metadata.getMetadata(Constants.METADATA_KEY_OWNER_PRINCIPAL));
+	        }
+	        
 	        // create or update the Collection==ProductType metadata, unless otherwise indicated
 	        boolean updateCollection = true;
 	        if ( metadata.containsKey(Constants.METADATA_KEY_UPDATE_COLLECTION)) {

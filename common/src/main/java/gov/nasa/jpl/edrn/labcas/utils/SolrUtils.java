@@ -69,7 +69,8 @@ public class SolrUtils {
 	private static Set<String> PASS_THROUGH_FIELDS = new HashSet<String>( 
 			Arrays.asList(Constants.METADATA_KEY_COLLECTION_NAME, 
 					      Constants.METADATA_KEY_DATASET_NAME,
-					      Constants.METADATA_KEY_DATASET_VERSION));
+					      Constants.METADATA_KEY_DATASET_VERSION,
+					      Constants.METADATA_KEY_OWNER_PRINCIPAL));
 
 	private final static String SOLR_CORE_COLLECTIONS = "collections";
 	private final static String SOLR_CORE_DATASETS = "datasets";
@@ -402,14 +403,18 @@ public class SolrUtils {
 				// do nothing
 				
 			// harvest Labcas core dataset attributes
-			} else if (key.equals("ProductType")) {
+			} else if (key.equals(Constants.METADATA_KEY_PRODUCT_TYPE)) {
 				// ignore, already have "CollectionName" and "CollectionId"
 
-			} else if (key.equals("DatasetId")) {
+			} else if (key.equals(Constants.METADATA_KEY_DATASET_ID)) {
 				// ignore, id already built
+				
+			} else if (key.equals(Constants.METADATA_KEY_OWNER_PRINCIPAL)) {
+				// transfer tag for access control
+				doc.addField(key, metadata.getMetadata(key));
 
-			} else if (key.equals("DatasetVersion")) {
-				doc.setField("DatasetVersion", metadata.getMetadata(key));
+			} else if (key.equals(Constants.METADATA_KEY_DATASET_VERSION)) {
+				doc.setField(key, metadata.getMetadata(key));
 				
 			} else {
 				// publish all other "|" values into multi-valued field
