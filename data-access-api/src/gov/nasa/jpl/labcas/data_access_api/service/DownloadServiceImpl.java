@@ -142,6 +142,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 	
 	/**
 	 * Method that converts a query request to this service to a query request to the Solr server (for any core).
+	 * Access control constraints are added from the security groups retrieved by the upstream authentication filter.
 	 * 
 	 * @param httpRequest
 	 * @param q
