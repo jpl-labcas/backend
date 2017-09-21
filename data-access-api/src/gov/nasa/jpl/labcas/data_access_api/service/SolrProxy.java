@@ -93,12 +93,7 @@ public class SolrProxy {
 		List<String> ugroups = (List<String>)requestContext.getProperty(AuthenticationFilter.USER_GROUPS_PROPERTY);
 		LOG.info("Retrieving from request context: user groups = "+ugroups);
 		String accessControlQueryStringValue = "";
-		
-		// FIXME
-		ugroups = new ArrayList<String>();
-		ugroups.add("cn=Borowsky University of California Davis,ou=groups,o=MCL");
-		ugroups.add("cn=Spira Boston University,ou=groups,o=MCL");
-		
+				
 		if (ugroups!=null && ugroups.size()>0) {
 			
 			if (ugroups.contains(superOwnerPrincipal)) {
