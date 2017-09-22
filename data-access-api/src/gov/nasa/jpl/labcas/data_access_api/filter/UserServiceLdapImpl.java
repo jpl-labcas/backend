@@ -98,7 +98,7 @@ public class UserServiceLdapImpl implements UserService {
 			ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
 			NamingEnumeration<SearchResult> answer = ctx.search("", filter, ctrl);
 	
-			if (answer.hasMore()) {
+			while (answer.hasMore()) {
 				SearchResult result = (SearchResult) answer.next();
 				String groupdn = result.getNameInNamespace();
 				LOG.info("Found group="+groupdn);
