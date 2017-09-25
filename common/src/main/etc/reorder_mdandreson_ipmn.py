@@ -47,15 +47,19 @@ for isubdir in os.listdir(STAGING_DIR):
 
     # create dataset metadata file
     template_file = os.environ['LABCAS_METADATA'] + "/" + COLLECTION_NAME + "/TEMPLATE.cfg"
-    with open(template_file) as f:
-       metadata = f.read()
-
-    # replace metadata
-    metadata = metadata.replace("DATASET_NAME", dataset_name)
-    metadata = metadata.replace("DATASET_DESCRIPTION", dataset_name)
-
     dataset_metadata_file = ARCHIVE_DIR + "/" + dataset_name + "/" + dataset_name + ".cfg"
-    print 'Creating dataset metadata file: %s' % dataset_metadata_file
+
+    if not os.path.exists(dataset_metadata_file):
+       print 'Creating dataset metadata file: %s' % dataset_metadata_file
+
+       # read in template metadata file
+       with open(template_file) as f:
+          metadata = f.read()
+
+       # replace metadata
+       metadata = metadata.replace("DATASET_NAME", dataset_name)
+       metadata = metadata.replace("DATASET_DESCRIPTION", dataset_name)
     
-    with open(dataset_metadata_file, 'w') as f:
-       f.write(metadata)
+       # write out metadata
+       with open(dataset_metadata_file, 'w') as f:
+          f.write(metadata)
