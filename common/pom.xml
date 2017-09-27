@@ -161,20 +161,20 @@
             </configuration>
           </execution>
           
-          <!--  copy other scripts -->
+          <!--  copy Python scripts -->
           <execution>
-            <id>copy-other-scripts</id>
+            <id>copy-python-scripts</id>
             <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${install.dir}/etc</outputDirectory>
+              <outputDirectory>${install.dir}/python</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.basedir}/src/main/etc</directory>
+                  <directory>${project.basedir}/src/main/python</directory>
                   <includes>
-                    <include>*</include>
+                    <include>**</include>
                   </includes>
                 </resource>
               </resources>

@@ -33,7 +33,7 @@ import sys
 import os
 import ConfigParser
 
-from gov.nasa.jpl.edrn.labcas.labcas_client import LabcasClient
+from labcas_client import LabcasClient
 
 if __name__ == '__main__':
     

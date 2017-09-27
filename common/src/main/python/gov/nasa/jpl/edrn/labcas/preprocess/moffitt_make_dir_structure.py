@@ -8,7 +8,7 @@ import sys
 from glob import glob
 from shutil import copyfile
 import dicom
-from labcas_utils import write_metadata
+from utils import write_metadata
 
 # process data from $LABCAS_ARCHIVE/<COLLECTION_NAME>-orig --> $LABCAS_ARCHIVE/<COLLECTION_NAME>
 COLLECTION_NAME = "Moffitt_BI"

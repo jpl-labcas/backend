@@ -21,7 +21,7 @@
             <!-- extracts DICOM metadata from the file header -->
             <files regExp=".*\.dcm"
                    metFileWriterClass="gov.nasa.jpl.edrn.labcas.extractors.DicomMetExtractor"
-                   args="python [LABCAS_HOME]/etc/dicom_met_extractor.py" />
+                   args="python [LABCAS_HOME]/python/gov/nasa/jpl/edrn/labcas/server/dicom_met_extractor.py" />
             <!-- writes out metadata specified in configuration file -->
 			<files regExp=".*\.(?!met$|xmlmet$|cfg$)[^.]+"
 				   metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"
@@ -32,11 +32,11 @@
             <!-- generates thumbnail for OpenSlide compatible images -->
             <files regExp=".*\.svs$"
                    metFileWriterClass="gov.nasa.jpl.edrn.labcas.extractors.ThumbnailGenerator"
-                   args="python [LABCAS_HOME]/etc/openslide_thumbnail_generator.py" />
+                   args="python [LABCAS_HOME]/python/gov/nasa/jpl/edrn/labcas/server/openslide_thumbnail_generator.py" />
             <!-- generates thumbnail for DICOM images -->
             <files regExp=".*\.dcm$"
                    metFileWriterClass="gov.nasa.jpl.edrn.labcas.extractors.ThumbnailGenerator"
-                   args="python [LABCAS_HOME]/etc/dicom_thumbnail_generator.py" />
+                   args="python [LABCAS_HOME]/python/gov/nasa/jpl/edrn/labcas/server/dicom_thumbnail_generator.py" />
            
 		</dir>
 	</output>
