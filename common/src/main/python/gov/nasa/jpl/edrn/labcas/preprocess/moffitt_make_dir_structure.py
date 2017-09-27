@@ -8,7 +8,7 @@ import sys
 from glob import glob
 from shutil import copyfile
 import dicom
-from utils import write_metadata
+from labcas_utils import write_metadata
 
 # process data from $LABCAS_ARCHIVE/<COLLECTION_NAME>-orig --> $LABCAS_ARCHIVE/<COLLECTION_NAME>
 COLLECTION_NAME = "Moffitt_BI"
@@ -53,9 +53,9 @@ def main():
         
     # dataset directory
     #dataset = sys.argv[1]
-    dataset_name = 'D0001'
-    src_dataset_dir = '%s/%s' % (SRC_DATA_DIR, dataset_name)
-    target_dataset_dir = '%s/%s' % (TARGET_DATA_DIR, dataset_name)
+    dataset_id = 'D0001'
+    src_dataset_dir = '%s/%s' % (SRC_DATA_DIR, dataset_id)
+    target_dataset_dir = '%s/%s' % (TARGET_DATA_DIR, dataset_id)
     
     # dataset version directory
     target_version_dir = '%s/1' % target_dataset_dir
@@ -64,10 +64,10 @@ def main():
             
     # create dataset metadata file
     template_file = METADATA_DIR + "/TEMPLATE.cfg"
-    dataset_archive_dir = TARGET_DATA_DIR + "/" + dataset_name
+    dataset_archive_dir = TARGET_DATA_DIR + "/" + dataset_id
     if not os.path.exists(dataset_archive_dir):
         os.makedirs(dataset_archive_dir)
-    dataset_metadata_file =  dataset_archive_dir + "/" + dataset_name + ".cfg"
+    dataset_metadata_file =  dataset_archive_dir + "/" + dataset_id + ".cfg"
 
     if not os.path.exists(dataset_metadata_file):
        print 'Creating dataset metadata file: %s' % dataset_metadata_file
@@ -77,11 +77,13 @@ def main():
           metadata = f.read()
 
        # replace metadata
-       metadata = metadata.replace("DATASET_NAME", dataset_name)
-       if dataset_name[0]=='D':
-           dataset_description = 'Dummy patient #%s' % dataset_name[1:]
+       metadata = metadata.replace("DATASET_ID", dataset_id)
+       if dataset_id[0]=='D':
+           dataset_name = 'Dummy patient #%s' % dataset_id[1:]
        else:
-           dataset_description = 'Real patient #%s' % dataset_name[1:]
+           dataset_name = 'Real patient #%s' % dataset_id[1:]
+       dataset_description = dataset_name + " mammography images"
+       metadata = metadata.replace("DATASET_NAME", dataset_name)
        metadata = metadata.replace("DATASET_DESCRIPTION", dataset_description)
        # write out metadata
        with open(dataset_metadata_file, 'w') as f:
