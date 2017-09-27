@@ -8,8 +8,8 @@ import shutil
 COLLECTION_NAME = 'MD_Anderson_Pancreas_IPMN_images'
 
 # LABCAS_STAGING --> LABCAS_ARCHIVE directories
-STAGING_DIR=os.environ['LABCAS_STAGING'] + "/" + COLLECTION_NAME
-ARCHIVE_DIR=os.environ['LABCAS_ARCHIVE'] + "/" + COLLECTION_NAME
+STAGING_DIR="/labcas-data/MDAnderson/IPMN_Project_Scan_Images"
+ARCHIVE_DIR="/labcas-data/MD_Anderson_Pancreas_IPMN_images"
 
 # dataset version
 version = "1"
