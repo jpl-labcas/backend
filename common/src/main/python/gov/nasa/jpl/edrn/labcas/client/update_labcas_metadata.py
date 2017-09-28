@@ -8,7 +8,7 @@
 import sys
 import os
 import ConfigParser
-from gov.nasa.jpl.edrn.labcas.solr_utils import updateSolr
+from solr_utils import updateSolr
 
 SOLR_URL = 'http://localhost:8983/solr'
 
