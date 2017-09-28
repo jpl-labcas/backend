@@ -10,10 +10,10 @@ from shutil import copyfile
 import dicom
 from labcas_utils import write_metadata
 
-# process data from $LABCAS_ARCHIVE/<COLLECTION_NAME>-orig --> $LABCAS_ARCHIVE/<COLLECTION_NAME>
-COLLECTION_NAME = "Moffitt_BI"
+# process data from $LABCAS_ARCHIVE/Moffitt_BI --> $LABCAS_ARCHIVE/Sample_Mammography_Reference_Set
+COLLECTION_NAME = "Sample_Mammography_Reference_Set"
 TARGET_DATA_DIR=os.environ['LABCAS_ARCHIVE'] + "/" + COLLECTION_NAME
-SRC_DATA_DIR=TARGET_DATA_DIR+"-orig"
+SRC_DATA_DIR=os.environ['LABCAS_ARCHIVE'] + "/Moffitt_BI"
 METADATA_DIR=os.environ['LABCAS_METADATA'] + "/" + COLLECTION_NAME
 
         
@@ -63,7 +63,7 @@ def main():
         os.makedirs(target_version_dir)
             
     # create dataset metadata file
-    template_file = METADATA_DIR + "/TEMPLATE.cfg"
+    template_file = METADATA_DIR + "/TEMPLATE_Moffitt.cfg"
     dataset_archive_dir = TARGET_DATA_DIR + "/" + dataset_id
     if not os.path.exists(dataset_archive_dir):
         os.makedirs(dataset_archive_dir)
