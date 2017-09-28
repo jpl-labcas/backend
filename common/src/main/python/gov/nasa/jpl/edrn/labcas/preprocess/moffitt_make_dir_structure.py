@@ -8,7 +8,7 @@ import sys
 from glob import glob
 from shutil import copyfile
 import dicom
-from labcas_utils import write_metadata
+from utils import write_metadata
 
 # process data from $LABCAS_ARCHIVE/Moffitt_BI --> $LABCAS_ARCHIVE/Sample_Mammography_Reference_Set
 COLLECTION_NAME = "Sample_Mammography_Reference_Set"
