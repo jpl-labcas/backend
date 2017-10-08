@@ -1,5 +1,6 @@
 import sys
 import dicom
+from utils import write_metadata
 
 def extract_metadata( dicom_filepath ):
     ''' 
@@ -9,29 +10,23 @@ def extract_metadata( dicom_filepath ):
     All metadata keys are prepended with "_File_" 
     which will be removed before ingestion into the Solr index
     '''
-    
-    met_filepath = dicom_filepath + ".xmlmet"
 
-    # read input file
+    # read input file, extract metadata
+    metadata = {}
     ds = dicom.read_file(dicom_filepath)
     tag_names = ds.dir()
     
-    # extract metadata, write output file
-    with open(met_filepath,'w') as file: 
-       file.write('<cas:metadata xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">\n')
-    
-       # loop over input metadata fields
-       for tag_name in tag_names:
-          data_element = ds.data_element(tag_name)
-          if data_element:
-              if tag_name != 'PixelData' and tag_name!= 'LargestImagePixelValue' and tag_name != 'SmallestImagePixelValue': # skip binary data
-                 #print 'key=%s --> value=%s' % (tag_name, data_element.value)
-                 file.write('\t<keyval type="vector">\n')
-                 file.write('\t\t<key>_File_%s</key>\n' % str(tag_name))
-                 file.write('\t\t<val>%s</val>\n' % str(data_element.value))
-                 file.write('\t</keyval>\n')
-    
-       file.write('</cas:metadata>\n')
+    # loop over input metadata fields
+    for tag_name in tag_names:
+        data_element = ds.data_element(tag_name)
+        if data_element:
+            if tag_name != 'PixelData' and tag_name!= 'LargestImagePixelValue' and tag_name != 'SmallestImagePixelValue': # skip binary data
+                #print 'key=%s --> value=%s' % (tag_name, data_element.value)
+                metadata["_File_%s" % str(tag_name)] = str(data_element.value)
+                 
+    # write out metadata to file
+    met_filepath = dicom_filepath + ".xmlmet"
+    write_metadata(metadata, met_filepath)
 
 if __name__ == "__main__":
     '''
