@@ -8,7 +8,6 @@ import sys
 from glob import glob
 from shutil import copyfile
 import dicom
-from utils import write_metadata
 
 # process data from $LABCAS_ARCHIVE/Moffitt_BI --> $LABCAS_ARCHIVE/Sample_Mammography_Reference_Set
 COLLECTION_NAME = "Sample_Mammography_Reference_Set"
@@ -16,38 +15,6 @@ TARGET_DATA_DIR=os.environ['LABCAS_ARCHIVE'] + "/" + COLLECTION_NAME
 SRC_DATA_DIR=os.environ['LABCAS_ARCHIVE'] + "/Moffitt_BI"
 METADATA_DIR=os.environ['LABCAS_METADATA'] + "/" + COLLECTION_NAME
 
-        
-def generate_file_description(filename):
-    '''Generates the file description using project specific semantics.'''
-    
-    # create metadata file
-    parts = filename.split("_")
-    # patient #
-    if (parts[0][0]=='D'):
-        description = 'Dummy patient #%s' % parts[0][1:]
-    else:
-        description = 'Real patient #%s' % parts[0][1:]
-    # packed/unpacked volume
-    if parts[1]=='UV':
-        description += ", unpacked volume frame # %s/%s" % (parts[2],parts[3])
-    elif parts[1] == 'VOL':
-        description += ", packed volume"
-    # orientation
-    for orientation in ['RCC','LCC','LMLO','RMLO']:
-        if orientation in filename:
-            description += ", orientation: %s" % orientation
-            
-    # image type
-    if 'DAT' in filename:
-        description += ", image type: raw"
-    elif 'PRO' in filename:
-        description += ", image type: processed"
-    elif 'CV' in filename:
-        description += ", image type: C-View"
-    elif 'TRU' in filename:
-        description += ", image type: Truth"
-
-    return description
 
 def main():
         
@@ -116,12 +83,7 @@ def main():
            if not os.path.exists(dst_path):
               print '\nCopying DICOM file=%s --> %s' % (src_path, dst_path)
               copyfile(src_path, dst_path)
-              
-           metadata_filepath = dst_path + ".xmlmet"
-           if not os.path.exists(metadata_filepath):
-               description = generate_file_description(filename)
-               write_metadata(metadata_filepath, description)
-                           
+                                         
         except Exception as e:
             print 'Error while processing file: %s' % src_path
             print e

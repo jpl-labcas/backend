@@ -1,6 +1,6 @@
 import sys
 import dicom
-from utils import write_metadata
+from utils import write_metadata, make_file_description
 
 def extract_metadata( dicom_filepath ):
     ''' 
@@ -15,6 +15,9 @@ def extract_metadata( dicom_filepath ):
     metadata = {}
     ds = dicom.read_file(dicom_filepath)
     tag_names = ds.dir()
+    
+    # add file description
+    metadata["_File_Description"] = make_file_description( dicom_filepath )
     
     # loop over input metadata fields
     for tag_name in tag_names:

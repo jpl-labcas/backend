@@ -1,19 +1,9 @@
 # python script to create file-level metadata for BU RNAseq files
 import os
 import glob
+from utils import write_metadata
 
 archive_dir = "/labcas-data/Boston_University_Lung_Tumor_Sequencing/FFPE_Lung_Tumor_Sequencing/1"
-
-def write_metadata(metadata_filepath, description):
-  print "Writing metadata file: %s" % metadata_filepath
-  with open(metadata_filepath,'w') as file: 
-    file.write('<cas:metadata xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">\n')
-    file.write('\t<keyval type="vector">\n')
-    file.write('\t\t<key>_File_Description</key>\n')
-    file.write('\t\t<val>%s</val>\n' % description)
-    file.write('\t</keyval>\n')
-    file.write('</cas:metadata>\n')
-
 
 # loop over products
 for file in glob.glob("%s/*.fastq.gz" % archive_dir):
