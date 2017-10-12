@@ -2,6 +2,9 @@ import sys
 import dicom
 from utils import write_metadata, make_file_description
 
+# list of DICOM metadata fields taht are NOT extracted because they have binary value, or bad characters, or are too long
+IGNORED_TAGS = ["PixelData", "LargestImagePixelValue", "SmallestImagePixelValue", "PerFrameFunctionalGroupsSequence"]
+
 def extract_metadata( dicom_filepath ):
     ''' 
     Metadata extractor for DICOM files.
@@ -23,7 +26,7 @@ def extract_metadata( dicom_filepath ):
     for tag_name in tag_names:
         data_element = ds.data_element(tag_name)
         if data_element:
-            if tag_name != 'PixelData' and tag_name!= 'LargestImagePixelValue' and tag_name != 'SmallestImagePixelValue': # skip binary data
+            if tag_name not in IGNORED_TAGS:
                 #print 'key=%s --> value=%s' % (tag_name, data_element.value)
                 metadata["_File_%s" % str(tag_name)] = str(data_element.value)
                  
