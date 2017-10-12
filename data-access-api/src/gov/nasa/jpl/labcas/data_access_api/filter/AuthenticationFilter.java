@@ -25,6 +25,7 @@ import org.apache.commons.codec.binary.Base64;
  */
 @Provider
 @Priority(Priorities.AUTHENTICATION)
+//@PreMatching
 public class AuthenticationFilter implements ContainerRequestFilter {
 	
 	public final static String USER_GROUPS_PROPERTY = "userGroups";
@@ -44,7 +45,12 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		String authCredentials = containerRequest.getHeaderString(HttpHeaders.AUTHORIZATION);
 		LOG.info("Establishing authentication: HTTP header="+authCredentials);
 		
-		if (authCredentials!=null) {
+		if (authCredentials==null) {
+			
+			// 401: authentication required
+			throw new WebApplicationException(Status.UNAUTHORIZED);
+			
+		} else {
 			
 			final String encodedUserPassword = authCredentials.replaceFirst("Basic" + " ", "");
 			String usernameAndPassword = null;
@@ -76,7 +82,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		}
 
 		if (userdn==null) {
-			throw new WebApplicationException(Status.UNAUTHORIZED);
+			// 403: not authorized
+			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 		// else proceed with normal filter chain
 
