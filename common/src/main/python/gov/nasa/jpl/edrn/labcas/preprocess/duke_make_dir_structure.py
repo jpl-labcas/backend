@@ -16,7 +16,13 @@ METADATA_DIR=os.environ['LABCAS_METADATA'] + "/" + COLLECTION_NAME
 INSTITUTION = "Duke"
 
 
-def main( dataset_id ):
+def main():
+
+    for subdir in glob(SRC_DATA_DIR+"/*"):
+        (subdirpath, subdirname) = os.path.split(subdir)
+	process_dataset(subdirname)
+
+def process_dataset( dataset_id):
         
     # dataset directory
     #dataset_id = sys.argv[1]
@@ -81,8 +87,8 @@ def main( dataset_id ):
            # move and rename DICOM file
            # use DICOM identifier
            #dst_path = '%s/%s.dcm' % (target_version_dir, fid)
-           # use original filename
-           dst_path = '%s/%s.dcm' % (target_version_dir, filename)
+           # use original filename, do NOT add dcm extension which is already included
+           dst_path = '%s/%s' % (target_version_dir, filename)
            if not os.path.exists(dst_path):
               print '\nCopying DICOM file=%s --> %s' % (src_path, dst_path)
               copyfile(src_path, dst_path)
@@ -93,5 +99,4 @@ def main( dataset_id ):
 
 if __name__ == "__main__":
 
-    dataset_id = "D0100"
-    main( dataset_id )
+    main()
