@@ -115,12 +115,12 @@
    <!-- LABCAS SCHEMA START -->
 
    <!-- LabCAS core attributes for files -->
-   <field name="CollectionId" type="string" indexed="true" stored="true" required="true" multiValued="false" />
-   <field name="CollectionName" type="string" indexed="true" stored="true" required="true" multiValued="false" />
+   <field name="CollectionId" type="string" indexed="true" stored="true" required="false" multiValued="false" />
+   <field name="CollectionName" type="string" indexed="true" stored="true" required="false" multiValued="false" />
    
-   <field name="DatasetId" type="string" indexed="true" stored="true" required="true" multiValued="false" />
-   <field name="DatasetName" type="string" indexed="true" stored="true" required="true" multiValued="false" />
-   <field name="DatasetVersion" type="int" indexed="true" stored="true" required="true" multiValued="false" />
+   <field name="DatasetId" type="string" indexed="true" stored="true" required="false" multiValued="false" />
+   <field name="DatasetName" type="string" indexed="true" stored="true" required="false" multiValued="false" />
+   <field name="DatasetVersion" type="int" indexed="true" stored="true" required="false" multiValued="false" />
    
    <!-- DownloadId is needed to match records in OODT Solr catalog and enable downloads via the OODT Product Server -->
    <field name="FileDownloadId" type="string" indexed="true" stored="true" required="false" multiValued="false" />
