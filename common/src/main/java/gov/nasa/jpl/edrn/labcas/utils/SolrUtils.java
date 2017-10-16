@@ -409,15 +409,12 @@ public class SolrUtils {
 			} else if (key.equals(Constants.METADATA_KEY_DATASET_ID)) {
 				// ignore, id already built
 				
-			} else if (key.equals(Constants.METADATA_KEY_OWNER_PRINCIPAL)) {
-				// transfer tag for access control
-				doc.addField(key, metadata.getMetadata(key));
-
 			} else if (key.equals(Constants.METADATA_KEY_DATASET_VERSION)) {
 				doc.setField(key, metadata.getMetadata(key));
 				
 			} else {
 				// publish all other "|" values into multi-valued field
+				// includes "OwnerPrincipal"
 				for (String value : metadata.getAllMetadata(key)) {
 					
 					// must remove HTML tags from value
@@ -462,11 +459,7 @@ public class SolrUtils {
 			// ignore OODT book-keeping fields
 			if (IGNORED_FIELDS.contains(key))  {
 				// do nothing
-				
-			// pass these fields with no changes
-			} else if (PASS_THROUGH_FIELDS.contains(key)) {
-				doc.setField(key, metadata.getMetadata(key));
-				
+								
 			} else if (key.equals("ProductType")) {
 				doc.setField("CollectionId", metadata.getMetadata(key));
 												
@@ -487,8 +480,12 @@ public class SolrUtils {
 				// change case
 				doc.setField("FileName", metadata.getMetadata(key));
 				
-			// transfer File* and _File_* metadata fields (generally multi-valued)
-			} else if (key.toLowerCase().startsWith("file") || key.toLowerCase().startsWith("_file_")) {
+		    // transfer specific "pass-through" metadata fields
+			// and File* and _File_* fields 
+		    // (generally multi-valued)
+			} else if (PASS_THROUGH_FIELDS.contains(key)
+					   || key.toLowerCase().startsWith("file") 
+					   || key.toLowerCase().startsWith("_file_")) {
 								
 				// publish all other "|" values into multi-valued field
 				for (String value : metadata.getAllMetadata(key)) {
