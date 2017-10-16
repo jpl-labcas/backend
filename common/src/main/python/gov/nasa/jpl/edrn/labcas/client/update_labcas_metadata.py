@@ -1,4 +1,5 @@
-# Python script to update the Solr metadata for a LabCAS Collection or dataset.
+# Python script to update the Solr metadata for a LabCAS Collection or dataset,
+# reading new metadata fileds from a configuration file.
 #
 # Example usage: python $LABCAS_SRC/common/src/main/python/gov/nasa/jpl/edrn/labcas/update_labcas_metadata.py MMHCC_Image_Archive.cfg
 #

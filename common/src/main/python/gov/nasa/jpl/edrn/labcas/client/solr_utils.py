@@ -69,7 +69,7 @@ def _buildSolrXml(solr_core_url, queries, fieldDict, update='set', start=0):
               ('start', start), ('rows', MAX_ROWS) ]
     for query in queries:
         params.append( ('fq',query) )
-    # retrieve optional fields tor replacement: {'rcm_name':['$experiment'] }
+    # retrieve optional fields for replacement: {'rcm_name':['$experiment'] }
     for fkey, fvals in fieldDict.items():
         if fvals is not None:
             for fval in fvals:
