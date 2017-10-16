@@ -4,6 +4,8 @@ import urllib
 import urllib2
 from xml.etree.ElementTree import Element, SubElement, tostring
 
+logging.basicConfig(level=logging.INFO)
+
 
 MAX_ROWS = 1000 # maximum number of records returned by a Solr query
 
@@ -44,20 +46,30 @@ def updateSolr(updateDict, update='set', solr_url='http://localhost:8984/solr', 
         logging.info("SOLR QUERY: %s" % query)
         queries = query.split('&')
     
-        # VERY IMPORTANT: DO NOT COMMIT THE CHANGES UNTIL THE VERY END
-        # OTHERWISE PAGINATION DOES NOT WORK
+        # VERY IMPORTANT: FIRST QUERY FOR ALL RESULTS
+        # THEN UPDATE ALL RESULTS
+        # BECAUSE PAGINATION DOES NOT WORK IN BETWEEN COMMITS
         start = 0
         numFound = start+1
+        xmlDocs = []
+        
+        # 1) query for all matching records
         while start < numFound:
     
             # query Solr, construct update document
             (xmlDoc, numFound, numRecords) = _buildSolrXml(solr_core_url, queries, fieldDict, update=update, start=start)
-            _sendSolrXml(solr_core_url, xmlDoc)
-                                    
+            xmlDocs.append( xmlDoc )
+                                                
             # increase starting record locator
             start += numRecords
+            
+        # 2) update all matching records
+        for xmlDoc in xmlDocs:
+            pass
+            #print xmlDoc
+            _sendSolrXml(solr_core_url, xmlDoc)
 
-        # commit after each separate query
+        # 3) commit after each separate query
         _commit(solr_core_url)
     
 def _buildSolrXml(solr_core_url, queries, fieldDict, update='set', start=0):
@@ -136,7 +148,7 @@ def _buildSolrXml(solr_core_url, queries, fieldDict, update='set', start=0):
 def _sendSolrXml(solr_core_url, xmlDoc):
     '''Method to send a Solr/XML update document to a specific Solr server and core.'''
     
-    print xmlDoc
+    logging.debug( xmlDoc )
     
     # update URL (no commit)
     url = solr_core_url + '/update'
