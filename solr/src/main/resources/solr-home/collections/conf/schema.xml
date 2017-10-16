@@ -114,7 +114,7 @@
    <!-- LABCAS SCHEMA START -->
 
    <!-- LabCAS core attributes for datasets -->
-   <field name="CollectionName" type="string" indexed="true" stored="true" required="false" multiValued="false" />
+   <field name="CollectionName" type="string" indexed="true" stored="true" required="true" multiValued="false" />
    <field name="CollectionDescription" type="string" indexed="true" stored="true" required="false" multiValued="false" />
         
    <!-- all unspecified fields ending in 'Date' or 'Time' are interpreted as single-value dates  -->
