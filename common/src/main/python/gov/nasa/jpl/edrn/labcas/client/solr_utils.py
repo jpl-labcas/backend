@@ -65,8 +65,6 @@ def updateSolr(updateDict, update='set', solr_url='http://localhost:8984/solr', 
             
         # 2) update all matching records
         for xmlDoc in xmlDocs:
-            pass
-            #print xmlDoc
             _sendSolrXml(solr_core_url, xmlDoc)
 
         # 3) commit after each separate query
