@@ -16,6 +16,8 @@ import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.codec.binary.Base64;
 
+import gov.nasa.jpl.labcas.data_access_api.exceptions.MissingAuthenticationHeaderException;
+
 /**
  * Filter that intercepts all requests to this service
  * and verifies authentication versus the LDAP database.
@@ -48,7 +50,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		if (authCredentials==null) {
 			
 			// 401: authentication required
-			throw new WebApplicationException(Status.UNAUTHORIZED);
+			// custom exception to send the "WWW-Authenticate" header and trigger client challenge
+			throw new MissingAuthenticationHeaderException(Status.UNAUTHORIZED);
 			
 		} else {
 			
