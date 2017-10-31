@@ -43,7 +43,11 @@ def publish_nist_dataset(metadata):
     
 if __name__ == '__main__':
     
-    DatasetIds = ['Lab008_NGS004_NIST03', 'Lab004_PCR004_NIST03', 'Lab004_PCR004_NIST04']
+    DatasetIds = ['Lab004_PCR004_NIST03', 'Lab004_PCR004_NIST04', 'Lab004_PCR004_NIST05',
+                  'Lab005_HYB001_NIST03', 'Lab005_HYB001_NIST04', 'Lab005_HYB001_NIST05',
+                  'Lab006_NGS001_NIST03', 'Lab006_NGS001_NIST04', 'Lab006_NGS002_NIST03', 'Lab006_NGS002_NIST04', 'Lab006_NGS002_NIST05',
+                  'Lab007_NGS003_NIST03', 'Lab007_NGS003_NIST04', 'Lab007_NGS003_NIST05',
+                  'Lab008_NGS004_NIST03', 'Lab008_NGS004_NIST04', 'Lab008_NGS004_NIST05']
     
     for DatasetId in DatasetIds:
         (LabNumber, ProtocolName, SampleId) = DatasetId.split("_")
