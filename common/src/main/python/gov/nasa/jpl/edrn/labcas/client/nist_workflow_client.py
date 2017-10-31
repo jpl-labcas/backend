@@ -1,8 +1,18 @@
 # Example script to execute a NIST Workflow
 
-from gov.nasa.jpl.edrn.labcas.labcas_client import LabcasClient
+# NOTE: before runningthe NISTProduct collection must exist in Solr. To create:
+# cd $LABCAS_HOME/cas-filemgr
+# java -Djava.ext.dirs=lib gov.nasa.jpl.edrn.labcas.utils.SolrUtils $LABCAS_HOME/workflows/nist
+#
+# To ingest a single NIST dataset:
+# o place data file in directory $LABCAS_STAGING/NIST_Product/Lab008_NGS004_NIST03/Lab008_NGS004_NIST03.txt
+# o cd labcas-backend/common/src/main/python
+# o python gov/nasa/jpl/edrn/labcas/client/nist_workflow_client.py
 
-if __name__ == '__main__':
+
+from labcas_client import LabcasClient
+
+def publish_nist_dataset(metadata):
     
     # submit workflow
     # ./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName nist 
@@ -18,14 +28,6 @@ if __name__ == '__main__':
                      'urn:edrn:NistExecTask',
                      'urn:edrn:NistCrawlTask']
     
-    metadata = {'DatasetId':'Lab008_NGS004_NIST03',
-                'DatasetName':'Lab008 NGS004 NIST03',
-                'LabNumber':'Lab008',
-                'ProtocolName':'NGS004',
-                'SampleId':'NIST03',
-                'DataCollectionDate':'20160101',
-                'NewVersion':'false',
-                'UpdateCollection':'false' }
 
     # upload dataset without changing the version
     wInstId = labcasClient.executeWorkflow(workflowTasks, metadata)
@@ -38,3 +40,21 @@ if __name__ == '__main__':
     #wInstId = labcasClient.executeWorkflow(workflowTasks, metadata)
     # monitor workflow instance
     #labcasClient.waitForCompletion(wInstId)
+    
+if __name__ == '__main__':
+    
+    DatasetIds = ['Lab008_NGS004_NIST03', 'Lab004_PCR004_NIST03', 'Lab004_PCR004_NIST04']
+    
+    for DatasetId in DatasetIds:
+        (LabNumber, ProtocolName, SampleId) = DatasetId.split("_")
+    
+        metadata = {'DatasetId': DatasetId,
+                    'DatasetName':DatasetId.replace("_"," "),
+                    'LabNumber':LabNumber,
+                    'ProtocolName':ProtocolName,
+                    'SampleId':SampleId,
+                    'DataCollectionDate':'20160101',
+                    'NewVersion':'false',
+                    'UpdateCollection':'false' }
+    
+        publish_nist_dataset(metadata)
