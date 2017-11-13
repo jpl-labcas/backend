@@ -3,7 +3,6 @@ package gov.nasa.jpl.edrn.labcas.actions;
 import java.io.File;
 import java.io.InputStream;
 import java.util.HashSet;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
@@ -21,13 +20,12 @@ import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.metadata.Metadata;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
-import gov.nasa.jpl.edrn.labcas.utils.FileManagerUtils;
 import gov.nasa.jpl.edrn.labcas.utils.GeneralUtils;
 
 /**
  * Class that publishes images of compatible type to the QUIP Image Viewer.
  * 
- * @author cinquini
+ * @author Luca Cinquini
  *
  */
 public class QuipImageViewerPostIngestionAction extends CrawlerAction {
@@ -51,7 +49,7 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 	@Override
 	public boolean performAction(File product, Metadata productMetadata) throws CrawlerActionException {
 				
-		// only proceed unless NOQUIP flag is set
+		// only proceed if NOQUIP flag is not set
 		if ( !productMetadata.containsKey(Constants.METADATA_KEY_NOQUIP) ) {
 		
 			// determine file extension
@@ -131,28 +129,18 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 		}
 		LOG.info("QUIP will process these file extensions: "+extensionsSet);		
 		
-		// loop over properties
-        for(Entry<Object, Object> e : properties.entrySet()) {
-            LOG.info("QUIP will use this property: "+e);
-        }
-        
+		// read QUIP URLs from labcas.properties
         this.quipSubmitImageUrl = properties.getProperty("quipSubmitImageUrl");
+        LOG.info("Using quipSubmitImageUrl="+quipSubmitImageUrl);
         this.quipViewImageUrl = properties.getProperty("quipViewImageUrl");
+        LOG.info("Using quipViewImageUrl="+quipViewImageUrl);
 		
 	}
 	
-    public void setQuipSubmitImageUrl(String quipSubmitImageUrl) {
-		this.quipSubmitImageUrl = quipSubmitImageUrl;
-	}
-
 	public void setExtensions(String extensions) {
 		this.extensions = extensions;
 	}
-	
-	public void setQuipViewImageUrl(String quipViewImageUrl) {
-		this.quipViewImageUrl = quipViewImageUrl;
-	}
-	
+		
 	public void setProperties(Properties properties) {
 		this.properties = properties;
 	}

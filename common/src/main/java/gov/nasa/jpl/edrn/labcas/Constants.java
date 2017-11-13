@@ -41,11 +41,12 @@ public interface Constants {
 	public final static String METADATA_KEY_UPDATE_COLLECTION = "UpdateCollection"; // default: true
 	public final static String METADATA_KEY_UPLOAD_FILES = "UploadFiles";
 	public final static String METADATA_KEY_WORKFLOW_ORDER = "workflow.order";
-	public final static String METADATA_KEY_NOQUIP = "NOQUIP";  // if set, skip publishing file to QUIP viewer
+	public final static String METADATA_KEY_NOQUIP = "NOQUIP";  // if set, skip publishing file to the QUIP viewer
+	public final static String METADATA_KEY_NOOHIF = "NOOHIF";  // if set, skip publishing file to the OHIF viewer
 	
 	
 	public final static String METADATA_KEY_FILE_LOCATION = "FileLocation"; // points to original location
-	public final static String METADATA_KEY_FILE_PATH = "FilePath";          // points to archive location
+	public final static String METADATA_KEY_FILE_PATH = "FilePath";         // points to archive location
 	public final static String METADATA_KEY_FILE_NAME = "Filename";
 	public final static String METADATA_KEY_FILE_TYPE = "FileType";
 	public final static String METADATA_KEY_FILE_SIZE = "FileSize";
@@ -84,6 +85,7 @@ public interface Constants {
 	
 	// external URL types
 	public final static String URL_TYPE_CAMICROSCOPE = "caMicroscope Viewer";
+	public final static String URL_TYPE_OHIF = "OHIF DICOM Viewer";
 	
 	// HTTP REQUEST PARAMETERS
 	public final static String PARAMETER_PRODUCT_ID = "productID";
