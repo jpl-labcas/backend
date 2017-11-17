@@ -6,8 +6,10 @@ import re
 import glob
 import shutil
 
-# collection root directory:
-collection_dir = '/usr/local/labcas_staging/MAST'
+# Mac collection root directory:
+#collection_dir = '/usr/local/labcas_staging/MAST'
+# LabCAS root directory:
+collection_dir = '/labcas-data/MAST'
 
 def make_dataset_id(dataset_name):
     return re.sub('[(){}\[\]]+', '', dataset_name)
