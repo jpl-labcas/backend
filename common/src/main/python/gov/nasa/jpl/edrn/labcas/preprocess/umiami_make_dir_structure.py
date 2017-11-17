@@ -7,7 +7,7 @@ import glob
 import shutil
 
 # collection root directory:
-collection_dir = '/usr/local/labcas_staging/Radiology_Pilot_MIM_Patients_2016_04_Studies'
+collection_dir = '/usr/local/labcas_staging/MAST'
 
 def make_dataset_id(dataset_name):
     return re.sub('[(){}\[\]]+', '', dataset_name)
