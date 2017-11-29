@@ -37,7 +37,11 @@
             <files regExp=".*\.dcm$"
                    metFileWriterClass="gov.nasa.jpl.edrn.labcas.extractors.ThumbnailGenerator"
                    args="python [LABCAS_HOME]/python/gov/nasa/jpl/edrn/labcas/server/dicom_thumbnail_generator.py" />
-           
+            <!-- generates thumbnail for TIFF images -->
+            <files regExp=".*\.tiff?$"
+                   metFileWriterClass="gov.nasa.jpl.edrn.labcas.extractors.ThumbnailGenerator"
+                   args="python [LABCAS_HOME]/python/gov/nasa/jpl/edrn/labcas/server/pil_thumbnail_generator.py" />
+            
 		</dir>
 	</output>
 

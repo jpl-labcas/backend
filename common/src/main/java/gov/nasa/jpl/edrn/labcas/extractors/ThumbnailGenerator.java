@@ -8,9 +8,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.CasMetadataException;
 import org.apache.oodt.cas.pge.writers.PcsMetFileWriter;
@@ -73,8 +77,17 @@ public class ThumbnailGenerator extends PcsMetFileWriter  {
         for (Object arg : customArgs) {
         	
 	    	// system command to execute
-	    	String command = (String)arg + " " +sciPgeCreatedDataFile.getAbsolutePath() + " " + this.thumbnailsRootDir + " " + this.thumbnailsRootUrl;
-	    	LOG.info("Executing command: "+command);
+        	// note: pass arguments to Runtime as String[] to avoid problems if source image file path contains white spaces
+        	// split the first argument according to whitespace
+        	// then combine back all arguments as a String[]
+        	String[] a1 = ((String)arg).split("\\s+");
+        	String[] a2 = new String[]{ sciPgeCreatedDataFile.getAbsolutePath(),
+        			                    this.thumbnailsRootDir,
+        			                    this.thumbnailsRootUrl };
+        	List<String> list = new ArrayList<String>(Arrays.asList(a1));
+        	list.addAll(Arrays.asList(a2));
+	    	String[] command = list.toArray(new String[]{});
+	    	LOG.info("Executing command: "+ Arrays.toString(command));
 	        
 	    	try {
 	        	
