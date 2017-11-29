@@ -5,7 +5,7 @@ source /data/local/labcas/labcas_venv/bin/activate
 labcas_publish="python $LABCAS_SRC/common/src/main/python/gov/nasa/jpl/edrn/labcas/client/publish_labcas_data.py"
 
 # loop over data subdirectories
-for subdir in $DATA_DIR/IPMN_* ; do
+for subdir in $DATA_DIR/IPMN-* ; do
     # extract dataset name = subdir name without the path
     dataset=$(basename "$subdir")
     echo "Processing sub-directory: $subdir dataset: $dataset"

@@ -23,7 +23,7 @@ for isubdir in os.listdir(ARCHIVE_DIR):
     template_file = os.environ['LABCAS_METADATA'] + "/" + COLLECTION_NAME + "/TEMPLATE.cfg"
     dataset_metadata_file = ARCHIVE_DIR + "/" + dataset_id + "/" + dataset_id + ".cfg"
 
-    if True or not os.path.exists(dataset_metadata_file):
+    if not os.path.exists(dataset_metadata_file):
        print 'Creating dataset metadata file: %s' % dataset_metadata_file
 
        # read in template metadata file
