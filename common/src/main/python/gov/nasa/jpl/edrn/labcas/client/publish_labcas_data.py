@@ -32,6 +32,7 @@
 import sys
 import os
 import ConfigParser
+from xml.sax.saxutils import escape
 
 from labcas_client import LabcasClient
 
@@ -66,12 +67,14 @@ if __name__ == '__main__':
                 config.read(config_file)
                 for section in config.sections():
                     for key, value in config.items(section):
-                        print '\t%s = %s' % (key, value)
+                        # must escape XML reserved characters: &<>"
+                        evalue = escape(value)
+                        print '\t%s = %s' % (key, evalue)
                         # [Dataset] section: prefix all fields with 'Dataset:'
                         if section=='Dataset' and key != 'DatasetId' and key != 'DatasetName' and key != 'DatasetDescription':
-                            metadata['Dataset:%s'%key] = value
+                            metadata['Dataset:%s'%key] = evalue
                         else:
-                            metadata[key] = value
+                            metadata[key] = evalue
             except Exception as e:
                 print "ERROR reading metadata configuration:"
                 print e
