@@ -1,6 +1,7 @@
 {
-    "id:*":
+    "id:MAST*":
         {
-            "OwnerPrincipal": ["cn=Srivastava National Cancer Institute DCP,ou=groups,o=MCL"]
+            "OwnerPrincipal": ["cn=Pollack University of Miami,dc=edrn,dc=jpl,dc=nasa,dc=gov",
+                               "cn=Harris Massachusetts General Hospital,dc=edrn,dc=jpl,dc=nasa,dc=gov"]
         }
 }
