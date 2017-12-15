@@ -57,7 +57,7 @@ for filename in glob.glob("%s/1/*" % archive_dir):
   elif 'cell_seg_map' in filename:
      description += " Cell segmentation map."
   elif 'phenotype_map' in filename:
-     description += " Phenotype_map."
+     description += " Phenotype map."
   elif 'binary_seg_maps' in filename:
      description += " Binary segmentation maps."
   elif 'cell_seg_data_summary' in filename:
