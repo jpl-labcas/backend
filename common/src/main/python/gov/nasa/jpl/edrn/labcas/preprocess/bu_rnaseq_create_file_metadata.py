@@ -1,7 +1,7 @@
 # python script to create file-level metadata for BU RNAseq files
 import os
 import glob
-from utils import write_metadata
+from utils import write_description
 
 archive_dir = "/labcas-data/Boston_University_Lung_Tumor_Sequencing/FFPE_Lung_Tumor_Sequencing/1"
 
@@ -17,7 +17,7 @@ for file in glob.glob("%s/*.fastq.gz" % archive_dir):
   
   # write out metadata file
   metadata_filepath = os.path.abspath(file+".xmlmet")
-  write_metadata(metadata_filepath, description)
+  write_description(metadata_filepath, description)
   
  
   
