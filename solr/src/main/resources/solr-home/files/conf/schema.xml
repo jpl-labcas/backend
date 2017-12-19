@@ -113,12 +113,21 @@
 
    <!-- LABCAS SCHEMA START -->
 
-   <!-- LabCAS core attributes for datasets -->
-   <field name="CollectionName" type="string" indexed="true" stored="true" required="true" multiValued="false" />
+   <!-- start LabCAS core attributes specific to files -->
    <field name="CollectionId" type="string" indexed="true" stored="true" required="true" multiValued="false" />
+   <field name="CollectionName" type="string" indexed="true" stored="true" required="true" multiValued="false" />
+
+   <field name="DatasetId" type="string" indexed="true" stored="true" required="true" multiValued="false" />
    <field name="DatasetName" type="string" indexed="true" stored="true" required="true" multiValued="false" />
    <field name="DatasetVersion" type="int" indexed="true" stored="true" required="true" multiValued="false" />
-   <field name="DatasetDescription" type="string" indexed="true" stored="true" required="false" multiValued="false" />
+
+   <!-- DownloadId is needed to match records in OODT Solr catalog and enable downloads via the OODT Product Server -->
+   <field name="FileDownloadId" type="string" indexed="true" stored="true" required="false" multiValued="false" />
+
+   <field name="FileLocation" type="string" indexed="true" stored="true" required="false" multiValued="false" />
+   <field name="FileName" type="string" indexed="true" stored="true" required="false" multiValued="false" />
+   <field name="FileSize" type="long" indexed="true" stored="true" required="false" multiValued="false" />
+   <!-- end LabCAS core attributes specific to files -->
         
    <!-- all unspecified fields ending in 'Date' or 'Time' are interpreted as single-value dates  -->
    <field name="*Date" type="date" indexed="true" stored="true" required="false" multiValued="false" />
