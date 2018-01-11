@@ -86,6 +86,8 @@ public class SolrUtils {
 			
 			if (System.getenv("FILEMGR_URL")!=null) {
 				SOLR_URL = System.getenv("FILEMGR_URL").replaceAll("9000", "8983")+"/solr";
+				// remove possible '//'
+				SOLR_URL = SOLR_URL.replaceAll("//8983","/8983");
 			}
 			LOG.info("Using base SOLR_URL="+SOLR_URL);
 			
