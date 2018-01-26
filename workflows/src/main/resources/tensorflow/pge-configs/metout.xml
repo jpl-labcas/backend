@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadataList>
+    
+    <metadata key="JobId" val="[JobId]"/>
+    <metadata key="ProductType" val="[ProductType]"/>
+    <metadata key="ProductionDateTime" val="[ProductionDateTime]"/>
+    <metadata key="ProductName" val="[Filename]"/>
+    <metadata key="num_images" val="[num_images]"/>
+    <metadata key="data_dir" val="[data_dir]"/>
+    <metadata key="FileType" val="text/plain"/>
+    
+</metadataList>
