@@ -297,7 +297,8 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			String id = (String) doc.getFieldValue(SOLR_FIELD_ID);
 			try {
 				// example:  https://mcl-labcas.jpl.nasa.gov/ui/download/CBIS-DDSM.Calc-Training_Full_Mammogram_Images.1.3.6.1.4.1.9590.100.1.2.419956083811554531015420980802782572234.dcm
-				results += this.dataAccessApiBaseUrl + URLEncoder.encode(id, "UTF-8") + "\n";
+				// note: spaces are URL-encoded as '+' but they should really be '%20'
+				results += this.dataAccessApiBaseUrl + URLEncoder.encode(id, "UTF-8").replaceAll("\\+", "%20")) + "\n";
 			} catch(UnsupportedEncodingException e) {
 				// do not include thie file in the list of results
 				LOG.warning("Error encoding download URL for file id="+id);
