@@ -2,8 +2,6 @@ package gov.nasa.jpl.labcas.data_access_api.service;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,8 +19,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-
-import gov.nasa.jpl.labcas.data_access_api.filter.AuthenticationFilter;
 
 /**
  * Service implementation to issue a query request to Solr.

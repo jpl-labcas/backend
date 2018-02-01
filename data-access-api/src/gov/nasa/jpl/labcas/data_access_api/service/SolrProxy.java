@@ -44,11 +44,9 @@ public class SolrProxy {
 	protected static String publicOwnerPrincipal;
 
 
-	// IMPORTANT: must re-use the same SolrServer instance across all requests
-	// to prevent memory leaks
+	// IMPORTANT: must re-use the same SolrServer instance across all requests to prevent memory leaks
 	// see https://issues.apache.org/jira/browse/SOLR-861
-	// this method instantiates the shared instances of SolrServer (one per
-	// core)
+	// This method instantiates the shared instances of SolrServer (one per core)
 	protected static Map<String, SolrServer> solrServers = new HashMap<String, SolrServer>();
 
 	static {
