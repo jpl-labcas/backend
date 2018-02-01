@@ -35,6 +35,6 @@ public interface MetadataService {
 	 * @param document
 	 * @return
 	 */
-	public Response update(HttpServletRequest httpRequest, ContainerRequestContext requestContext);
+	public Response update(HttpServletRequest httpRequest, ContainerRequestContext requestContext, String content);
 
 }

@@ -1,11 +1,12 @@
 package gov.nasa.jpl.labcas.data_access_api.service;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -43,9 +44,13 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 	}
 
 	@Override
-	public Response update(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext) {
+	@POST
+	@Path("/update")
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response update(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext, String content) {
 		// TODO Auto-generated method stub
-		return null;
+		LOG.info(content);
+		return Response.status(200).entity("OK").build();
 	}
 
 }
