@@ -162,12 +162,11 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 				}
 				
 				// execute HTTP query request
-				LOG.info("HTTP request: "+selectUrl);
-			    String response = httpClient.doGet(new URL(selectUrl));
-			    LOG.info("HTTP respose:" +response);
-			    
-			    // parse HTTP query response
-			    final Document xmlDoc = xmlParser.parseString(response);
+			    Response response = httpClient.doGet(selectUrl);
+			    String _response = response.getEntity().toString();
+			    LOG.info("HTTP response:" +_response);
+			  
+			    final Document xmlDoc = xmlParser.parseString(_response);
 			    
 			    // total number of results
 	            // <result name="response" numFound="9" start="0" maxScore="1.0">

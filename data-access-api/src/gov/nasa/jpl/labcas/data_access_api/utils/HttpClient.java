@@ -7,17 +7,28 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.logging.Logger;
+
+import javax.ws.rs.core.Response;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 /**
- * Simple class to execute an HTTP GET/POST request, and return the HTTP
- * response as a single string.
+ * Simple class to execute an HTTP GET/POST request.
+ * This class is a wrapper around the Apache HTTP client.
  */
 public class HttpClient {
 
-	// default time outs ("A timeout of zero is interpreted as an infinite
-	// timeout.")
+	// default time outs ("A timeout of zero is interpreted as an infinite timeout.")
 	private int connectionTimeout = 0;
 	private int readTimeout = 0;
+	
+	private final static Logger LOG = Logger.getLogger(HttpClient.class.getName());
 
 	/**
 	 * Method to execute an HTTP GET request.
@@ -26,27 +37,26 @@ public class HttpClient {
 	 * @return
 	 * @throws IOException
 	 */
-	public String doGet(final URL url) throws IOException {
+	public Response doGet(final String url) throws IOException {
 
-		HttpURLConnection connection = null;
 		try {
+			CloseableHttpClient httpclient = HttpClients.createDefault();
+			LOG.info("HTTP request: " + url);
+			HttpGet httpGet = new HttpGet(url);
+			CloseableHttpResponse response = httpclient.execute(httpGet);
+			HttpEntity entity = response.getEntity();
 
-			// prepare HTTP request
-			connection = (HttpURLConnection) url.openConnection();
-			if (connectionTimeout != 0)
-				connection.setConnectTimeout(connectionTimeout);
-			if (readTimeout != 0)
-				connection.setReadTimeout(readTimeout);
-			connection.setUseCaches(false);
+			// return the same response to the client
+			String content = IOUtils.toString(entity.getContent(), "UTF-8");
+			LOG.info("Response status: "+response.getStatusLine().getStatusCode());
+			LOG.info("Response content: "+content);
+			return Response.status(response.getStatusLine().getStatusCode()).entity(content).build();
 
-			// execute HTTP request
-			String response = getResponse(connection);
-			return response;
-
-		} finally {
-			if (connection != null) {
-				connection.disconnect();
-			}
+		} catch (Exception e) {
+			// send 500 "Internal Server Error" response
+			e.printStackTrace();
+			LOG.warning("Response error: "+e.getMessage());
+			return Response.status(500).entity(e.getMessage()).build();
 		}
 
 	}
