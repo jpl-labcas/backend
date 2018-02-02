@@ -69,14 +69,21 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 	    	int numRecordsUpdated = 0;
 	    	try {
 	    		
-	    		// build metadata content
+	    		// build update map of a single (query criteria, metadata content) pair 
 		    	HashMap<String, Map<String,List<String>>> doc = new HashMap<String, Map<String, List<String>>>();
 		    	Map<String,List<String>> metadata = new HashMap<String,List<String>>();
 		    	metadata.put(field, values);
-		    	doc.put("id="+id, metadata);
+		    	String query = "id:"+id;
+		    	// add additional access control constraint
+		    	String accessControlQuery = getAccessControlQueryStringValue(requestContext);
+		    	LOG.info("UpdateById request: access control constraint="+accessControlQuery);
+		    	if (!accessControlQuery.isEmpty()) {
+		    		query += "&" + accessControlQuery;
+		    	}
+		    	doc.put(query, metadata);
 		    	
 		    	// invoke metadata update service
-		    	numRecordsUpdated = this._update(this.getBaseUrl(core), action, doc);
+		    	numRecordsUpdated = this._update(getBaseUrl(core), action, doc);
 		    	
 	    	} catch(Exception e) {
 	    		e.printStackTrace();
@@ -84,7 +91,7 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 	    		return Response.status(500).entity(e.getMessage()).build();
 	    	}
     			
-    		String message = "Number of records updated: "+numRecordsUpdated;
+    		String message = "Number of records updated: "+numRecordsUpdated+" .";
 		return Response.status(200).entity( message ).build();
 	}
 
@@ -148,7 +155,8 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 				            	 + "&start="+start
 				            	 + "&rows="+LIMIT;
 				for (String constraint : constraints) {
-					String[] kv = constraint.split("=");
+					// NOTE: split only at first occurrence of ':' to allow for values that contain the character ':'
+					String[] kv = constraint.split(":", 2); 
 					selectUrl += "&fq="+kv[0]+":"+URLEncoder.encode(kv[1],"UTF-8"); // must URL-encode the values
 				}
 				

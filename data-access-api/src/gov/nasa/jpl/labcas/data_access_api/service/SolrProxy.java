@@ -16,7 +16,7 @@ import gov.nasa.jpl.labcas.data_access_api.filter.AuthenticationFilter;
 import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
 
 /**
- * Base class to proxy query/download requests to a multi-core Solr server.
+ * Base class to proxy query/download/metadata requests to a multi-core Solr server.
  * 
  * @author Luca Cinquini
  *
@@ -94,6 +94,8 @@ public class SolrProxy {
 			
 			if (ugroups.contains(superOwnerPrincipal)) {
 				// super user --> no query constraint
+				//String testOwnerPrincipal = "uid=testuser,dc=edrn,dc=jpl,dc=nasa,dc=gov";
+				//return "OwnerPrincipal:(\""+testOwnerPrincipal+"\"" + ")";
 				return "";
 			} else {
 				accessControlQueryStringValue = "OwnerPrincipal:(\""+publicOwnerPrincipal+"\"";

@@ -6,9 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Response;
 
-
 /**
- * Service use to update the LabCAS metadata stored in the Solr index
+ * Service used to update the LabCAS metadata stored in the Solr index
  * 
  * @author Luca Cinquini
  *
@@ -16,8 +15,7 @@ import javax.ws.rs.core.Response;
 public interface MetadataService {
 	
 	/**
-	 * Method to update a single metadata record
-	 * through an HTTP/GET request.
+	 * Method to update a single metadata record through an HTTP/GET request.
 	 * @param core
 	 * @param action
 	 * @param id
