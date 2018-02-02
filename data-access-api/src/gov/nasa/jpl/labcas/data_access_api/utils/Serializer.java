@@ -1,17 +1,6 @@
 package gov.nasa.jpl.labcas.data_access_api.utils;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
-
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.jdom.JDOMException;
 
@@ -19,61 +8,6 @@ import org.jdom.JDOMException;
  * Utility class for writing XML to output. It contains only static methods.
  */
 public class Serializer {
-
-   /** 
-    * Method to write a DOM document to file.
-    * NOTE: the XML will be re-formatted for pretty printing.
-    * @param root the root element of the DOM document
-    * @param outputFile the intended XML output file
-    * @exception IOException
-    */
-   public static void DOMtoFile(org.w3c.dom.Element root, String outputFile) 
-                 throws java.io.IOException,TransformerConfigurationException, TransformerException  {
-        
-        final Source source = new DOMSource(root);
-        
-        final File file = new File(outputFile);
-        final Result result = new StreamResult(file);
-        
-        final Transformer xformer = TransformerFactory.newInstance().newTransformer();
-        xformer.transform(source, result);
-        
-   }
-   
-   public static String DOMtoString(org.w3c.dom.Element root) 
-   		  throws java.io.IOException,TransformerConfigurationException, TransformerException {
-	   
-	   final Source source = new DOMSource(root);
-	   
-	   final StringWriter writer = new StringWriter();
-	   final Result result = new StreamResult(writer);
-	   
-	   final Transformer xformer = TransformerFactory.newInstance().newTransformer();
-	   xformer.transform(source, result);
-	   writer.close();
-	   
-       return writer.toString();
-	   
-   }
-
-   /** 
-    * Method to write a DOM document to System.out 
-    * @param root the root element of the DOM document
-    * @exception IOException
-    */
-   public static void DOMout(org.w3c.dom.Element root) 
-          throws java.io.IOException,TransformerConfigurationException, TransformerException {
-
-	   final Source source = new DOMSource(root);
-	   
-	   final StringWriter writer = new StringWriter();
-	   final Result result = new StreamResult(System.out);
-	   
-	   final Transformer xformer = TransformerFactory.newInstance().newTransformer();
-	   xformer.transform(source, result);
-	   writer.close();
-
-   } // DOMout
 
    /**
     * Method to write a JDOM document to file
@@ -177,23 +111,5 @@ public class Serializer {
     org.jdom.output.XMLOutputter outputter= new org.jdom.output.XMLOutputter();
     return outputter.outputString(jelem);
   } // JDOMtoString()
-
-  /** Method to serialize a javax.xml.transform.Source object to a String */
-  public static String SourceToString(javax.xml.transform.Source source) throws javax.xml.transform.TransformerException {
-
-   javax.xml.transform.TransformerFactory tFactory = javax.xml.transform.TransformerFactory.newInstance();
-   javax.xml.transform.Transformer transformer = tFactory.newTransformer(); // copies source --> result
-   // execute transformation
-   java.io.CharArrayWriter caw = new java.io.CharArrayWriter();
-   javax.xml.transform.stream.StreamResult result = new javax.xml.transform.stream.StreamResult(caw);
-   transformer.transform(source, result);
-   return caw.toString();
-
-  } // SourceToString()
-  
-  /** Method to escape XML for HTML display */
-  public static String toHTML(String xml) throws Exception {
-  		return xml.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
-  } // toHTML()
 
 } // class Serializer
