@@ -107,21 +107,20 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 	
 	/**
 	 * Method to change/add/remove metadata fields to/from existing records.
-	 * @param url: base Solr URL (example: "http://localhost:8983/solr")
-	 * @param core: Solr core (example: "datasets")
+	 * @param solrCoreUrl: core specific Solr URL (example: "http://localhost:8983/solr/datasets")
 	 * @param action: one of "set", "add", "remove"
 	 * @param metadata: dictionary of queries to map of field name and values to be updated for all matching results
 	 *                  example:
 	 *                  { 
-	 *                    'id:test.test.v1.testData.nc|esgf-dev.jpl.nasa.gov': 
+	 *                    'id:Boston_University_Lung_Tumor_Sequencing': 
      *          	         {
-     *                     'xlink':['http://esg-datanode.jpl.nasa.gov/.../zosTechNote_AVISO_L4_199210-201012.pdf|AVISO Sea Surface Height Technical Note|summary']
+     *                     'LeadPI':['John Smith','Jane Bridge']
      *                    }
      *                  }
 	 *
 	 * @return: number of documents that matched the query (and therefore updated - across all queries combined)
 	 */
-	public int _update(String solrCoreUrl, String action, HashMap<String, Map<String,List<String>>> doc) throws Exception {
+	public int _update(String solrCoreUrl, String action, HashMap<String, Map<String,List<String>>> map) throws Exception {
 
 		HttpClient httpClient = new HttpClient();
 		XmlParser xmlParser = new XmlParser(false);
@@ -130,9 +129,9 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 		
 		// process each query separately
 		int numRecordsUpdated = 0;
-		for (String query : doc.keySet()) {
+		for (String query : map.keySet()) {
 		
-			Map<String,List<String>> metadata = doc.get(query);
+			Map<String,List<String>> metadata = map.get(query);
 			LOG.info("Processing query: "+query);
 			String[] constraints = query.split("&");
 			
@@ -141,23 +140,24 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 	        // OTHERWISE PAGINATION OF RESULTS DOES NOT WORK
 			List<String> xmlDocs = new ArrayList<String>();
 			
-			// query ALL matching records
+			// query for ALL matching records
 			int start = 0;
 			int numFound = start + 1;
 			while (start < numFound) {
 								
-				// build query URL
+				// build query URL - must be URL-encoded
 				String selectUrl = solrCoreUrl + "/select?"
-				            	 + "q="+URLEncoder.encode("*:*","UTF-8")
-				            	 + "&fl=id"
-				            	 + "&wt=xml"
-				            	 + "&indent=true"
-				            	 + "&start="+start
-				            	 + "&rows="+LIMIT;
+				            	     + "q="+URLEncoder.encode("*:*","UTF-8")
+				             	 + "&fl=id"
+				             	 + "&wt=xml"
+				             	 + "&indent=true"
+				             	 + "&start="+start
+				             	 + "&rows="+LIMIT;
 				for (String constraint : constraints) {
 					// NOTE: split only at first occurrence of ':' to allow for values that contain the character ':'
 					String[] kv = constraint.split(":", 2); 
-					selectUrl += "&fq="+kv[0]+":"+URLEncoder.encode(kv[1],"UTF-8"); // must URL-encode the values
+					selectUrl += "&fq="+URLEncoder.encode(kv[0]+":"+kv[1],"UTF-8"); // FIXME ?
+					//selectUrl += "&fq="+kv[0]+":"+URLEncoder.encode(kv[1],"UTF-8"); // must URL-encode the values
 				}
 				
 				// execute HTTP query request
@@ -196,6 +196,7 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 			// send all updates, commit each time
 			String updateUrl = solrCoreUrl + "/update?commit=true";
 			for (String xmlDoc : xmlDocs) {
+				LOG.info("Solr update document:"+xmlDoc);
 				httpClient.doPost(new URL(updateUrl), xmlDoc, true); // xml=true
 			}
 			
@@ -209,8 +210,8 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 	
     // Method to build an XML update document snippet
     //	<doc>
-    //		<field name="id">cmip5.output1.CSIRO-BOM.ACCESS1-3.historical.mon.ocean.Omon.r1i1p1.v2|aims3.llnl.gov</field>
-    //		<field name="xlink" update="add">ccc</field>
+    //		<field name="id">Boston_University_Lung_Tumor_Sequencing</field>
+    //		<field name="LeadPI" update="add">Jim Adams</field>
     //	</doc>
 	private List<Element> _buildUpdateDocuments(Document xmlDoc, String action, Map<String,List<String>> metadata) throws Exception {
         
@@ -219,46 +220,46 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
         // loop over results across this response
         for (Object obj : xPath2.selectNodes(xmlDoc)) {
         	
-        	// will start from next record
-        	Element idElement = (Element)obj;
-        	String id = idElement.getText();
-        	        	
-        	Element _docElement = new Element("doc");
-        	Element _idElement = new Element("field");
-        	_idElement.setAttribute("name", "id");
-        	_idElement.setText(id);
-        	_docElement.addContent(_idElement);
+	        	// will start from next record
+	        	Element idElement = (Element)obj;
+	        	String id = idElement.getText();
+	        	        	
+	        	Element _docElement = new Element("doc");
+	        	Element _idElement = new Element("field");
+	        	_idElement.setAttribute("name", "id");
+	        	_idElement.setText(id);
+	        	_docElement.addContent(_idElement);
+	        	
+	        	// loop over metadata keys to set/add/remove
+	        	for (String key : metadata.keySet()) {
+	        		List<String> values = metadata.get(key);
+	        		
+	        		if (values.size()>0) {
+	        		
+	            		// set all new values
+	            		for (String value : values) {	
+	            			Element _fieldElement = new Element("field");
+	            			_fieldElement.setAttribute("name", key);
+	            			_fieldElement.setAttribute("update", action.toLowerCase());
+	            			_fieldElement.setText(value);
+	            			_docElement.addContent(_fieldElement);
+	            		}
+	            		
+	        		} else {
+	        			
+	        			// remove all values
+	        			// <field name="xlink" update="set" null="true"/>
+	        			Element _fieldElement = new Element("field");
+	        			_fieldElement.setAttribute("name", key);
+	        			_fieldElement.setAttribute("update", action.toLowerCase());
+	        			_fieldElement.setAttribute("null", "true");
+	        			_docElement.addContent(_fieldElement);
+	
+	        		}
+	        		
+	        	}
         	
-        	// loop over metadata keys to set/add/remove
-        	for (String key : metadata.keySet()) {
-        		List<String> values = metadata.get(key);
-        		
-        		if (values.size()>0) {
-        		
-            		// set all new values
-            		for (String value : values) {	
-            			Element _fieldElement = new Element("field");
-            			_fieldElement.setAttribute("name", key);
-            			_fieldElement.setAttribute("update", action.toLowerCase());
-            			_fieldElement.setText(value);
-            			_docElement.addContent(_fieldElement);
-            		}
-            		
-        		} else {
-        			
-        			// remove all values
-        			// <field name="xlink" update="set" null="true"/>
-        			Element _fieldElement = new Element("field");
-        			_fieldElement.setAttribute("name", key);
-        			_fieldElement.setAttribute("update", action.toLowerCase());
-        			_fieldElement.setAttribute("null", "true");
-        			_docElement.addContent(_fieldElement);
-
-        		}
-        		
-        	}
-        	
-        	_docElements.add(_docElement);
+	        	_docElements.add(_docElement);
          	
         } // loop over results within one HTTP response		
         
