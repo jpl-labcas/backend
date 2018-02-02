@@ -15,8 +15,8 @@ import javax.ws.rs.core.Response;
 public interface MetadataService {
 	
 	/**
-	 * Method to update a single metadata record through an HTTP/GET request.
-	 * @param core
+	 * Method to perform a single operation on one or more records identified by id.
+	 * @param cores
 	 * @param action
 	 * @param id
 	 * @param field
@@ -24,11 +24,11 @@ public interface MetadataService {
 	 * @return
 	 */
 	public Response updateById(HttpServletRequest httpRequest, ContainerRequestContext requestContext,
-			                   String core, String action, String id, String field, List<String> values);
+			                   List<String> cores, String action, String id, String field, List<String> values);
 	
 	/**
-	 * Method to bulk update multiple metadata records at once
-	 * through an HTTP/POST request with XML payload.
+	 * Method to perform multiple operations on different classes of records
+	 * identified by a query specification.
 	 * 
 	 * @param document
 	 * @return

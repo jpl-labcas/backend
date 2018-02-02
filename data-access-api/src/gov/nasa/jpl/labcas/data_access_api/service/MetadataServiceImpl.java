@@ -1,7 +1,6 @@
 package gov.nasa.jpl.labcas.data_access_api.service;
 
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +26,7 @@ import org.jdom.xpath.XPath;
 
 import gov.nasa.jpl.labcas.data_access_api.utils.HttpClient;
 import gov.nasa.jpl.labcas.data_access_api.utils.Serializer;
+import gov.nasa.jpl.labcas.data_access_api.utils.UrlUtils;
 import gov.nasa.jpl.labcas.data_access_api.utils.XmlParser;
 
 /**
@@ -60,12 +60,12 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 	@GET
 	@Path("/updateById")
 	public Response updateById(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext,
-			@QueryParam("core") String core, @QueryParam("action") String action, @QueryParam("id") String id,
+			@QueryParam("core") List<String> cores, @QueryParam("action") String action, @QueryParam("id") String id,
 			@QueryParam("field") String field, @QueryParam("value") List<String> values) {
 		
-		LOG.info("UpdateById request: core="+core+" action="+action+" id="+id+" field="+field+" values="+values);
+		LOG.info("UpdateById request: cores="+cores+" action="+action+" id="+id+" field="+field+" values="+values);
 		
-	    	// execute update
+	    	// execute update across all cores
 	    	int numRecordsUpdated = 0;
 	    	try {
 	    		
@@ -73,7 +73,7 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 		    	HashMap<String, Map<String,List<String>>> doc = new HashMap<String, Map<String, List<String>>>();
 		    	Map<String,List<String>> metadata = new HashMap<String,List<String>>();
 		    	metadata.put(field, values);
-		    	String query = "id:"+id;
+		    	String query = "id:"+UrlUtils.encode(id);
 		    	// add additional access control constraint
 		    	String accessControlQuery = getAccessControlQueryStringValue(requestContext);
 		    	LOG.info("UpdateById request: access control constraint="+accessControlQuery);
@@ -82,8 +82,10 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 		    	}
 		    	doc.put(query, metadata);
 		    	
-		    	// invoke metadata update service
-		    	numRecordsUpdated = this._update(getBaseUrl(core), action, doc);
+		    	// invoke metadata update service for each core separately
+		    	for (String core : cores) {
+		    		numRecordsUpdated += this._update(getBaseUrl(core), action, doc);
+		    	}
 		    	
 	    	} catch(Exception e) {
 	    		e.printStackTrace();
@@ -91,7 +93,7 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 	    		return Response.status(500).entity(e.getMessage()).build();
 	    	}
     			
-    		String message = "Number of records updated: "+numRecordsUpdated+" .";
+    		String message = "Total number of records updated: "+numRecordsUpdated+" (across all cores).";
 		return Response.status(200).entity( message ).build();
 	}
 
@@ -147,7 +149,7 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 								
 				// build query URL - must be URL-encoded
 				String selectUrl = solrCoreUrl + "/select?"
-				            	     + "q="+URLEncoder.encode("*:*","UTF-8")
+				            	     + "q="+UrlUtils.encode("*:*")
 				             	 + "&fl=id"
 				             	 + "&wt=xml"
 				             	 + "&indent=true"
@@ -156,8 +158,7 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 				for (String constraint : constraints) {
 					// NOTE: split only at first occurrence of ':' to allow for values that contain the character ':'
 					String[] kv = constraint.split(":", 2); 
-					selectUrl += "&fq="+URLEncoder.encode(kv[0]+":"+kv[1],"UTF-8"); // FIXME ?
-					//selectUrl += "&fq="+kv[0]+":"+URLEncoder.encode(kv[1],"UTF-8"); // must URL-encode the values
+					selectUrl += "&fq="+UrlUtils.encode(kv[0]+":"+kv[1]);
 				}
 				
 				// execute HTTP query request
