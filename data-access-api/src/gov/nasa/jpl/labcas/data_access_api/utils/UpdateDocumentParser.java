@@ -11,15 +11,16 @@ import org.jdom.Element;
 /**
  * Utility class to parse a LabCAS XML document 
  * into the required parameters needed to invoke the MetadataService
- * 	
- 	<updates action="set">
-   		<update>
-      		<query>id:test.test.v1.testData.nc|esgf-dev.jpl.nasa.gov</query>
-      		<field name="xlink">
-         		<value>abc</value>
-         		<value>123</value>
-      		</field>
-   		</update>
+ * Example document to parse:
+ * 
+	<updates core="collections,datasets,files" action="set">
+	   <update>
+	      <query>id:Boston_University_Lung_Tumor_*</query>
+	      <field name="OwnerPrincipal">
+	         <value>uid=testuser,dc=edrn,dc=jpl,dc=nasa,dc=gov</value>
+	         <value>cn=Spira Boston University,ou=groups,o=MCL</value>
+	      </field>
+	   </update>
 	</updates>
  * 
  * @author Luca Cinquini
@@ -28,7 +29,7 @@ import org.jdom.Element;
 public class UpdateDocumentParser {
 	
 	private String action;
-	private String core;
+	private String[] cores;
 	private HashMap<String, Map<String,List<String>>> doc = new HashMap<String, Map<String,List<String>>>();
 	
 	public UpdateDocumentParser(String xmlString) throws Exception {
@@ -38,8 +39,8 @@ public class UpdateDocumentParser {
 		Document xmlDoc = xmlParser.parseString(xmlString);
 		Element root = xmlDoc.getRootElement();
 		
-		// Solr core
-		this.core = root.getAttributeValue("core");
+		// Solr cores
+		this.cores = root.getAttributeValue("core").split(",");
 		
 		// action=set/add/remove
 		this.action = root.getAttributeValue("action");
@@ -78,8 +79,8 @@ public class UpdateDocumentParser {
 		return action;
 	}
 	
-	public String getCore() {
-		return core;
+	public String[] getCores() {
+		return cores;
 	}
 
 	public HashMap<String, Map<String,List<String>>> getDoc() {

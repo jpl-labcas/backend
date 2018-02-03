@@ -16,6 +16,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -60,7 +61,9 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 	@Override
 	@GET
 	@Path("/updateById")
-	public Response updateById(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext,
+	public Response updateById(@Context HttpServletRequest httpRequest, 
+			@Context ContainerRequestContext requestContext,
+			@Context HttpHeaders headers,
 			@QueryParam("core") List<String> cores, @QueryParam("action") String action, @QueryParam("id") String id,
 			@QueryParam("field") String field, @QueryParam("value") List<String> values) {
 		
@@ -102,17 +105,19 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 	@POST
 	@Path("/update")
 	@Consumes(MediaType.APPLICATION_XML)
-	public Response update(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext, String document) {
+	public Response update(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext, @Context HttpHeaders headers,
+			String document) {
 		
 		LOG.info("/update request: " + document);
-		
+		LOG.info("/update content type: " + headers.getHeaderString(HttpHeaders.CONTENT_TYPE));
+				
 		int numRecordsUpdated = 0;
 		try {
 			
 			// parse input document
 			UpdateDocumentParser parser = new UpdateDocumentParser(document);
 			String action = parser.getAction();
-			String[] cores = parser.getCore().split(",");
+			String[] cores = parser.getCores();
 			HashMap<String, Map<String,List<String>>> doc = parser.getDoc();
 			
 			// execute metadata updates for each core separately

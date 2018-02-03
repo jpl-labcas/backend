@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 /**
@@ -23,7 +24,7 @@ public interface MetadataService {
 	 * @param values
 	 * @return
 	 */
-	public Response updateById(HttpServletRequest httpRequest, ContainerRequestContext requestContext,
+	public Response updateById(HttpServletRequest httpRequest, ContainerRequestContext requestContext, HttpHeaders headers,
 			                   List<String> cores, String action, String id, String field, List<String> values);
 	
 	/**
@@ -33,6 +34,6 @@ public interface MetadataService {
 	 * @param document
 	 * @return
 	 */
-	public Response update(HttpServletRequest httpRequest, ContainerRequestContext requestContext, String content);
+	public Response update(HttpServletRequest httpRequest, ContainerRequestContext requestContext, HttpHeaders headers, String content);
 
 }

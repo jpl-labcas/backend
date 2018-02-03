@@ -1,0 +1,6 @@
+<updates core="datasets" action="set">
+   <update>
+      <query>CollectionId:Boston_University_Lung_Tumor_Sequencing</query>
+      <field name="Sub-Cohort" />
+   </update>
+</updates>
