@@ -26,6 +26,7 @@ import org.jdom.xpath.XPath;
 
 import gov.nasa.jpl.labcas.data_access_api.utils.HttpClient;
 import gov.nasa.jpl.labcas.data_access_api.utils.Serializer;
+import gov.nasa.jpl.labcas.data_access_api.utils.UpdateDocumentParser;
 import gov.nasa.jpl.labcas.data_access_api.utils.UrlUtils;
 import gov.nasa.jpl.labcas.data_access_api.utils.XmlParser;
 
@@ -63,7 +64,7 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 			@QueryParam("core") List<String> cores, @QueryParam("action") String action, @QueryParam("id") String id,
 			@QueryParam("field") String field, @QueryParam("value") List<String> values) {
 		
-		LOG.info("UpdateById request: cores="+cores+" action="+action+" id="+id+" field="+field+" values="+values);
+		LOG.info("/updateById request: cores="+cores+" action="+action+" id="+id+" field="+field+" values="+values);
 		
 	    	// execute update across all cores
 	    	int numRecordsUpdated = 0;
@@ -82,7 +83,7 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 		    	}
 		    	doc.put(query, metadata);
 		    	
-		    	// invoke metadata update service for each core separately
+		    	// execute metadata updates for each core separately
 		    	for (String core : cores) {
 		    		numRecordsUpdated += this._update(getBaseUrl(core), action, doc);
 		    	}
@@ -101,10 +102,34 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 	@POST
 	@Path("/update")
 	@Consumes(MediaType.APPLICATION_XML)
-	public Response update(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext, String content) {
-		// TODO Auto-generated method stub
-		LOG.info(content);
-		return Response.status(200).entity("OK").build();
+	public Response update(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext, String document) {
+		
+		LOG.info("/update request: " + document);
+		
+		int numRecordsUpdated = 0;
+		try {
+			
+			// parse input document
+			UpdateDocumentParser parser = new UpdateDocumentParser(document);
+			String action = parser.getAction();
+			String[] cores = parser.getCore().split(",");
+			HashMap<String, Map<String,List<String>>> doc = parser.getDoc();
+			
+			// execute metadata updates for each core separately
+			for (String core : cores) {
+				numRecordsUpdated += this._update(getBaseUrl(core.trim()), action, doc);
+			}
+		
+		} catch(Exception e) {
+	    		e.printStackTrace();
+	    		LOG.warning(e.getMessage());
+	    		return Response.status(500).entity(e.getMessage()).build();
+		}
+		
+		String message = "Total number of records updated: "+numRecordsUpdated+" (across all cores).";
+		return Response.status(200).entity( message ).build();
+
+		
 	}
 	
 	/**
