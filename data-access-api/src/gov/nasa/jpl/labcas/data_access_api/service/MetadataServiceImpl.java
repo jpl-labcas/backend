@@ -104,18 +104,19 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 	@Override
 	@POST
 	@Path("/update")
-	@Consumes(MediaType.APPLICATION_XML)
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_XML })
 	public Response update(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext, @Context HttpHeaders headers,
 			String document) {
 		
 		LOG.info("/update request: " + document);
-		LOG.info("/update content type: " + headers.getHeaderString(HttpHeaders.CONTENT_TYPE));
+		String contentType = headers.getHeaderString(HttpHeaders.CONTENT_TYPE);
+		LOG.info("/update content type: " + contentType);
 				
 		int numRecordsUpdated = 0;
 		try {
 			
 			// parse input document
-			UpdateDocumentParser parser = new UpdateDocumentParser(document);
+			UpdateDocumentParser parser = new UpdateDocumentParser(document, contentType);
 			String action = parser.getAction();
 			String[] cores = parser.getCores();
 			HashMap<String, Map<String,List<String>>> doc = parser.getDoc();
