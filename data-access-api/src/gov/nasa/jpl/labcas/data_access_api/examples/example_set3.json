@@ -1,0 +1,17 @@
+{
+   "core": "files",
+   "action": "set",
+   "updates": [
+      {
+         "query": "CollectionId:Boston_University_Lung_Tumor_Sequencing&FileType:chemical/seq-na-fastq",
+         "fields": [
+            {
+               "name": "Stain",
+               "values": [
+                  "\"[{A&B&C}]\"",
+               ]
+            }
+         ]
+      }
+   ]
+}

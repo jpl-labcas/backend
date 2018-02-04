@@ -103,11 +103,14 @@ public class UpdateDocumentParser {
 		    		JSONObject field = fields.getJSONObject(j);
 		    	
 		    		String fieldName = field.getString("name");
-		    		JSONArray values = field.getJSONArray("values");
 		    		List<String> fieldValues = new ArrayList<String>();
-		    		for (int k=0; k<values.length(); k++) {
-		    			String value = values.getString(k);
-		    			fieldValues.add(value.trim());
+		    		
+		    		if (field.has("values")) {
+			    		JSONArray values = field.getJSONArray("values");
+			    		for (int k=0; k<values.length(); k++) {
+			    			String value = values.getString(k);
+			    			fieldValues.add(value.trim());
+			    		}
 		    		}
 		    		
 		    		metadata.put(fieldName, fieldValues);
