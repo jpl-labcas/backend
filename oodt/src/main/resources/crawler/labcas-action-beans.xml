@@ -54,6 +54,21 @@ the License.
       </list>
     </property>
   </bean>
+  <bean id="OhifImageViewerPostIngestionAction2" lazy-init="true" class="gov.nasa.jpl.edrn.labcas.actions.OhifImageViewerPostIngestionAction2">
+    <property name="description" value="Publishes DICOM images to the dcm4chee archive" />
+    <property name="extensions" value="dcm" />
+    <property name="properties" ref="labcasProperties"/>
+    <property name="phases">
+      <list>
+        <value type="java.lang.String">postIngestSuccess</value>
+      </list>
+    </property>
+    <property name="executeCommand">
+    		<value>
+    		/usr/local/bin/docker run --rm --network=dcm4chee_default -v /Users/cinquini/data/EDRN_DATA/MAST/MastDicomData:/data dcm4che/dcm4che-tools:5.10.5 storescu -cDCM4CHEE@arc:11112 /data/1/2.16.840.1.114362.1.6.6.13.17523.10459015738.468138898.379.2127.dcm
+    		</value>
+    </property>
+  </bean>
   
   <bean id="labcasProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
     <property name="ignoreResourceNotFound" value="true" />

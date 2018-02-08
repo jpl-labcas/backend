@@ -65,7 +65,7 @@
       <property name="PCS_MetFileExtension" value="met" />
       <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory" />
       <property name="PCS_ActionRepoFile" value="file:[LABCAS_HOME]/cas-crawler/policy/crawler-config.xml" envReplace="true" />
-      <property name="PCS_ActionsIds" value="QuipImageViewerPostIngestionAction,OhifImageViewerPostIngestionAction,LabcasPostIngestionAction"/>
+      <property name="PCS_ActionsIds" value="QuipImageViewerPostIngestionAction,OhifImageViewerPostIngestionAction2,LabcasPostIngestionAction"/>
     </configuration>
     
   </task>
@@ -86,7 +86,7 @@
       <property name="PCS_MetFileExtension" value="met" />
       <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory" />
       <property name="PCS_ActionRepoFile" value="file:[LABCAS_HOME]/cas-crawler/policy/crawler-config.xml" envReplace="true" />
-      <property name="PCS_ActionsIds" value="QuipImageViewerPostIngestionAction,OhifImageViewerPostIngestionAction,LabcasPostIngestionAction"/>
+      <property name="PCS_ActionsIds" value="QuipImageViewerPostIngestionAction,OhifImageViewerPostIngestionAction2,LabcasPostIngestionAction"/>
     </configuration>
     
   </task>
