@@ -64,7 +64,8 @@ the License.
       </list>
     </property>
     <property name="executeCommand">
-    		<value>/usr/local/bin/docker run --rm --network=dcm4chee_default -v [FileLocation]:/archive dcm4che/dcm4che-tools:5.10.5 storescu -cDCM4CHEE@arc:11112 /archive/[ProductName]</value>
+    		<!-- note: cannot use [LABCAS_ARCHIVE] as location because Docker won't mount symbolic links -->
+    		<value>/usr/bin/docker run --rm --network=dcm4chee_default -v /labcas-data/[CollectionId]/[DatasetId]/[DatasetVersion]:/archive dcm4che/dcm4che-tools:5.10.5 storescu -cDCM4CHEE@arc:11112 /archive/[ProductName]</value>
     </property>
   </bean>
   
