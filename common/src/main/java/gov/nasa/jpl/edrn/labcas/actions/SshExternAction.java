@@ -12,7 +12,6 @@ import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.commons.exec.ExecUtils;
 
-import gov.nasa.jpl.edrn.labcas.Constants;
 import gov.nasa.jpl.edrn.labcas.utils.GeneralUtils;
 
 /**
@@ -24,32 +23,31 @@ import gov.nasa.jpl.edrn.labcas.utils.GeneralUtils;
  */
 public class SshExternAction extends CrawlerAction {
 
-	private String executeCommand;
-	private String workingDir;
+	protected String executeCommand;
+	protected String workingDir;
 
 	// compatible file extensions
-	private String extensions = "";
+	protected String extensions = "";
 
-	private Set<String> extensionsSet = new HashSet<String>();
+	protected Set<String> extensionsSet = new HashSet<String>();
 
 	// parameters for remote ssh execution
-	private String sshHost = null;
-	private String sshUser = null;
+	protected String sshHost = null;
+	protected String sshUser = null;
 
 	private final static String NEWLINE = System.getProperty("line.separator");
 
 	/**
 	 * File ~/labcas.properties
 	 */
-	private Properties properties = new Properties();
+	protected Properties properties = new Properties();
 
 	public SshExternAction() {
 		super();
 	}
 
 	/**
-	 * Executes the external command if the file matches one of the designated
-	 * extensions.
+	 * Executes the external command if the file matches one of the designated extensions.
 	 * 
 	 * @param product
 	 * @param productMetadata
@@ -59,33 +57,30 @@ public class SshExternAction extends CrawlerAction {
 	@Override
 	public boolean performAction(File product, Metadata productMetadata) throws CrawlerActionException {
 
-		// only proceed if NOOHIF flag is not set
-		if (!productMetadata.containsKey(Constants.METADATA_KEY_NOOHIF)) {
+		// determine file extension
+		String extension = GeneralUtils.getFileExtension(product).toLowerCase();
 
-			// determine file extension
-			String extension = GeneralUtils.getFileExtension(product).toLowerCase();
+		// process compatible extensions
+		if (this.extensionsSet.contains(extension)) {
 
-			// process compatible extensions
-			if (this.extensionsSet.contains(extension)) {
-
-				// execute command
-				try {
-					String envReplacedExecuteCommand = doDynamicReplacement(executeCommand, productMetadata);
-					LOG.info("Executing command: "+envReplacedExecuteCommand);
-					return ExecUtils.callProgram(envReplacedExecuteCommand, LOG,
-							new File(workingDir != null ? doDynamicReplacement(workingDir, productMetadata)
-									: product.getParent())) == 0;
-				} catch (Exception e) {
-					LOG.warning("Failed to execute extern command '" + executeCommand + "' : " + e.getMessage());
-					return false;
-				}
-
+			// execute command
+			try {
+				String envReplacedExecuteCommand = doDynamicReplacement(executeCommand, productMetadata);
+				LOG.info("Executing command: "+envReplacedExecuteCommand);
+				return ExecUtils.callProgram(envReplacedExecuteCommand, LOG,
+						new File(workingDir != null ? doDynamicReplacement(workingDir, productMetadata)
+								: product.getParent())) == 0;
+			} catch (Exception e) {
+				LOG.warning("Failed to execute extern command '" + executeCommand + "' : " + e.getMessage());
+				return false;
 			}
 
-		}
+		} else {
 
-		// success if no action is taken
-		return true;
+			// success if file extension does not match
+			return true;
+			
+		}
 
 	}
 

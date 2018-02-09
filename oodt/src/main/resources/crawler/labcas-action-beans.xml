@@ -54,7 +54,7 @@ the License.
       </list>
     </property>
   </bean>
-  <bean id="OhifImageViewerPostIngestionAction2" lazy-init="true" class="gov.nasa.jpl.edrn.labcas.actions.SshExternAction">
+  <bean id="OhifImageViewerPostIngestionAction2" lazy-init="true" class="gov.nasa.jpl.edrn.labcas.actions.OhifImageViewerPostIngestionAction2">
     <property name="description" value="Publishes DICOM images to the dcm4chee archive" />
     <property name="extensions" value="dcm" />
     <property name="properties" ref="labcasProperties"/>
