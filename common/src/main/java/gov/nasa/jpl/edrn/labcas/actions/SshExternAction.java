@@ -110,9 +110,9 @@ public class SshExternAction extends CrawlerAction {
 
 		// wrap command through remote SSH login
 		if (sshHost != null) {
-			this.executeCommand = "ssh " + sshUser + "@" + sshHost + " <<'ENDSSH'" + NEWLINE
+			this.executeCommand = "ssh " + sshUser + "@" + sshHost + " \""
 		                        + this.executeCommand 
-		                        + NEWLINE + "ENDSSH";
+		                        + "\"";
 		}
 
 	}

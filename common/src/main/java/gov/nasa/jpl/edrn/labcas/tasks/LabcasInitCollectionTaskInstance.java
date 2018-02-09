@@ -48,6 +48,7 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 			String collectionName =  metadata.getMetadata(Constants.METADATA_KEY_COLLECTION_NAME);
 			String productTypeName = collectionName.replaceAll("\\s+", "_");
 			metadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName); // needed for file ingestion
+			metadata.replaceMetadata(Constants.METADATA_KEY_COLLECTION_ID, productTypeName);
 			
 			// retrieve DatasetId, or generate it from "DatasetName"
 			String datasetId = metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);

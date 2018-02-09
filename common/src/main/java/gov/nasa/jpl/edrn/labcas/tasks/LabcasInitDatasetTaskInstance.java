@@ -40,7 +40,8 @@ public class LabcasInitDatasetTaskInstance implements WorkflowTaskInstance {
 			String collectionName =  datasetMetadata.getMetadata(Constants.METADATA_KEY_COLLECTION_NAME);
 			String productTypeName = collectionName.replaceAll("\\s+", "_");
 			metadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName);      // needed for file ingestion by OODT
-			metadata.replaceMetadata(Constants.METADATA_KEY_COLLECTION_NAME, collectionName); 
+			metadata.replaceMetadata(Constants.METADATA_KEY_COLLECTION_NAME, collectionName);
+			metadata.replaceMetadata(Constants.METADATA_KEY_COLLECTION_ID, productTypeName);
 			
 			// generate "DatasetId" from "DatasetName", if passed through XML/RPC parameters
 			// otherwise generate a UUID
