@@ -61,6 +61,7 @@ public class SolrUtils {
 				          "WorkflowId", "WorkflowName", "ProcessingNode",
 				          Constants.METADATA_KEY_NEW_VERSION,
 				          Constants.METADATA_KEY_UPDATE_COLLECTION,
+				          Constants.METADATA_KEY_UPDATE_DATASET,
 				          Constants.METADATA_KEY_UPLOAD_FILES,
 				          Constants.METADATA_KEY_WORKFLOW_ORDER));
 	
@@ -376,7 +377,7 @@ public class SolrUtils {
 		if (doc.getField(Constants.METADATA_KEY_COLLECTION_NAME)==null)
 			doc.addField(Constants.METADATA_KEY_COLLECTION_NAME, productType.getName().replaceAll("_", " "));
 		if (doc.getField(Constants.METADATA_KEY_COLLECTION_DESCRIPTION)==null)
-			doc.addField(Constants.METADATA_KEY_COLLECTION_DESCRIPTION, productType.getDescription());
+			doc.addField(Constants.METADATA_KEY_COLLECTION_DESCRIPTION, productType.getName().replaceAll("_", " "));
 		
 		return doc;
 	}

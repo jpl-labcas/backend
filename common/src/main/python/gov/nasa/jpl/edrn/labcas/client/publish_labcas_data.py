@@ -71,7 +71,8 @@ if __name__ == '__main__':
                         evalue = escape(value)
                         print '\t%s = %s' % (key, evalue)
                         # [Dataset] section: prefix all fields with 'Dataset:'
-                        if section=='Dataset' and key != 'DatasetId' and key != 'DatasetName' and key != 'DatasetDescription':
+                        if (section=='Dataset' 
+                            and key != 'DatasetId' and key != 'DatasetName' and key != 'DatasetDescription' and key != 'UpdateDataset'):
                             metadata['Dataset:%s'%key] = evalue
                         else:
                             metadata[key] = evalue
@@ -84,7 +85,7 @@ if __name__ == '__main__':
             sys.exit(-1)
 
     # check mandatory fields
-    for key in ['CollectionName', 'CollectionDescription', 'DatasetName', 'OwnerPrincipal']:
+    for key in ['CollectionName', 'DatasetName']:
         if not metadata.get(key, None):
             print 'Mandatory metadata field: %s is missing, exiting' % key
             sys.exit(-1)
