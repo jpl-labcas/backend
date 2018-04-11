@@ -40,7 +40,14 @@ public class LabcasInitDatasetTaskInstance implements WorkflowTaskInstance {
 			String collectionName =  datasetMetadata.getMetadata(Constants.METADATA_KEY_COLLECTION_NAME);
 			String productTypeName = collectionName.replaceAll("\\s+", "_");
 			metadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName);      // needed for file ingestion by OODT
-			metadata.replaceMetadata(Constants.METADATA_KEY_COLLECTION_NAME, collectionName); 
+			metadata.replaceMetadata(Constants.METADATA_KEY_COLLECTION_NAME, collectionName);
+			metadata.replaceMetadata(Constants.METADATA_KEY_COLLECTION_ID, productTypeName);
+			
+	        boolean updateDataset = true;
+	        if (metadata.containsKey(Constants.METADATA_KEY_UPDATE_DATASET)) {
+	        		updateDataset = Boolean.parseBoolean(metadata.getMetadata(Constants.METADATA_KEY_UPDATE_DATASET).toLowerCase());
+	        }
+
 			
 			// generate "DatasetId" from "DatasetName", if passed through XML/RPC parameters
 			// otherwise generate a UUID
@@ -77,7 +84,9 @@ public class LabcasInitDatasetTaskInstance implements WorkflowTaskInstance {
 	        		                 FileManagerUtils.getDatasetArchiveDir(productTypeName, datasetId, datasetVersion).getAbsolutePath());
 	        
 			// publish dataset to public Solr index
-			SolrUtils.publishDataset(datasetMetadata);
+	        if (updateDataset) {
+	        		SolrUtils.publishDataset(metadata);
+	        }
 		
 		} catch(Exception e) {
 			e.printStackTrace();

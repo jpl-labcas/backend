@@ -1,0 +1,8 @@
+<updates core="datasets" action="remove">
+   <update>
+      <query>CollectionId:Boston_University_Lung_Tumor_Sequencing</query>
+      <field name="Cohort">
+         <value>Lahey Hospital and Medical Center Lung Cancer</value>
+      </field>
+   </update>
+</updates>

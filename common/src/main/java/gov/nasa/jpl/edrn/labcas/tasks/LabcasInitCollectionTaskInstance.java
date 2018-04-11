@@ -35,7 +35,7 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 		
 	@Override
 	public void run(Metadata metadata, WorkflowTaskConfiguration config) throws WorkflowTaskInstanceException {
-				        
+						        
 		try {
 							
 			// NOTE: "metadata" is global workflow metadata, passed on through the workflow tasks
@@ -48,6 +48,7 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 			String collectionName =  metadata.getMetadata(Constants.METADATA_KEY_COLLECTION_NAME);
 			String productTypeName = collectionName.replaceAll("\\s+", "_");
 			metadata.replaceMetadata(Constants.METADATA_KEY_PRODUCT_TYPE, productTypeName); // needed for file ingestion
+			metadata.replaceMetadata(Constants.METADATA_KEY_COLLECTION_ID, productTypeName);
 			
 			// retrieve DatasetId, or generate it from "DatasetName"
 			String datasetId = metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
@@ -101,10 +102,10 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 	        
 	        // create or update the Collection==ProductType metadata, unless otherwise indicated
 	        boolean updateCollection = true;
-	        if ( metadata.containsKey(Constants.METADATA_KEY_UPDATE_COLLECTION)) {
-	        	updateCollection = Boolean.parseBoolean( metadata.getMetadata(Constants.METADATA_KEY_UPDATE_COLLECTION) );
+	        if (metadata.containsKey(Constants.METADATA_KEY_UPDATE_COLLECTION)) {
+	        		updateCollection = Boolean.parseBoolean(metadata.getMetadata(Constants.METADATA_KEY_UPDATE_COLLECTION).toLowerCase());
 	        }
-			
+
 	        if (updateCollection) {
 	        	
 				// create or update the File Manager product type
@@ -113,6 +114,12 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 				// reload the catalog configuration so that the new product type is available for publishing
 				FileManagerUtils.reload();
 			
+	        }
+	        
+	        // create or update the Dataset metadata, unless otherwise indicated
+	        boolean updateDataset = true;
+	        if (metadata.containsKey(Constants.METADATA_KEY_UPDATE_DATASET)) {
+	        		updateDataset = Boolean.parseBoolean( metadata.getMetadata(Constants.METADATA_KEY_UPDATE_DATASET).toLowerCase() );
 	        }
 			
 	        // add version to dataset metadata (if metadata flag "newVersion" is present)
@@ -131,11 +138,13 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 			// publish collection to the public Solr index
 			// starting from the product type archive directory which contains the newly created "product-types.xml" file
 	        if (updateCollection) {
-	        	SolrUtils.publishCollection( FileManagerUtils.getProductTypeDefinitionDir(productTypeName) );
+	        		SolrUtils.publishCollection(FileManagerUtils.getProductTypeDefinitionDir(productTypeName));
 	        }
 
 			// publish dataset to the public Solr index
-			SolrUtils.publishDataset(datasetMetadata);
+	        if (updateDataset) {
+	        		SolrUtils.publishDataset(datasetMetadata);
+	        }
 		
 		} catch(Exception e) {
 			e.printStackTrace();

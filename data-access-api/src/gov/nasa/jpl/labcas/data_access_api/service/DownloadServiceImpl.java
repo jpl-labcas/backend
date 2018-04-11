@@ -1,7 +1,6 @@
 package gov.nasa.jpl.labcas.data_access_api.service;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +23,7 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 
 import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
+import gov.nasa.jpl.labcas.data_access_api.utils.UrlUtils;
 
 @Path("/")
 @Produces(MediaType.TEXT_PLAIN)
@@ -298,7 +298,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			try {
 				// example:  https://mcl-labcas.jpl.nasa.gov/ui/download/CBIS-DDSM.Calc-Training_Full_Mammogram_Images.1.3.6.1.4.1.9590.100.1.2.419956083811554531015420980802782572234.dcm
 				// note: spaces are URL-encoded as '+' but they should really be '%20'
-				results += this.dataAccessApiBaseUrl + URLEncoder.encode(id, "UTF-8").replaceAll("\\+", "%20") + "\n";
+				results += this.dataAccessApiBaseUrl + UrlUtils.encode(id) + "\n";
 			} catch(UnsupportedEncodingException e) {
 				// do not include thie file in the list of results
 				LOG.warning("Error encoding download URL for file id="+id);

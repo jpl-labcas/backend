@@ -1,0 +1,8 @@
+<updates core="datasets" action="add">
+   <update>
+      <query>CollectionId:Boston_University_Lung_Tumor_Sequencing</query>
+      <field name="Cohort">
+         <value>Pre-Cancer Screening</value>
+      </field>
+   </update>
+</updates>

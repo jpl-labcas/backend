@@ -54,6 +54,20 @@ the License.
       </list>
     </property>
   </bean>
+  <bean id="OhifImageViewerPostIngestionAction2" lazy-init="true" class="gov.nasa.jpl.edrn.labcas.actions.OhifImageViewerPostIngestionAction2">
+    <property name="description" value="Publishes DICOM images to the dcm4chee archive" />
+    <property name="extensions" value="dcm" />
+    <property name="properties" ref="labcasProperties"/>
+    <property name="phases">
+      <list>
+        <value type="java.lang.String">postIngestSuccess</value>
+      </list>
+    </property>
+    <property name="executeCommand">
+    		<!-- note: cannot use [LABCAS_ARCHIVE] as location because Docker won't mount symbolic links -->
+    		<value>/usr/bin/docker run --rm --network=dcm4chee_default -v /labcas-data/[CollectionId]/[DatasetId]/[DatasetVersion]:/archive dcm4che/dcm4che-tools:5.10.5 storescu -cDCM4CHEE@arc:11112 /archive/[ProductName]</value>
+    </property>
+  </bean>
   
   <bean id="labcasProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
     <property name="ignoreResourceNotFound" value="true" />

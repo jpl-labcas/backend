@@ -3,18 +3,20 @@
 
 	<!-- PGE commands -->
 	<exe dir="[JobDir]" shell="/bin/bash">
-		<cmd>mkdir -p output</cmd>
-		<cmd>echo 'xyz' > output/tensorflow-output.txt</cmd>
+		<!-- load Python virtual environment with tensorflow -->
+		<cmd>source /Users/cinquini/workbench/tensorflow/bin/activate</cmd>
+		<!-- execute script  -->
+		<cmd>python [LABCAS_HOME]/python/gov/nasa/jpl/edrn/labcas/pges/mnist_softmax.py --data_dir [data_dir] --num_images [num_images]</cmd>
 	</exe>
 
 	<customMetadata>
 		<metadata key="ProductionDateTime" val="[DATE.UTC]" />
-		<metadata key="JobDir" val="[PGE_ROOT]/tensorflow/[JobId]" />
+		<metadata key="JobDir" val="[PGE_ROOT]/tensorflow/jobs/[JobId]" />
 	</customMetadata>
 
 	<!-- CAS Crawler directives -->
 	<output>
-		<dir path="[JobDir]/output" createBeforeExe="false">
+		<dir path="[JobDir]" createBeforeExe="false">
 			<!-- metadata extractors matching specific files -->
 			<files regExp=".*\.txt"
 				metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"

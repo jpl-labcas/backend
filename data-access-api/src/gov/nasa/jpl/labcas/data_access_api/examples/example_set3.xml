@@ -1,0 +1,8 @@
+<updates core="files" action="set">
+   <update>
+      <query>CollectionId:Boston_University_Lung_Tumor_Sequencing&amp;FileType:chemical/seq-na-fastq</query>
+      <field name="Stain">
+         <value>A&amp;B C&amp;D</value>
+      </field>
+   </update>
+</updates>

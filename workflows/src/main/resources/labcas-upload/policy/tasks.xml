@@ -30,7 +30,7 @@
     
       <!-- collection -->
       <metfield name="CollectionName" />
-      <metfield name="CollectionDescription" />
+      <!-- <metfield name="CollectionDescription" />
       <metfield name="Discipline" />
       <metfield name="Institution" />
       <metfield name="InstitutionId" />
@@ -39,11 +39,11 @@
       <metfield name="Organ" />
       <metfield name="OrganId" />
       <metfield name="OwnerPrincipal"/>
-      <metfield name="CollaborativeGroup"/>
+      <metfield name="CollaborativeGroup"/> -->
       
       <!-- dataset -->
       <metfield name="DatasetName" />
-      <metfield name="DatasetDescription" />
+      <!-- <metfield name="DatasetDescription" /> -->
       
     </requiredMetFields>
     

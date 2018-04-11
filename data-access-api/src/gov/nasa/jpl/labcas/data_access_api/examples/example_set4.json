@@ -1,0 +1,14 @@
+{
+   "core": "datasets",
+   "action": "set",
+   "updates": [
+      {
+         "query": "CollectionId:Boston_University_Lung_Tumor_Sequencing",
+         "fields": [
+            {
+               "name": "Cohort"
+            }
+         ]
+      }
+   ]
+}

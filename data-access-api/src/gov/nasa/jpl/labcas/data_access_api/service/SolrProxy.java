@@ -16,7 +16,7 @@ import gov.nasa.jpl.labcas.data_access_api.filter.AuthenticationFilter;
 import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
 
 /**
- * Base class to proxy query/download requests to a multi-core Solr server.
+ * Base class to proxy query/download/metadata requests to a multi-core Solr server.
  * 
  * @author Luca Cinquini
  *
@@ -44,11 +44,9 @@ public class SolrProxy {
 	protected static String publicOwnerPrincipal;
 
 
-	// IMPORTANT: must re-use the same SolrServer instance across all requests
-	// to prevent memory leaks
+	// IMPORTANT: must re-use the same SolrServer instance across all requests to prevent memory leaks
 	// see https://issues.apache.org/jira/browse/SOLR-861
-	// this method instantiates the shared instances of SolrServer (one per
-	// core)
+	// This method instantiates the shared instances of SolrServer (one per core)
 	protected static Map<String, SolrServer> solrServers = new HashMap<String, SolrServer>();
 
 	static {
@@ -96,6 +94,8 @@ public class SolrProxy {
 			
 			if (ugroups.contains(superOwnerPrincipal)) {
 				// super user --> no query constraint
+				//String testOwnerPrincipal = "uid=testuser,dc=edrn,dc=jpl,dc=nasa,dc=gov";
+				//return "OwnerPrincipal:(\""+testOwnerPrincipal+"\"" + ")";
 				return "";
 			} else {
 				accessControlQueryStringValue = "OwnerPrincipal:(\""+publicOwnerPrincipal+"\"";
