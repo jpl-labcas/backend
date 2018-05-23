@@ -80,7 +80,7 @@ def main():
            # use DICOM identifier
            #dst_path = '%s/%s.dcm' % (target_version_dir, fid)
            # use original filename
-           dst_path = '%s/%s.dcm' % (target_version_dir, filename)
+           dst_path = '%s/%s' % (target_version_dir, filename)
            if not os.path.exists(dst_path):
               print('\nCopying DICOM file=%s --> %s' % (src_path, dst_path))
               copyfile(src_path, dst_path)
