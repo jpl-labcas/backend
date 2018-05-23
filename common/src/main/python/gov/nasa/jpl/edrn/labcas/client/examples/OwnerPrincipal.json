@@ -1,7 +1,6 @@
 {
-    "id:MAST*":
+    "id:MD_Anderson_Pancreas_IPMN_*":
         {
-            "OwnerPrincipal": ["cn=Pollack University of Miami,dc=edrn,dc=jpl,dc=nasa,dc=gov",
-                               "cn=Harris Massachusetts General Hospital,dc=edrn,dc=jpl,dc=nasa,dc=gov"]
+            "OwnerPrincipal": ["cn=Amos Geisel School of Medicine,ou=groups,o=MCL"]
         }
 }

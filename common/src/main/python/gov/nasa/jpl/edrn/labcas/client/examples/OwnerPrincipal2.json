@@ -1,0 +1,7 @@
+{
+    "id:MAST*":
+        {
+            "OwnerPrincipal": ["cn=Pollack University of Miami,dc=edrn,dc=jpl,dc=nasa,dc=gov",
+                               "cn=Harris Massachusetts General Hospital,dc=edrn,dc=jpl,dc=nasa,dc=gov"]
+        }
+}
