@@ -110,14 +110,19 @@ def download_dataset(sftp_server, csv_file_path):
                 # examples of 'File Location':
                 # \\ap1314-dsr\Images2\MMHCC Image Archive\Human Breast\MC02-0720.sid.svs
                 # \\ap1314-dsr\Images3\MC04\MC04-0006.sid.svs
+                # \\mbp-truenas.mousebiology.org\aperio\Images2\2016-03-14\EX16-0058DU-HE-EH.svs
                 if 'images' in src_file_path.lower() and src_file_path.lower().endswith('svs'):
                     print 'Attempting to download SVS file: %s' % src_file_path
                     #truncated_file_path = re.sub('.*(?i)images\d?','', src_file_path)
                     parts = src_file_path.split("\\")
-                    sftp_path = "/".join(parts[3:]) # remove '\\ap1314-dsr'
-                    sftp_path = sftp_path.replace('images', 'Images')
-                    target_file_path = "%s/%s" % (target_dir, parts[-1])
-                    print 'Matching to target_file_path: %s' % target_file_path
+                    for idx, part in enumerate(parts):
+                        # start path from here
+                        if 'images' in part.lower():             
+                            # remove '\\ap1314-dsr' or '\\mbp-truenas.mousebiology.org\aperio'       
+                            sftp_path = "/".join(parts[idx:]) 
+                            sftp_path = sftp_path.replace('images', 'Images')
+                            target_file_path = "%s/%s" % (target_dir, parts[-1])
+                            print 'Matching to target_file_path: %s' % target_file_path
                     
                     if target_file_path in files:
                         print 'Target file already found: %s' % target_file_path
