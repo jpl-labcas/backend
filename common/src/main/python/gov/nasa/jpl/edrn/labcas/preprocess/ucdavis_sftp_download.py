@@ -159,11 +159,11 @@ def extract_file_metadata(metadata, met_filepath):
               value = str(metadata[cvs_key])
               # map NCIT code to its value, or default to the code
               if cvs_key == 'NCIT DIAGNOSIS CODE':
-                value  = ncit_diagnosis_code.get(value, default=value)
+                value  = ncit_diagnosis_code.get(value, value)
               elif cvs_key == 'NCIT ORGAN CODE':
-                value  = ncit_organ_code.get(value, default=value)
+                value  = ncit_organ_code.get(value, value)
               elif cvs_key == 'NCIT PROCEDURE':
-                value  = ncit_procedure_code.get(value, default=value)
+                value  = ncit_procedure_code.get(value, value)
               
               #print 'key=%s --> value=%s' % (cvs_key, metadata[cvs_key])
               file.write('\t<keyval type="vector">\n')
