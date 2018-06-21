@@ -69,6 +69,13 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_NAME, datasetName); 
 			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_COLLECTION_NAME, collectionName); 
 			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_COLLECTION_ID, productTypeName);
+			if (productTypeMetadata.containsKey(Constants.METADATA_KEY_PARENT_DATASET_ID)) {
+				datasetMetadata.replaceMetadata(
+							Constants.METADATA_KEY_PARENT_DATASET_ID, 
+							productTypeMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID)
+						);
+				productTypeMetadata.removeMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
+			}
 			
 	        // optionally, add collection metadata from CollectionMetadata.xmlmet
 	        Metadata _productTypeMetadata = FileManagerUtils.readCollectionMetadata(productTypeName);

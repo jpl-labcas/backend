@@ -2,6 +2,8 @@ import xmlrpclib
 import time
 import solr
 import os
+import json
+import urllib2
 
 class LabcasClient(object):
     '''
@@ -95,17 +97,35 @@ class LabcasClient(object):
             _metadata = metadata.copy()
             _metadata["DatasetName"] = _metadata["DatasetName"] + " AND " +dirName.replace(rootDir,'')
             _metadata["DatasetId"] = _metadata["DatasetId"] + dirName.replace(rootDir,'')
-            # publish dataset
+            
+            if rootDir == dirName:
+                parentDatasetId = None
+            else:
+                parentDatasetId  = "/".join(__metadata["id"].split("/")[0:-1])
+
+            # publish data and metadata
             if len(fileList)>0:
-                print('Publishing dataset: %s' % _metadata["DatasetId"])
+                print('Publishing data for dataset: %s' % _metadata["DatasetId"])
+                _metadata["ParentDatasetId"] = parentDatasetId
                 self.uploadDataset(_metadata["DatasetId"], _metadata, newVersion, inPlace, debug)
                 
             else:
-                # publish this dataset
-                pass
+                # publish metadata only
+                print('Publishing metadata for dataset: %s' % _metadata["DatasetId"])
                 
-            #for fname in fileList:
-            #    print('\t%s' % fname)
+                __metadata = {}
+                __metadata["DatasetName"] = _metadata["DatasetName"] 
+                __metadata["id"] = collectionId + "/" + _metadata["DatasetId"] 
+                __metadata["CollectionName"] = _metadata["CollectionName"] 
+                __metadata["CollectionId"] = collectionId
+                __metadata['DatasetVersion'] = 1 # FIXME
+                __metadata['ParentDatasetId'] = parentDatasetId
+                
+                
+                json_data_str = self._to_json(__metadata)
+                print json_data_str
+                self._post_json(json_data_str, "http://localhost:8983/solr")
+                
         
     def uploadDataset(self, datasetId, metadata, newVersion=False, inPlace=False, debug=False):
         
@@ -264,3 +284,26 @@ class LabcasClient(object):
         print "Workflow id=%s name=%s" % (workflowDict['id'], workflowDict['name'])
         for task in workflowDict['tasks']:
             print "Task: %s" % task
+
+    def _to_json(self, data):
+        '''
+        Converts a Python dictionary or list to json format
+        (with unicode encoding).
+        '''
+        datastr = json.dumps(
+            data,
+            indent=4,
+            sort_keys=True,
+            separators=(',', ': '),
+            ensure_ascii=False
+        )
+        return datastr.encode('utf8')
+    
+    def _post_json(self, json_data_str, solr_url):
+        
+        req = urllib2.Request(self._get_solr_post_url(solr_url, "datasets"))
+        req.add_header('Content-Type', 'application/json')
+        response = urllib2.urlopen(req, json_data_str)
+        
+    def _get_solr_post_url(self, solr_base_url, core):
+        return "%s/%s/update/json/docs?commit=true" % (solr_base_url, core)
