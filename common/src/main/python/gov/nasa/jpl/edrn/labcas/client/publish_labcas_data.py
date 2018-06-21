@@ -108,8 +108,8 @@ if __name__ == '__main__':
        else:
           labcasClient.getWorkflowById("urn:edrn:LabcasUploadWorkflow")
 
-    # upload dataset staged in directory 'mydatadir'
-    labcasClient.uploadCollection(dataset_id, metadata, inPlace=inPlace, debug=debug)
+    # traverse directory starting at Collection + top level dataset
+    labcasClient.traverseDir(dataset_id, metadata, inPlace=inPlace, debug=debug)
 
     # query the product types from the XML/RPC File Manager interface
     if debug:

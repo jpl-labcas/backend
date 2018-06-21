@@ -357,7 +357,7 @@ public class SolrUtils {
 			if (IGNORED_FIELDS.contains(key))  {
 				// do nothing
 				
-			} else if (key.equals(Constants.METADATA_KEY_PRODUCT_TYPE)) {
+			} else if (key.equals(Constants.METADATA_KEY_PRODUCT_TYPE) || key.equals(Constants.METADATA_KEY_COLLECTION_ID)) {
 				// ignore, same as collection "id"
 				
 			} else {

@@ -1,6 +1,7 @@
 import xmlrpclib
 import time
 import solr
+import os
 
 class LabcasClient(object):
     '''
@@ -67,8 +68,46 @@ class LabcasClient(object):
                 print e
         if debug:
            print response
+           
+    def traverseDir(self, datasetId, metadata, newVersion=False, inPlace=False, debug=False):
         
-    def uploadCollection(self, datasetId, metadata, newVersion=False, inPlace=False, debug=False):
+        try:
+            collectionId = metadata['CollectionId']
+        except KeyError:
+            collectionId = metadata['CollectionName'].replace(" ","_");
+        try:
+            datasetId = metadata['DatasetId']
+        except KeyError:
+            datasetId = metadata['DatasetName'].replace(" ","_");
+        print "Collection Id=%s Dataset Id=%s" % (collectionId, datasetId)
+        
+        # determine starting directory
+        if inPlace:
+            rootDir = os.environ.get("LABCAS_ARCHIVE") + "/" + collectionId + "/" + datasetId
+        else:
+            rootDir = os.environ.get("LABCAS_STAGING") + "/" + collectionId + "/" + datasetId
+        print "rootDir=%s" % rootDir
+        
+        print metadata
+        for dirName, subdirList, fileList in os.walk(rootDir):
+            print('Found directory: %s' % dirName)
+            
+            _metadata = metadata.copy()
+            _metadata["DatasetName"] = _metadata["DatasetName"] + " AND " +dirName.replace(rootDir,'')
+            _metadata["DatasetId"] = _metadata["DatasetId"] + dirName.replace(rootDir,'')
+            # publish dataset
+            if len(fileList)>0:
+                print('Publishing dataset: %s' % _metadata["DatasetId"])
+                self.uploadDataset(_metadata["DatasetId"], _metadata, newVersion, inPlace, debug)
+                
+            else:
+                # publish this dataset
+                pass
+                
+            #for fname in fileList:
+            #    print('\t%s' % fname)
+        
+    def uploadDataset(self, datasetId, metadata, newVersion=False, inPlace=False, debug=False):
         
         # add 'DatasetId' key, value to other metadata
         metadata['DatasetId'] = datasetId
