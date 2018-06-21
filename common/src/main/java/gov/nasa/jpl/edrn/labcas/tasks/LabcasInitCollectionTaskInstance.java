@@ -81,23 +81,23 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 			// transfer Dataset* metadata from collection-level to dataset-level
 	        // do not override existing values
 	        for (String key : productTypeMetadata.getAllKeys()) {
-	        	if (key.startsWith("Dataset")) {
-	        		// remove leading "Dataset:", if found
-	        		String _key = key.replaceAll("Dataset:",""); 
-	        		if (!datasetMetadata.containsKey(_key)) {
-		        		for (String value : productTypeMetadata.getAllMetadata(key)) {
-		        			datasetMetadata.addMetadata(_key, value);
+		        	if (key.startsWith("Dataset")) {
+		        		// remove leading "Dataset:", if found
+		        		String _key = key.replaceAll("Dataset:",""); 
+		        		if (!datasetMetadata.containsKey(_key)) {
+			        		for (String value : productTypeMetadata.getAllMetadata(key)) {
+			        			datasetMetadata.addMetadata(_key, value);
+			        		}
 		        		}
-	        		}
-	        		productTypeMetadata.removeMetadata(key);
-	        	}
+		        		productTypeMetadata.removeMetadata(key);
+		        	}
 	        }
 	        
 	        // transfer OwnerPrincipal
 	        LOG.info("Setting Dataset OwnerPrincipal to:"+metadata.getMetadata(Constants.METADATA_KEY_OWNER_PRINCIPAL));
 	        if (metadata.containsKey(Constants.METADATA_KEY_OWNER_PRINCIPAL)) {
-	        	datasetMetadata.addMetadata(Constants.METADATA_KEY_OWNER_PRINCIPAL, 
-	        			                    metadata.getMetadata(Constants.METADATA_KEY_OWNER_PRINCIPAL));
+		        	datasetMetadata.addMetadata(Constants.METADATA_KEY_OWNER_PRINCIPAL, 
+		        			                    metadata.getMetadata(Constants.METADATA_KEY_OWNER_PRINCIPAL));
 	        }
 	        
 	        // create or update the Collection==ProductType metadata, unless otherwise indicated
