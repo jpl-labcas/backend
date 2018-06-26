@@ -3,7 +3,7 @@
 import os
 import glob
 
-ROOT_DIR = "/Users/cinquini/data/EDRN_DATA/COH_Data_Collection/KINGSTON1"
+ROOT_DIR = "/Users/cinquini/data/EDRN_DATA/COH_Data_Collection"
 
 #for root, dirs, files in os.walk(ROOT_DIR):
 #    if len(dirs) > 0:
@@ -23,8 +23,11 @@ subdirs2 = get_subdirs('%s/*/*' % ROOT_DIR)
 print(subdirs2)
 subdirs3 = get_subdirs('%s/*/*/*' % ROOT_DIR)
 print(subdirs3)
+subdirs4 = get_subdirs('%s/*/*/*/*' % ROOT_DIR)
+print(subdirs4)
 
-max_count = max(len(subdirs1), len(subdirs2), len(subdirs3))
+
+max_count = max(len(subdirs1), len(subdirs2), len(subdirs3), len(subdirs4))
 
 with open('coh.csv','w') as f:
     for i in range(max_count):
@@ -37,7 +40,11 @@ with open('coh.csv','w') as f:
         except:
             f.write(",")
         try:
-            f.write(subdirs3[i])
+            f.write(subdirs3[i]+",")
+        except:
+            f.write(",")
+        try:
+            f.write(subdirs4[i])
         except:
             f.write(",")
         f.write("\n")
