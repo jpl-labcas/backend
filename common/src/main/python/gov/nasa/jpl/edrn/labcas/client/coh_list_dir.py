@@ -3,7 +3,8 @@
 import os
 import glob
 
-ROOT_DIR = "/Users/cinquini/data/EDRN_DATA/COH_Data_Collection"
+#ROOT_DIR = "/Users/cinquini/data/EDRN_DATA/COH_Data_Collection"
+ROOT_DIR = "/labcas-data/COH"
 
 #for root, dirs, files in os.walk(ROOT_DIR):
 #    if len(dirs) > 0:
