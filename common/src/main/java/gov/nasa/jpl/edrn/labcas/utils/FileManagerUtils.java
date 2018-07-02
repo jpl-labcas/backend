@@ -114,7 +114,7 @@ public class FileManagerUtils {
 	 * Utility function to determine the latest version of an archived dataset.
 	 * If not found, the latest version is set to 0.
 	 */
-	public static int findLatestDatasetVersion(final String productTypeName, final String datasetId) {
+	public static int __findLatestDatasetVersion(final String productTypeName, final String datasetId) {
 		
 		File productTypeDir = FileManagerUtils.getProductTypeArchiveDir(productTypeName);
 		File datasetDir = new File(productTypeDir, datasetId);
@@ -352,9 +352,9 @@ public class FileManagerUtils {
 	 * @param datasetVersion
 	 * @return
 	 */
-	public static File getDatasetArchiveDir(final String productTypeName, final String datasetId, final int datasetVersion) {
+	public static File getDatasetArchiveDir(final String productTypeName, final String datasetId) {
 		
-		String dirPath = getProductTypeArchiveDir(productTypeName) + "/" + datasetId + "/" + datasetVersion + "/";
+		String dirPath = getProductTypeArchiveDir(productTypeName) + "/" + datasetId + "/";
 		return new File(dirPath);
 		
 	}

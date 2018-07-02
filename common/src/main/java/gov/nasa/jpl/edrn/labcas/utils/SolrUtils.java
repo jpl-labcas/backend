@@ -357,7 +357,7 @@ public class SolrUtils {
 			if (IGNORED_FIELDS.contains(key))  {
 				// do nothing
 				
-			} else if (key.equals(Constants.METADATA_KEY_PRODUCT_TYPE)) {
+			} else if (key.equals(Constants.METADATA_KEY_PRODUCT_TYPE) || key.equals(Constants.METADATA_KEY_COLLECTION_ID)) {
 				// ignore, same as collection "id"
 				
 			} else {
@@ -393,8 +393,9 @@ public class SolrUtils {
 		SolrInputDocument doc = new SolrInputDocument();
 		
 		// build the composite dataset id
+		// FIXME: also use Constants.METADATA_KEY_PARENT_DATASET_ID)
 		String datasetId = metadata.getMetadata(Constants.METADATA_KEY_COLLECTION_ID) 
-				         + "." 
+				         + "/" 
 				         + metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
 		doc.setField("id", datasetId);
 		
@@ -522,7 +523,7 @@ public class SolrUtils {
 	
 	
 	public static String generateProductId(String productTypeName, String datasetId, String productName) {
-		return productTypeName + "." + datasetId + "." + productName;
+		return productTypeName + "/" + datasetId + "/" + productName;
 	}
 	
 	/**

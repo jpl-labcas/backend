@@ -26,6 +26,7 @@ public interface Constants {
 	public final static String METADATA_KEY_DATASET_ID = "DatasetId";
 	public final static String METADATA_KEY_DATASET_DESCRIPTION = "DatasatDescription";
 	public final static String METADATA_KEY_DATASET_VERSION = "DatasetVersion";
+	public final static String METADATA_KEY_PARENT_DATASET_ID = "ParentDatasetId";
 	
 	public final static String METADATA_KEY_PRODUCT_TYPE_NAME = "ProductTypeName";
 	public final static String METADATA_KEY_PRODUCT_NAME = "ProductName";

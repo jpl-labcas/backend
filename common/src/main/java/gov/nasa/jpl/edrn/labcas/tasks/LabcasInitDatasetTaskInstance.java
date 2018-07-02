@@ -75,13 +75,15 @@ public class LabcasInitDatasetTaskInstance implements WorkflowTaskInstance {
 
 										        
 	        // add  version to dataset metadata (used for generating product unique identifiers)
-	        int datasetVersion = FileManagerUtils.getNextVersion( FileManagerUtils.findLatestDatasetVersion( productTypeName, datasetId ), metadata);
+	        //int datasetVersion = FileManagerUtils.getNextVersion( FileManagerUtils.findLatestDatasetVersion( productTypeName, datasetId ), metadata);
+	        // FIXME
+	        int datasetVersion = 1;
 	        datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+datasetVersion); // dataset metadata
 	        metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+datasetVersion);        // product metadata
 	        	        
 	        // set final product archive directory (same as set by LabcasProductVersioner)
 	        metadata.replaceMetadata(Constants.METADATA_KEY_FILE_PATH, 
-	        		                 FileManagerUtils.getDatasetArchiveDir(productTypeName, datasetId, datasetVersion).getAbsolutePath());
+	        		                 FileManagerUtils.getDatasetArchiveDir(productTypeName, datasetId).getAbsolutePath());
 	        
 			// publish dataset to public Solr index
 	        if (updateDataset) {
