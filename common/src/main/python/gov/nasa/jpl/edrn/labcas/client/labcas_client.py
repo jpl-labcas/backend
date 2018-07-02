@@ -70,7 +70,8 @@ class LabcasClient(object):
         if debug:
            print response
            
-    def traverseDir(self, datasetId, metadata, newVersion=False, inPlace=False, debug=False):
+    # FIXME: obsolete, remove
+    def ___traverseDir(self, datasetId, metadata, newVersion=False, inPlace=False, debug=False):
         
         # FIXME: why passing in datasetId?
         
