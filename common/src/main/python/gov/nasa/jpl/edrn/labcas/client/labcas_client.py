@@ -8,7 +8,6 @@ import urllib2
 class LabcasClient(object):
     '''
     Python client used to interact with a remote Labcas back-end.
-    Mostly for demo and example purposes...
     Available methods are defined in Java class org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager.
     '''
     
@@ -73,6 +72,8 @@ class LabcasClient(object):
            
     def traverseDir(self, datasetId, metadata, newVersion=False, inPlace=False, debug=False):
         
+        # FIXME: why passing in datasetId?
+        
         try:
             collectionId = metadata['CollectionId']
         except KeyError:
@@ -107,7 +108,7 @@ class LabcasClient(object):
             if len(fileList)>0:
                 print('Publishing data for dataset: %s' % _metadata["DatasetId"])
                 _metadata["ParentDatasetId"] = parentDatasetId
-                self.uploadDataset(_metadata["DatasetId"], _metadata, newVersion, inPlace, debug)
+                #self.uploadDataset(_metadata["DatasetId"], _metadata, newVersion, inPlace, debug)
                 
             else:
                 # publish metadata only
@@ -124,7 +125,7 @@ class LabcasClient(object):
                 
                 json_data_str = self._to_json(__metadata)
                 print json_data_str
-                self._post_json(json_data_str, "http://localhost:8983/solr")
+                #self._post_json(json_data_str, "http://localhost:8983/solr")
                 
         
     def uploadDataset(self, datasetId, metadata, newVersion=False, inPlace=False, debug=False):
