@@ -5,6 +5,7 @@ import sys
 from xml.sax.saxutils import escape
 import urllib2
 from solr_client import SolrClient
+from workflow_client import WorkflowManagerClient
 
 from labcas_client import LabcasClient
 
@@ -17,12 +18,16 @@ class LabcasDatasetPublisher(object):
     Publishes a hierarchy of datasets rooted at some directory.
     '''
     
-    def __init__(self, collection_id, collection_name, solr_url='http://localhost:8983/solr'):
+    def __init__(self, collection_name, solr_url='http://localhost:8983/solr'):
         
-        self._collection_id = collection_id
+        
         self._collection_name = collection_name
+        # NOTE: "CollectionId" must match directory location 
+        # under $LABCAS_ARCHIVE or $LABCAS_STAGING
+        self._collection_id = collection_name.replace(" ", "_")
         
         self._solr_client = SolrClient(solr_url)
+        self._wmgr_client = WorkflowManagerClient()
         
             
     def crawl(self, directory_path, dataset_parent_id=None):
@@ -30,15 +35,19 @@ class LabcasDatasetPublisher(object):
         Recursively parses a directory path and publishes all datasets.
         '''
         
+        # remove last '/' otherwise the path is not split correctly
+        if directory_path.endswith('/'):
+            directory_path = directory_path[:-1]
         logging.info("Crawling directory: %s" % directory_path)
         
         # collect metadata for this dataset
         metadata = self._get_dataset_metadata(directory_path, dataset_parent_id=dataset_parent_id)
         logging.info("Dataset metadata: %s" % metadata)
         
-        # FIXME: check on number of files
+        # submit workflow to publish Dataset and Files
         if self._has_data_files(directory_path):
-            pass
+            self._wmgr_client.uploadDataset(metadata, newVersion=False, inPlace=True, debug=True) # FIXME
+            
         else:
             metadata['id'] = metadata['DatasetId']
             del metadata['DatasetId']
@@ -58,6 +67,7 @@ class LabcasDatasetPublisher(object):
         '''
         
         (parent_path, this_dir_name) = os.path.split(directory_path)
+        print("this_dir_name=%s" % this_dir_name)
                 
         # read metadata from configuration files, if found
         metadata = self._read_metadata(directory_path)
@@ -128,10 +138,9 @@ class LabcasDatasetPublisher(object):
 if __name__ == '__main__':
     
     # FIXME: use argparse
-    collection_id = "coh"
-    collection_name = 'City of Hope data collection'
+    collection_name = 'COH Data Collection'
     
-    labcasDatasetPublisher = LabcasDatasetPublisher(collection_id, collection_name)
+    labcasDatasetPublisher = LabcasDatasetPublisher(collection_name)
     
     dataset_dir = sys.argv[1]
     dataset_parent_id = None

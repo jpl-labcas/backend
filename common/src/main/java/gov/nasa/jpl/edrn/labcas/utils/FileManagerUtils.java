@@ -340,7 +340,8 @@ public class FileManagerUtils {
 	public static File getProductTypeArchiveDir(final String productTypeName) {
 		
 		String archiveDir = System.getenv(Constants.ENV_LABCAS_ARCHIVE);
-		File productTypeDir = new File(archiveDir, productTypeName); 
+		//File productTypeDir = new File(archiveDir, productTypeName); 
+		File productTypeDir = new File(archiveDir); 
 		return productTypeDir;
 		
 	}
