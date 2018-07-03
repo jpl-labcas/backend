@@ -1,10 +1,16 @@
 # Example script to execute the "labcas-test" workflow
+# python gov/nasa/jpl/edrn/labcas/client/upload_workflow_test.py <in_place>
+# where in_place = True/False
 
 from gov.nasa.jpl.edrn.labcas.client.workflow_client import WorkflowManagerClient
 import logging
+import sys
+from gov.nasa.jpl.edrn.labcas.utils import str2bool
 logging.basicConfig(level=logging.INFO)
 
 if __name__ == '__main__':
+    
+    in_place = str2bool(sys.argv[1])
     
     # submit workflow
     # ./wmgr-client --url http://localhost:9001 --operation --sendEvent --eventName labcas-test --metaData --key experiment 11 --key species snakes
@@ -20,8 +26,15 @@ if __name__ == '__main__':
         'DatasetName': 'Dataset 1'
     }
     wmgrClient = WorkflowManagerClient()
-    wInstId = wmgrClient.executeWorkflow(['urn:edrn:LabcasUploadInitTask','urn:edrn:LabcasUploadExecuteTask'], 
-                                         minimal_metadata)
+    
+    if in_place:
+        logging.info("Publishing data in place (aka without moving the files)")
+        wInstId = wmgrClient.executeWorkflow(['urn:edrn:LabcasUploadInitTask','urn:edrn:LabcasUpload2ExecuteTask'], 
+                                             minimal_metadata)
+    else:
+        logging.info("Publishing data while moving files to the archive")
+        wInstId = wmgrClient.executeWorkflow(['urn:edrn:LabcasUploadInitTask','urn:edrn:LabcasUploadExecuteTask'], 
+                                             minimal_metadata)
 
     # monitor workflow instance
     wmgrClient.waitForCompletion(wInstId)
