@@ -76,11 +76,13 @@ class LabcasDatasetPublisher(object):
         if not metadata.get("CollectionName", None):
             metadata["CollectionName"] = self._collection_name
         if not metadata.get("DatasetParentId", None):
-            metadata["DatasetParentId"] = dataset_parent_id
+            if dataset_parent_id:
+                metadata["DatasetParentId"] = dataset_parent_id
         if not metadata.get("DatasetName", None):
             metadata["DatasetName"] = this_dir_name
+        # build the DatasetId from the CollectionId or the DatasetParentId
         if not metadata.get("DatasetId", None):
-            if metadata.get("DatasetParentId",None):
+            if metadata.get("DatasetParentId", None):
                 metadata["DatasetId"] = metadata["DatasetParentId"] + "/" + this_dir_name.lower().replace(" ","_")
             else:
                 metadata["DatasetId"] = metadata["CollectionId"]  + "/" + this_dir_name.lower().replace(" ","_")
