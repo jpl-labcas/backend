@@ -46,23 +46,24 @@ class LabcasDatasetPublisher(object):
         logging.info("Dataset metadata: %s" % metadata)
         dataset_id =  metadata['DatasetId']
         
+        # update dataset metadata
+        if update_datasets:
+            metadata['id'] = dataset_id
+            del metadata['DatasetId']
+            self._solr_client.post(metadata, "datasets")
+
         # submit workflow to publish Dataset and Files
-        if update_files:
-            if self._has_data_files(directory_path):
-                if not self._update_collection:
-                    metadata['UpdateCollection'] = "false"
-                self._wmgr_client.uploadDataset(metadata, 
-                                                update_dataset=update_datasets, 
-                                                in_place=in_place, 
-                                                debug=False)
-                # do not update the collection metadata more than once
-                self._update_collection = False
-            
-        else:
-            if update_datasets:
-                metadata['id'] = dataset_id
-                del metadata['DatasetId']
-                self._solr_client.post(metadata, "datasets")
+        if self._has_data_files(directory_path) and update_files:
+            if not self._update_collection:
+                metadata['UpdateCollection'] = "false"
+            if not update_datasets:
+                metadata['UpdateDataset'] = "false"
+            self._wmgr_client.uploadDataset(metadata, 
+                                            update_dataset=update_datasets, 
+                                            in_place=in_place, 
+                                            debug=False)
+            # do not update the collection metadata more than once
+            self._update_collection = False            
         
         # recursion into sub-directories
         for subdir_name in os.listdir(directory_path):
