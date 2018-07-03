@@ -1,6 +1,10 @@
 # Metadata utility functions
     
 import os
+import logging
+import ConfigParser
+from xml.sax.saxutils import escape
+
     
 def read_config_metadata(directory_path):
     '''

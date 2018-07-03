@@ -1,15 +1,12 @@
-import ConfigParser
 import argparse
 import logging
 import os
 import sys
 import urllib2
-from xml.sax.saxutils import escape
 
-from gov.nasa.jpl.edrn.labcas.client.workflow_client import WorkflowManagerClient
 from gov.nasa.jpl.edrn.labcas.client.metadata_utils import read_config_metadata
 from gov.nasa.jpl.edrn.labcas.client.solr_client import SolrClient
-
+from gov.nasa.jpl.edrn.labcas.client.workflow_client import WorkflowManagerClient
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -36,9 +33,6 @@ class LabcasDatasetPublisher(object):
         Recursively parses a directory path and publishes all datasets.
         '''
         
-        # remove last '/' otherwise the path is not split correctly
-        if directory_path.endswith('/'):
-            directory_path = directory_path[:-1]
         logging.info("Crawling directory: %s" % directory_path)
         
         # collect metadata for this dataset
@@ -66,6 +60,9 @@ class LabcasDatasetPublisher(object):
         Collects metadata for a given directory path
         '''
         
+        # remove last '/' otherwise the path is not split correctly
+        if directory_path.endswith('/'):
+            directory_path = directory_path[:-1]
         (parent_path, this_dir_name) = os.path.split(directory_path)
                 
         # read metadata from configuration files, if found

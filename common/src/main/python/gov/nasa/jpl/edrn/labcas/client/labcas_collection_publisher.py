@@ -1,5 +1,12 @@
 import sys
 import os
+import argparse
+import logging
+from gov.nasa.jpl.edrn.labcas.client.metadata_utils import read_config_metadata
+from gov.nasa.jpl.edrn.labcas.client.solr_client import SolrClient
+from gov.nasa.jpl.edrn.labcas.client.labcas_dataset_publisher import LabcasDatasetPublisher
+
+logging.basicConfig(level=logging.DEBUG)
 
 class LabcasCollectionPublisher(object):
     '''
@@ -9,11 +16,52 @@ class LabcasCollectionPublisher(object):
     def __init__(self, solr_url='http://localhost:8983/solr'):
         
         self._solr_url = solr_url
+        self._solr_client = SolrClient(solr_url)
         
     def crawl(self, directory_path):
         
-        # read collection metadata from configuration file
+        # assemble collection metadata
+        metadata = self._get_collection_metadata(directory_path)
+        
+        # publish collection metadata to Solr
+        metadata['id'] = metadata['CollectionId']
+        del metadata['CollectionId']
+        self._solr_client.post(metadata, "collections")
         
         # loop over all sub-directories to publish datasets
         
         pass
+    
+    def _get_collection_metadata(self, directory_path):
+        '''
+        Collects collection for a given directory path
+        '''
+        
+        # remove last '/' otherwise the path is not split correctly
+        if directory_path.endswith('/'):
+            directory_path = directory_path[:-1]
+        (parent_path, this_dir_name) = os.path.split(directory_path)
+        
+        # read metadata from configuration files, if found
+        metadata = read_config_metadata(directory_path)
+        
+        # use default metadata values if not populated from configuration
+        if not metadata.get("CollectionName", None):
+            metadata["CollectionName"] = this_dir_name
+        if not metadata.get("CollectionId", None):
+            metadata["CollectionId"] = metadata["CollectionName"].replace(" ","_")
+
+        return metadata
+
+
+    
+if __name__ == '__main__':
+    
+    # parse command line arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--collection_dir', type=str, help='Collection root directory')
+    args_dict = vars( parser.parse_args() )
+        
+    # start publishing
+    labcasCollectionPublisher = LabcasCollectionPublisher()
+    labcasCollectionPublisher.crawl(args_dict['collection_dir'])
