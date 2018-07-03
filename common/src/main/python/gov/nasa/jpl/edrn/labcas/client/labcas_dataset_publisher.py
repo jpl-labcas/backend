@@ -17,13 +17,17 @@ class LabcasDatasetPublisher(object):
     Publishes a hierarchy of datasets rooted at some directory.
     '''
     
-    def __init__(self, collection_name, solr_url='http://localhost:8983/solr'):
+    def __init__(self, collection_name, solr_url='http://localhost:8983/solr', update_collection=True):
         
         
         self._collection_name = collection_name
         # NOTE: "CollectionId" must match directory location 
         # under $LABCAS_ARCHIVE or $LABCAS_STAGING
         self._collection_id = collection_name.replace(" ", "_")
+        
+        # flag to pass in "UpdateCollection"=true to the Workflow Manager
+        # (on first invocation only)
+        self._update_collection = update_collection
         
         self._solr_client = SolrClient(solr_url)
         self._wmgr_client = WorkflowManagerClient()
@@ -42,8 +46,12 @@ class LabcasDatasetPublisher(object):
         
         # submit workflow to publish Dataset and Files
         if self._has_data_files(directory_path):
+            if not self._update_collection:
+                metadata['UpdateCollection'] = "false"
             self._wmgr_client.uploadDataset(metadata, newVersion=False, 
-                                            in_place=in_place, debug=False) # FIXME
+                                            in_place=in_place, debug=False)
+            # do not update the collection metadata more than once
+            self._update_collection = False
             
         else:
             metadata['id'] = metadata['DatasetId']
@@ -110,11 +118,14 @@ if __name__ == '__main__':
     parser.add_argument('--dataset_parent_id', type=str, default=None,
                         help='Optional parent dataset id')
     parser.add_argument('--in_place', type=str2bool, default=True,
-                        help='Option flag to publish data without moving it (default: True)')
+                        help='Optional flag to publish data without moving it (default: True)')
+    parser.add_argument('--update_collection', type=str2bool, default=True,
+                        help='Optional flag to update the collection metadata when publishing files (default: True)')
     args_dict = vars( parser.parse_args() )
         
     # start publishing
-    labcasDatasetPublisher = LabcasDatasetPublisher(args_dict['collection_name'])
+    labcasDatasetPublisher = LabcasDatasetPublisher(args_dict['collection_name'], 
+                                                    update_collection=args_dict['update_collection'])
     labcasDatasetPublisher.crawl(args_dict['dataset_dir'], 
                                  dataset_parent_id=args_dict['dataset_parent_id'],
                                  in_place=args_dict['in_place'])

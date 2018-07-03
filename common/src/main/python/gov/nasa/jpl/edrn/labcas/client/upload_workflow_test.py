@@ -19,7 +19,8 @@ if __name__ == '__main__':
                      'CollectionId': 'My_Data_Collection', 
                      'DatasetParentId': None, 
                      'DatasetVersion': 1, 
-                     'DatasetId': 'My_Data_Collection/dataset_1'
+                     'DatasetId': 'My_Data_Collection/dataset_1',
+                     'UpdateCollection': 'true'
     }
     minimal_metadata = {
         'CollectionName': 'My Data Collection',

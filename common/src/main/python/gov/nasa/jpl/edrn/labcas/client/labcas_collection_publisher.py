@@ -14,10 +14,11 @@ class LabcasCollectionPublisher(object):
     Publishes all datasets within a collection
     '''
     
-    def __init__(self, solr_url='http://localhost:8983/solr'):
+    def __init__(self, solr_url='http://localhost:8983/solr', update_collection=True):
         
         self._solr_url = solr_url
         self._solr_client = SolrClient(solr_url)
+        self._update_collection = update_collection
         
     def crawl(self, directory_path, in_place=True):
         
@@ -30,7 +31,9 @@ class LabcasCollectionPublisher(object):
         self._solr_client.post(metadata, "collections")
         
         # loop over all sub-directories to publish datasets
-        labcasDatasetPublisher = LabcasDatasetPublisher(metadata['CollectionName'])
+        labcasDatasetPublisher = LabcasDatasetPublisher(metadata['CollectionName'], 
+                                                        solr_url=self._solr_url,
+                                                        update_collection=self._update_collection)
         for subdir_name in os.listdir(directory_path):
             subdir_path = os.path.join(directory_path, subdir_name)
             if os.path.isdir(subdir_path):
@@ -69,8 +72,12 @@ if __name__ == '__main__':
     parser.add_argument('--collection_dir', type=str, help='Collection root directory')
     parser.add_argument('--in_place', type=str2bool, default=True,
                         help='Option flag to publish data without moving it (default: True)')
+    parser.add_argument('--update_collection', type=str2bool, default=True,
+                        help='Optional flag to update the collection metadata when publishing files (default: True)')
+
     args_dict = vars( parser.parse_args() )
         
     # start publishing
-    labcasCollectionPublisher = LabcasCollectionPublisher()
-    labcasCollectionPublisher.crawl(args_dict['collection_dir'], in_place=args_dict['in_place'])
+    labcasCollectionPublisher = LabcasCollectionPublisher(update_collection=args_dict['update_collection'])
+    labcasCollectionPublisher.crawl(args_dict['collection_dir'], 
+                                    in_place=args_dict['in_place'])

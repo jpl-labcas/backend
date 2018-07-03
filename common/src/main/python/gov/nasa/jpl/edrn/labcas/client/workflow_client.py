@@ -79,6 +79,7 @@ class WorkflowManagerClient(object):
             metadata['NewVersion'] = 'true'
             
         # FIXME
+        #metadata['UpdateCollection'] = 'false'
         print(metadata)
     
         # NOTE: currently, if you start a named workflow, the XMLRPC interface only returns True/False, not a workflow instance identifier...

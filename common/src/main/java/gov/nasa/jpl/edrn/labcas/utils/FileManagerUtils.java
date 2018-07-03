@@ -48,6 +48,8 @@ public class FileManagerUtils {
 	 * @throws Exception
 	 */
 	public static void createProductType(String productTypeName, Metadata productTypeMetadata) throws Exception {
+		
+		LOG.info("Creating new product type: "+ productTypeName);
 				
 		// transfer metadata field 'Description' to product type description, if found
 		String productTypeDescription = productTypeName; // default product type description = product type name
