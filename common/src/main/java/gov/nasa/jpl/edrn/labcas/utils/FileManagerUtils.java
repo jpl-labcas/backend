@@ -113,42 +113,6 @@ public class FileManagerUtils {
 	}
 	
 	/** 
-	 * Utility function to determine the latest version of an archived dataset.
-	 * If not found, the latest version is set to 0.
-	 */
-	public static int __findLatestDatasetVersion(final String productTypeName, final String datasetId) {
-		
-		File productTypeDir = FileManagerUtils.getProductTypeArchiveDir(productTypeName);
-		File datasetDir = new File(productTypeDir, datasetId);
-		LOG.fine("Looking for dataset versions in "+datasetDir.getAbsolutePath());
-		
-        int version = 0;
-        if (datasetDir.exists()) {      
-	
-	        // list "version" sub-directories
-	        String[] directories = datasetDir.list(new FilenameFilter() {
-	                  @Override
-	                  public boolean accept(File current, String name) {
-	                    return new File(current, name).isDirectory();
-	                  }
-	                });
-	        // don't just count the directories, select the highest number
-	        for (String dir : directories) {
-	        	try { 
-		        	int v = Integer.parseInt(dir);
-		        	if (v > version) version = v;
-	        	} catch(NumberFormatException e) {
-	        		// skip "/policy" sub-directory
-	        	}
-	        }    
-        }
-        
-        LOG.info("Current dataset version: "+version);
-        return version;
-		
-	}
-	
-	/** 
 	 * Method to possibly increment the dataset version based on the "NewVersion" flag.
 	 * @param version
 	 * @param metadata
