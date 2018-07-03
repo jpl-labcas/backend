@@ -47,13 +47,12 @@ class LabcasDatasetPublisher(object):
         
         # submit workflow to publish Dataset and Files
         if self._has_data_files(directory_path):
-            self._wmgr_client.uploadDataset(metadata, newVersion=False, inPlace=True, debug=True) # FIXME
+            self._wmgr_client.uploadDataset(metadata, newVersion=False, inPlace=True, debug=False) # FIXME
             
         else:
             metadata['id'] = metadata['DatasetId']
             del metadata['DatasetId']
             self._solr_client.post(metadata, "datasets")
-        
         
         # recursion into sub-directories
         for subdir_name in os.listdir(directory_path):
@@ -68,7 +67,6 @@ class LabcasDatasetPublisher(object):
         '''
         
         (parent_path, this_dir_name) = os.path.split(directory_path)
-        print("this_dir_name=%s" % this_dir_name)
                 
         # read metadata from configuration files, if found
         metadata = self._read_metadata(directory_path)
