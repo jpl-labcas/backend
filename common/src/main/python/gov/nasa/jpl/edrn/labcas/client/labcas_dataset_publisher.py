@@ -94,12 +94,12 @@ class LabcasDatasetPublisher(object):
                 metadata["DatasetParentId"] = dataset_parent_id
         if not metadata.get("DatasetName", None):
             metadata["DatasetName"] = this_dir_name
-        # build the DatasetId from the CollectionId or the DatasetParentId
+        # build the DatasetId from the CollectionId, DatasetParentId and local directory
         if not metadata.get("DatasetId", None):
             if metadata.get("DatasetParentId", None):
-                metadata["DatasetId"] = metadata["DatasetParentId"] + "/" + this_dir_name.lower().replace(" ","_")
+                metadata["DatasetId"] = metadata["DatasetParentId"] + "/" + this_dir_name
             else:
-                metadata["DatasetId"] = metadata["CollectionId"]  + "/" + this_dir_name.lower().replace(" ","_")
+                metadata["DatasetId"] = metadata["CollectionId"]  + "/" + this_dir_name
         if not metadata.get("DatasetVersion", None):
             metadata['DatasetVersion'] = 1
         
