@@ -18,8 +18,8 @@ class WorkflowManagerClient(object):
                  solrUrl='http://localhost:8983/solr/oodt-fm',
                  verbose=False):
         
-        self.workflowManagerServerProxy = xmlrpclib.ServerProxy(workflowManagerUrl, verbose=verbose)
-        self.fileManaferServerProxy = xmlrpclib.ServerProxy(fileManagerUrl, verbose=verbose)
+        self.workflowManagerServerProxy = xmlrpclib.ServerProxy(workflowManagerUrl, verbose=verbose, allow_none=True)
+        self.fileManaferServerProxy = xmlrpclib.ServerProxy(fileManagerUrl, verbose=verbose, allow_none=True)
         self.solrServerProxy = solr.SolrConnection(solrUrl)
         
     def getWorkflowsByEvent(self, eventName):
@@ -72,7 +72,7 @@ class WorkflowManagerClient(object):
            logging.debug(response)
                            
         
-    def uploadDataset(self, metadata, newVersion=False, inPlace=False, debug=False):
+    def uploadDataset(self, metadata, newVersion=False, in_place=False, debug=False):
                         
         # optionally request a new version
         if newVersion:
@@ -82,7 +82,7 @@ class WorkflowManagerClient(object):
         #tf = serverProxy.workflowmgr.handleEvent('labcas-upload', { 'DatasetId':'mydata' } )
     
         # ... consequently, you must submit an equivalent dynamic workflow, which does return the workflow instance id
-        if inPlace:
+        if in_place:
             wInstId = self.workflowManagerServerProxy.workflowmgr.executeDynamicWorkflow( ['urn:edrn:LabcasUploadInitTask','urn:edrn:LabcasUpload2ExecuteTask'],                                                                           
                                                                                            metadata )
         else:

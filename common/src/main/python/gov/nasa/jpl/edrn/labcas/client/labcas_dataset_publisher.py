@@ -7,6 +7,7 @@ import urllib2
 from gov.nasa.jpl.edrn.labcas.client.metadata_utils import read_config_metadata
 from gov.nasa.jpl.edrn.labcas.client.solr_client import SolrClient
 from gov.nasa.jpl.edrn.labcas.client.workflow_client import WorkflowManagerClient
+from gov.nasa.jpl.edrn.labcas.utils import str2bool
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -28,7 +29,7 @@ class LabcasDatasetPublisher(object):
         self._wmgr_client = WorkflowManagerClient()
         
             
-    def crawl(self, directory_path, dataset_parent_id=None):
+    def crawl(self, directory_path, dataset_parent_id=None, in_place=True):
         '''
         Recursively parses a directory path and publishes all datasets.
         '''
@@ -41,7 +42,8 @@ class LabcasDatasetPublisher(object):
         
         # submit workflow to publish Dataset and Files
         if self._has_data_files(directory_path):
-            self._wmgr_client.uploadDataset(metadata, newVersion=False, inPlace=True, debug=False) # FIXME
+            self._wmgr_client.uploadDataset(metadata, newVersion=False, 
+                                            in_place=in_place, debug=False) # FIXME
             
         else:
             metadata['id'] = metadata['DatasetId']
@@ -105,11 +107,14 @@ if __name__ == '__main__':
                         help='Collection name (matching the collection root directory)')
     parser.add_argument('--dataset_parent_id', type=str, default=None,
                         help='Optional parent dataset id')
+    parser.add_argument('--in_place', type=str2bool, default=True,
+                        help='Option flag to publish data without moving it (default: True)')
     args_dict = vars( parser.parse_args() )
         
     # start publishing
     labcasDatasetPublisher = LabcasDatasetPublisher(args_dict['collection_name'])
     labcasDatasetPublisher.crawl(args_dict['dataset_dir'], 
-                                 dataset_parent_id=args_dict['dataset_parent_id'])
+                                 dataset_parent_id=args_dict['dataset_parent_id'],
+                                 in_place=args_dict['in_place'])
     
 
