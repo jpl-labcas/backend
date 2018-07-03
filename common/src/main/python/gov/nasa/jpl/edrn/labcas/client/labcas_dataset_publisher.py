@@ -143,14 +143,13 @@ if __name__ == '__main__':
     parser.add_argument('--dataset_dir', type=str, help='Dataset root directory')
     parser.add_argument('--collection_name', type=str, 
                         help='Collection name (matching the collection root directory)')
+    parser.add_argument('--dataset_parent_id', type=str, default=None,
+                        help='Optional parent dataset id')
     args_dict = vars( parser.parse_args() )
-    
-    # FIXME: use argparse
-    #collection_name = 'COH Data Collection'
-    
+        
+    # start publishing
     labcasDatasetPublisher = LabcasDatasetPublisher(args_dict['collection_name'])
-    
-    dataset_parent_id = None
-    labcasDatasetPublisher.crawl(args_dict['dataset_dir'], dataset_parent_id=None)
+    labcasDatasetPublisher.crawl(args_dict['dataset_dir'], 
+                                 dataset_parent_id=args_dict['dataset_parent_id'])
     
 
