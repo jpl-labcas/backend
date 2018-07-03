@@ -54,7 +54,7 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 			String datasetId = metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
 			String datasetName = metadata.getMetadata(Constants.METADATA_KEY_DATASET_NAME);
 			if (datasetId==null) {
-				datasetId = datasetName.replaceAll("\\s+", "_");
+				datasetId = productTypeName + "/" + datasetName.replaceAll("\\s+", "_");
 				metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId);
 			}
 			LOG.info("LabcasInitCollectionTaskInstance: using datasetId="+metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID));

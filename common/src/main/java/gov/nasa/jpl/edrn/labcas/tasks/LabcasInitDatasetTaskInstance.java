@@ -54,11 +54,9 @@ public class LabcasInitDatasetTaskInstance implements WorkflowTaskInstance {
 			String datasetName = metadata.getMetadata(Constants.METADATA_KEY_DATASET_NAME);
 			String datasetId = null;
 			if (datasetName!=null) {
-				datasetId = datasetName.replaceAll("\\s+", "_");
+				datasetId = productTypeName + "/" + datasetName.replaceAll("\\s+", "_");
 			} else {
-				datasetId  = UUID.randomUUID().toString();
-				datasetName = datasetId;
-				metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_NAME, datasetId); // datasetId == datasetName = UUID
+				throw new WorkflowTaskInstanceException("DatasetName or DatasetId must not be null!");
 			}
 			metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId);
 			LOG.info("Using DatasetId="+datasetId);
