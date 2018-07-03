@@ -33,7 +33,8 @@ class LabcasDatasetPublisher(object):
         self._wmgr_client = WorkflowManagerClient()
         
             
-    def crawl(self, directory_path, dataset_parent_id=None, in_place=True, update_datasets=True):
+    def crawl(self, directory_path, dataset_parent_id=None, in_place=True, 
+              update_datasets=True, update_files=True):
         '''
         Recursively parses a directory path and publishes all datasets.
         '''
@@ -45,15 +46,16 @@ class LabcasDatasetPublisher(object):
         logging.info("Dataset metadata: %s" % metadata)
         
         # submit workflow to publish Dataset and Files
-        if self._has_data_files(directory_path):
-            if not self._update_collection:
-                metadata['UpdateCollection'] = "false"
-            self._wmgr_client.uploadDataset(metadata, 
-                                            update_dataset=update_datasets, 
-                                            in_place=in_place, 
-                                            debug=False)
-            # do not update the collection metadata more than once
-            self._update_collection = False
+        if update_files:
+            if self._has_data_files(directory_path):
+                if not self._update_collection:
+                    metadata['UpdateCollection'] = "false"
+                self._wmgr_client.uploadDataset(metadata, 
+                                                update_dataset=update_datasets, 
+                                                in_place=in_place, 
+                                                debug=False)
+                # do not update the collection metadata more than once
+                self._update_collection = False
             
         else:
             if update_datasets:

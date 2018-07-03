@@ -20,7 +20,8 @@ class LabcasCollectionPublisher(object):
         self._solr_client = SolrClient(solr_url)
         self._update_collection = update_collection
         
-    def crawl(self, directory_path, in_place=True, update_datasets=True):
+    def crawl(self, directory_path, in_place=True, 
+              update_datasets=True, update_files=True):
         
         # assemble collection metadata
         metadata = self._get_collection_metadata(directory_path)
@@ -42,7 +43,8 @@ class LabcasCollectionPublisher(object):
                 # publish dataset hierarchy
                 labcasDatasetPublisher.crawl(subdir_path, 
                                              in_place=in_place, 
-                                             update_datasets=update_datasets)
+                                             update_datasets=update_datasets,
+                                             update_files=update_files)
 
     
     def _get_collection_metadata(self, directory_path):
@@ -79,6 +81,8 @@ if __name__ == '__main__':
                         help='Optional flag to update the collection metadata (default: True)')
     parser.add_argument('--update_datasets', type=str2bool, default=True,
                         help='Optional flag to update the datasets metadata (default: True)')
+    parser.add_argument('--update_files', type=str2bool, default=True,
+                        help='Optional flag to publish files (default: True)')
 
     args_dict = vars( parser.parse_args() )
         
@@ -86,4 +90,5 @@ if __name__ == '__main__':
     labcasCollectionPublisher = LabcasCollectionPublisher(update_collection=args_dict['update_collection'])
     labcasCollectionPublisher.crawl(args_dict['collection_dir'], 
                                     in_place=args_dict['in_place'],
-                                    update_datasets=args_dict['update_datasets'])
+                                    update_datasets=args_dict['update_datasets'],
+                                    update_files=args_dict['update_files'])
