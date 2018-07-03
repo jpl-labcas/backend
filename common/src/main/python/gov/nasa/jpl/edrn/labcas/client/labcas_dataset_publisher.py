@@ -44,6 +44,7 @@ class LabcasDatasetPublisher(object):
         # collect metadata for this dataset
         metadata = self._get_dataset_metadata(directory_path, dataset_parent_id=dataset_parent_id)
         logging.info("Dataset metadata: %s" % metadata)
+        dataset_id =  metadata['DatasetId']
         
         # submit workflow to publish Dataset and Files
         if update_files:
@@ -59,7 +60,7 @@ class LabcasDatasetPublisher(object):
             
         else:
             if update_datasets:
-                metadata['id'] = metadata['DatasetId']
+                metadata['id'] = dataset_id
                 del metadata['DatasetId']
                 self._solr_client.post(metadata, "datasets")
         
@@ -67,7 +68,7 @@ class LabcasDatasetPublisher(object):
         for subdir_name in os.listdir(directory_path):
             subdir_path = os.path.join(directory_path, subdir_name)
             if os.path.isdir(subdir_path):
-                self.crawl(subdir_path, dataset_parent_id=metadata['id'])
+                self.crawl(subdir_path, dataset_parent_id=dataset_id)
             
             
     def _get_dataset_metadata(self, directory_path, dataset_parent_id=None):
