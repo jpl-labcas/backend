@@ -6,9 +6,9 @@ import sys
 import urllib2
 from xml.sax.saxutils import escape
 
-from labcas_client import LabcasClient
-from solr_client import SolrClient
-from workflow_client import WorkflowManagerClient
+from gov.nasa.jpl.edrn.labcas.client.workflow_client import WorkflowManagerClient
+from gov.nasa.jpl.edrn.labcas.client.metadata_utils import read_config_metadata
+from gov.nasa.jpl.edrn.labcas.client.solr_client import SolrClient
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -69,7 +69,7 @@ class LabcasDatasetPublisher(object):
         (parent_path, this_dir_name) = os.path.split(directory_path)
                 
         # read metadata from configuration files, if found
-        metadata = self._read_metadata(directory_path)
+        metadata = read_config_metadata(directory_path)
         
         # use default metadata values if not populated from configuration
         if not metadata.get("CollectionId", None):
@@ -89,42 +89,7 @@ class LabcasDatasetPublisher(object):
             metadata['DatasetVersion'] = 1
         
         return metadata
-        
-    def _read_metadata(self, directory_path):
-        '''
-        Reads metadata from all configuration files found in a directory.
-        '''
-        
-        metadata = {}
-        
-        for config_file_name in [file_name for file_name in os.listdir(directory_path) if file_name.endswith(".cfg")]:
             
-            config_file_path = os.path.join(directory_path, config_file_name)
-            logging.debug("Reading configuration file: %s" % config_file_path)
-            
-            config = ConfigParser.ConfigParser()
-            # must set following line explicitly to preserve the case of configuration keys
-            config.optionxform = str 
-            
-            try:
-                config.read(config_file_path)
-                for section in config.sections():
-                    for key, value in config.items(section):
-                        # must escape XML reserved characters: &<>"
-                        evalue = escape(value)
-                        logging.debug('\t%s = %s' % (key, evalue))
-                        # [Dataset] section: prefix all fields with 'Dataset:'
-                        if section=='Dataset' and not key.startswith('Dataset'):
-                            metadata['Dataset:%s' % key] = evalue
-                        else:
-                            metadata[key] = evalue
-            except Exception as e:
-                logging.error("ERROR reading metadata configuration")
-                logging.error(e)
-                sys.exit(-1)
-        
-        return metadata
-    
     def _has_data_files(self, directory_path):
         '''
         Checks wether a dataset directoy contains data files to be published.
