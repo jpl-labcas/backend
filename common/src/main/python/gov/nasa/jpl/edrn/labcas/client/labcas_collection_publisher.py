@@ -20,15 +20,16 @@ class LabcasCollectionPublisher(object):
         self._solr_client = SolrClient(solr_url)
         self._update_collection = update_collection
         
-    def crawl(self, directory_path, in_place=True):
+    def crawl(self, directory_path, in_place=True, update_datasets=True):
         
         # assemble collection metadata
         metadata = self._get_collection_metadata(directory_path)
         
         # publish collection metadata to Solr
-        metadata['id'] = metadata['CollectionId']
-        del metadata['CollectionId']
-        self._solr_client.post(metadata, "collections")
+        if self._update_collection:
+            metadata['id'] = metadata['CollectionId']
+            del metadata['CollectionId']
+            self._solr_client.post(metadata, "collections")
         
         # loop over all sub-directories to publish datasets
         labcasDatasetPublisher = LabcasDatasetPublisher(metadata['CollectionName'], 
@@ -39,7 +40,9 @@ class LabcasCollectionPublisher(object):
             if os.path.isdir(subdir_path):
                 
                 # publish dataset hierarchy
-                labcasDatasetPublisher.crawl(subdir_path, in_place=in_place)
+                labcasDatasetPublisher.crawl(subdir_path, 
+                                             in_place=in_place, 
+                                             update_datasets=update_datasets)
 
     
     def _get_collection_metadata(self, directory_path):
@@ -73,11 +76,14 @@ if __name__ == '__main__':
     parser.add_argument('--in_place', type=str2bool, default=True,
                         help='Option flag to publish data without moving it (default: True)')
     parser.add_argument('--update_collection', type=str2bool, default=True,
-                        help='Optional flag to update the collection metadata when publishing files (default: True)')
+                        help='Optional flag to update the collection metadata (default: True)')
+    parser.add_argument('--update_datasets', type=str2bool, default=True,
+                        help='Optional flag to update the datasets metadata (default: True)')
 
     args_dict = vars( parser.parse_args() )
         
     # start publishing
     labcasCollectionPublisher = LabcasCollectionPublisher(update_collection=args_dict['update_collection'])
     labcasCollectionPublisher.crawl(args_dict['collection_dir'], 
-                                    in_place=args_dict['in_place'])
+                                    in_place=args_dict['in_place'],
+                                    update_datasets=args_dict['update_datasets'])

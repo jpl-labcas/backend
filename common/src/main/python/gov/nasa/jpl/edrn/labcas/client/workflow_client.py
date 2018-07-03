@@ -72,15 +72,10 @@ class WorkflowManagerClient(object):
            logging.debug(response)
                            
         
-    def uploadDataset(self, metadata, newVersion=False, in_place=False, debug=False):
-                        
-        # optionally request a new version
-        if newVersion:
-            metadata['NewVersion'] = 'true'
-            
-        # FIXME
-        #metadata['UpdateCollection'] = 'false'
-        print(metadata)
+    def uploadDataset(self, metadata, update_dataset=True, in_place=False, debug=False):
+
+        if not update_dataset:
+            metadata['UpdateDataset'] = "false"
     
         # NOTE: currently, if you start a named workflow, the XMLRPC interface only returns True/False, not a workflow instance identifier...
         #tf = serverProxy.workflowmgr.handleEvent('labcas-upload', { 'DatasetId':'mydata' } )
