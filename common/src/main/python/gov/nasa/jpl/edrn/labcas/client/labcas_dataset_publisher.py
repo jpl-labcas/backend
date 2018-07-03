@@ -1,13 +1,14 @@
 import ConfigParser
+import argparse
 import logging
 import os
 import sys
-from xml.sax.saxutils import escape
 import urllib2
-from solr_client import SolrClient
-from workflow_client import WorkflowManagerClient
+from xml.sax.saxutils import escape
 
 from labcas_client import LabcasClient
+from solr_client import SolrClient
+from workflow_client import WorkflowManagerClient
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -137,13 +138,19 @@ class LabcasDatasetPublisher(object):
 
 if __name__ == '__main__':
     
+    # parse command line arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dataset_dir', type=str, help='Dataset root directory')
+    parser.add_argument('--collection_name', type=str, 
+                        help='Collection name (matching the collection root directory)')
+    args_dict = vars( parser.parse_args() )
+    
     # FIXME: use argparse
-    collection_name = 'COH Data Collection'
+    #collection_name = 'COH Data Collection'
     
-    labcasDatasetPublisher = LabcasDatasetPublisher(collection_name)
+    labcasDatasetPublisher = LabcasDatasetPublisher(args_dict['collection_name'])
     
-    dataset_dir = sys.argv[1]
     dataset_parent_id = None
-    labcasDatasetPublisher.crawl(dataset_dir, dataset_parent_id=dataset_parent_id)
+    labcasDatasetPublisher.crawl(args_dict['dataset_dir'], dataset_parent_id=None)
     
 
