@@ -69,7 +69,7 @@ class LabcasDatasetPublisher(object):
         for subdir_name in os.listdir(directory_path):
             subdir_path = os.path.join(directory_path, subdir_name)
             if os.path.isdir(subdir_path):
-                self.crawl(subdir_path, dataset_parent_id=dataset_id)
+                self.crawl(subdir_path, dataset_parent_id=dataset_id, update_files=update_files)
             
             
     def _get_dataset_metadata(self, directory_path, dataset_parent_id=None):
@@ -112,7 +112,7 @@ class LabcasDatasetPublisher(object):
         '''
         
         data_files = [f for f in os.listdir(directory_path) if os.path.isfile(
-            os.path.join(directory_path, f)) and not f.endswith(".cfg")]
+            os.path.join(directory_path, f)) and not f.endswith(".cfg") and not f.endswith(".met") and not f.endswith(".xmlmet")]
         return len(data_files) > 0
 
 if __name__ == '__main__':
