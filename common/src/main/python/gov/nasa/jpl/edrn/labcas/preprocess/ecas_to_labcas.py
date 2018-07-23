@@ -183,13 +183,13 @@ def read_product_metadata(dataset_dir):
         
         for keyval_element in root_element.findall('./keyval'):
             key = keyval_element.find("key").text
-            val = keyval_element.find("val").text  
-            val = urllib.parse.unquote(val).replace('+',' ')
-            
-            if key == 'CAS.ProductName' or key == 'CAS.ProductId' or key == 'CAS.ProductReceivedTime':
-                pass # ignore
-            else:
-                file_metadata[key] = val
+            val = keyval_element.find("val").text       
+            if val:
+                val = urllib.parse.unquote(val).replace('+',' ')
+                if key == 'CAS.ProductName' or key == 'CAS.ProductId' or key == 'CAS.ProductReceivedTime':
+                    pass # ignore
+                else:
+                    file_metadata[key] = val
             
         #pp.pprint(file_metadata)
         
