@@ -262,7 +262,8 @@ if __name__== "__main__":
             
             # FIXME
             #if filename == 'FHCRCHanashAnnexinLamr':
-            if filename == 'WHIColonWistarSpeicher':
+            #if filename == 'WHIColonWistarSpeicher':
+            if True:
                 input_xml_file = os.path.join(ecas_metadata_dir, ("%s.met" % filename))
  
                 # read product type metadata from XML, convert to dictionaries
