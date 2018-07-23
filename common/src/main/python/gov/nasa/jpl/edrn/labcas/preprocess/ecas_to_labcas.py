@@ -7,10 +7,10 @@ import glob
 import urllib.parse
 from shutil import copyfile
 
-ecas_metadata_dir = "/Users/cinquini/workbench/ecas_to_labcas/datasets"
-ecas_data_dir = "/Users/cinquini/data/EDRN_DATA/ECAS_DATA"
-labcas_metadata_dir = "/Users/cinquini/eclipse-workspace/ecas-metadata/"
-labcas_data_dir = "/Users/cinquini/data/EDRN_DATA/LABCAS_DATA"
+ecas_metadata_dir = "/home/cinquini/ECAS_MIGRATION/datasets/"
+ecas_data_dir = "/data/archive"
+labcas_metadata_dir = "/home/cinquini/ECAS_MIGRATION/ecas-metadata/"
+labcas_data_dir = "/home/cinquini/ECAS_MIGRATION/labcas_archive"
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -135,8 +135,8 @@ def read_product_type_metadata(input_xml_file):
         elif key == 'DataDisclaimer':
             collection_metadata['DataDisclaimer'] = val
                         
-    pp.pprint(collection_metadata)
-    pp.pprint(dataset_metadata)
+    #pp.pprint(collection_metadata)
+    #pp.pprint(dataset_metadata)
     
     return { 
              'Collection':collection_metadata,
@@ -191,13 +191,13 @@ def read_product_metadata(dataset_dir):
             else:
                 file_metadata[key] = val
             
-        pp.pprint(file_metadata)
+        #pp.pprint(file_metadata)
         
         file_metadata_array.append(file_metadata)
         
     return file_metadata_array
         
-def copy_products(file_metadata_array, output_dir):
+def copy_products(collection_id, file_metadata_array, output_dir):
     
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -218,7 +218,8 @@ def copy_products(file_metadata_array, output_dir):
             write_product_metadata(file_metadata, output_file)
             
         else:
-            print("Cannot find file: %s" % filename)
+            print("Cannot find file: '%s' [collection: %s]" % (filename, collection_id) )
+
             
 def write_product_metadata(file_metadata, output_file):
     
@@ -260,7 +261,8 @@ if __name__== "__main__":
         if os.path.isdir(dataset_dir):
             
             # FIXME
-            if filename == 'FHCRCHanashAnnexinLamr':
+            #if filename == 'FHCRCHanashAnnexinLamr':
+            if filename == 'WHIColonWistarSpeicher':
                 input_xml_file = os.path.join(ecas_metadata_dir, ("%s.met" % filename))
  
                 # read product type metadata from XML, convert to dictionaries
@@ -277,7 +279,7 @@ if __name__== "__main__":
                 # copy data files
                 # FIXME: remove 1
                 output_dir = os.path.join(labcas_data_dir, collection_id, dataset_id, '1')
-                copy_products(file_metadata_array, output_dir)
+                copy_products(collection_id, file_metadata_array, output_dir)
 
 
 
