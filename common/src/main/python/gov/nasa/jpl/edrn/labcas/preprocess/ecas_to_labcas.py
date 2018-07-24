@@ -74,7 +74,7 @@ def read_product_type_metadata(input_xml_file):
         if val:
             val = val.replace('\n',' ').replace('\r\n',' ')
             # un-escape XML characters
-            val = saxutils.unescape('val')
+            val = saxutils.unescape(val)
                  
         # DataSetName --> CollectionName, DatasetName
         if key == 'DataSetName':
