@@ -202,6 +202,8 @@ def read_product_metadata(dataset_dir):
 
                 if key == 'CAS.ProductName' or key == 'CAS.ProductId' or key == 'CAS.ProductReceivedTime':
                     pass # ignore
+                elif key == 'FileLocation':
+                    pass # ignore since this is the old value and the new value will be added at publishing time
                 else:
                     file_metadata[key] = val
             
