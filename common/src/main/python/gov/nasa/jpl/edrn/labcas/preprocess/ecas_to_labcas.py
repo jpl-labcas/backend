@@ -6,6 +6,7 @@ import pprint
 import glob
 import urllib.parse
 from shutil import copyfile
+import xml.sax.saxutils as saxutils
 
 ecas_metadata_dir = "/home/cinquini/ECAS_MIGRATION/datasets/"
 ecas_data_dir = "/data/archive"
@@ -67,6 +68,12 @@ def read_product_type_metadata(input_xml_file):
     for keyval_element in metadata_element.findall('./keyval'):
         key = keyval_element.find("key").text
         val = keyval_element.find("val").text
+        
+        # replace newline characters from metadata values
+        val = val.replace('\n',' ').replace('\r\n',' ')
+        # un-escape XML characters
+        val = saxutils.unescape('val')
+                 
         # DataSetName --> CollectionName, DatasetName
         if key == 'DataSetName':
             collection_metadata['CollectionName'] = val
@@ -185,7 +192,13 @@ def read_product_metadata(dataset_dir):
             key = keyval_element.find("key").text
             val = keyval_element.find("val").text       
             if val:
+                # reverse URL encoding
                 val = urllib.parse.unquote(val).replace('+',' ')
+                # replace newline characters from metadata values
+                val = val.replace('\n',' ').replace('\r\n',' ')
+                # un-escape XML characters
+                val = saxutils.unescape('val')
+
                 if key == 'CAS.ProductName' or key == 'CAS.ProductId' or key == 'CAS.ProductReceivedTime':
                     pass # ignore
                 else:
@@ -263,7 +276,7 @@ if __name__== "__main__":
         if os.path.isdir(dataset_dir):
             
             # FIXME
-            if filename == 'EVMSSELDIPhaseIIUnProcessedData':
+            if filename == 'COPY_NUMBER_LEV1':
             #if filename == 'WHIColonWistarSpeicher':
             #if True:
                 input_xml_file = os.path.join(ecas_metadata_dir, ("%s.met" % filename))
