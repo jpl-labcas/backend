@@ -193,7 +193,9 @@ def read_product_metadata(dataset_dir):
             
         #pp.pprint(file_metadata)
         
-        file_metadata_array.append(file_metadata)
+        # add dictionary to list, if not empty
+        if file_metadata:
+            file_metadata_array.append(file_metadata)
         
     return file_metadata_array
         
@@ -261,9 +263,9 @@ if __name__== "__main__":
         if os.path.isdir(dataset_dir):
             
             # FIXME
-            #if filename == 'FHCRCHanashAnnexinLamr':
+            if filename == 'EVMSSELDIPhaseIIUnProcessedData':
             #if filename == 'WHIColonWistarSpeicher':
-            if True:
+            #if True:
                 input_xml_file = os.path.join(ecas_metadata_dir, ("%s.met" % filename))
  
                 # read product type metadata from XML, convert to dictionaries
