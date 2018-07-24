@@ -70,9 +70,11 @@ def read_product_type_metadata(input_xml_file):
         val = keyval_element.find("val").text
         
         # replace newline characters from metadata values
-        val = val.replace('\n',' ').replace('\r\n',' ')
-        # un-escape XML characters
-        val = saxutils.unescape('val')
+        print('val=%s' % val)
+        if val:
+            val = val.replace('\n',' ').replace('\r\n',' ')
+            # un-escape XML characters
+            val = saxutils.unescape('val')
                  
         # DataSetName --> CollectionName, DatasetName
         if key == 'DataSetName':
