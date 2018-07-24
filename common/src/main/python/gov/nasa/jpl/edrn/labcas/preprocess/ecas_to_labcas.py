@@ -277,9 +277,9 @@ if __name__== "__main__":
         if os.path.isdir(dataset_dir):
             
             # FIXME
-            if filename == 'COPY_NUMBER_LEV1':
+            #if filename == 'COPY_NUMBER_LEV1':
             #if filename == 'WHIColonWistarSpeicher':
-            #if True:
+            if True:
                 input_xml_file = os.path.join(ecas_metadata_dir, ("%s.met" % filename))
  
                 # read product type metadata from XML, convert to dictionaries
