@@ -29,11 +29,11 @@ for f in $(find $directory -name '*.svs'); do
       /bin/rm $outputpng
      fi
    else
-     height="`openslide-show-properties $f | grep "openslide.level\[3\].height" | cut -f 2 -d ':' | cut -f 2 -d "'"`"
-     width="`openslide-show-properties $f | grep "openslide.level\[3\].width" | cut -f 2 -d ':' | cut -f 2 -d "'"`"
+     height="`openslide-show-properties $f | grep "openslide.level\[2\].height" | cut -f 2 -d ':' | cut -f 2 -d "'"`"
+     width="`openslide-show-properties $f | grep "openslide.level\[2\].width" | cut -f 2 -d ':' | cut -f 2 -d "'"`"
      echo 'width: '$width' height: '$height
      if [[ -n "$width" && -n "$height" ]]; then
-      openslide-write-png $f 0 0 3 $width $height $outputpng
+      openslide-write-png $f 0 0 2 $width $height $outputpng
       convert $outputpng $outputtif
       /bin/rm $outputpng
      fi
