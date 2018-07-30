@@ -12,7 +12,7 @@ import pydicom
 # process data from $LABCAS_ARCHIVE/Moffitt_BI --> $LABCAS_ARCHIVE/Sample_Mammography_Reference_Set
 COLLECTION_NAME = "Sample_Mammography_Reference_Set"
 TARGET_DATA_DIR=os.environ['LABCAS_ARCHIVE'] + "/" + COLLECTION_NAME
-SRC_DATA_DIR=os.environ['LABCAS_ARCHIVE'] + "/Moffitt_BI/Test_Set1_20180515"
+SRC_DATA_DIR=os.environ['LABCAS_ARCHIVE'] + "/Moffitt_BI/Test_Set2_20180727"
 METADATA_DIR=os.environ['LABCAS_METADATA'] + "/" + COLLECTION_NAME
 INSTITUTION = "Moffitt"
 
@@ -66,7 +66,7 @@ def main():
     
         # extract file metadata
         src_path = os.path.abspath(f)
-       
+        print(src_path)      
         try:
            ds = pydicom.read_file(f)
            tag_names = ds.dir()
