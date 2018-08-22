@@ -7,6 +7,7 @@ import glob
 import urllib.parse
 from shutil import copyfile
 import xml.sax.saxutils as saxutils
+import re
 
 ecas_metadata_dir = "/home/cinquini/ECAS_MIGRATION/datasets/"
 ecas_data_dir = "/data/archive"
@@ -395,7 +396,7 @@ def cleanup_text(val):
     # remove new line characters
     val = val.replace('\n',' ').replace('\r\n',' ')
     # remove extra spaces
-    val = val.replace("\s+"," ")
+    val = re.sub("\s+"," ",val)
     # remove '\' character
     val = val.replace("\ ","")
     
