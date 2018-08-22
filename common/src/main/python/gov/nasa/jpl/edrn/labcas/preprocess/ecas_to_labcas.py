@@ -20,6 +20,10 @@ sites_map = {}
 leadpis_map = {}
 organs_map = {}
 
+namespaces = {'rdf':'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+              'ns1':'http://edrn.nci.nih.gov/rdf/schema.rdf#',
+              'ns2':'http://purl.org/dc/terms/'}
+
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -63,14 +67,17 @@ def read_rdf_metatada(rdf_filepath, metadata_map):
     
     print("Reading %s" % rdf_filepath)
     
-    xml = ET.parse(input_xml_file)
+    xml = ET.parse(rdf_filepath)
     root_element = xml.getroot()
     
     # loop over tags:
     # <rdf:Description rdf:about="http://edrn.nci.nih.gov/data/sites/313">
     #     <ns2:title>CRUK Cambridge Research Institute</ns2:title>
-    for description_element in root_element.find('./rdf:Description'):
-        print description_element
+    for description_element in root_element.findall('.//rdf:Description', namespaces):
+        about_att = description_element.attrib.get('{%s}about' % namespaces['rdf'])
+        rdf_id = about_att.split('/')[-1]
+        title_element = description_element.find(".//ns2:title", namespaces)
+        metadata_map[title_element.text] = rdf_id
     
 
 def read_product_type_metadata(input_xml_file):
@@ -123,7 +130,9 @@ def read_product_type_metadata(input_xml_file):
         # SiteName --> Institution, InstitutionId
         elif key == 'SiteName':
             collection_metadata['Institution'] = val
-            collection_metadata['InstitutionId'] = "FIXME"
+
+            if sites_map.get(val, None):
+               collection_metadata['InstitutionId'] = sites_map[val]
             
         # DataCustodian --> DataCustodian
         elif key == 'DataCustodian':
