@@ -84,7 +84,7 @@ def read_product_type_metadata(input_xml_file):
             dataset_metadata['DatasetId'] = val.replace(" ","_")
             
         # ProtocolID --> ProtocolId, ProtocolName
-        elif key == 'ProtocolID' or key == 'ProtocolID':
+        elif key == 'ProtocolID' or key == 'ProtocolId':
             collection_metadata['ProtocolId'] = val
             
         elif key == 'ProtocolName':
@@ -97,8 +97,8 @@ def read_product_type_metadata(input_xml_file):
             
         # SiteName --> Institution, InstitutionId
         elif key == 'SiteName':
-            collection_metadata['InstitutionId'] = val
-            collection_metadata['Institution'] = "FIXME"
+            collection_metadata['Institution'] = val
+            collection_metadata['InstitutionId'] = "FIXME"
             
         # DataCustodian --> DataCustodian
         elif key == 'DataCustodian':
