@@ -84,8 +84,10 @@ def read_product_type_metadata(input_xml_file):
             dataset_metadata['DatasetId'] = val.replace(" ","_")
             
         # ProtocolID --> ProtocolId, ProtocolName
-        elif key == 'ProtocolID':
+        elif key == 'ProtocolID' or key == 'ProtocolID':
             collection_metadata['ProtocolId'] = val
+            
+        elif key == 'ProtocolName':
             collection_metadata['ProtocolName'] = "FIXME"
             
         # LeadPI --> LeadPI, LeadPIId
@@ -280,8 +282,8 @@ if __name__== "__main__":
             
             # FIXME
             #if filename == 'COPY_NUMBER_LEV1':
-            #if filename == 'WHIColonWistarSpeicher':
-            if True:
+            if filename == 'Analysis_of_pancreatic_cancer_biomarkers_in_PLCO_set':
+            #if True:
                 input_xml_file = os.path.join(ecas_metadata_dir, ("%s.met" % filename))
  
                 # read product type metadata from XML, convert to dictionaries
