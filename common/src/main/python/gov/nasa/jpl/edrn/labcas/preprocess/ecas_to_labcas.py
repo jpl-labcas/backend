@@ -162,6 +162,7 @@ def read_product_type_metadata(input_xml_file):
     # Description --> CollectionDescription
     description_element = root_element.find('.//description')
     val = description_element.text.replace('\n',' ').replace('\r\n',' ')
+    val = val.replace("\ ","")
     collection_metadata['CollectionDescription'] = val
     
     metadata_element = root_element.find('.//metadata')
@@ -172,6 +173,7 @@ def read_product_type_metadata(input_xml_file):
         # replace newline characters from metadata values
         if val:
             val = val.replace('\n',' ').replace('\r\n',' ')
+            val = val.replace("\ ","")
             # un-escape XML characters
             val = saxutils.unescape(val)
                  
@@ -305,6 +307,7 @@ def read_product_metadata(dataset_dir):
                 val = urllib.parse.unquote(val).replace('+',' ')
                 # replace newline characters from metadata values
                 val = val.replace('\n',' ').replace('\r\n',' ')
+                val = val.replace("\ ","")
                 # un-escape XML characters
                 val = saxutils.unescape(val)
 
@@ -393,7 +396,8 @@ if __name__== "__main__":
             
             # FIXME
             #if filename == 'COPY_NUMBER_LEV1':
-            if filename == 'Analysis_of_pancreatic_cancer_biomarkers_in_PLCO_set':
+            #if filename == 'Analysis_of_pancreatic_cancer_biomarkers_in_PLCO_set':
+            if filename == 'BCCA_Affy6.0RawData':
             #if True:
                 input_xml_file = os.path.join(ecas_metadata_dir, ("%s.met" % filename))
  
