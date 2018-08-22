@@ -13,6 +13,14 @@ ecas_data_dir = "/data/archive"
 labcas_metadata_dir = "/home/cinquini/ECAS_MIGRATION/ecas-metadata/"
 labcas_data_dir = "/home/cinquini/ECAS_MIGRATION/labcas_archive"
 
+# RDF streams
+sites_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/sites.rdf"
+
+sites_map = {}
+leadpis_map = {}
+organs_map = {}
+
+
 pp = pprint.PrettyPrinter(indent=4)
 
 collection_dict = {
@@ -47,6 +55,23 @@ dataset_dict = {
                 "DatasetName":"",
                 "DatasetDescription":""
                 }
+
+def read_rdf_metatada(rdf_filepath, metadata_map):
+    '''
+    Parse an RDF file to populate metadata mappings
+    '''
+    
+    print("Reading %s" % rdf_filepath)
+    
+    xml = ET.parse(input_xml_file)
+    root_element = xml.getroot()
+    
+    # loop over tags:
+    # <rdf:Description rdf:about="http://edrn.nci.nih.gov/data/sites/313">
+    #     <ns2:title>CRUK Cambridge Research Institute</ns2:title>
+    for description_element in root_element.find('./rdf:Description'):
+        print description_element
+    
 
 def read_product_type_metadata(input_xml_file):
     '''
@@ -272,6 +297,9 @@ def find_most_recent_file(root_dir, file_name):
     return result
 
 if __name__== "__main__":
+    
+    # initialize metadata maps read from RDF files
+    read_rdf_metatada(sites_rdf_filepath, sites_map)
     
     # loop over directories
     filenames = os.listdir(ecas_metadata_dir)
