@@ -113,6 +113,40 @@ def read_organs_from_rdf(rdf_filepath, metadata_map):
         metadata_map[title_element.text] = rdf_id
 
 
+def read_leadpis_from_rdf(rdf_filepath, metadata_map): 
+    '''
+    Reads LeadPIs information from the RDF file, maps last name + first name to id
+
+    Example XML snippet:
+
+    <rdf:Description rdf:about="http://edrn.nci.nih.gov/data/registered-person/1645">
+      <ns2:surname>Lokshin</ns2:surname>
+      <ns2:givenname>Anna</ns2:givenname>
+    </rdf:Description>
+
+    '''
+
+
+    namespaces = {'rdf':'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+                  'ns1':'http://edrn.nci.nih.gov/rdf/schema.rdf#',
+                  'ns2':'http://xmlns.com/foaf/0.1/',
+                  'ns3':'http://www.w3.org/2001/vcard-rdf/3.0#'}
+
+
+    print("Reading %s" % rdf_filepath)
+
+    xml = ET.parse(rdf_filepath)
+    root_element = xml.getroot()
+
+    # loop over tags
+    for description_element in root_element.findall('.//rdf:Description', namespaces):
+        about_att = description_element.attrib.get('{%s}about' % namespaces['rdf'])
+        rdf_id = about_att.split('/')[-1]
+        lastname_element = description_element.find(".//ns2:surname", namespaces)
+        firstname_element = description_element.find(".//ns2:givenname", namespaces)
+        metadata_map["%s %s" %(firstname_element.text, lastname_element.text)] = rdf_id
+
+
 def read_product_type_metadata(input_xml_file):
     '''
     Reads product type metadata from XML and converts it to Python dictionaries.
@@ -158,8 +192,10 @@ def read_product_type_metadata(input_xml_file):
         # LeadPI --> LeadPI, LeadPIId
         elif key == 'LeadPI':
             collection_metadata['LeadPI'] = val
-            collection_metadata['LeadPIId'] = "FIXME"
-            
+
+            if leadpis_map.get(val, None):
+               collection_metadata['LeadPIId'] = leadpis_map[val]
+
         # SiteName --> Institution, InstitutionId
         elif key == 'SiteName':
             collection_metadata['Institution'] = val
@@ -342,9 +378,10 @@ def find_most_recent_file(root_dir, file_name):
 
 if __name__== "__main__":
     
-    # initialize metadata maps read from RDF files
+    # initialize metadata maps with information read from the RDF files
     read_sites_from_rdf(sites_rdf_filepath, sites_map)
     read_organs_from_rdf(organs_rdf_filepath, organs_map)
+    read_leadpis_from_rdf(leadpis_rdf_filepath, leadpis_map)
     
     # loop over directories
     filenames = os.listdir(ecas_metadata_dir)
