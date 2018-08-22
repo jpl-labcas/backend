@@ -88,7 +88,7 @@ def read_product_type_metadata(input_xml_file):
             collection_metadata['ProtocolId'] = val
             
         elif key == 'ProtocolName':
-            collection_metadata['ProtocolName'] = "FIXME"
+            collection_metadata['ProtocolName'] = val
             
         # LeadPI --> LeadPI, LeadPIId
         elif key == 'LeadPI':
