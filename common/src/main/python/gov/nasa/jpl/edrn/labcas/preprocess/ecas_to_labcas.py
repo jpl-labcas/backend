@@ -469,8 +469,8 @@ if __name__== "__main__":
             #if filename == 'COPY_NUMBER_LEV1':
             #if filename == 'Analysis_of_pancreatic_cancer_biomarkers_in_PLCO_set':
             #if filename == 'BCCA_Affy6.0RawData':
-            if filename == 'FHCRCHanashAnnexinLamr':
-            #if True:
+            #if filename == 'FHCRCHanashAnnexinLamr':
+            if True:
                 input_xml_file = os.path.join(ecas_metadata_dir, ("%s.met" % filename))
  
                 # read product type metadata from XML, convert to dictionaries
