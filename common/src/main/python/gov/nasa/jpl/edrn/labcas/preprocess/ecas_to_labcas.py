@@ -15,6 +15,8 @@ labcas_data_dir = "/home/cinquini/ECAS_MIGRATION/labcas_archive"
 
 # RDF streams
 sites_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/sites.rdf"
+leadpis_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/registered-person.rdf"
+organs_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/body-systems.rdf"
 
 sites_map = {}
 leadpis_map = {}
@@ -56,22 +58,94 @@ dataset_dict = {
                 "DatasetDescription":""
                 }
 
-def read_rdf_metatada(rdf_filepath, metadata_map):
+
+def read_sites_from_rdf(rdf_filepath, metadata_map):
     '''
     Parse an RDF file to populate metadata mappings
     '''
+
+    namespaces = {'rdf':'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+                  'ns1':'http://edrn.nci.nih.gov/rdf/schema.rdf#',
+                  'ns2':'http://purl.org/dc/terms/'}
+
     
     print("Reading %s" % rdf_filepath)
     
-    xml = ET.parse(input_xml_file)
+    xml = ET.parse(rdf_filepath)
     root_element = xml.getroot()
     
     # loop over tags:
     # <rdf:Description rdf:about="http://edrn.nci.nih.gov/data/sites/313">
     #     <ns2:title>CRUK Cambridge Research Institute</ns2:title>
-    for description_element in root_element.find('./rdf:Description'):
-        print description_element
-    
+    for description_element in root_element.findall('.//rdf:Description', namespaces):
+        about_att = description_element.attrib.get('{%s}about' % namespaces['rdf'])
+        rdf_id = about_att.split('/')[-1]
+        title_element = description_element.find(".//ns2:title", namespaces)
+        metadata_map[title_element.text] = rdf_id
+
+
+def read_organs_from_rdf(rdf_filepath, metadata_map):
+    '''
+    Parses the RDF file containing organs information
+    to map the organ title to the organ id.
+
+    Example XML snippet:
+    <rdf:Description rdf:about="http://edrn.nci.nih.gov/data/body-systems/32">
+      <ns1:title>Thyroid</ns1:title>
+      <rdf:type rdf:resource="http://edrn.nci.nih.gov/rdf/types.rdf#BodySystem"/>
+    </rdf:Description>
+    '''
+
+    namespaces = {'rdf':'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+                  'ns1':'http://purl.org/dc/terms/'}
+
+
+    print("Reading %s" % rdf_filepath)
+
+    xml = ET.parse(rdf_filepath)
+    root_element = xml.getroot()
+
+    # loop over tags
+    for description_element in root_element.findall('.//rdf:Description', namespaces):
+        about_att = description_element.attrib.get('{%s}about' % namespaces['rdf'])
+        rdf_id = about_att.split('/')[-1]
+        title_element = description_element.find(".//ns1:title", namespaces)
+        metadata_map[title_element.text] = rdf_id
+
+
+def read_leadpis_from_rdf(rdf_filepath, metadata_map): 
+    '''
+    Reads LeadPIs information from the RDF file, maps last name + first name to id
+
+    Example XML snippet:
+
+    <rdf:Description rdf:about="http://edrn.nci.nih.gov/data/registered-person/1645">
+      <ns2:surname>Lokshin</ns2:surname>
+      <ns2:givenname>Anna</ns2:givenname>
+    </rdf:Description>
+
+    '''
+
+
+    namespaces = {'rdf':'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+                  'ns1':'http://edrn.nci.nih.gov/rdf/schema.rdf#',
+                  'ns2':'http://xmlns.com/foaf/0.1/',
+                  'ns3':'http://www.w3.org/2001/vcard-rdf/3.0#'}
+
+
+    print("Reading %s" % rdf_filepath)
+
+    xml = ET.parse(rdf_filepath)
+    root_element = xml.getroot()
+
+    # loop over tags
+    for description_element in root_element.findall('.//rdf:Description', namespaces):
+        about_att = description_element.attrib.get('{%s}about' % namespaces['rdf'])
+        rdf_id = about_att.split('/')[-1]
+        lastname_element = description_element.find(".//ns2:surname", namespaces)
+        firstname_element = description_element.find(".//ns2:givenname", namespaces)
+        metadata_map["%s %s" %(firstname_element.text, lastname_element.text)] = rdf_id
+
 
 def read_product_type_metadata(input_xml_file):
     '''
@@ -119,12 +193,16 @@ def read_product_type_metadata(input_xml_file):
         # LeadPI --> LeadPI, LeadPIId
         elif key == 'LeadPI':
             collection_metadata['LeadPI'] = val
-            collection_metadata['LeadPIId'] = "FIXME"
-            
+
+            if leadpis_map.get(val, None):
+               collection_metadata['LeadPIId'] = leadpis_map[val]
+
         # SiteName --> Institution, InstitutionId
         elif key == 'SiteName':
             collection_metadata['Institution'] = val
-            collection_metadata['InstitutionId'] = "FIXME"
+
+            if sites_map.get(val, None):
+               collection_metadata['InstitutionId'] = sites_map[val]
             
         # DataCustodian --> DataCustodian
         elif key == 'DataCustodian':
@@ -137,7 +215,9 @@ def read_product_type_metadata(input_xml_file):
         # OrganSite --> Organ, OrganId
         elif key == 'OrganSite':
             collection_metadata['Organ'] = val
-            collection_metadata['OrganId'] = "FIXME"
+
+            if organs_map.get(val, None):
+               collection_metadata['OrganId'] = organs_map[val]
             
         # CollaborativeGroup --> CollaborativeGroup
         elif key == 'CollaborativeGroup':
@@ -299,8 +379,10 @@ def find_most_recent_file(root_dir, file_name):
 
 if __name__== "__main__":
     
-    # initialize metadata maps read from RDF files
-    read_rdf_metatada(sites_rdf_filepath, sites_map)
+    # initialize metadata maps with information read from the RDF files
+    read_sites_from_rdf(sites_rdf_filepath, sites_map)
+    read_organs_from_rdf(organs_rdf_filepath, organs_map)
+    read_leadpis_from_rdf(leadpis_rdf_filepath, leadpis_map)
     
     # loop over directories
     filenames = os.listdir(ecas_metadata_dir)
