@@ -166,8 +166,7 @@ def read_product_type_metadata(input_xml_file):
     
     # Description --> CollectionDescription
     description_element = root_element.find('.//description')
-    val = description_element.text.replace('\n',' ').replace('\r\n',' ')
-    val = val.replace("\ ","").replace("\s+"," ")
+    val = cleanup_text(description_element.text)
     collection_metadata['CollectionDescription'] = val
     
     metadata_element = root_element.find('.//metadata')
@@ -177,8 +176,7 @@ def read_product_type_metadata(input_xml_file):
         
         # replace newline characters from metadata values
         if val:
-            val = val.replace('\n',' ').replace('\r\n',' ')
-            val = val.replace("\ ","").replace("\s+"," ")
+            val = cleanup_text(val)
             # un-escape XML characters
             val = saxutils.unescape(val)
                  
@@ -314,11 +312,9 @@ def read_product_metadata(dataset_dir):
             key = keyval_element.find("key").text
             val = keyval_element.find("val").text       
             if val:
+                val = cleanup_text(val)
                 # reverse URL encoding
                 val = urllib.parse.unquote(val).replace('+',' ')
-                # replace newline characters from metadata values
-                val = val.replace('\n',' ').replace('\r\n',' ')
-                val = val.replace("\ ","").replace("\s+"," ")
                 # un-escape XML characters
                 val = saxutils.unescape(val)
 
@@ -390,6 +386,20 @@ def find_most_recent_file(root_dir, file_name):
                 result = file_full_path
                 mtime = file_mod_time
     return result
+
+def cleanup_text(val):
+    '''
+    Cleans up a text string.
+    '''
+    
+    # remove new line characters
+    val = val.replace('\n',' ').replace('\r\n',' ')
+    # remove extra spaces
+    val = val.replace("\s+"," ")
+    # remove '\' character
+    val = val.replace("\ ","")
+    
+    return val
 
 if __name__== "__main__":
     
