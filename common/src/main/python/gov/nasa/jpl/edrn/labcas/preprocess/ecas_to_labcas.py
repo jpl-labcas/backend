@@ -87,7 +87,8 @@ def read_product_type_metadata(input_xml_file):
     
     # Description --> CollectionDescription
     description_element = root_element.find('.//description')
-    collection_metadata['CollectionDescription'] = description_element.text
+    val = description_element.text.replace('\n',' ').replace('\r\n',' ')
+    collection_metadata['CollectionDescription'] = val
     
     metadata_element = root_element.find('.//metadata')
     for keyval_element in metadata_element.findall('./keyval'):
