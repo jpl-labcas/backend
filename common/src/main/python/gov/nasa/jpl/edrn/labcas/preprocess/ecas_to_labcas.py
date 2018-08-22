@@ -232,6 +232,9 @@ def read_product_type_metadata(input_xml_file):
         elif key == 'ProtocolName':
             collection_metadata['ProtocolName'] = val
 
+            if val in protocols_map:
+               collection_metadata['ProtocolId'] = protocols_map[val]
+
             # possibly override
             if val in inv_protocols_map:
                collection_metadata['ProtocolId'] = val
@@ -253,8 +256,11 @@ def read_product_type_metadata(input_xml_file):
         elif key == 'SiteName':
             collection_metadata['Institution'] = val
 
+            if val in sites_map:
+               collection_metadata['InstitutionId'] = sites_map[val]
+
             # possibly override
-            if val in inv_sites_map:
+            elif val in inv_sites_map:
                collection_metadata['InstitutionId'] = val
                collection_metadata['Institution'] = inv_sites_map[val]
 
@@ -270,8 +276,11 @@ def read_product_type_metadata(input_xml_file):
         elif key == 'OrganSite':
             collection_metadata['Organ'] = val
 
+            if val in organs_map:
+               collection_metadata['OrganId'] = organs_map[val]
+
             # possibly override
-            if val in inv_organs_map:
+            elif val in inv_organs_map:
                collection_metadata['OrganId'] = val
                collection_metadata['Organ'] = inv_sites_map[val]
             
