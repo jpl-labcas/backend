@@ -89,12 +89,9 @@ def read_sites_from_rdf(rdf_filepath, metadata_map, inv_metadata_map):
     for description_element in root_element.findall('.//rdf:Description', namespaces):
         about_att = description_element.attrib.get('{%s}about' % namespaces['rdf'])
         rdf_id = about_att.split('/')[-1]
-        title_element = description_element.find(".//ns2:title", namespaces)
-        metadata_map[title_element.text] = rdf_id
-        
-    # reverse the dictionary
-    for k in metadata_map:
-        inv_metadata_map[metadata_map[k]] = k
+        for title_element in description_element.findall(".//ns2:title", namespaces):
+            metadata_map[title_element.text] = rdf_id
+            inv_metadata_map[rdf_id] = title_element.text
 
 
 def read_organs_from_rdf(rdf_filepath, metadata_map, inv_metadata_map):
@@ -124,10 +121,7 @@ def read_organs_from_rdf(rdf_filepath, metadata_map, inv_metadata_map):
         rdf_id = about_att.split('/')[-1]
         title_element = description_element.find(".//ns1:title", namespaces)
         metadata_map[title_element.text] = rdf_id
-
-    # reverse the dictionary
-    for k in metadata_map:
-        inv_metadata_map[metadata_map[k]] = k
+        inv_metadata_map[rdf_id] = title_element.text
 
 
 def read_leadpis_from_rdf(rdf_filepath, metadata_map, inv_metadata_map): 
@@ -161,11 +155,9 @@ def read_leadpis_from_rdf(rdf_filepath, metadata_map, inv_metadata_map):
         rdf_id = about_att.split('/')[-1]
         lastname_element = description_element.find(".//ns2:surname", namespaces)
         firstname_element = description_element.find(".//ns2:givenname", namespaces)
-        metadata_map["%s %s" %(firstname_element.text, lastname_element.text)] = rdf_id
-
-    # reverse the dictionary
-    for k in metadata_map:
-        inv_metadata_map[metadata_map[k]] = k
+        fullname = "%s %s" %(firstname_element.text, lastname_element.text)
+        metadata_map["%s" % fullname]  = rdf_id
+        inv_metadata_map[rdf_id] = fullname
 
 
 def read_protocols_from_rdf(rdf_filepath, metadata_map, inv_metadata_map):
@@ -194,10 +186,7 @@ def read_protocols_from_rdf(rdf_filepath, metadata_map, inv_metadata_map):
         rdf_id = about_att.split('/')[-1]
         for title_element in description_element.findall(".//ns2:title", namespaces):
            metadata_map[title_element.text] = rdf_id
-
-    # reverse the dictionary
-    for k in metadata_map:
-        inv_metadata_map[metadata_map[k]] = k
+           inv_metadata_map[rdf_id] = title_element.text
 
 
 def read_product_type_metadata(input_xml_file):
@@ -245,7 +234,7 @@ def read_product_type_metadata(input_xml_file):
 
             # possibly override
             if val in inv_protocols_map:
-               print("OVERRIDE")
+               collection_metadata['ProtocolId'] = val
                collection_metadata['ProtocolName'] = inv_protocols_map[val]
             
         # LeadPI --> LeadPI, LeadPIId
@@ -264,15 +253,11 @@ def read_product_type_metadata(input_xml_file):
         elif key == 'SiteName':
             collection_metadata['Institution'] = val
 
-            # try institution title --> institution id
-            if sites_map.get(val, None):
-               collection_metadata['InstitutionId'] = sites_map[val]
-            
-            # reverse mapping: institution id --> institution title
-            elif inv_sites_map.get(val, None):
-                collection_metadata['InstitutionId'] = val
-                collection_metadata['Institution'] = inv_sites_map[val]
-            
+            # possibly override
+            if val in inv_sites_map:
+               collection_metadata['InstitutionId'] = val
+               collection_metadata['Institution'] = inv_sites_map[val]
+
         # DataCustodian --> DataCustodian
         elif key == 'DataCustodian':
             collection_metadata['DataCustodian'] = val
@@ -285,14 +270,10 @@ def read_product_type_metadata(input_xml_file):
         elif key == 'OrganSite':
             collection_metadata['Organ'] = val
 
-            if organs_map.get(val, None):
-               collection_metadata['OrganId'] = organs_map[val]
-               
-            # reverse mapping: organ id --> organ title
-            elif inv_organs_map.get(val, None):
-                collection_metadata['OrganId'] = val
-                collection_metadata['Organ'] = inv_sites_map[val]
-
+            # possibly override
+            if val in inv_organs_map:
+               collection_metadata['OrganId'] = val
+               collection_metadata['Organ'] = inv_sites_map[val]
             
         # CollaborativeGroup --> CollaborativeGroup
         elif key == 'CollaborativeGroup':
@@ -386,8 +367,6 @@ def read_product_metadata(dataset_dir):
                 else:
                     file_metadata[key] = val
             
-        #pp.pprint(file_metadata)
-        
         # add dictionary to list, if not empty
         if file_metadata:
             file_metadata_array.append(file_metadata)
@@ -480,7 +459,8 @@ if __name__== "__main__":
             # FIXME
             #if filename == 'COPY_NUMBER_LEV1':
             #if filename == 'Analysis_of_pancreatic_cancer_biomarkers_in_PLCO_set':
-            if filename == 'BCCA_Affy6.0RawData':
+            #if filename == 'BCCA_Affy6.0RawData':
+            if filename == 'FHCRCHanashAnnexinLamr':
             #if True:
                 input_xml_file = os.path.join(ecas_metadata_dir, ("%s.met" % filename))
  
