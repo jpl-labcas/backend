@@ -19,6 +19,7 @@ leadpis_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/registered-person.rdf"
 organs_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/body-systems.rdf"
 
 sites_map = {}
+inv_sites_map = {}
 leadpis_map = {}
 organs_map = {}
 
@@ -82,6 +83,9 @@ def read_sites_from_rdf(rdf_filepath, metadata_map):
         rdf_id = about_att.split('/')[-1]
         title_element = description_element.find(".//ns2:title", namespaces)
         metadata_map[title_element.text] = rdf_id
+        
+    # reverse sites mapping since source metadata is not consistent
+    inv_sites_map = { metadata_map[k] : k for k in metadata_map }
 
 
 def read_organs_from_rdf(rdf_filepath, metadata_map):
@@ -203,8 +207,14 @@ def read_product_type_metadata(input_xml_file):
         elif key == 'SiteName':
             collection_metadata['Institution'] = val
 
+            # try institution title --> institution id
             if sites_map.get(val, None):
                collection_metadata['InstitutionId'] = sites_map[val]
+            
+            # reverse mapping: institution id --> institution title
+            elif inv_sites_map.get(val, None):
+                collection_metadata['InstitutionId'] = val
+                collection_metadata['Institution'] = inv_sites_map[val]
             
         # DataCustodian --> DataCustodian
         elif key == 'DataCustodian':
