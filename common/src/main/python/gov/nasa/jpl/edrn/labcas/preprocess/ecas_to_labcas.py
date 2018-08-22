@@ -60,7 +60,7 @@ dataset_dict = {
                 }
 
 
-def read_sites_from_rdf(rdf_filepath, metadata_map):
+def read_sites_from_rdf(rdf_filepath, metadata_map, inv_metadata_map):
     '''
     Parse an RDF file to populate metadata mappings
     '''
@@ -85,7 +85,8 @@ def read_sites_from_rdf(rdf_filepath, metadata_map):
         metadata_map[title_element.text] = rdf_id
         
     # reverse sites mapping since source metadata is not consistent
-    inv_sites_map = { metadata_map[k] : k for k in metadata_map }
+    for k in metadata_map:
+        inv_metadata_map[metadata_map[k]] = k
 
 
 def read_organs_from_rdf(rdf_filepath, metadata_map):
@@ -166,7 +167,7 @@ def read_product_type_metadata(input_xml_file):
     # Description --> CollectionDescription
     description_element = root_element.find('.//description')
     val = description_element.text.replace('\n',' ').replace('\r\n',' ')
-    val = val.replace("\ ","")
+    val = val.replace("\ ","").replace("\s+"," ")
     collection_metadata['CollectionDescription'] = val
     
     metadata_element = root_element.find('.//metadata')
@@ -177,7 +178,7 @@ def read_product_type_metadata(input_xml_file):
         # replace newline characters from metadata values
         if val:
             val = val.replace('\n',' ').replace('\r\n',' ')
-            val = val.replace("\ ","")
+            val = val.replace("\ ","").replace("\s+"," ")
             # un-escape XML characters
             val = saxutils.unescape(val)
                  
@@ -317,7 +318,7 @@ def read_product_metadata(dataset_dir):
                 val = urllib.parse.unquote(val).replace('+',' ')
                 # replace newline characters from metadata values
                 val = val.replace('\n',' ').replace('\r\n',' ')
-                val = val.replace("\ ","")
+                val = val.replace("\ ","").replace("\s+"," ")
                 # un-escape XML characters
                 val = saxutils.unescape(val)
 
@@ -393,7 +394,7 @@ def find_most_recent_file(root_dir, file_name):
 if __name__== "__main__":
     
     # initialize metadata maps with information read from the RDF files
-    read_sites_from_rdf(sites_rdf_filepath, sites_map)
+    read_sites_from_rdf(sites_rdf_filepath, sites_map, inv_sites_map)
     read_organs_from_rdf(organs_rdf_filepath, organs_map)
     read_leadpis_from_rdf(leadpis_rdf_filepath, leadpis_map)
     
@@ -426,6 +427,3 @@ if __name__== "__main__":
                 # FIXME: remove 1
                 output_dir = os.path.join(labcas_data_dir, collection_id, dataset_id, '1')
                 copy_products(collection_id, file_metadata_array, output_dir)
-
-
-
