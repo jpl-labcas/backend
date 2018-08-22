@@ -242,6 +242,11 @@ def read_product_type_metadata(input_xml_file):
             
         elif key == 'ProtocolName':
             collection_metadata['ProtocolName'] = val
+
+            # possibly override
+            if val in inv_protocols_map:
+               print("OVERRIDE")
+               collection_metadata['ProtocolName'] = inv_protocols_map[val]
             
         # LeadPI --> LeadPI, LeadPIId
         elif key == 'LeadPI':
@@ -321,9 +326,6 @@ def read_product_type_metadata(input_xml_file):
         elif key == 'DataDisclaimer':
             collection_metadata['DataDisclaimer'] = val
                         
-    #pp.pprint(collection_metadata)
-    #pp.pprint(dataset_metadata)
-    
     return { 
              'Collection':collection_metadata,
              'Dataset': dataset_metadata
@@ -467,9 +469,6 @@ if __name__== "__main__":
     read_organs_from_rdf(organs_rdf_filepath, organs_map, inv_organs_map)
     read_leadpis_from_rdf(leadpis_rdf_filepath, leadpis_map, inv_leadpis_map)
     read_protocols_from_rdf(protocols_rdf_filepath, protocols_map, inv_protocols_map)
-    
-    pp.pprint(protocols_map)
-    pp.pprint(inv_protocols_map)
     
     # loop over directories
     filenames = os.listdir(ecas_metadata_dir)
