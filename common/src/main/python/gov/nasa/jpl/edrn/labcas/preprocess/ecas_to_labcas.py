@@ -19,10 +19,14 @@ sites_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/sites.rdf"
 leadpis_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/registered-person.rdf"
 organs_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/body-systems.rdf"
 
+# inverse maps are needed because sometimes the RDF element value is
+# the object title, sometimes it's the object id...
 sites_map = {}
 inv_sites_map = {}
 leadpis_map = {}
+inv_leadpis_map = {}
 organs_map = {}
+inv_organs_map = {}
 
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -85,12 +89,12 @@ def read_sites_from_rdf(rdf_filepath, metadata_map, inv_metadata_map):
         title_element = description_element.find(".//ns2:title", namespaces)
         metadata_map[title_element.text] = rdf_id
         
-    # reverse sites mapping since source metadata is not consistent
+    # reverse the dictionary
     for k in metadata_map:
         inv_metadata_map[metadata_map[k]] = k
 
 
-def read_organs_from_rdf(rdf_filepath, metadata_map):
+def read_organs_from_rdf(rdf_filepath, metadata_map, inv_metadata_map):
     '''
     Parses the RDF file containing organs information
     to map the organ title to the organ id.
@@ -118,8 +122,12 @@ def read_organs_from_rdf(rdf_filepath, metadata_map):
         title_element = description_element.find(".//ns1:title", namespaces)
         metadata_map[title_element.text] = rdf_id
 
+    # reverse the dictionary
+    for k in metadata_map:
+        inv_metadata_map[metadata_map[k]] = k
 
-def read_leadpis_from_rdf(rdf_filepath, metadata_map): 
+
+def read_leadpis_from_rdf(rdf_filepath, metadata_map, inv_metadata_map): 
     '''
     Reads LeadPIs information from the RDF file, maps last name + first name to id
 
@@ -151,6 +159,10 @@ def read_leadpis_from_rdf(rdf_filepath, metadata_map):
         lastname_element = description_element.find(".//ns2:surname", namespaces)
         firstname_element = description_element.find(".//ns2:givenname", namespaces)
         metadata_map["%s %s" %(firstname_element.text, lastname_element.text)] = rdf_id
+
+    # reverse the dictionary
+    for k in metadata_map:
+        inv_metadata_map[metadata_map[k]] = k
 
 
 def read_product_type_metadata(input_xml_file):
@@ -202,6 +214,11 @@ def read_product_type_metadata(input_xml_file):
 
             if leadpis_map.get(val, None):
                collection_metadata['LeadPIId'] = leadpis_map[val]
+               
+            # reverse mapping: PI id --> PI name
+            elif inv_leadpis_map.get(val, None):
+                collection_metadata['LeadPIId'] = val
+                collection_metadata['LeadPI'] = inv_sites_map[val]
 
         # SiteName --> Institution, InstitutionId
         elif key == 'SiteName':
@@ -230,6 +247,12 @@ def read_product_type_metadata(input_xml_file):
 
             if organs_map.get(val, None):
                collection_metadata['OrganId'] = organs_map[val]
+               
+            # reverse mapping: organ id --> organ title
+            elif inv_organs_map.get(val, None):
+                collection_metadata['OrganId'] = val
+                collection_metadata['Organ'] = inv_sites_map[val]
+
             
         # CollaborativeGroup --> CollaborativeGroup
         elif key == 'CollaborativeGroup':
@@ -406,8 +429,8 @@ if __name__== "__main__":
     
     # initialize metadata maps with information read from the RDF files
     read_sites_from_rdf(sites_rdf_filepath, sites_map, inv_sites_map)
-    read_organs_from_rdf(organs_rdf_filepath, organs_map)
-    read_leadpis_from_rdf(leadpis_rdf_filepath, leadpis_map)
+    read_organs_from_rdf(organs_rdf_filepath, organs_map, inv_organs_map)
+    read_leadpis_from_rdf(leadpis_rdf_filepath, leadpis_map, inv_leadpis_map)
     
     # loop over directories
     filenames = os.listdir(ecas_metadata_dir)
