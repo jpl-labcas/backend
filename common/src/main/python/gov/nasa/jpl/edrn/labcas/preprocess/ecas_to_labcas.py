@@ -192,8 +192,8 @@ def read_protocols_from_rdf(rdf_filepath, metadata_map, inv_metadata_map):
     for description_element in root_element.findall('.//rdf:Description', namespaces):
         about_att = description_element.attrib.get('{%s}about' % namespaces['rdf'])
         rdf_id = about_att.split('/')[-1]
-        title_element = description_element.find(".//ns2:title", namespaces)
-        metadata_map[title_element.text] = rdf_id
+        for title_element in description_element.findall(".//ns2:title", namespaces):
+           metadata_map[title_element.text] = rdf_id
 
     # reverse the dictionary
     for k in metadata_map:
@@ -468,8 +468,8 @@ if __name__== "__main__":
     read_leadpis_from_rdf(leadpis_rdf_filepath, leadpis_map, inv_leadpis_map)
     read_protocols_from_rdf(protocols_rdf_filepath, protocols_map, inv_protocols_map)
     
-    pprint(protocols_map)
-    pprint(inv_protocols_map)
+    pp.pprint(protocols_map)
+    pp.pprint(inv_protocols_map)
     
     # loop over directories
     filenames = os.listdir(ecas_metadata_dir)
