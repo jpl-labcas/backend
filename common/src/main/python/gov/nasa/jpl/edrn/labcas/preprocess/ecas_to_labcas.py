@@ -18,6 +18,7 @@ labcas_data_dir = "/home/cinquini/ECAS_MIGRATION/labcas_archive"
 sites_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/sites.rdf"
 leadpis_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/registered-person.rdf"
 organs_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/body-systems.rdf"
+protocols_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/protocols.rdf"
 
 # inverse maps are needed because sometimes the RDF element value is
 # the object title, sometimes it's the object id...
@@ -27,6 +28,8 @@ leadpis_map = {}
 inv_leadpis_map = {}
 organs_map = {}
 inv_organs_map = {}
+protocols_map = {}
+inv_protocols_map = {}
 
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -159,6 +162,38 @@ def read_leadpis_from_rdf(rdf_filepath, metadata_map, inv_metadata_map):
         lastname_element = description_element.find(".//ns2:surname", namespaces)
         firstname_element = description_element.find(".//ns2:givenname", namespaces)
         metadata_map["%s %s" %(firstname_element.text, lastname_element.text)] = rdf_id
+
+    # reverse the dictionary
+    for k in metadata_map:
+        inv_metadata_map[metadata_map[k]] = k
+
+
+def read_protocols_from_rdf(rdf_filepath, metadata_map, inv_metadata_map):
+    '''
+    Parses the RDF file containing protocol information
+    to map the protocol title to the protocol id.
+
+    Example XML snippet:
+    <rdf:Description rdf:about="http://edrn.nci.nih.gov/data/protocols/site-specific/282-87">
+        <ns2:title>Light Scattering Spectroscopy for the Detection of Colorectal Neoplasia</ns2:title>
+    
+    '''
+
+    namespaces = {'rdf':'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+                  'ns1':'http://edrn.nci.nih.gov/rdf/schema.rdf#',
+                  'ns2':'http://purl.org/dc/terms/'}
+
+    print("Reading %s" % rdf_filepath)
+
+    xml = ET.parse(rdf_filepath)
+    root_element = xml.getroot()
+
+    # loop over tags
+    for description_element in root_element.findall('.//rdf:Description', namespaces):
+        about_att = description_element.attrib.get('{%s}about' % namespaces['rdf'])
+        rdf_id = about_att.split('/')[-1]
+        title_element = description_element.find(".//ns2:title", namespaces)
+        metadata_map[title_element.text] = rdf_id
 
     # reverse the dictionary
     for k in metadata_map:
@@ -431,6 +466,10 @@ if __name__== "__main__":
     read_sites_from_rdf(sites_rdf_filepath, sites_map, inv_sites_map)
     read_organs_from_rdf(organs_rdf_filepath, organs_map, inv_organs_map)
     read_leadpis_from_rdf(leadpis_rdf_filepath, leadpis_map, inv_leadpis_map)
+    read_protocols_from_rdf(protocols_rdf_filepath, protocols_map, inv_protocols_map)
+    
+    pprint(protocols_map)
+    pprint(inv_protocols_map)
     
     # loop over directories
     filenames = os.listdir(ecas_metadata_dir)
