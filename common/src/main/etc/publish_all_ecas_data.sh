@@ -11,6 +11,7 @@ source /data/local/labcas/labcas_venv/bin/activate
 
 # loop over all collections = datasets
 for source_dir in $data_dir/* ; do
+	echo ""
 	
 	# extract dataset name = subdir name without the path
     dataset=$(basename "$source_dir")
@@ -25,7 +26,6 @@ for source_dir in $data_dir/* ; do
 	# 2) publish collection=dataset
 	echo "Publishing collection: $dataset"
 	python $script $metadata_dir/$dataset/$dataset.cfg --in-place
-	break
     
 done
 
