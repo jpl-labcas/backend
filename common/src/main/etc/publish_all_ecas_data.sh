@@ -4,6 +4,7 @@
 data_dir="/labcas-data/ecas"
 archive_dir="/usr/local/labcas/backend/archive"
 metadata_dir="/usr/local/labcas/src/ecas-metadata"
+script="/usr/local/labcas/src/labcas-backend/common/src/main/python/gov/nasa/jpl/edrn/labcas/client/publish_labcas_data.py"
 
 # activate Python labcas virtual environment
 source /data/local/labcas/labcas_venv/bin/activate
@@ -22,7 +23,9 @@ for source_dir in $data_dir/* ; do
 	fi
 	
 	# 2) publish collection=dataset
-	
+	echo "Publishing collection: $dataset"
+	python $script $metadata_dir/$dataset/$dataset.cfg --in-place
+	break
     
 done
 
