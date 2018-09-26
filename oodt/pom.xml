@@ -181,6 +181,26 @@
             </configuration>
           </execution>
           <execution>
+            <id>copy-filemgr-scripts</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${oodt.dir}/cas-filemgr-${oodt.version}/bin</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/src/main/resources/filemgr</directory>
+                  <includes>
+                    <include>filemgr</include>
+                    <include>filemgr-client</include>
+                  </includes>
+                </resource>
+              </resources>
+              <overwrite>true</overwrite>
+            </configuration>
+          </execution>
+          <execution>
             <id>copy-workflow-properties</id>
             <phase>install</phase>
             <goals>
@@ -194,6 +214,26 @@
                   <includes>
                     <include>workflow.properties</include>
                     <include>logging.properties</include>
+                  </includes>
+                </resource>
+              </resources>
+              <overwrite>true</overwrite>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-workflow-scripts</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${oodt.dir}/cas-workflow-${oodt.version}/bin</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/src/main/resources/workflow</directory>
+                  <includes>
+                    <include>wmgr</include>
+                    <include>wmgr-client</include>
                   </includes>
                 </resource>
               </resources>

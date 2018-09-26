@@ -11,7 +11,7 @@
 	<customMetadata>
 		<metadata key="ProductionDateTime" val="[DATE.UTC]" />
 		<metadata key="JobDir"
-			val="[PGE_ROOT]/labcas-test/jobs/job-[ProductionDateTime]" />
+			val="[PGE_ROOT]/labcas-test/job-[ProductionDateTime]" />
 	</customMetadata>
 
 	<!-- CAS Crawler directives -->
