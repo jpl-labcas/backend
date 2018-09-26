@@ -12,7 +12,7 @@ import pydicom
 # process data from $LABCAS_ARCHIVE/Moffitt_BI --> $LABCAS_ARCHIVE/Sample_Mammography_Reference_Set
 COLLECTION_NAME = "Sample_Mammography_Reference_Set"
 TARGET_DATA_DIR=os.environ['LABCAS_ARCHIVE'] + "/" + COLLECTION_NAME
-SRC_DATA_DIR=os.environ['LABCAS_ARCHIVE'] + "/Moffitt_BI/Test_Set1_20180515"
+SRC_DATA_DIR=os.environ['LABCAS_ARCHIVE'] + "/Moffitt_BI/Test1_447_20180921"
 METADATA_DIR=os.environ['LABCAS_METADATA'] + "/" + COLLECTION_NAME
 INSTITUTION = "Moffitt"
 
@@ -20,7 +20,7 @@ def main():
         
     # dataset directory
     #dataset = sys.argv[1]
-    dataset_id = 'E0010'
+    dataset_id = 'C0001'
     src_dataset_dir = '%s/%s' % (SRC_DATA_DIR, dataset_id)
     target_dataset_dir = '%s/%s' % (TARGET_DATA_DIR, dataset_id)
     
