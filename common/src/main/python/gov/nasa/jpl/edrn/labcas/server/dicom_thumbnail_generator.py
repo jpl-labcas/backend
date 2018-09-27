@@ -10,70 +10,55 @@
 
 import sys
 import os
-import dicom
-import PIL.Image
 import numpy as np
+import png
+import pydicom
+from PIL import Image
 
 from thumbnails import build_thumbnail_filepath
 
-REDUCTION_FACTORT = 50
-
-# Note: adapted from pydicom/contrib/pydicom_PIL.py
-def get_LUT_value(data, window, level):
-    """Apply the RGB Look-Up Table for the given data and window/level value."""
-    
-    return np.piecewise(data,
-                        [data <= (level - 0.5 - (window - 1) / 2),
-                         data > (level - 0.5 + (window - 1) / 2)],
-                        [0, 255, lambda data: ((data - (level - 0.5)) / (window - 1) + 0.5) * (255 - 0)])
-
-
-# Note: adapted from pydicom/contrib/pydicom_PIL.py
-def get_PIL(dataset):
-    """Display an image using the Python Imaging Library (PIL)."""
-
-    if ('WindowWidth' not in dataset) or ('WindowCenter' not in dataset):  # can only apply LUT if these values exist
-        bits = dataset.BitsAllocated
-        samples = dataset.SamplesPerPixel
-        if bits == 8 and samples == 1:
-            mode = "L"
-        elif bits == 8 and samples == 3:
-            mode = "RGB"
-        elif bits == 16:
-            mode = "I;16"  # not sure about this -- PIL source says is 'experimental' and no documentation. Also, should bytes swap depending on endian of file and system??
-        else:
-            raise TypeError("Don't know PIL mode for %d BitsAllocated and %d SamplesPerPixel" % (bits, samples))
-
-        # PIL size = (width, height)
-        size = (dataset.Columns, dataset.Rows)
-
-        im = PIL.Image.frombuffer(mode, size, dataset.PixelData, "raw", mode, 0, 1)  # Recommended to specify all details by http://www.pythonware.com/library/pil/handbook/image.htm
-
-    else:
-        image = get_LUT_value(dataset.pixel_array, dataset.WindowWidth, dataset.WindowCenter)
-        im = PIL.Image.fromarray(image).convert('L')  # Convert mode to L since LUT has only 256 values: http://www.pythonware.com/library/pil/handbook/image.htm
-
-    return im
+THUMBNAIL_SIZE = 50
 
 def generate_thumbnail(image_filepath, thumbnail_filepath):
     
     # read DICOM dataset
-    dataset = dicom.read_file( image_filepath )
-    size = (dataset.Columns, dataset.Rows)
+    #dataset = dicom.read_file( image_filepath )
+    #size = (dataset.Columns, dataset.Rows)
     
     # build PIL image from dataset
-    img = get_PIL(dataset)
+    #img = get_PIL(dataset)
     
     # build thumbnail from image
-    thumb = img.convert('L')
-    thumb.thumbnail( (size[0]/REDUCTION_FACTORT, size[1]/REDUCTION_FACTORT) )
+    #thumb = img.convert('L')
+    #thumb.thumbnail( (size[0]/REDUCTION_FACTORT, size[1]/REDUCTION_FACTORT) )
     
     # save file with desired path, format
-    thumb.save(thumbnail_filepath, "png")
-    
-    # cleanup
-    #img.close() # depending on PIL version close() method might not exist
+    #thumb.save(thumbnail_filepath, "png")
+        
+    ds = pydicom.dcmread(image_filepath)
 
+    shape = ds.pixel_array.shape
+    
+    # Convert to float to avoid overflow or underflow losses.
+    image_2d = ds.pixel_array.astype(float)
+    
+    # Rescaling grey scale between 0-255
+    image_2d_scaled = (np.maximum(image_2d,0) / image_2d.max()) * 255.0
+    
+    # Convert to uint
+    image_2d_scaled = np.uint8(image_2d_scaled)
+    
+    # Write the PNG file
+    with open(thumbnail_filepath, 'wb') as png_file:
+        w = png.Writer(shape[1], shape[0], greyscale=True)
+        w.write(png_file, image_2d_scaled)
+
+    # Convert current file to thumbnail - will overwrite previous        
+    size=THUMBNAIL_SIZE, THUMBNAIL_SIZE*(shape[0]/shape[1])
+    im = (Image.open(thumbnail_filepath))
+    im = im.resize(size, Image.ANTIALIAS)
+    im.save(thumbnail_filepath,"PNG")
+         
 
 if __name__ == "__main__":
     
