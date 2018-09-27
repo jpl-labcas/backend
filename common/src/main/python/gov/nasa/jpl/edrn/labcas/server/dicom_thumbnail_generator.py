@@ -13,10 +13,11 @@ import os
 import numpy as np
 import png
 import pydicom
+from PIL import Image
 
 from thumbnails import build_thumbnail_filepath
 
-REDUCTION_FACTORT = 50
+THUMBNAIL_SIZE = 50
 
 def generate_thumbnail(image_filepath, thumbnail_filepath):
     
@@ -51,10 +52,13 @@ def generate_thumbnail(image_filepath, thumbnail_filepath):
     with open(thumbnail_filepath, 'wb') as png_file:
         w = png.Writer(shape[1], shape[0], greyscale=True)
         w.write(png_file, image_2d_scaled)
-        
-    print "Written file: %s" % thumbnail_filepath
-    
 
+    # Convert current file to thumbnail - will overwrite previous        
+    size=THUMBNAIL_SIZE, THUMBNAIL_SIZE*(shape[0]/shape[1])
+    im = (Image.open(thumbnail_filepath))
+    im = im.resize(size, Image.ANTIALIAS)
+    im.save(thumbnail_filepath,"PNG")
+         
 
 if __name__ == "__main__":
     
