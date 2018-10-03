@@ -69,9 +69,13 @@ def main():
            # replace metadata
            metadata = metadata.replace("DATASET_ID", dataset_id)
            if dataset_id[0]=='D':
-               dataset_name = 'Dummy patient #%s (%s)' % (dataset_id[1:], INSTITUTION)
+               dataset_name = 'Dummy patient # %s (%s)' % (dataset_id[1:], INSTITUTION)
+           elif dataset_id[0]=='C':
+               dataset_name = 'Case # %s (unilateral breast cancer)' % dataset_id[1:]
+           elif dataset_id[0]=='N':
+               dataset_name = 'Case # %s (control)' % dataset_id[1:]
            else:
-               dataset_name = 'Patient #%s (%s)' % (dataset_id[1:], INSTITUTION)
+               dataset_name = 'Patient # %s (%s)' % (dataset_id[1:], INSTITUTION)
            dataset_description = dataset_name + " mammography images"
            metadata = metadata.replace("DATASET_NAME", dataset_name)
            metadata = metadata.replace("DATASET_DESCRIPTION", dataset_description)
