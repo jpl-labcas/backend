@@ -25,13 +25,7 @@ class LabcasCollectionPublisher(object):
         
         # assemble collection metadata
         metadata = self._get_collection_metadata(directory_path)
-        
-        # publish collection metadata to Solr
-        if self._update_collection:
-            metadata['id'] = metadata['CollectionId']
-            del metadata['CollectionId']
-            self._solr_client.post(metadata, "collections")
-        
+                
         # loop over all sub-directories to publish datasets
         labcasDatasetPublisher = LabcasDatasetPublisher(metadata['CollectionName'], 
                                                         solr_url=self._solr_url,
@@ -45,6 +39,13 @@ class LabcasCollectionPublisher(object):
                                              in_place=in_place, 
                                              update_datasets=update_datasets,
                                              update_files=update_files)
+                
+        # update collection metadata in Solr
+        # AFTER minimal metadata has been entered while publishing datasets
+        if self._update_collection:
+            metadata['id'] = metadata['CollectionId']
+            del metadata['CollectionId']
+            self._solr_client.post(metadata, "collections")
 
     
     def _get_collection_metadata(self, directory_path):
