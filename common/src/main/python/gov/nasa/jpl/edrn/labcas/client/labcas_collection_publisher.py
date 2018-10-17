@@ -30,15 +30,17 @@ class LabcasCollectionPublisher(object):
         labcasDatasetPublisher = LabcasDatasetPublisher(metadata['CollectionName'], 
                                                         solr_url=self._solr_url,
                                                         update_collection=self._update_collection)
-        for subdir_name in os.listdir(directory_path):
-            subdir_path = os.path.join(directory_path, subdir_name)
-            if os.path.isdir(subdir_path):
-                
-                # publish dataset hierarchy
-                labcasDatasetPublisher.crawl(subdir_path, 
-                                             in_place=in_place, 
-                                             update_datasets=update_datasets,
-                                             update_files=update_files)
+        
+        if update_datasets:
+            for subdir_name in os.listdir(directory_path):
+                subdir_path = os.path.join(directory_path, subdir_name)
+                if os.path.isdir(subdir_path):
+                    
+                    # publish dataset hierarchy
+                    labcasDatasetPublisher.crawl(subdir_path, 
+                                                 in_place=in_place, 
+                                                 update_datasets=update_datasets,
+                                                 update_files=update_files)
                 
         # update collection metadata in Solr
         # AFTER minimal metadata has been entered while publishing datasets
