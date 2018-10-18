@@ -43,6 +43,8 @@ class LabcasDatasetPublisher(object):
         
         # collect metadata for this dataset
         metadata = self._get_dataset_metadata(directory_path, dataset_parent_id=dataset_parent_id)
+        # FIXME: inject metadata from the client side
+        #metadata['DatasetSequenceType'] = 'MIP'
         logging.info("Dataset metadata: %s" % metadata)
         
         # update dataset metadata
