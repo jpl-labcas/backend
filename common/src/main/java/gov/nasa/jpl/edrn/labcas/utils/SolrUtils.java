@@ -332,6 +332,7 @@ public class SolrUtils {
 		// FileManagerUtils.printMetadata(productMetadata);
 		SolrInputDocument doc = serializeFile(metadata);
 		LOG.info("Publishing product id="+doc.getFieldValue("id")+" to Solr core: "+SOLR_URL+"/"+SOLR_CORE_FILES);
+		LOG.info("Document="+doc.toString());
 		solrServers.get(SOLR_CORE_FILES).add(doc);
 		//solrServers.get(SOLR_CORE_COLLECTIONS).commit(); // use solr.autoSoftCommit.maxTime and solr.autoCommit.maxTime
 		

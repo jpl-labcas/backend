@@ -42,7 +42,8 @@ for thisdir, subdirs, files in os.walk(data_dir):
             date_acquired = datetime.strptime(matchObj.group(2), '%m%d%Y') 
             
             metadata["PatientId"] = patient_id
-            metadata["AcquiredDate"] = date_acquired.strftime('%Y-%m-%dT%H:%M:%SZ')
+            metadata["AcquiredDate"] = date_acquired.strftime('%Y/%m/%d')
+            #metadata["AcquiredDate"] = date_acquired.strftime('%Y-%m-%dT%H:%M:%SZ')
             
             if thisdir_name.lower() in csv_data:
                 metadata['SequenceType'] = "|".join(csv_data[thisdir_name.lower()])
