@@ -8,7 +8,8 @@ from datetime import datetime
 from utils import write_dataset_metadata
 
 # parameters
-root_dir = '/Users/cinquini/workbench/labcas/archive/City_Of_Hope'
+#root_dir = '/Users/cinquini/workbench/labcas/archive/City_Of_Hope'
+root_dir = '/labcas-data/City_Of_Hope'
 
 # loop over subdirectories
 for thisdir, subdirs, files in os.walk(root_dir):
