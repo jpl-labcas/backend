@@ -1,7 +1,7 @@
 # python script to create file-level metadata for MD Anderson data
 import os
 import glob
-from utils import write_metadata
+from utils import write_file_metadata
 
 # loop over sub directories, files
 root_dir = "/labcas-data/MD_Anderson_Pancreas_IPMN_images"
@@ -95,4 +95,4 @@ for archive_dir in archive_dirs:
       
       # write out metadata file
       metadata_filepath = os.path.abspath(filename+".xmlmet")
-      write_metadata(metadata_filepath, metadata)
+      write_file_metadata(metadata_filepath, metadata)
