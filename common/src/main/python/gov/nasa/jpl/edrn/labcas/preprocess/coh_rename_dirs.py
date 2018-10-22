@@ -2,10 +2,6 @@
 # 
 
 import os
-import re
-import pandas
-from datetime import datetime
-from utils import write_dataset_metadata
 
 # parameters
 #root_dir = '/Users/cinquini/workbench/labcas/archive/City_Of_Hope'
