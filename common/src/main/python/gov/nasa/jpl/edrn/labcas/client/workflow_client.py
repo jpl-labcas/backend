@@ -1,11 +1,14 @@
 import xmlrpclib
 import time
 import solr
+import os
+import json
+import urllib2
+import logging
 
-class LabcasClient(object):
+class WorkflowManagerClient(object):
     '''
-    Python client used to interact with a remote Labcas back-end.
-    Mostly for demo and example purposes...
+    Python client used to interact with a remote Labcas Workflow Manager.
     Available methods are defined in Java class org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager.
     '''
     
@@ -15,8 +18,8 @@ class LabcasClient(object):
                  solrUrl='http://localhost:8983/solr/oodt-fm',
                  verbose=False):
         
-        self.workflowManagerServerProxy = xmlrpclib.ServerProxy(workflowManagerUrl, verbose=verbose)
-        self.fileManaferServerProxy = xmlrpclib.ServerProxy(fileManagerUrl, verbose=verbose)
+        self.workflowManagerServerProxy = xmlrpclib.ServerProxy(workflowManagerUrl, verbose=verbose, allow_none=True)
+        self.fileManaferServerProxy = xmlrpclib.ServerProxy(fileManagerUrl, verbose=verbose, allow_none=True)
         self.solrServerProxy = solr.SolrConnection(solrUrl)
         
     def getWorkflowsByEvent(self, eventName):
@@ -53,35 +56,32 @@ class LabcasClient(object):
                 response = self.workflowManagerServerProxy.workflowmgr.getWorkflowInstanceById(wInstId)
                 status = response['status']
                 if status in running_status or status in pge_task_status:
-                    print 'Workflow instance=%s running with status=%s' % (wInstId, status)
+                    logging.info('Workflow instance=%s running with status=%s' % (wInstId, status))
                     time.sleep(1)
                 elif status in finished_status:
-                    print 'Workflow instance=%s ended with status=%s' % (wInstId, status)
+                    logging.info('Workflow instance=%s ended with status=%s' % (wInstId, status))
                     break
                 else:
-                    print 'UNRECOGNIZED WORKFLOW STATUS: %s' % status
+                    logging.info('UNRECOGNIZED WORKFLOW STATUS: %s' % status)
                     break
             except xmlrpclib.Fault as e:
                 # must ignore XML-RPC exeptions that often arise when querying OODT for a specific workflow
                 # just try again with the same workflow identifier
-                print e
+                logging.error(e)
         if debug:
-           print response
+           logging.debug(response)
+                           
         
-    def uploadCollection(self, datasetId, metadata, newVersion=False, inPlace=False, debug=False):
-        
-        # add 'DatasetId' key, value to other metadata
-        metadata['DatasetId'] = datasetId
-                
-        # optionally request a new version
-        if newVersion:
-            metadata['NewVersion'] = 'true'
+    def uploadDataset(self, metadata, update_dataset=True, in_place=False, debug=False):
+
+        if not update_dataset:
+            metadata['UpdateDataset'] = "false"
     
         # NOTE: currently, if you start a named workflow, the XMLRPC interface only returns True/False, not a workflow instance identifier...
         #tf = serverProxy.workflowmgr.handleEvent('labcas-upload', { 'DatasetId':'mydata' } )
     
         # ... consequently, you must submit an equivalent dynamic workflow, which does return the workflow instance id
-        if inPlace:
+        if in_place:
             wInstId = self.workflowManagerServerProxy.workflowmgr.executeDynamicWorkflow( ['urn:edrn:LabcasUploadInitTask','urn:edrn:LabcasUpload2ExecuteTask'],                                                                           
                                                                                            metadata )
         else:
@@ -176,15 +176,15 @@ class LabcasClient(object):
         
     
     def printProductType(self, productTypeDict):
-        print 'PRODUCT TYPE: %s' % productTypeDict['name']
+        logging.info('PRODUCT TYPE: %s' % productTypeDict['name'])
         for key, value in productTypeDict.items():
             # dictionary: typeMetadata = {'DataCustodianEmail': ['dsidrans@jhmi.edu'], 'DataDisclaimer': [...], ..}
             if key=='typeMetadata':
-                print '\t%s =' % key
+                logging.info('\t%s =' % key)
                 for _key, _value in value.items():
-                    print '\t\t%s = %s' % (_key, _value)
+                    logging.info('\t\t%s = %s' % (_key, _value))
             else:
-                print '\t%s = %s' % (key, value)
+                logging.info('\t%s = %s' % (key, value))
     
     def listProducts(self, productType):
         
@@ -201,27 +201,27 @@ class LabcasClient(object):
         for key, value in versions.items():
             # NOTE: facet keys span the whole index, but their counts are specific to this search
             if int(value)>0:
-                print "\nDataset Version number %s has %s files" % (key, value)
+                logging.info("\nDataset Version number %s has %s files" % (key, value))
                 if int(key) > last_version:
                     last_version = int(key)
             
         # query for all files for a specific version
         response = self.solrServerProxy.query('*:*', fq=['CAS.ProductTypeName:%s' % productType,'DatasetVersion:%s' % last_version ], start=0)
-        print "\nLatest version: %s, number of files: %s, listing them all:" % (last_version, response.numFound)
+        logging.info("\nLatest version: %s, number of files: %s, listing them all:" % (last_version, response.numFound))
         for result in response.results:
             self.printProduct(result)
         
     def printProduct(self, result):
         '''Utility function to print out the product metadata'''
         
-        print '\nProduct ID=%s' % result['id']
+        logging.info('\nProduct ID=%s' % result['id'])
         for key, values in result.items():
-            print '\tProduct metadata key=%s values=%s' % (key, values)
+            logging.info('\tProduct metadata key=%s values=%s' % (key, values))
 
     def printWorkflow(self, workflowDict):
         '''Utiliyu function to print out a workflow.'''
         
-        print workflowDict
-        print "Workflow id=%s name=%s" % (workflowDict['id'], workflowDict['name'])
+        logging.info(workflowDict)
+        logging.info("Workflow id=%s name=%s" % (workflowDict['id'], workflowDict['name']))
         for task in workflowDict['tasks']:
-            print "Task: %s" % task
+            logging.info("Task: %s" % task)

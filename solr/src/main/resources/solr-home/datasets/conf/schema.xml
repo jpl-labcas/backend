@@ -29,7 +29,7 @@
  http://wiki.apache.org/solr/SchemaXml
 -->
 
-<schema name="LabCAS schema for datasets Solr core" version="1.5" labcas_version="1.0">
+<schema name="LabCAS schema for datasets Solr core" version="1.6" labcas_version="1.0">
   <!-- attribute "name" is the name of this schema and is only used for display purposes.
        version="x.y" is Solr's version number for the schema syntax and 
        semantics.  It should not normally be changed by applications.
@@ -45,6 +45,7 @@
             to off for version >= 1.4
        1.5: omitNorms defaults to true for primitive field types 
             (int, float, boolean, string...)
+       1.6: added "DatasetParentId" to be single valued
      -->
 
 
@@ -119,11 +120,15 @@
    <field name="DatasetName" type="string" indexed="true" stored="true" required="true" multiValued="false" />
    <field name="DatasetVersion" type="int" indexed="true" stored="true" required="true" multiValued="false" />
    <field name="DatasetDescription" type="string" indexed="true" stored="true" required="false" multiValued="false" />
+   <field name="DatasetParentId" type="string" indexed="true" stored="true" required="false" multiValued="false" />
    <!-- end LabCAS core attributes specific to datasets -->
         
+   <!-- all unspecified fields ending in 'Id' are single-valued strings -->
+   <!-- <dynamicField name="*Id" type="string" indexed="true" stored="true" required="false" multiValued="false" /> -->
+        
    <!-- all unspecified fields ending in 'Date' or 'Time' are interpreted as single-value dates  -->
-   <field name="*Date" type="date" indexed="true" stored="true" required="false" multiValued="false" />
-   <field name="*Time" type="date" indexed="true" stored="true" required="false" multiValued="false" />
+   <!-- <dynamicField name="*Date" type="date" indexed="true" stored="true" required="false" multiValued="false" />
+   <dynamicField name="*Time" type="date" indexed="true" stored="true" required="false" multiValued="false" /> -->
 
    <!-- all other fields are indexed and stored as-is and can have multiple values -->
    <dynamicField name="*" type="string" indexed="true" stored="true" omitNorms="true" multiValued="true" />

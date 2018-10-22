@@ -9,14 +9,30 @@ from glob import glob
 from shutil import copyfile
 import pydicom
 
-# process data from $LABCAS_ARCHIVE/Moffitt_BI --> $LABCAS_ARCHIVE/Sample_Mammography_Reference_Set
-COLLECTION_NAME = "Sample_Mammography_Reference_Set"
-TARGET_DATA_DIR=os.environ['LABCAS_ARCHIVE'] + "/" + COLLECTION_NAME
+# 1) process data from $LABCAS_ARCHIVE/Moffitt_BI 
+#    --> $LABCAS_ARCHIVE/Sample_Mammography_Reference_Set
+# COLLECTION_NAME = "Sample_Mammography_Reference_Set"
+# SRC_DATA_DIR=os.environ['LABCAS_ARCHIVE'] + "/Moffitt_BI/Test1_447_20180921"
+
+# 2) process data from $LABCAS_ARCHIVE/Moffitt_BI 
+#    --> $LABCAS_ARCHIVE/Automated_System_For_Breast_Cancer_Biomarker_Analysis
+COLLECTION_NAME = "Automated_System_For_Breast_Cancer_Biomarker_Analysis"
 SRC_DATA_DIR=os.environ['LABCAS_ARCHIVE'] + "/Moffitt_BI/Test1_447_20180921"
+
+
+TARGET_DATA_DIR=os.environ['LABCAS_ARCHIVE'] + "/" + COLLECTION_NAME
 METADATA_DIR=os.environ['LABCAS_METADATA'] + "/" + COLLECTION_NAME
 INSTITUTION = "Moffitt"
 
+
 def main():
+        
+    # dataset directory
+    #dataset = sys.argv[1]
+    #dataset_id = 'E0010'
+    for dataset_id in os.listdir(SRC_DATA_DIR):
+        src_dataset_dir = '%s/%s' % (SRC_DATA_DIR, dataset_id)
+        target_dataset_dir = '%s/%s' % (TARGET_DATA_DIR, dataset_id)
     
     # loop over sub-directories == ddatasets
     subdirs = os.listdir(SRC_DATA_DIR)
@@ -67,23 +83,21 @@ def main():
            with open(dataset_metadata_file, 'w') as f:
               f.write(metadata)
         
-        
         # loop over DICOM files in dataset directory tree
         for root, dirs, files in os.walk(src_dataset_dir):
-        
           for filename in files:
             f = "%s/%s" % (root, filename)
         
             # extract file metadata
             src_path = os.path.abspath(f)
-           
+            print(src_path)      
             try:
                ds = pydicom.read_file(f)
                tag_names = ds.dir()
                for tag_name in tag_names:
                   data_element = ds.data_element(tag_name)
-                  #if tag_name != 'PixelData' and data_element and data_element.value:
-                  #    print('key=%s --> value=%s' % (tag_name, data_element.value))
+                  if tag_name != 'PixelData' and data_element and data_element.value:
+                      print('key=%s --> value=%s' % (tag_name, data_element.value))
                fid = ds.SOPInstanceUID
             
                # move and rename DICOM file

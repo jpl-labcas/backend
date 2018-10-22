@@ -118,9 +118,12 @@
    <field name="CollectionDescription" type="string" indexed="true" stored="true" required="false" multiValued="false" />
    <!-- end LabCAS core attributes specific to collections -->
         
+   <!-- all unspecified fields ending in 'Id' are single-valued strings -->
+   <!-- <dynamicField name="*Id" type="string" indexed="true" stored="true" required="false" multiValued="false" /> -->
+   
    <!-- all unspecified fields ending in 'Date' or 'Time' are interpreted as single-value dates  -->
-   <field name="*Date" type="date" indexed="true" stored="true" required="false" multiValued="false" />
-   <field name="*Time" type="date" indexed="true" stored="true" required="false" multiValued="false" />
+   <!-- <dynamicField name="*Date" type="date" indexed="true" stored="true" required="false" multiValued="false" />
+   <dynamicField name="*Time" type="date" indexed="true" stored="true" required="false" multiValued="false" /> -->
 
    <!-- all other fields are indexed and stored as-is and can have multiple values -->
    <dynamicField name="*" type="string" indexed="true" stored="true" omitNorms="true" multiValued="true" />

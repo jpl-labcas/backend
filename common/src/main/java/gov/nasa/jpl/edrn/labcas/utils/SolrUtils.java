@@ -70,6 +70,7 @@ public class SolrUtils {
 	private static Set<String> PASS_THROUGH_FIELDS = new HashSet<String>( 
 			Arrays.asList(Constants.METADATA_KEY_COLLECTION_NAME, 
 					      Constants.METADATA_KEY_DATASET_NAME,
+					      Constants.METADATA_KEY_DATASET_ID,
 					      Constants.METADATA_KEY_DATASET_VERSION,
 					      Constants.METADATA_KEY_OWNER_PRINCIPAL));
 
@@ -331,6 +332,7 @@ public class SolrUtils {
 		// FileManagerUtils.printMetadata(productMetadata);
 		SolrInputDocument doc = serializeFile(metadata);
 		LOG.info("Publishing product id="+doc.getFieldValue("id")+" to Solr core: "+SOLR_URL+"/"+SOLR_CORE_FILES);
+		LOG.info("Document="+doc.toString());
 		solrServers.get(SOLR_CORE_FILES).add(doc);
 		//solrServers.get(SOLR_CORE_COLLECTIONS).commit(); // use solr.autoSoftCommit.maxTime and solr.autoCommit.maxTime
 		
@@ -357,7 +359,7 @@ public class SolrUtils {
 			if (IGNORED_FIELDS.contains(key))  {
 				// do nothing
 				
-			} else if (key.equals(Constants.METADATA_KEY_PRODUCT_TYPE)) {
+			} else if (key.equals(Constants.METADATA_KEY_PRODUCT_TYPE) || key.equals(Constants.METADATA_KEY_COLLECTION_ID)) {
 				// ignore, same as collection "id"
 				
 			} else {
@@ -393,10 +395,11 @@ public class SolrUtils {
 		SolrInputDocument doc = new SolrInputDocument();
 		
 		// build the composite dataset id
-		String datasetId = metadata.getMetadata(Constants.METADATA_KEY_COLLECTION_ID) 
-				         + "." 
-				         + metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
-		doc.setField("id", datasetId);
+		// FIXME: also use Constants.METADATA_KEY_PARENT_DATASET_ID)
+		//String datasetId = metadata.getMetadata(Constants.METADATA_KEY_COLLECTION_ID) 
+		//		         + "/" 
+		//		         + metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
+		doc.setField("id", metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID));
 		
 		// serialize all metadata
 		for (String key : metadata.getAllKeys()) {
@@ -449,8 +452,7 @@ public class SolrUtils {
 		SolrInputDocument doc = new SolrInputDocument();
 		
 		// document unique identifier
-		String productId = SolrUtils.generateProductId(metadata.getMetadata(Constants.METADATA_KEY_PRODUCT_TYPE),
-				                                       metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID),
+		String productId = SolrUtils.generateProductId(metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID),
 				                                       metadata.getMetadata(Constants.METADATA_KEY_PRODUCT_NAME) );
 		doc.setField("id", productId);
 		
@@ -466,9 +468,9 @@ public class SolrUtils {
 			} else if (key.equals("ProductType")) {
 				doc.setField("CollectionId", metadata.getMetadata(key));
 												
-			} else if (key.equals("DatasetId")) {
-				// note: compose the unique dataset identifier
-				doc.setField("DatasetId", metadata.getMetadata("ProductType")+"."+metadata.getMetadata(key));
+			//} else if (key.equals("DatasetId")) {
+			//	// note: compose the unique dataset identifier
+			//	doc.setField("DatasetId", metadata.getMetadata(key));
 								
 			} else if (key.equals("ProductName")) {
 				// ignore, same as Filename
@@ -521,8 +523,8 @@ public class SolrUtils {
 	}
 	
 	
-	public static String generateProductId(String productTypeName, String datasetId, String productName) {
-		return productTypeName + "." + datasetId + "." + productName;
+	public static String generateProductId(String datasetId, String productName) {
+		return datasetId + "/" + productName;
 	}
 	
 	/**

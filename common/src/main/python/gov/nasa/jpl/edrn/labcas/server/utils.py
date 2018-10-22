@@ -1,7 +1,7 @@
 # Collection of Python utilities for LabCAS operations
 import os
 
-def write_metadata(metadata_dict, metadata_filepath):
+def write_file_metadata(metadata_dict, metadata_filepath):
     '''Writes out the metadata dictionary to the given metadata file path.'''
     
     print "Writing metadata file: %s" % metadata_filepath

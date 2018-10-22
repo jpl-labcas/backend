@@ -1,6 +1,6 @@
 import sys
 import dicom
-from utils import write_metadata, make_file_description
+from utils import write_file_metadata, make_file_description
 
 # list of DICOM metadata fields taht are NOT extracted because they have binary value, or bad characters, or are too long
 IGNORED_TAGS = ["PixelData", "LargestImagePixelValue", "SmallestImagePixelValue", "PerFrameFunctionalGroupsSequence",
@@ -34,7 +34,7 @@ def extract_metadata( dicom_filepath ):
                  
     # write out metadata to file
     met_filepath = dicom_filepath + ".xmlmet"
-    write_metadata(metadata, met_filepath)
+    write_file_metadata(metadata, met_filepath)
 
 if __name__ == "__main__":
     '''

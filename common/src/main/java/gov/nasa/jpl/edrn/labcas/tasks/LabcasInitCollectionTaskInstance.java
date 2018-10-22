@@ -54,7 +54,7 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 			String datasetId = metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID);
 			String datasetName = metadata.getMetadata(Constants.METADATA_KEY_DATASET_NAME);
 			if (datasetId==null) {
-				datasetId = datasetName.replaceAll("\\s+", "_");
+				datasetId = productTypeName + "/" + datasetName.replaceAll("\\s+", "_");
 				metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId);
 			}
 			LOG.info("LabcasInitCollectionTaskInstance: using datasetId="+metadata.getMetadata(Constants.METADATA_KEY_DATASET_ID));
@@ -69,6 +69,13 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_NAME, datasetName); 
 			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_COLLECTION_NAME, collectionName); 
 			datasetMetadata.replaceMetadata(Constants.METADATA_KEY_COLLECTION_ID, productTypeName);
+			if (productTypeMetadata.containsKey(Constants.METADATA_KEY_PARENT_DATASET_ID)) {
+				datasetMetadata.replaceMetadata(
+							Constants.METADATA_KEY_PARENT_DATASET_ID, 
+							productTypeMetadata.getMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID)
+						);
+				productTypeMetadata.removeMetadata(Constants.METADATA_KEY_PARENT_DATASET_ID);
+			}
 			
 	        // optionally, add collection metadata from CollectionMetadata.xmlmet
 	        Metadata _productTypeMetadata = FileManagerUtils.readCollectionMetadata(productTypeName);
@@ -81,23 +88,23 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 			// transfer Dataset* metadata from collection-level to dataset-level
 	        // do not override existing values
 	        for (String key : productTypeMetadata.getAllKeys()) {
-	        	if (key.startsWith("Dataset")) {
-	        		// remove leading "Dataset:", if found
-	        		String _key = key.replaceAll("Dataset:",""); 
-	        		if (!datasetMetadata.containsKey(_key)) {
-		        		for (String value : productTypeMetadata.getAllMetadata(key)) {
-		        			datasetMetadata.addMetadata(_key, value);
+		        	if (key.startsWith("Dataset")) {
+		        		// remove leading "Dataset:", if found
+		        		String _key = key.replaceAll("Dataset:",""); 
+		        		if (!datasetMetadata.containsKey(_key)) {
+			        		for (String value : productTypeMetadata.getAllMetadata(key)) {
+			        			datasetMetadata.addMetadata(_key, value);
+			        		}
 		        		}
-	        		}
-	        		productTypeMetadata.removeMetadata(key);
-	        	}
+		        		productTypeMetadata.removeMetadata(key);
+		        	}
 	        }
 	        
 	        // transfer OwnerPrincipal
 	        LOG.info("Setting Dataset OwnerPrincipal to:"+metadata.getMetadata(Constants.METADATA_KEY_OWNER_PRINCIPAL));
 	        if (metadata.containsKey(Constants.METADATA_KEY_OWNER_PRINCIPAL)) {
-	        	datasetMetadata.addMetadata(Constants.METADATA_KEY_OWNER_PRINCIPAL, 
-	        			                    metadata.getMetadata(Constants.METADATA_KEY_OWNER_PRINCIPAL));
+		        	datasetMetadata.addMetadata(Constants.METADATA_KEY_OWNER_PRINCIPAL, 
+		        			                    metadata.getMetadata(Constants.METADATA_KEY_OWNER_PRINCIPAL));
 	        }
 	        
 	        // create or update the Collection==ProductType metadata, unless otherwise indicated
@@ -123,14 +130,16 @@ public class LabcasInitCollectionTaskInstance implements WorkflowTaskInstance {
 	        }
 			
 	        // add version to dataset metadata (if metadata flag "newVersion" is present)
-	        int datasetVersion = FileManagerUtils.getNextVersion( FileManagerUtils.findLatestDatasetVersion( productTypeName, datasetId ), metadata);
+	        //int datasetVersion = FileManagerUtils.getNextVersion( FileManagerUtils.findLatestDatasetVersion( productTypeName, datasetId ), metadata);
+	        // FIXME
+	        int datasetVersion = 1;
 	        datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+datasetVersion); // insert into dataset metadata
 	        metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+datasetVersion);        // insert into product metadata
 	        productTypeMetadata.removeMetadata(Constants.METADATA_KEY_NEW_VERSION);              // remove from collection metadata
 	        	        	        
 	        // set final product archive directory (same as set by LabcasProductVersioner)
 	        metadata.replaceMetadata(Constants.METADATA_KEY_FILE_PATH, 
-	        		                 FileManagerUtils.getDatasetArchiveDir(productTypeName, datasetId, datasetVersion).getAbsolutePath());
+	        		                 FileManagerUtils.getDatasetArchiveDir(productTypeName, datasetId).getAbsolutePath());
 				        
 	        // remove all .met files from staging directory - probably a leftover of a previous workflow submission
 	        FileManagerUtils.cleanupStagingDir(productTypeName, datasetId);

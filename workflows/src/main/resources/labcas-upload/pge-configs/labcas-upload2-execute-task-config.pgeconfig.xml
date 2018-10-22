@@ -3,19 +3,18 @@
 
 	<!-- PGE commands -->
 	<exe dir="[JobDir]" shell="/bin/bash">
-		<cmd>cd [LABCAS_ARCHIVE]/[ProductType]/[DatasetId]/[DatasetVersion]</cmd>
+		<cmd>cd [LABCAS_ARCHIVE]/[DatasetId]</cmd>
         <cmd>ls -l</cmd>
 	</exe>
 
 	<customMetadata>
 		<metadata key="ProductionDateTime" val="[DATE.UTC]" />
-		<metadata key="JobDir"
-			val="[PGE_ROOT]/[ProductType]/[DatasetId]/[DatasetVersion]" />
+		<metadata key="JobDir" val="[PGE_ROOT]/jobs/[DatasetId]" />
 	</customMetadata>
 
 	<!-- CAS Crawler directives -->
 	<output>
-		<dir path="[LABCAS_ARCHIVE]/[ProductType]/[DatasetId]/[DatasetVersion]" createBeforeExe="false">
+		<dir path="[LABCAS_ARCHIVE]/[DatasetId]" createBeforeExe="false">
 			<!-- Metadata extractors matching specific files
                  Matching extractors will ALL be called in the sequence they are defined. -->
             <!-- extracts DICOM metadata from the file header -->

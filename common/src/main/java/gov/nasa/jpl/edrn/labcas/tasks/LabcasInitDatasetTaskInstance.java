@@ -54,11 +54,9 @@ public class LabcasInitDatasetTaskInstance implements WorkflowTaskInstance {
 			String datasetName = metadata.getMetadata(Constants.METADATA_KEY_DATASET_NAME);
 			String datasetId = null;
 			if (datasetName!=null) {
-				datasetId = datasetName.replaceAll("\\s+", "_");
+				datasetId = productTypeName + "/" + datasetName.replaceAll("\\s+", "_");
 			} else {
-				datasetId  = UUID.randomUUID().toString();
-				datasetName = datasetId;
-				metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_NAME, datasetId); // datasetId == datasetName = UUID
+				throw new WorkflowTaskInstanceException("DatasetName or DatasetId must not be null!");
 			}
 			metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_ID, datasetId);
 			LOG.info("Using DatasetId="+datasetId);
@@ -75,13 +73,15 @@ public class LabcasInitDatasetTaskInstance implements WorkflowTaskInstance {
 
 										        
 	        // add  version to dataset metadata (used for generating product unique identifiers)
-	        int datasetVersion = FileManagerUtils.getNextVersion( FileManagerUtils.findLatestDatasetVersion( productTypeName, datasetId ), metadata);
+	        //int datasetVersion = FileManagerUtils.getNextVersion( FileManagerUtils.findLatestDatasetVersion( productTypeName, datasetId ), metadata);
+	        // FIXME
+	        int datasetVersion = 1;
 	        datasetMetadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+datasetVersion); // dataset metadata
 	        metadata.replaceMetadata(Constants.METADATA_KEY_DATASET_VERSION, ""+datasetVersion);        // product metadata
 	        	        
 	        // set final product archive directory (same as set by LabcasProductVersioner)
 	        metadata.replaceMetadata(Constants.METADATA_KEY_FILE_PATH, 
-	        		                 FileManagerUtils.getDatasetArchiveDir(productTypeName, datasetId, datasetVersion).getAbsolutePath());
+	        		                 FileManagerUtils.getDatasetArchiveDir(productTypeName, datasetId).getAbsolutePath());
 	        
 			// publish dataset to public Solr index
 	        if (updateDataset) {
