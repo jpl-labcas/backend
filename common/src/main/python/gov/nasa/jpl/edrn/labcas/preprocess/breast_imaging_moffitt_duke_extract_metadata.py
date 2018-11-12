@@ -21,7 +21,7 @@ def get_top_dataset_name(subDir):
     
     patientNumber = subDir[1:5]
     datasetName = "Patient #%s (%s)" % (patientNumber, INSTITUTION)
-    print("Dataset name=%s" % datasetName)
+    print("\tDataset name=%s" % datasetName)
     return datasetName
     
 def read_metadata_from_template(datasetName):
@@ -41,7 +41,7 @@ def write_metadata(dirPath, metadata):
     
     (parentDir, thisDir) = os.path.split(dirPath)
     datasetMetadataFile = dirPath + "/" + thisDir + ".cfg"
-    print("Writing out metadata to file: %s" % datasetMetadataFile)
+    print("\tWriting out metadata to file: %s" % datasetMetadataFile)
     
     with open(datasetMetadataFile, 'w') as f:
         f.write(metadata)
@@ -49,7 +49,6 @@ def write_metadata(dirPath, metadata):
 def get_sub_dataset_name(subDirPath):
     
     (parentDir, thisDir) = os.path.split(subDirPath)
-    print(thisDir)
     
     if thisDir.lower() == 'primary':
         subDatasetName = 'Primary Images'
@@ -61,11 +60,21 @@ def get_sub_dataset_name(subDirPath):
         subDatasetName = 'Full-Field Digital Mammography (FFDM) images (2D)'
     elif thisDir.lower() == 'volume':
         subDatasetName = 'Digital Breast Tomosynthesis  (DBT) images (3D)'
+    elif thisDir.lower() == 'proc':
+        subDatasetName = 'Processed (for display)'
+    elif thisDir.lower() == 'raw':
+        subDatasetName = 'Raw (for processing)'
+    elif thisDir.lower() == 'cview':
+        subDatasetName = 'C-View'
     else:
         subDatasetName = subDirPath
         
-    print("\t Sub-dataset name=%s" % subDatasetName)
+    print("\tSub-dataset name=%s" % subDatasetName)
     return subDatasetName
+
+def get_file_description(fileName):
+    
+    return fileName
 
 def main():
     
@@ -75,7 +84,7 @@ def main():
         
         subDirPath = os.path.join(DATA_DIR, subDir)
         if os.path.isdir(subDirPath):
-            print("Processing sub-directory: %s" % subDir)
+            print("Processing directory: %s" % subDir)
             
             # read and parse metadata from template file
             datasetName = get_top_dataset_name(subDir)
@@ -84,12 +93,51 @@ def main():
             # write out the dataset metadata to file
             write_metadata(subDirPath, metadata)
             
-        # traverse all su-directories
+        # traverse all sub-directories
         for dirName, subDirList, fileList in os.walk(subDirPath):
-            print('\tProcessing sub-sub-directory: %s' % dirName)
             
-            subDatasetName = get_sub_dataset_name(dirName)
-            print(subDatasetName)
+            # skip the first directory
+            if dirName != subDirPath:
+                print('\tProcessing sub-directory: %s' % dirName)
+                subDatasetName = get_sub_dataset_name(dirName)
+                
+                # write out the sub-dataset metadata to file
+                metadata = "[Dataset]"
+                metadata += "\nDatasetName=%s" % subDatasetName
+                metadata += "\n"
+                write_metadata(dirName, metadata)
+                
+                # loop over files in directory
+                for fileName in fileList:
+                    if fileName.endswith(".dcm"):
+                        filePath = os.path.join(dirName, fileName)
+                        print("\t\tProcessing DICOM file: %s" % filePath)
+                        
+                        fileDescription = get_file_description(fileName)
+                        
+                        # extract metadata from DICOM header
+                        try:
+                           ds = pydicom.read_file(f)
+                           tag_names = ds.dir()
+                           for tag_name in tag_names:
+                              data_element = ds.data_element(tag_name)
+                              if tag_name != 'PixelData' and data_element and data_element.value:
+                                  print('key=%s --> value=%s' % (tag_name, data_element.value))
+                           fid = ds.SOPInstanceUID
+                        
+                           # move and rename DICOM file
+                           # use DICOM identifier
+                           #dst_path = '%s/%s.dcm' % (target_version_dir, fid)
+                           # use original filename
+                           dst_path = '%s/%s' % (target_version_dir, filename)
+                           if not os.path.exists(dst_path):
+                              print('\nCopying DICOM file=%s --> %s' % (src_path, dst_path))
+                              copyfile(src_path, dst_path)
+                                                         
+                        except Exception as e:
+                            print('Error while processing file: %s' % src_path)
+                            print(e)
+
             
             
     
