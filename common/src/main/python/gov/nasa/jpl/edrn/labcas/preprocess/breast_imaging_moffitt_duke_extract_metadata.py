@@ -29,7 +29,7 @@ def get_top_dataset_name(subDir):
     elif start == 'C':
         datasetName = "Case # %s (unilateral breast cancer)" % patientNumber
     elif start == 'N':
-        datasetName = "Case # %s (control)" % patient_number
+        datasetName = "Case # %s (control)" % patientNumber
     print("\tDataset name=%s" % datasetName)
     return datasetName
     
