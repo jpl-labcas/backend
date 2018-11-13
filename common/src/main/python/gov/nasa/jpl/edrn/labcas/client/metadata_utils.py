@@ -5,6 +5,13 @@ import logging
 import ConfigParser
 from xml.sax.saxutils import escape
 
+def _process_value(value):
+    
+    evalue = escape(value)
+    if "|" in evalue:
+        # transform into a list
+        evalue = evalue.split("|")
+    return evalue
     
 def read_config_metadata(directory_path):
     '''
@@ -28,13 +35,13 @@ def read_config_metadata(directory_path):
             for section in config.sections():
                 for key, value in config.items(section):
                     # must escape XML reserved characters: &<>"
-                    evalue = escape(value)
-                    logging.debug('\t%s = %s' % (key, evalue))
+                    pvalue = _process_value(value)
+                    logging.debug('\t%s = %s' % (key, pvalue))
                     # [Dataset] section: prefix all fields with 'Dataset:'
                     if section=='Dataset' and not key.startswith('Dataset'):
-                        metadata['Dataset:%s' % key] = evalue
+                        metadata['Dataset:%s' % key] = pvalue
                     else:
-                        metadata[key] = evalue
+                        metadata[key] = pvalue
         except Exception as e:
             logging.error("ERROR reading metadata configuration")
             logging.error(e)
