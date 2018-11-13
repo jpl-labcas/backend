@@ -10,9 +10,12 @@ from shutil import copyfile
 import pydicom
 
 # 1) 
-COLLECTION_NAME = "Combined_Imaging_and_Blood_Biomarkers_for_Breast_Cancer_Diagnosis"
-INSTITUTION = "Moffitt"
+# COLLECTION_NAME = "Combined_Imaging_and_Blood_Biomarkers_for_Breast_Cancer_Diagnosis"
+# INSTITUTION = "Moffitt"
 
+# 2)
+COLLECTION_NAME = "Automated_System_For_Breast_Cancer_Biomarker_Analysis"
+INSTITUTION = "Moffitt"
 
 DATA_DIR=os.environ['LABCAS_ARCHIVE'] + "/" + COLLECTION_NAME
 TEMPLATE_FILE = "%s/TEMPLATE_%s.cfg" % (DATA_DIR, INSTITUTION)
@@ -66,6 +69,8 @@ def get_sub_dataset_name(subDirPath):
         subDatasetName = 'Raw (for processing)'
     elif thisDir.lower() == 'cview':
         subDatasetName = 'C-View'
+    elif thisDir.lower() == 'mask':
+        subDatasetName = 'Mask'
     else:
         subDatasetName = subDirPath
         
