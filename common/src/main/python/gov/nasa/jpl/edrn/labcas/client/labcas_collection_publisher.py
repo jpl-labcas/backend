@@ -31,6 +31,7 @@ class LabcasCollectionPublisher(object):
                                                         solr_url=self._solr_url,
                                                         update_collection=self._update_collection)
         
+        '''
         if update_datasets:
             for subdir_name in os.listdir(directory_path):
                 subdir_path = os.path.join(directory_path, subdir_name)
@@ -41,6 +42,7 @@ class LabcasCollectionPublisher(object):
                                                  in_place=in_place, 
                                                  update_datasets=update_datasets,
                                                  update_files=update_files)
+        '''
                 
         # update collection metadata in Solr
         # AFTER minimal metadata has been entered while publishing datasets

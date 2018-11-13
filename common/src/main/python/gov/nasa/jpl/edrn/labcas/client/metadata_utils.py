@@ -8,14 +8,15 @@ from xml.sax.saxutils import escape
     
 def read_config_metadata(directory_path):
     '''
-    Reads metadata from all configuration files found in a directory.
+    Reads metadata from the same name configuration file found in a directory.
     '''
     
     metadata = {}
+    (parent_dir, this_dir) = os.path.split(directory_path)
+    config_file_path = directory_path + "/" + this_dir + ".cfg"
     
-    for config_file_name in [file_name for file_name in os.listdir(directory_path) if file_name.endswith(".cfg")]:
+    if os.path.exists(config_file_path):
         
-        config_file_path = os.path.join(directory_path, config_file_name)
         logging.debug("Reading configuration file: %s" % config_file_path)
         
         config = ConfigParser.ConfigParser()

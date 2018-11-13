@@ -365,9 +365,7 @@ public class SolrUtils {
 			} else {
 				// publish all other "|" values into multi-valued field
 				for (String value : metadata.getAllMetadata(key)) {
-					System.out.println("SERIALIZING METADATA KEY="+key+" VALUE="+value);
 					if (value.indexOf("|")>0) {
-						System.out.println("\tFOUND MATCH!");
 						doc.addField(key, Arrays.asList(value.split("\\s*\\|\\s*")));
 					} else {
 						doc.addField(key, value);
