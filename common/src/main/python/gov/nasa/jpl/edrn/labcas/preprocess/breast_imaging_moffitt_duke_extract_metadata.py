@@ -22,8 +22,14 @@ TEMPLATE_FILE = "%s/TEMPLATE_%s.cfg" % (DATA_DIR, INSTITUTION)
 
 def get_top_dataset_name(subDir):
     
+    start = subDir[0]
     patientNumber = subDir[1:5]
-    datasetName = "Patient #%s (%s)" % (patientNumber, INSTITUTION)
+    if start == 'D' or start == 'E':
+        datasetName = "Patient #%s (%s)" % (patientNumber, INSTITUTION)
+    elif start == 'C':
+        datasetName = "Case # %s (unilateral breast cancer)" % patientNumber
+    elif start == 'N':
+        datasetName = "Case # %s (control)" % patient_number
     print("\tDataset name=%s" % datasetName)
     return datasetName
     
