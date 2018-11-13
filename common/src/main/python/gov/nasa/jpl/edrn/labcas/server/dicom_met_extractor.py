@@ -78,12 +78,19 @@ def _extract_metadata_from_filepath_bi(inst, patient_number, image_type, view,
                                        slice_number=None,
                                        total_number_of_slices=None):
         
+    description = ""
+    
     # patient
     if inst == 'D':
-        institution = 'Duke'
+        description += "Duke patient # %s" % patient_number
+    elif inst == 'E':
+        description += "Moffitt patient # %s" % patient_number
+    elif inst == 'C':
+        description += "Case # %s (unilateral breast cancer)" % patient_number
+    elif inst == 'N':
+        description += "Case # %s (control)" % patient_number
     else:
-        institution = 'Moffitt'
-    description = "%s patient # %s" % (institution, patient_number)
+        description += "Patient # %s" % patient_number
     
     # image type
     description +=", %s" % image_type
