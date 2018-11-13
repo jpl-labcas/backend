@@ -72,10 +72,6 @@ def get_sub_dataset_name(subDirPath):
     print("\tSub-dataset name=%s" % subDatasetName)
     return subDatasetName
 
-def get_file_description(fileName):
-    
-    return fileName
-
 def main():
     
     # loop over 1st level directories

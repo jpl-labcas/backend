@@ -8,7 +8,7 @@ def write_file_metadata(metadata_dict, metadata_filepath):
     with open(metadata_filepath,'w') as file: 
         file.write('<cas:metadata xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">\n')
         
-        for key, value in metadata_dict.iteritems():
+        for key, value in metadata_dict.items():
             # do not write out None or empty values
             if value:
                 file.write('\t<keyval type="vector">\n')

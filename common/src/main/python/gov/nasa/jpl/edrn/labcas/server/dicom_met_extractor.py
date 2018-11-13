@@ -1,6 +1,7 @@
 import sys
 import dicom
 import re
+import os
 from utils import write_file_metadata
 
 # list of DICOM metadata fields taht are NOT extracted because they have binary value, or bad characters, or are too long
@@ -20,13 +21,13 @@ def extract_metadata(dicom_filepath):
     
     # extract metadata from file path
     _metadata = extract_metadata_from_filepath(dicom_filepath)
-    for (key, value) in _metadata:
-        metadata[_key] = value
+    for (key, value) in _metadata.items():
+        metadata[key] = value
         
     # extracts metadata from DICOM header
     _metadata = extract_metadata_from_header(dicom_filepath)
-    for (key, value) in _metadata:
-        metadata[_key] = value
+    for (key, value) in _metadata.items():
+        metadata[key] = value
                  
     # write out metadata to file
     met_filepath = dicom_filepath + ".xmlmet"
@@ -252,9 +253,10 @@ def extract_metadata_from_filepath_bi(filename):
 
 if __name__ == '__main__':
     
-    # dicom_filepath = sys.argv[1]
-    # extract_metadata( dicom_filepath )
+    dicom_filepath = sys.argv[1]
+    extract_metadata( dicom_filepath )
 
+    '''
     for filename in ["E0001_MG_DAT_LCC.dcm",
                      "E0001_MG_PRO_LCC.dcm",
                      "E0100_TRU_4A_2_DAT_RMLO.dcm",
@@ -269,3 +271,4 @@ if __name__ == '__main__':
                      ]:
         metadata = extract_metadata_from_filepath_bi(filename)    
         print(metadata)
+    '''
