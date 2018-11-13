@@ -10,7 +10,7 @@ from shutil import copyfile
 import pydicom
 
 # 1) 
-COLLECTION_NAME = "Sample_Mammography_Reference_Set"
+COLLECTION_NAME = "Combined_Imaging_and_Blood_Biomarkers_for_Breast_Cancer_Diagnosis"
 INSTITUTION = "Moffitt"
 
 

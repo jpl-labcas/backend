@@ -61,7 +61,7 @@ def extract_metadata_from_filepath(dicom_filepath):
     
     dicom_filename = os.path.basename(dicom_filepath)
     
-    if "Sample_Mammography_Reference_Set" in dicom_filepath:
+    if "Combined_Imaging_and_Blood_Biomarkers_for_Breast_Cancer_Diagnosis" in dicom_filepath:
         return extract_metadata_from_filepath_bi(dicom_filename)
     
     else:
