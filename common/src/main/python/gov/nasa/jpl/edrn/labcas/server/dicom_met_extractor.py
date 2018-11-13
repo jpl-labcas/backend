@@ -9,6 +9,9 @@ IGNORED_TAGS = ["PixelData", "LargestImagePixelValue", "SmallestImagePixelValue"
                 "ROIContourSequence",
                 "RedPaletteColorLookupTableData", "BluePaletteColorLookupTableData", "GreenPaletteColorLookupTableData"]
 
+DICOM_COLLECTIONS = ["Automated_System_For_Breast_Cancer_Biomarker_Analysis",
+                     "Combined_Imaging_and_Blood_Biomarkers_for_Breast_Cancer_Diagnosis"]
+
 def extract_metadata(dicom_filepath):
     ''' 
     Metadata extractor for DICOM files.
@@ -61,11 +64,12 @@ def extract_metadata_from_filepath(dicom_filepath):
     
     dicom_filename = os.path.basename(dicom_filepath)
     
-    if "Combined_Imaging_and_Blood_Biomarkers_for_Breast_Cancer_Diagnosis" in dicom_filepath:
-        return extract_metadata_from_filepath_bi(dicom_filename)
+    for dicom_coll in DICOM_COLLECTIONS:
+        if dicom_coll in dicom_filepath:
+            return extract_metadata_from_filepath_bi(dicom_filename)
     
-    else:
-        return {}
+    # no match
+    return {}
     
 def _extract_metadata_from_filepath_bi(inst, patient_number, image_type, view,
                                        processing_level=None,
