@@ -100,6 +100,8 @@ def _extract_metadata_from_filepath_bi(inst, patient_number, image_type, view,
         description += " (right craniocaudal)"
     elif view == 'RMLO':
         description += " (right mediolateral oblique)"
+    elif view == 'RML':
+        description += " (right mediolateral)"
     elif view == 'LCC':
         description += " (left craniocaudal)"
     elif view == 'LLMLO':
@@ -125,6 +127,13 @@ def extract_metadata_from_filepath_bi(filename):
     # Format: ID_MG_SYN_VIEW.dcm
     # Example: E0001_MG_SYN_LCC.dcm
     match = re.search("(\w)(\d+)_MG_SYN_(\w+)\.dcm", filename)
+    if match:
+        inst = match.group(1)
+        patient_number = match.group(2)
+        image_type = "2D synthetic mammogram from 3D digital tomosynthesis"
+        view = match.group(3)
+        return _extract_metadata_from_filepath_bi(inst, patient_number, image_type, view)
+    match = re.search("(\w)(\d+)_BT_SYN_(\w+)\.dcm", filename)
     if match:
         inst = match.group(1)
         patient_number = match.group(2)
@@ -253,10 +262,9 @@ def extract_metadata_from_filepath_bi(filename):
 
 if __name__ == '__main__':
     
-    dicom_filepath = sys.argv[1]
-    extract_metadata( dicom_filepath )
+    #dicom_filepath = sys.argv[1]
+    #extract_metadata( dicom_filepath )
 
-    '''
     for filename in ["E0001_MG_DAT_LCC.dcm",
                      "E0001_MG_PRO_LCC.dcm",
                      "E0100_TRU_4A_2_DAT_RMLO.dcm",
@@ -268,7 +276,8 @@ if __name__ == '__main__':
                      "E0001_TRU_VOL_002_LCC.dcm",
                      "E0001_TRU_UV_002_LCC.dcm",
                      "E0001_TRU_SYN_11_DAT_LCC.dcm",
+                     "E0001_BT_SYN_RCC.dcm",
+                     "E0001_BT_SYN_RML.dcm",
                      ]:
         metadata = extract_metadata_from_filepath_bi(filename)    
         print(metadata)
-    '''
