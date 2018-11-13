@@ -1,13 +1,13 @@
 import sys
 import dicom
-from utils import write_file_metadata, make_file_description
+from utils import write_file_metadata, extract_metadata_from_filepath
 
 # list of DICOM metadata fields taht are NOT extracted because they have binary value, or bad characters, or are too long
 IGNORED_TAGS = ["PixelData", "LargestImagePixelValue", "SmallestImagePixelValue", "PerFrameFunctionalGroupsSequence",
                 "ROIContourSequence",
                 "RedPaletteColorLookupTableData", "BluePaletteColorLookupTableData", "GreenPaletteColorLookupTableData"]
 
-def extract_metadata( dicom_filepath ):
+def extract_metadata(dicom_filepath):
     ''' 
     Metadata extractor for DICOM files.
     Usage: python dicom_met_extractor.py <filepath.dcm>
@@ -16,13 +16,16 @@ def extract_metadata( dicom_filepath ):
     which will be removed before ingestion into the Solr index
     '''
 
-    # read input file, extract metadata
     metadata = {}
+    
+    # extract metadata from file path
+    _metadata = extract_metadata_from_filepath(dicom_filepath)
+    for (key, value) in _metadata:
+        metadata[_key] = value
+        
+    # add metadata extracted from DICOM header
     ds = dicom.read_file(dicom_filepath)
     tag_names = ds.dir()
-    
-    # add file description
-    metadata["_File_Description"] = make_file_description( dicom_filepath )
     
     # loop over input metadata fields
     for tag_name in tag_names:
