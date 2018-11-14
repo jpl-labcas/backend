@@ -283,10 +283,12 @@ def extract_metadata_from_filepath_bi(filename):
     
 
 if __name__ == '__main__':
+    '''
+    IMPORTANT: this main program is invoked during publication of DICOM files to extract file-level metadata to .xmlmet files.
+    DO NOT REMOVE!
+    '''
     
-    #dicom_filepath = sys.argv[1]
-    #extract_metadata( dicom_filepath )
-
+    '''
     for filename in ["E0001_MG_DAT_LCC.dcm",
                      "E0001_MG_PRO_LCC.dcm",
                      "E0100_TRU_4A_2_DAT_RMLO.dcm",
@@ -306,3 +308,7 @@ if __name__ == '__main__':
                      ]:
         metadata = extract_metadata_from_filepath_bi(filename)    
         print(metadata)
+        '''
+    
+        dicom_filepath = sys.argv[1]
+        extract_metadata( dicom_filepath )
