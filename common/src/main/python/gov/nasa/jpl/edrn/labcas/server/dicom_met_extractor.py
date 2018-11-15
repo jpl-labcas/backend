@@ -110,9 +110,11 @@ def _extract_metadata_from_filepath_bi(inst, patient_number,
     if image_type:
         metadata["_File_"+NAMESPACE_RADIOLOGY+":image_type"] = image_type
         if image_type.upper() == 'MG':
-            description += "Mammography"
+            description += " Mammography"
+        elif image_type.upper() == 'BT':
+            description += " Breast tomosynthesis"
         elif image_type.upper() == 'TRU':
-            description += "Truth File"
+            description += " Truth File"
         elif image_type.upper() == 'MASK':
             description += "Mask File"
             
@@ -130,21 +132,21 @@ def _extract_metadata_from_filepath_bi(inst, patient_number,
     if image_orientation:
         metadata["_File_"+NAMESPACE_RADIOLOGY+":image_orientation"] = image_orientation
         if image_orientation.upper() == 'LMLO':
-            description += ', left mediolateral oblique'
+            description += ', Orientation: left mediolateral oblique'
         elif image_orientation.upper() == 'LCC':
-            description += ', left craniocaudal'
+            description += ', Orientation: left craniocaudal'
         elif image_orientation.upper() == 'RMLO':
-            description += ', right mediolateral oblique'
+            description += ', Orientation: right mediolateral oblique'
         elif image_orientation.upper() == 'RCC':
-            description += ', right craniocaudal'
+            description += ', Orientation: right craniocaudal'
             
     # processing level
     if processing_level:
         metadata["_File_"+NAMESPACE_RADIOLOGY+":processing_level"] = processing_level
         if processing_level.upper() == "DAT":
-            description += ', Raw'
+            description += ', raw data'
         elif processing_level.upper() == "PRO":
-            description += ', Processed'
+            description += ', processed data'
     
     # BI-RADS score
     if bi_rads_score:
@@ -197,13 +199,10 @@ def extract_metadata_from_filepath_bi(filename):
     if match:
         inst = match.group(1)
         patient_number = match.group(2)
-        image_type = "MG"
-        image_modality
-        view = match.group(3)
         return _extract_metadata_from_filepath_bi(inst, patient_number,
-                                                  image_type=None,
-                                                  image_modality=None,
-                                                  image_orientation=None,
+                                                  image_type="MG",
+                                                  image_modality="SYN",
+                                                  image_orientation=match.group(3),
                                                   processing_level=None,
                                                   bi_rads_score=None,
                                                   lesion_number=None,
@@ -214,12 +213,10 @@ def extract_metadata_from_filepath_bi(filename):
     if match:
         inst = match.group(1)
         patient_number = match.group(2)
-        image_type_long = "2D synthetic mammogram from 3D digital tomosynthesis"
-        view = match.group(3)
         return _extract_metadata_from_filepath_bi(inst, patient_number,
-                                                  image_type=None,
-                                                  image_modality=None,
-                                                  image_orientation=None,
+                                                  image_type="BT",
+                                                  image_modality="SYN",
+                                                  image_orientation=match.group(3),
                                                   processing_level=None,
                                                   bi_rads_score=None,
                                                   lesion_number=None,
@@ -236,14 +233,11 @@ def extract_metadata_from_filepath_bi(filename):
     if match:
         inst = match.group(1)
         patient_number = match.group(2)
-        image_type_long = "2D full-field digital mammography (FFDM)"
-        processing_level = match.group(3)
-        view = match.group(4)
         return _extract_metadata_from_filepath_bi(inst, patient_number,
-                                                  image_type=None,
-                                                  image_modality=None,
-                                                  image_orientation=None,
-                                                  processing_level=None,
+                                                  image_type="MG",
+                                                  image_modality="FFDM",
+                                                  image_orientation=match.group(4),
+                                                  processing_level=match.group(3),
                                                   bi_rads_score=None,
                                                   lesion_number=None,
                                                   volume_type=None,
@@ -255,14 +249,11 @@ def extract_metadata_from_filepath_bi(filename):
     if match:
         inst = match.group(1)
         patient_number = match.group(2)
-        image_type_long = "2D full-field digital mammography (FFDM) mask"
-        processing_level = match.group(3)
-        view = match.group(4)
         return _extract_metadata_from_filepath_bi(inst, patient_number,
-                                                  image_type=None,
-                                                  image_modality=None,
-                                                  image_orientation=None,
-                                                  processing_level=None,
+                                                  image_type="Mask",
+                                                  image_modality="FFDM",
+                                                  image_orientation=match.group(4),
+                                                  processing_level=match.group(3),
                                                   bi_rads_score=None,
                                                   lesion_number=None,
                                                   volume_type=None,
@@ -286,18 +277,13 @@ def extract_metadata_from_filepath_bi(filename):
     if match:
         inst = match.group(1)
         patient_number = match.group(2)
-        image_type_long = "2D Truth file for biopsied lesion"
-        birads_rating = match.group(3)
-        lesion_number = match.group(4)
-        processing_level = match.group(5)
-        view = match.group(6)
         return _extract_metadata_from_filepath_bi(inst, patient_number,
-                                                  image_type=None,
-                                                  image_modality=None,
-                                                  image_orientation=None,
-                                                  processing_level=None,
-                                                  bi_rads_score=None,
-                                                  lesion_number=None,
+                                                  image_type="Tru",
+                                                  image_modality="FFDM",
+                                                  image_orientation=match.group(6),
+                                                  processing_level=match.group(5),
+                                                  bi_rads_score=match.group(3),
+                                                  lesion_number=match.group(4),
                                                   volume_type=None,
                                                   slice_number=None,
                                                   total_number_of_slices=None)
@@ -310,16 +296,13 @@ def extract_metadata_from_filepath_bi(filename):
         inst = match.group(1)
         patient_number = match.group(2)
         image_type_long = "2D Truth file for non-biopsied lesion (presumed benign)"
-        lesion_number = match.group(3)
-        processing_level = match.group(4)
-        view = match.group(5)
         return _extract_metadata_from_filepath_bi(inst, patient_number,
-                                                  image_type=None,
-                                                  image_modality=None,
-                                                  image_orientation=None,
-                                                  processing_level=None,
-                                                  bi_rads_score=None,
-                                                  lesion_number=None,
+                                                  image_type="Tru",
+                                                  image_modality="FFDM",
+                                                  image_orientation=match.group(5),
+                                                  processing_level=match.group(4),
+                                                  bi_rads_score="F",
+                                                  lesion_number=match.group(3),
                                                   volume_type=None,
                                                   slice_number=None,
                                                   total_number_of_slices=None)
@@ -331,16 +314,14 @@ def extract_metadata_from_filepath_bi(filename):
     if match:
         inst = match.group(1)
         patient_number = match.group(2)
-        image_type_long = "3D digital breast tomosynthesis (DBT), packed volume"
-        view = match.group(3)
         return _extract_metadata_from_filepath_bi(inst, patient_number,
-                                                  image_type=None,
-                                                  image_modality=None,
-                                                  image_orientation=None,
+                                                  image_type="BT",
+                                                  image_modality="BDT",
+                                                  image_orientation=match.group(3),
                                                   processing_level=None,
                                                   bi_rads_score=None,
                                                   lesion_number=None,
-                                                  volume_type=None,
+                                                  volume_type="VOL",
                                                   slice_number=None,
                                                   total_number_of_slices=None)
     
@@ -351,20 +332,16 @@ def extract_metadata_from_filepath_bi(filename):
     if match:
         inst = match.group(1)
         patient_number = match.group(2)
-        image_type_long = "3D digital breast tomosynthesis (DBT), un-packed volume"
-        slice_number = match.group(3)
-        total_number_of_slices = match.group(4)
-        view = match.group(5)
-         return _extract_metadata_from_filepath_bi(inst, patient_number,
-                                                  image_type=None,
-                                                  image_modality=None,
-                                                  image_orientation=None,
+        return _extract_metadata_from_filepath_bi(inst, patient_number,
+                                                  image_type="BT",
+                                                  image_modality="BDT",
+                                                  image_orientation=match.group(5),
                                                   processing_level=None,
                                                   bi_rads_score=None,
                                                   lesion_number=None,
-                                                  volume_type=None,
-                                                  slice_number=None,
-                                                  total_number_of_slices=None)
+                                                  volume_type="UV",
+                                                  slice_number=match.group(3),
+                                                  total_number_of_slices=match.group(4))
 
     # Truth Files for Volumes and Synthetic Mammograms
     # Example: E0001_TRU_VOL_002_LCC.dcm (2nd virtual slice in the packed volume).
@@ -372,18 +349,15 @@ def extract_metadata_from_filepath_bi(filename):
     if match:
         inst = match.group(1)
         patient_number = match.group(2)
-        slice_number = match.group(3)
-        view = match.group(4)
-        image_type_long = "2D Truth file for virtual slice # %s from 3D packed volume" % slice_number
         return _extract_metadata_from_filepath_bi(inst, patient_number,
-                                                  image_type=None,
-                                                  image_modality=None,
-                                                  image_orientation=None,
+                                                  image_type="Tru",
+                                                  image_modality="BDT",
+                                                  image_orientation=match.group(4),
                                                   processing_level=None,
                                                   bi_rads_score=None,
                                                   lesion_number=None,
-                                                  volume_type=None,
-                                                  slice_number=None,
+                                                  volume_type="VOL",
+                                                  slice_number=match.group(3),
                                                   total_number_of_slices=None)
 
     # Example: E0001_TRU_UV_002_LCC.dcm (2nd slice image out of many unpacked slices).
@@ -391,18 +365,15 @@ def extract_metadata_from_filepath_bi(filename):
     if match:
         inst = match.group(1)
         patient_number = match.group(2)
-        slice_number = match.group(3)
-        view = match.group(4)
-        image_type = "2D Truth file for virtual slice # %s from 3D unpacked volume" % slice_number
         return _extract_metadata_from_filepath_bi(inst, patient_number,
-                                                  image_type=None,
-                                                  image_modality=None,
-                                                  image_orientation=None,
+                                                  image_type="Tru",
+                                                  image_modality="BDT",
+                                                  image_orientation=match.group(4),
                                                   processing_level=None,
                                                   bi_rads_score=None,
                                                   lesion_number=None,
-                                                  volume_type=None,
-                                                  slice_number=None,
+                                                  volume_type="UV",
+                                                  slice_number=match.group(3),
                                                   total_number_of_slices=None)
 
 
@@ -412,19 +383,16 @@ def extract_metadata_from_filepath_bi(filename):
     if match:
         inst = match.group(1)
         patient_number = match.group(2)
-        slice_number = match.group(3)
-        processing_level = match.group(4)
-        view = match.group(5)
         image_type_long = "2D Truth file for synthetic slice # %s" % slice_number
         return _extract_metadata_from_filepath_bi(inst, patient_number,
-                                                  image_type=None,
-                                                  image_modality=None,
-                                                  image_orientation=None,
-                                                  processing_level=None,
+                                                  image_type="Tru",
+                                                  image_modality="SYN",
+                                                  image_orientation=match.group(5),
+                                                  processing_level=match.group(4),
                                                   bi_rads_score=None,
                                                   lesion_number=None,
                                                   volume_type=None,
-                                                  slice_number=None,
+                                                  slice_number=match.group(3),
                                                   total_number_of_slices=None)
     
     
@@ -460,5 +428,6 @@ if __name__ == '__main__':
         print(metadata)
     '''
     
+    print("\nPARSING THE FILENAME\n")
     dicom_filepath = sys.argv[1]
     extract_metadata( dicom_filepath )
