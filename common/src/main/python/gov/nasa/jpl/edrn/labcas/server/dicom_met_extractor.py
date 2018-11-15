@@ -428,6 +428,5 @@ if __name__ == '__main__':
         print(metadata)
     '''
     
-    print("\nPARSING THE FILENAME\n")
     dicom_filepath = sys.argv[1]
     extract_metadata( dicom_filepath )
