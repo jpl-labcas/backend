@@ -8,30 +8,18 @@ import sys
 from glob import glob
 from shutil import copyfile
 import pydicom
+from gov.nasa.jpl.edrn.labcas.server.dicom_met_extractor import get_top_dataset_name
 
 # 1) 
-# COLLECTION_NAME = "Combined_Imaging_and_Blood_Biomarkers_for_Breast_Cancer_Diagnosis"
-# INSTITUTION = "Moffitt"
+COLLECTION_NAME = "Combined_Imaging_and_Blood_Biomarkers_for_Breast_Cancer_Diagnosis"
+INSTITUTION = "Moffitt"
 
 # 2)
-COLLECTION_NAME = "Automated_System_For_Breast_Cancer_Biomarker_Analysis"
-INSTITUTION = "Moffitt"
+# COLLECTION_NAME = "Automated_System_For_Breast_Cancer_Biomarker_Analysis"
+# INSTITUTION = "Moffitt"
 
 DATA_DIR=os.environ['LABCAS_ARCHIVE'] + "/" + COLLECTION_NAME
 TEMPLATE_FILE = "%s/TEMPLATE_%s.cfg" % (DATA_DIR, INSTITUTION)
-
-def get_top_dataset_name(subDir):
-    
-    start = subDir[0]
-    patientNumber = subDir[1:5]
-    if start == 'D' or start == 'E':
-        datasetName = "Patient #%s (%s)" % (patientNumber, INSTITUTION)
-    elif start == 'C':
-        datasetName = "Case # %s (unilateral breast cancer)" % patientNumber
-    elif start == 'N':
-        datasetName = "Case # %s (control i.e. no cancer)" % patientNumber
-    print("\tDataset name=%s" % datasetName)
-    return datasetName
     
 def read_metadata_from_template(datasetName):
     
@@ -94,7 +82,7 @@ def main():
             print("Processing directory: %s" % subDir)
             
             # read and parse metadata from template file
-            datasetName = get_top_dataset_name(subDir)
+            datasetName = get_top_dataset_name(subDir[0], subDir[1:5])
             metadata = read_metadata_from_template(datasetName)
             
             # write out the dataset metadata to file
