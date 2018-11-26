@@ -78,7 +78,7 @@ public class OhifImageViewerPostIngestionAction extends CrawlerAction {
 	 */
 	private void uploadFile(File product, Metadata productMetadata) {
 		
-		String studyInstanceId = productMetadata.getMetadata("_File_StudyInstanceUID");
+		String studyInstanceId = productMetadata.getMetadata("_File_labcas.dicom:StudyInstanceUID");
 		LOG.info("OHIF: uploading file: "+product.getAbsolutePath()+" StudyInstanceUID="+studyInstanceId);
 
 		FileManagerUtils.printMetadata(productMetadata);

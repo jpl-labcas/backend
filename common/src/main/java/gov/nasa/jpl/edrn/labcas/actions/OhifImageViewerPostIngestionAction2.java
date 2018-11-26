@@ -29,7 +29,7 @@ public class OhifImageViewerPostIngestionAction2 extends SshExternAction {
 		// only proceed if NOOHIF flag is not set
 		if (!productMetadata.containsKey(Constants.METADATA_KEY_NOOHIF)) {
 			
-			String studyInstanceId = productMetadata.getMetadata("_File_StudyInstanceUID");
+			String studyInstanceId = productMetadata.getMetadata("_File_labcas.dicom:StudyInstanceUID");
 			LOG.info("OHIF: uploading file: "+product.getAbsolutePath()+" StudyInstanceUID="+studyInstanceId);
 
 			boolean status = super.performAction(product, productMetadata);
