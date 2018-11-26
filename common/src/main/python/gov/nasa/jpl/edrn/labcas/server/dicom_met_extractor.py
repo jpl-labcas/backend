@@ -1,5 +1,5 @@
 import sys
-import dicom
+import pydicom
 import re
 import os
 from utils import write_file_metadata
@@ -46,7 +46,7 @@ def extract_metadata_from_header(dicom_filepath):
     '''
     
     metadata = {}
-    ds = dicom.read_file(dicom_filepath)
+    ds = pydicom.read_file(dicom_filepath)
     tag_names = ds.dir()
     
     # loop over input metadata fields
