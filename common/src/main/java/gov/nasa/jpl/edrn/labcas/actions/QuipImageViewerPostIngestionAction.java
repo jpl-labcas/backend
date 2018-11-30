@@ -57,7 +57,17 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 			
 			// process compatible extensions
 			if (this.extensionsSet.contains(extension)) {
-				this.uploadFile(product, productMetadata);
+				
+				// do NOT upload file
+				//this.uploadFile(product, productMetadata);
+				
+				// but still publish the QUIP URL
+				String fileId = product.getName().replaceAll("."+extension, "");
+				String caMicroscopeUrl =  this.quipViewImageUrl + "?tissueId=" + fileId;
+				productMetadata.addMetadata("FileUrl", caMicroscopeUrl);
+				productMetadata.addMetadata("FileUrlType", Constants.URL_TYPE_CAMICROSCOPE );
+				LOG.info("QUIP: set caMicroscope URL: "+ caMicroscopeUrl);
+				
 			}
 			
 		}
