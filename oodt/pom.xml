@@ -301,6 +301,26 @@
               <overwrite>true</overwrite>
             </configuration>
           </execution>
+          <!-- install logging configuration into fmprod -->
+          <execution>
+            <id>copy-log4j-to-fmprod</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${install.dir}/apache-tomcat/webapps/fmprod/WEB-INF/classes</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/src/main/resources/fmprod</directory>
+                  <includes>
+                    <include>log4j.properties</include>
+                  </includes>
+                </resource>
+              </resources>
+              <overwrite>true</overwrite>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 
