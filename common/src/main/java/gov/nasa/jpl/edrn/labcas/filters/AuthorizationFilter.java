@@ -1,7 +1,9 @@
 package gov.nasa.jpl.edrn.labcas.filters;
 
 import java.io.IOException;
+import java.net.URL;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -51,7 +53,7 @@ public class AuthorizationFilter implements Filter {
 		
 		/**
 		 * Set authorization cookie.
-		 *
+		 */
 		try {
 					    
 		    // add cookie with signed data
@@ -59,20 +61,20 @@ public class AuthorizationFilter implements Filter {
 		    // URL-encode the signature
 		    String encodedSignature = URLEncoder.encode(signature, "UTF-8");
 		    
-			final Cookie _cookie = new Cookie(Constants.COOKIE_PRODUCT_ID_NAME2, encodedSignature);
-			_cookie.setSecure(true); 
+			final Cookie _cookie = new Cookie(Constants.COOKIE_PRODUCT_ID_NAME, encodedSignature);
+			//_cookie.setSecure(true); 
 			_cookie.setMaxAge(Constants.COOKIE_PRODUCT_ID_LIFETIME);
 			final String url = req.getRequestURL().toString();
 			final URL reqURL = new URL(url);
 			_cookie.setDomain(reqURL.getHost()); // cookie sent to all applications on this host
 			_cookie.setPath("/");                // cookie will be sent to all pages in web application
-			if (LOG.isDebugEnabled()) LOG.debug("Set cookie name="+_cookie.getName()+" value="+_cookie.getValue()
+			if (LOG.isInfoEnabled()) LOG.debug("Set cookie name="+_cookie.getName()+" value="+_cookie.getValue()
 			                                   +" domain="+_cookie.getDomain()+" path="+_cookie.getPath()+" max age="+_cookie.getMaxAge());
 			resp.addCookie(_cookie);
 		
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
-		} */
+		}
 
 		
 		// retrieve cookie to check authorization
