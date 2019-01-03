@@ -1,9 +1,7 @@
 package gov.nasa.jpl.edrn.labcas.filters;
 
 import java.io.IOException;
-import java.net.URL;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -88,8 +86,8 @@ public class AuthorizationFilter implements Filter {
 		        	  
 		      		  // NOTE: the front-end URL-encodes the value before storing it in the cookie
 		      		  // so the back-end must URL-decode it before validating the signature
-		        	  String signature = URLDecoder.decode( cookie.getValue(), "UTF-8" );
-		        	  if (LOG.isInfoEnabled()) LOG.info("Found authorization cookie: name="+cookie.getName()+" URL-decoded value="+signature);
+			        	  String signature = URLDecoder.decode( cookie.getValue(), "UTF-8" );
+			        	  if (LOG.isInfoEnabled()) LOG.info("Found authorization cookie: name="+cookie.getName()+" URL-decoded value="+signature);
 		        	  		        		  
 		        		  // validate signature
 		        	      
