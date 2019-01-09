@@ -17,7 +17,9 @@ class LabcasDatasetPublisher(object):
     Publishes a hierarchy of datasets rooted at some directory.
     '''
     
-    def __init__(self, collection_name, solr_url='http://localhost:8983/solr', update_collection=True):
+    def __init__(self, 
+                 collection_name, solr_url='http://localhost:8983/solr', 
+                 workflow_url='http://localhost:9001', update_collection=True):
         
         
         self._collection_name = collection_name
@@ -30,7 +32,7 @@ class LabcasDatasetPublisher(object):
         self._update_collection = update_collection
         
         self._solr_client = SolrClient(solr_url)
-        self._wmgr_client = WorkflowManagerClient()
+        self._wmgr_client = WorkflowManagerClient(workflowManagerUrl=workflow_url)
         
             
     def crawl(self, directory_path, dataset_parent_id=None, in_place=True, 

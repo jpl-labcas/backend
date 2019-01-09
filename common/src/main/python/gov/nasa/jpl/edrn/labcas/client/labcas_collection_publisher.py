@@ -14,9 +14,13 @@ class LabcasCollectionPublisher(object):
     Publishes all datasets within a collection
     '''
     
-    def __init__(self, solr_url='http://localhost:8983/solr', update_collection=True):
+    def __init__(self, 
+                 solr_url='http://localhost:8983/solr', 
+                 workflow_url='http://localhost:9001',
+                 update_collection=True):
         
         self._solr_url = solr_url
+        self._workflow_url = workflow_url
         self._solr_client = SolrClient(solr_url)
         self._update_collection = update_collection
         
@@ -29,6 +33,7 @@ class LabcasCollectionPublisher(object):
         # loop over all sub-directories to publish datasets
         labcasDatasetPublisher = LabcasDatasetPublisher(metadata['CollectionName'], 
                                                         solr_url=self._solr_url,
+                                                        workflow_url=self._workflow_url,
                                                         update_collection=self._update_collection)
         
         if update_datasets:
@@ -86,11 +91,19 @@ if __name__ == '__main__':
                         help='Optional flag to update the datasets metadata (default: True)')
     parser.add_argument('--update_files', type=str2bool, default=True,
                         help='Optional flag to publish files (default: True)')
+    parser.add_argument('--solr_url', type=str, default='http://localhost:8983/solr',
+                        help='URL of Solr index')
+    parser.add_argument('--workflow_url', type=str, default='http://localhost:9001',
+                        help='URL of Workflow Manager XML/RPC server')
 
     args_dict = vars( parser.parse_args() )
         
     # start publishing
-    labcasCollectionPublisher = LabcasCollectionPublisher(update_collection=args_dict['update_collection'])
+    labcasCollectionPublisher = LabcasCollectionPublisher(
+        solr_url=args_dict['solr_url'],
+        workflow_url=args_dict['workflow_url'],
+        update_collection=args_dict['update_collection']
+        )
     labcasCollectionPublisher.crawl(args_dict['collection_dir'], 
                                     in_place=args_dict['in_place'],
                                     update_datasets=args_dict['update_datasets'],
