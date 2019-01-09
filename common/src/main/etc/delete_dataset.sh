@@ -16,5 +16,5 @@ rm update*
 rm -rf $LABCAS_ARCHIVE/${dataset_id}
 
 # restart LabCAS
-$LABCAS_HOME/stop.sh
-$LABCAS_HOME/start.sh
+#$LABCAS_HOME/stop.sh
+#$LABCAS_HOME/start.sh
