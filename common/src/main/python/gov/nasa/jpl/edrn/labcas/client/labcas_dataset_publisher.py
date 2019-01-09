@@ -135,11 +135,17 @@ if __name__ == '__main__':
                         help='Optional flag to publish data without moving it (default: True)')
     parser.add_argument('--update_collection', type=str2bool, default=True,
                         help='Optional flag to update the collection metadata when publishing files (default: True)')
+    parser.add_argument('--solr_url', type=str, default='http://localhost:8983/solr',
+                        help='URL of Solr Index')
+    parser.add_argument('--workflow_url', type=str, default='http://localhost:9001',
+                        help='URL of Workflow Manager XML/RPC server')
     args_dict = vars( parser.parse_args() )
         
     # start publishing
     labcasDatasetPublisher = LabcasDatasetPublisher(args_dict['collection_name'], 
-                                                    update_collection=args_dict['update_collection'])
+                                                    update_collection=args_dict['update_collection'],
+                                                    solr_url=args_dict['solr_url'],
+                                                    workflow_url=args_dict['workflow_url'])
     labcasDatasetPublisher.crawl(args_dict['dataset_dir'], 
                                  dataset_parent_id=args_dict['dataset_parent_id'],
                                  in_place=args_dict['in_place'])

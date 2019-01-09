@@ -92,7 +92,7 @@ if __name__ == '__main__':
     parser.add_argument('--update_files', type=str2bool, default=True,
                         help='Optional flag to publish files (default: True)')
     parser.add_argument('--solr_url', type=str, default='http://localhost:8983/solr',
-                        help='URL of Solr index')
+                        help='URL of Solr Index')
     parser.add_argument('--workflow_url', type=str, default='http://localhost:9001',
                         help='URL of Workflow Manager XML/RPC server')
 
