@@ -54,6 +54,7 @@ public class AuthorizationFilter implements Filter {
 		/**
 		 * Set authorization cookie.
 		 */
+		/**
 		try {
 					    
 		    // add cookie with signed data
@@ -62,7 +63,7 @@ public class AuthorizationFilter implements Filter {
 		    String encodedSignature = URLEncoder.encode(signature, "UTF-8");
 		    
 			final Cookie _cookie = new Cookie(Constants.COOKIE_PRODUCT_ID_NAME, encodedSignature);
-			//_cookie.setSecure(true); 
+			_cookie.setSecure(true); 
 			_cookie.setMaxAge(Constants.COOKIE_PRODUCT_ID_LIFETIME);
 			final String url = req.getRequestURL().toString();
 			final URL reqURL = new URL(url);
@@ -74,7 +75,7 @@ public class AuthorizationFilter implements Filter {
 		
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
-		}
+		}*/
 
 		
 		// retrieve cookie to check authorization
