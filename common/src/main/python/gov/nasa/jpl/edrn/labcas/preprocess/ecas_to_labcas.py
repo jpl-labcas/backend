@@ -9,16 +9,19 @@ from shutil import copyfile
 import xml.sax.saxutils as saxutils
 import re
 
-ecas_metadata_dir = "/home/cinquini/ECAS_MIGRATION/datasets/"
+#root_dir = "/Users/cinquini/data/ECAS_MIGRATION"
+root_dir = "/home/cinquini/ECAS_MIGRATION"
+
+ecas_metadata_dir = root_dir+"/datasets/"
 ecas_data_dir = "/data/archive"
-labcas_metadata_dir = "/home/cinquini/ECAS_MIGRATION/ecas-metadata/"
-labcas_data_dir = "/home/cinquini/ECAS_MIGRATION/labcas_archive"
+labcas_metadata_dir = root_dir+"/ecas-metadata/"
+labcas_data_dir = root_dir+"/labcas_archive"
 
 # RDF streams
-sites_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/sites.rdf"
-leadpis_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/registered-person.rdf"
-organs_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/body-systems.rdf"
-protocols_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/protocols.rdf"
+sites_rdf_filepath = root_dir+"/rdf/sites.rdf"
+leadpis_rdf_filepath = root_dir+"/rdf/registered-person.rdf"
+organs_rdf_filepath = root_dir+"/rdf/body-systems.rdf"
+protocols_rdf_filepath = root_dir+"/rdf/protocols.rdf"
 
 # inverse maps are needed because sometimes the RDF element value is
 # the object title, sometimes it's the object id...
@@ -188,6 +191,15 @@ def read_protocols_from_rdf(rdf_filepath, metadata_map, inv_metadata_map):
            metadata_map[title_element.text] = rdf_id
            inv_metadata_map[rdf_id] = title_element.text
 
+def addKeyValueToMap(map, key, value):
+    '''
+    Adds a value to a key, using "|" for multiple values.
+    '''
+    
+    if key in map:
+        map[key] = map[key] +"|" + value
+    else:
+        map[key] = value
 
 def read_product_type_metadata(input_xml_file):
     '''
@@ -209,112 +221,145 @@ def read_product_type_metadata(input_xml_file):
     metadata_element = root_element.find('.//metadata')
     for keyval_element in metadata_element.findall('./keyval'):
         key = keyval_element.find("key").text
-        val = keyval_element.find("val").text
-        
-        # replace newline characters from metadata values
-        if val:
-            val = cleanup_text(val)
-            # un-escape XML characters
-            val = saxutils.unescape(val)
-                 
-        # DataSetName --> CollectionName, DatasetName
-        if key == 'DataSetName':
-            collection_metadata['CollectionName'] = val
-            collection_metadata['CollectionId'] = val.replace(' ', '_')
-            dataset_metadata['DatasetName'] = val
-            dataset_metadata['DatasetDescription'] = val
-            dataset_metadata['DatasetId'] = val.replace(" ","_")
+        values = keyval_element.findall("val")
+        for value in values:
+            val = value.text
             
-        # ProtocolID --> ProtocolId, ProtocolName
-        elif key == 'ProtocolID' or key == 'ProtocolId':
-            collection_metadata['ProtocolId'] = val
+            # replace newline characters from metadata values
+            if val:
+                val = cleanup_text(val)
+                # un-escape XML characters
+                val = saxutils.unescape(val)
+                     
+            # DataSetName --> CollectionName, DatasetName
+            if key == 'DataSetName':
+                collection_metadata['CollectionName'] = val
+                collection_metadata['CollectionId'] = val.replace(' ', '_')
+                dataset_metadata['DatasetName'] = val
+                dataset_metadata['DatasetDescription'] = val
+                dataset_metadata['DatasetId'] = val.replace(" ","_")
+                
+            # ProtocolID --> ProtocolId, ProtocolName
+            elif key == 'ProtocolID' or key == 'ProtocolId':
+                addKeyValueToMap(collection_metadata, 'ProtocolId', val)
+                
+            elif key == 'ProtocolName':
+                collection_metadata['ProtocolName'] = val
+    
+                if val in protocols_map:
+                   collection_metadata['ProtocolId'] = protocols_map[val]
+    
+                # possibly override
+                if val in inv_protocols_map:
+                   collection_metadata['ProtocolId'] = val
+                   collection_metadata['ProtocolName'] = inv_protocols_map[val]
+                
+            # LeadPI --> LeadPI, LeadPIId
+            elif key == 'LeadPI':
+                collection_metadata['LeadPI'] = val
+    
+                if leadpis_map.get(val, None):
+                   collection_metadata['LeadPIId'] = leadpis_map[val]
+                   
+                # reverse mapping: PI id --> PI name
+                elif inv_leadpis_map.get(val, None):
+                    collection_metadata['LeadPIId'] = val
+                    collection_metadata['LeadPI'] = inv_sites_map[val]
+    
+            # SiteName --> Institution, InstitutionId
+            elif key == 'SiteName':
+                collection_metadata['Institution'] = val
+    
+                if val in sites_map:
+                   collection_metadata['InstitutionId'] = sites_map[val]
+    
+                # possibly override
+                elif val in inv_sites_map:
+                   collection_metadata['InstitutionId'] = val
+                   collection_metadata['Institution'] = inv_sites_map[val]
+    
+            # DataCustodian --> DataCustodian
+            elif key == 'DataCustodian':
+                collection_metadata['DataCustodian'] = val
+                
+            # DataCustodianEmail --> DataCustodianEmail
+            elif key == 'DataCustodianEmail':
+                collection_metadata['DataCustodianEmail'] = val
+                
+            # OrganSite --> Organ, OrganId
+            elif key == 'OrganSite':
+                collection_metadata['Organ'] = val
+    
+                if val in organs_map:
+                   collection_metadata['OrganId'] = organs_map[val]
+    
+                # possibly override
+                elif val in inv_organs_map:
+                   collection_metadata['OrganId'] = val
+                   collection_metadata['Organ'] = inv_sites_map[val]
+                
+            # CollaborativeGroup --> CollaborativeGroup
+            elif key == 'CollaborativeGroup':
+                addKeyValueToMap(collection_metadata, 'CollaborativeGroup', val)
+                
+            # MethodDetails --> MethodDetails
+            elif key == 'MethodDetails':
+                collection_metadata['MethodDetails'] = val
+                
+            # ResultsAndConclusionSummary --> ResultsAndConclusionSummary
+            elif key == 'ResultsAndConclusionSummary':
+                collection_metadata['ResultsAndConclusionSummary'] = val
+                
+            # PubMedID --> PubMedID
+            elif key == 'PubMedID':
+                addKeyValueToMap(collection_metadata, 'PubMedID',
+                                 "http://www.ncbi.nlm.nih.gov/pubmed/%s" % val)
+                
+            # DateDatasetFrozen --> DateDatasetFrozen
+            elif key == 'DateDatasetFrozen':
+                collection_metadata['DateDatasetFrozen'] = val
+                
+            # Date --> Date
+            elif key == 'Date':
+                collection_metadata['Date'] = val
+                
+            # QAState --> QAState
+            elif key == 'QAState':
+                collection_metadata['QAState'] = val
+                
+            # DataDisclaimer --> DataDisclaimer
+            elif key == 'DataDisclaimer':
+                collection_metadata['DataDisclaimer'] = val
+                
+            # ResearchSupport --> ResearchSupport
+            elif key == 'ResearchSupport':
+                addKeyValueToMap(collection_metadata, 'ResearchSupport', val)
+                                
+            # DatasetURL --> DatasetURL
+            elif key == 'DatasetURL':
+                addKeyValueToMap(collection_metadata, 'DatasetURL', val)
+                
+            # GrantSupport --> GrantSupport
+            elif key == 'GrantSupport':
+                addKeyValueToMap(collection_metadata, 'GrantSupport', val)
+                
+            # StudyBackground --> StudyBackground
+            elif key == 'StudyBackground':
+                addKeyValueToMap(collection_metadata, 'StudyBackground', val)
+                
+            # StudyMethods --> StudyMethods
+            elif key == 'StudyMethods':
+                addKeyValueToMap(collection_metadata, 'StudyMethods', val)
+                
+            # StudyResults --> StudyResults
+            elif key == 'StudyResults':
+                addKeyValueToMap(collection_metadata, 'StudyResults', val)
+                
+            # StudyConclusion --> StudyConclusion
+            elif key == 'StudyConclusion':
+                addKeyValueToMap(collection_metadata, 'StudyConclusion', val)
+                
             
-        elif key == 'ProtocolName':
-            collection_metadata['ProtocolName'] = val
-
-            if val in protocols_map:
-               collection_metadata['ProtocolId'] = protocols_map[val]
-
-            # possibly override
-            if val in inv_protocols_map:
-               collection_metadata['ProtocolId'] = val
-               collection_metadata['ProtocolName'] = inv_protocols_map[val]
-            
-        # LeadPI --> LeadPI, LeadPIId
-        elif key == 'LeadPI':
-            collection_metadata['LeadPI'] = val
-
-            if leadpis_map.get(val, None):
-               collection_metadata['LeadPIId'] = leadpis_map[val]
-               
-            # reverse mapping: PI id --> PI name
-            elif inv_leadpis_map.get(val, None):
-                collection_metadata['LeadPIId'] = val
-                collection_metadata['LeadPI'] = inv_sites_map[val]
-
-        # SiteName --> Institution, InstitutionId
-        elif key == 'SiteName':
-            collection_metadata['Institution'] = val
-
-            if val in sites_map:
-               collection_metadata['InstitutionId'] = sites_map[val]
-
-            # possibly override
-            elif val in inv_sites_map:
-               collection_metadata['InstitutionId'] = val
-               collection_metadata['Institution'] = inv_sites_map[val]
-
-        # DataCustodian --> DataCustodian
-        elif key == 'DataCustodian':
-            collection_metadata['DataCustodian'] = val
-            
-        # DataCustodianEmail --> DataCustodianEmail
-        elif key == 'DataCustodianEmail':
-            collection_metadata['DataCustodianEmail'] = val
-            
-        # OrganSite --> Organ, OrganId
-        elif key == 'OrganSite':
-            collection_metadata['Organ'] = val
-
-            if val in organs_map:
-               collection_metadata['OrganId'] = organs_map[val]
-
-            # possibly override
-            elif val in inv_organs_map:
-               collection_metadata['OrganId'] = val
-               collection_metadata['Organ'] = inv_sites_map[val]
-            
-        # CollaborativeGroup --> CollaborativeGroup
-        elif key == 'CollaborativeGroup':
-            collection_metadata['CollaborativeGroup'] = val
-            
-        # MethodDetails --> MethodDetails
-        elif key == 'MethodDetails':
-            collection_metadata['MethodDetails'] = val
-            
-        # ResultsAndConclusionSummary --> ResultsAndConclusionSummary
-        elif key == 'ResultsAndConclusionSummary':
-            collection_metadata['ResultsAndConclusionSummary'] = val
-            
-        # PubMedID --> PubMedID
-        elif key == 'PubMedID':
-            collection_metadata['PubMedID'] = "http://www.ncbi.nlm.nih.gov/pubmed/%s" % val
-            
-        # DateDatasetFrozen --> DateDatasetFrozen
-        elif key == 'DateDatasetFrozen':
-            collection_metadata['DateDatasetFrozen'] = val
-            
-        # Date --> Date
-        elif key == 'Date':
-            collection_metadata['Date'] = val
-            
-        # QAState --> QAState
-        elif key == 'QAState':
-            collection_metadata['QAState'] = val
-            
-        # DataDisclaimer --> DataDisclaimer
-        elif key == 'DataDisclaimer':
-            collection_metadata['DataDisclaimer'] = val
                         
     return { 
              'Collection':collection_metadata,
@@ -466,11 +511,14 @@ if __name__== "__main__":
         if os.path.isdir(dataset_dir):
             
             # FIXME
-            #if filename == 'COPY_NUMBER_LEV1':
+            if filename == 'UPittLabMAPOvarianData':
             #if filename == 'Analysis_of_pancreatic_cancer_biomarkers_in_PLCO_set':
             #if filename == 'BCCA_Affy6.0RawData':
             #if filename == 'FHCRCHanashAnnexinLamr':
-            if True:
+            #if True:
+            
+                print("Processing: %s" % filename)
+            
                 input_xml_file = os.path.join(ecas_metadata_dir, ("%s.met" % filename))
  
                 # read product type metadata from XML, convert to dictionaries
@@ -485,6 +533,5 @@ if __name__== "__main__":
                 file_metadata_array = read_product_metadata(dataset_dir)
                 
                 # copy data files
-                # FIXME: remove 1
-                output_dir = os.path.join(labcas_data_dir, collection_id, dataset_id, '1')
+                output_dir = os.path.join(labcas_data_dir, collection_id, dataset_id)
                 copy_products(collection_id, file_metadata_array, output_dir)
