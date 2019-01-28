@@ -511,11 +511,11 @@ if __name__== "__main__":
         if os.path.isdir(dataset_dir):
             
             # FIXME
-            if filename == 'UPittLabMAPOvarianData':
+            # if filename == 'UPittLabMAPOvarianData':
             #if filename == 'Analysis_of_pancreatic_cancer_biomarkers_in_PLCO_set':
             #if filename == 'BCCA_Affy6.0RawData':
             #if filename == 'FHCRCHanashAnnexinLamr':
-            #if True:
+            if True:
             
                 print("Processing: %s" % filename)
             
