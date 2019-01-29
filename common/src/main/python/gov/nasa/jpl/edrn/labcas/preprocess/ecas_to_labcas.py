@@ -234,7 +234,8 @@ def read_product_type_metadata(input_xml_file):
                      
             # DataSetName --> CollectionName, DatasetName
             if key == 'DataSetName':
-                collection_metadata['CollectionName'] = val
+                # CPTAC+Phase+1+Data --> CPTAC Phase 1 Data
+                collection_metadata['CollectionName'] = val.replace("+"," ")
                 collection_metadata['CollectionId'] = val.replace(' ', '_')
                 dataset_metadata['DatasetName'] = val
                 dataset_metadata['DatasetDescription'] = val
@@ -338,7 +339,12 @@ def read_product_type_metadata(input_xml_file):
                                 
             # DatasetURL --> DatasetURL
             elif key == 'DatasetURL':
-                addKeyValueToMap(collection_metadata, 'DatasetURL', val)
+                # FIXME: hack
+                if 'cptacdcc' in val:
+                    val = 'https://cptacdcc.georgetown.edu/cptac/study/list?scope=Phase+I'
+                else:
+                    collection_metadata['DatasetURL'] = ''
+                #addKeyValueToMap(collection_metadata, 'DatasetURL', val)
                 
             # GrantSupport --> GrantSupport
             elif key == 'GrantSupport':
