@@ -340,7 +340,7 @@ def read_product_type_metadata(input_xml_file):
             # DatasetURL --> DatasetURL
             elif key == 'DatasetURL':
                 # FIXME: hack
-                if 'cptacdcc' in val:
+                if val and 'cptacdcc' in val:
                     val = 'https://cptacdcc.georgetown.edu/cptac/study/list?scope=Phase+I'
                 else:
                     collection_metadata['DatasetURL'] = ''
