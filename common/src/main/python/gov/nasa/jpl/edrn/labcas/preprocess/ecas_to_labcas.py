@@ -344,7 +344,7 @@ def read_product_type_metadata(input_xml_file):
                 if val and 'cptacdcc' in val:
                     collection_metadata['DatasetURL'] = 'https://cptacdcc.georgetown.edu/cptac/study/list?scope=Phase+I'
                 else:
-                    collection_metadata['DatasetURL'] = ''
+                    del collection_metadata['DatasetURL']
                 #addKeyValueToMap(collection_metadata, 'DatasetURL', val)
                 
             # GrantSupport --> GrantSupport
