@@ -53,7 +53,8 @@ public class AuthorizationFilter implements Filter {
 		
 		/**
 		 * Set authorization cookie.
-		 *
+		 */
+		/**
 		try {
 					    
 		    // add cookie with signed data
@@ -61,20 +62,20 @@ public class AuthorizationFilter implements Filter {
 		    // URL-encode the signature
 		    String encodedSignature = URLEncoder.encode(signature, "UTF-8");
 		    
-			final Cookie _cookie = new Cookie(Constants.COOKIE_PRODUCT_ID_NAME2, encodedSignature);
+			final Cookie _cookie = new Cookie(Constants.COOKIE_PRODUCT_ID_NAME, encodedSignature);
 			_cookie.setSecure(true); 
 			_cookie.setMaxAge(Constants.COOKIE_PRODUCT_ID_LIFETIME);
 			final String url = req.getRequestURL().toString();
 			final URL reqURL = new URL(url);
 			_cookie.setDomain(reqURL.getHost()); // cookie sent to all applications on this host
 			_cookie.setPath("/");                // cookie will be sent to all pages in web application
-			if (LOG.isDebugEnabled()) LOG.debug("Set cookie name="+_cookie.getName()+" value="+_cookie.getValue()
+			if (LOG.isInfoEnabled()) LOG.debug("Set cookie name="+_cookie.getName()+" value="+_cookie.getValue()
 			                                   +" domain="+_cookie.getDomain()+" path="+_cookie.getPath()+" max age="+_cookie.getMaxAge());
 			resp.addCookie(_cookie);
 		
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
-		} */
+		}*/
 
 		
 		// retrieve cookie to check authorization
@@ -88,8 +89,8 @@ public class AuthorizationFilter implements Filter {
 		        	  
 		      		  // NOTE: the front-end URL-encodes the value before storing it in the cookie
 		      		  // so the back-end must URL-decode it before validating the signature
-		        	  String signature = URLDecoder.decode( cookie.getValue(), "UTF-8" );
-		        	  if (LOG.isInfoEnabled()) LOG.info("Found authorization cookie: name="+cookie.getName()+" URL-decoded value="+signature);
+			        	  String signature = URLDecoder.decode( cookie.getValue(), "UTF-8" );
+			        	  if (LOG.isInfoEnabled()) LOG.info("Found authorization cookie: name="+cookie.getName()+" URL-decoded value="+signature);
 		        	  		        		  
 		        		  // validate signature
 		        	      

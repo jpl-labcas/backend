@@ -92,10 +92,8 @@ public interface Constants {
 	// HTTP REQUEST PARAMETERS
 	public final static String PARAMETER_PRODUCT_ID = "productID";
 	
-	// HTTP COOKIES
-	//public final static String COOKIE_PRODUCT_ID_NAME = "labcasProductIDcookie";
+	// HTTP COOKIE
 	public final static int COOKIE_PRODUCT_ID_LIFETIME = 3600; // one hour
 	public final static String COOKIE_PRODUCT_ID_NAME = "labcasProductIDcookie";
-	public final static String COOKIE_PRODUCT_ID_NAME2 = "labcasProductIDcookie2";
 	
 }
