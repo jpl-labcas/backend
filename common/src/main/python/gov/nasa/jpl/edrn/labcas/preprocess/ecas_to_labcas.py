@@ -235,7 +235,8 @@ def read_product_type_metadata(input_xml_file):
             # DataSetName --> CollectionName, DatasetName
             if key == 'DataSetName':
                 # CPTAC+Phase+1+Data --> CPTAC Phase 1 Data
-                collection_metadata['CollectionName'] = val.replace("+"," ")
+                val = val.replace("+"," ")
+                collection_metadata['CollectionName'] = val
                 collection_metadata['CollectionId'] = val.replace(' ', '_')
                 dataset_metadata['DatasetName'] = val
                 dataset_metadata['DatasetDescription'] = val
@@ -341,7 +342,7 @@ def read_product_type_metadata(input_xml_file):
             elif key == 'DatasetURL':
                 # FIXME: hack
                 if val and 'cptacdcc' in val:
-                    val = 'https://cptacdcc.georgetown.edu/cptac/study/list?scope=Phase+I'
+                    collection_metadata['DatasetURL'] = 'https://cptacdcc.georgetown.edu/cptac/study/list?scope=Phase+I'
                 else:
                     collection_metadata['DatasetURL'] = ''
                 #addKeyValueToMap(collection_metadata, 'DatasetURL', val)
