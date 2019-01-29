@@ -197,7 +197,7 @@ def addKeyValueToMap(map, key, value):
     Adds a value to a key, using "|" for multiple values.
     '''
     
-    if key in map:
+    if key in map and len(map[key].strip())>0:
         map[key] = map[key] +"|" + value
     else:
         map[key] = value
