@@ -555,4 +555,4 @@ if __name__== "__main__":
                 # copy data files
                 output_dir = os.path.join(labcas_data_dir, collection_id, dataset_id)
                 # FIXME
-                #copy_products(collection_id, file_metadata_array, output_dir)
+                copy_products(collection_id, file_metadata_array, output_dir)
