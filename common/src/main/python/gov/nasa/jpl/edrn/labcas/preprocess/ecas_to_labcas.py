@@ -396,7 +396,9 @@ def write_product_type_metadata(metadata, collection_dir, dataset_dir):
         # dataset metadata
         f.write('[Dataset]\n')
         for key, value in metadata['Dataset'].items():
-            f.write('%s=%s\n' % ( key, value))
+            # DatasetId is automatically computed from CollectionId + DatasetName
+            if key != 'DatasetId':
+                f.write('%s=%s\n' % ( key, value))
             
 def read_product_metadata(dataset_dir):
     
