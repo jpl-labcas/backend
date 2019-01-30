@@ -514,7 +514,9 @@ if __name__== "__main__":
                 dataset_id = metadata['Dataset']['DatasetId']
                 
                 # write dictionary metadata to collection+dataset configuration file
-                write_product_type_metadata(metadata)
+                collection_dir = os.path.join(labcas_data_dir, collection_id)
+                dataset_dir = os.path.join(collection_dir, dataset_id)
+                write_product_type_metadata(metadata, collection_dir, dataset_dir)
                 
                 # read product type metadata from XML, convert to dictionaries
                 file_metadata_array = read_product_metadata(dataset_dir)
