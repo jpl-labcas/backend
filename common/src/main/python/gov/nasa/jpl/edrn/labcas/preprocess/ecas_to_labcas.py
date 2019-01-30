@@ -11,7 +11,7 @@ import re
 
 ecas_metadata_dir = "/home/cinquini/ECAS_MIGRATION/datasets/"
 ecas_data_dir = "/data/archive"
-labcas_metadata_dir = "/home/cinquini/ECAS_MIGRATION/ecas-metadata/"
+#labcas_metadata_dir = "/home/cinquini/ECAS_MIGRATION/ecas-metadata/"
 labcas_data_dir = "/home/cinquini/ECAS_MIGRATION/labcas_archive"
 
 # RDF streams
