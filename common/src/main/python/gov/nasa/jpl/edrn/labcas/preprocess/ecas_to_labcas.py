@@ -348,29 +348,37 @@ def addKeyValueToMap(map, key, value):
         map[key] = value
     
     
-def write_product_type_metadata(metadata):
+def write_product_type_metadata(metadata, collection_dir, dataset_dir):
     '''
     Serializes metadata from Python dictionaries into a Python configuration file.
     '''
     
+    # collection metadata
+    if not os.path.exists(collection_dir):
+        os.makedirs(collection_dir)
+    
     collection_id = metadata['Collection']['CollectionId']
-    config_file_dir = "%s/%s" % (labcas_metadata_dir, collection_id)
-    if not os.path.exists(config_file_dir):
-        os.makedirs(config_file_dir)
-    config_file_name = collection_id + ".cfg"
-    config_file_full_name = os.path.join(config_file_dir, config_file_name)
-
-    with open(config_file_full_name, 'w') as f:
-        
-        # collection metadata
+    collection_config_file_name = collection_id + ".cfg"
+    collection_config_file_path = os.path.join(collection_dir, collection_config_file_name)
+    
+    with open(collection_config_file_path, 'w') as f:        
         f.write('[Collection]\n')
         for key, value in metadata['Collection'].items():
             f.write('%s=%s\n' % ( key, value))
             
-        # dataset metadata
+    # dataset metadata
+    if not os.path.exists(dataset_dir):
+        os.makedirs(dataset_dir)
+        
+    dataset_id = metadata['Dataset']['DatasetId']
+    dataset_config_file_name = dataset_id + ".cfg"
+    dataset_config_file_path = os.path.join(dataset_dir, dataset_config_file_name)
+
+    with open(dataset_config_file_path, 'w') as f: 
         f.write('[Dataset]\n')
         for key, value in metadata['Dataset'].items():
-            f.write('%s=%s\n' % ( key, value))
+            if key != 'DatasetId':
+                f.write('%s=%s\n' % ( key, value))
             
 def read_product_metadata(dataset_dir):
     
@@ -515,4 +523,4 @@ if __name__== "__main__":
                 # FIXME: remove 1
                 output_dir = os.path.join(labcas_data_dir, collection_id, dataset_id)
                 # FIXME
-                #copy_products(collection_id, file_metadata_array, output_dir)
+                copy_products(collection_id, file_metadata_array, output_dir)
