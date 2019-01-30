@@ -287,7 +287,7 @@ def read_product_type_metadata(input_xml_file):
             
         # CollaborativeGroup --> CollaborativeGroup
         elif key == 'CollaborativeGroup':
-            collection_metadata['CollaborativeGroup'] = val
+            addKeyValueToMap(collection_metadata, 'CollaborativeGroup', val)
             
         # MethodDetails --> MethodDetails
         elif key == 'MethodDetails':
@@ -316,11 +316,37 @@ def read_product_type_metadata(input_xml_file):
         # DataDisclaimer --> DataDisclaimer
         elif key == 'DataDisclaimer':
             collection_metadata['DataDisclaimer'] = val
-                        
+            
+        elif key == 'ResearchSupport':
+            collection_metadata['ResearchSupport'] = val
+            
+        elif key == 'StudyBackground':
+            collection_metadata['StudyBackground'] = val
+            
+        elif key == 'StudyMethods':
+            collection_metadata['StudyMethods'] = val
+            
+        elif key == 'StudyResults':
+            collection_metadata['StudyResults'] = val
+            
+        elif key == 'StudyConclusion':
+            collection_metadata['StudyConclusion'] = val
+            
+        elif key == 'DatasetURL':
+            collection_metadata['DatasetURL'] = val
+                                    
     return { 
              'Collection':collection_metadata,
              'Dataset': dataset_metadata
              }
+    
+def addKeyValueToMap(map, key, value):
+    
+    if key in map and len(map[key].strip())>0:
+        map[key] = map[key] + "|" + value
+    else:
+        map[key] = value
+    
     
 def write_product_type_metadata(metadata):
     '''
@@ -488,4 +514,5 @@ if __name__== "__main__":
                 # copy data files
                 # FIXME: remove 1
                 output_dir = os.path.join(labcas_data_dir, collection_id, dataset_id, '1')
-                copy_products(collection_id, file_metadata_array, output_dir)
+                # FIXME
+                #copy_products(collection_id, file_metadata_array, output_dir)
