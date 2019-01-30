@@ -493,7 +493,7 @@ if __name__== "__main__":
         if os.path.isdir(dataset_dir):
             
             # FIXME
-            #if filename == 'UWashBladderTranscriptomesAlvinLiu':
+            if filename == 'UWashBladderTranscriptomesAlvinLiu':
             #if filename == 'Analysis_of_pancreatic_cancer_biomarkers_in_PLCO_set':
             #if filename == 'BCCA_Affy6.0RawData':
             #if filename == 'FHCRCHanashAnnexinLamr':
@@ -513,6 +513,6 @@ if __name__== "__main__":
                 
                 # copy data files
                 # FIXME: remove 1
-                output_dir = os.path.join(labcas_data_dir, collection_id, dataset_id, '1')
+                output_dir = os.path.join(labcas_data_dir, collection_id, dataset_id)
                 # FIXME
                 #copy_products(collection_id, file_metadata_array, output_dir)
