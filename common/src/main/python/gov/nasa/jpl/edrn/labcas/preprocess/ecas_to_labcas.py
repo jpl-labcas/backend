@@ -219,6 +219,7 @@ def read_product_type_metadata(input_xml_file):
                  
         # DataSetName --> CollectionName, DatasetName
         if key == 'DataSetName':
+            val = val.replace("+", " ")
             collection_metadata['CollectionName'] = val
             collection_metadata['CollectionId'] = val.replace(' ', '_')
             dataset_metadata['DatasetName'] = val
@@ -466,11 +467,11 @@ if __name__== "__main__":
         if os.path.isdir(dataset_dir):
             
             # FIXME
-            #if filename == 'COPY_NUMBER_LEV1':
+            if filename == 'CPTAC+Phase+1+Data':
             #if filename == 'Analysis_of_pancreatic_cancer_biomarkers_in_PLCO_set':
             #if filename == 'BCCA_Affy6.0RawData':
             #if filename == 'FHCRCHanashAnnexinLamr':
-            if True:
+            #if True:
                 input_xml_file = os.path.join(ecas_metadata_dir, ("%s.met" % filename))
  
                 # read product type metadata from XML, convert to dictionaries
