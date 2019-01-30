@@ -9,16 +9,19 @@ from shutil import copyfile
 import xml.sax.saxutils as saxutils
 import re
 
-ecas_metadata_dir = "/home/cinquini/ECAS_MIGRATION/datasets/"
+# FIXME
+root_dir = "/home/cinquini/ECAS_MIGRATION"
+#root_dir = "/Users/cinquini/data/ECAS_MIGRATION"
+
+ecas_metadata_dir = root_dir + "/datasets/"
 ecas_data_dir = "/data/archive"
-#labcas_metadata_dir = "/home/cinquini/ECAS_MIGRATION/ecas-metadata/"
-labcas_data_dir = "/home/cinquini/ECAS_MIGRATION/labcas_archive"
+labcas_data_dir = root_dir + "/labcas_archive"
 
 # RDF streams
-sites_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/sites.rdf"
-leadpis_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/registered-person.rdf"
-organs_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/body-systems.rdf"
-protocols_rdf_filepath = "/home/cinquini/ECAS_MIGRATION/rdf/protocols.rdf"
+sites_rdf_filepath = root_dir + "/rdf/sites.rdf"
+leadpis_rdf_filepath = root_dir + "/rdf/registered-person.rdf"
+organs_rdf_filepath = root_dir + "/rdf/body-systems.rdf"
+protocols_rdf_filepath = root_dir + "/rdf/protocols.rdf"
 
 # inverse maps are needed because sometimes the RDF element value is
 # the object title, sometimes it's the object id...
@@ -333,7 +336,11 @@ def read_product_type_metadata(input_xml_file):
             collection_metadata['StudyConclusion'] = val
             
         elif key == 'DatasetURL':
-            collection_metadata['DatasetURL'] = val
+            # FIXME: hack
+            if 'cptacdcc' in val:
+                collection_metadata['DatasetURL'] = "https://cptacdcc.georgetown.edu/cptac/study/list?scope=Phase+I"
+            elif 'DatasetURL' in collection_metadata:
+                del collection_metadata['DatasetURL']
                                     
     return { 
              'Collection':collection_metadata,
@@ -501,11 +508,12 @@ if __name__== "__main__":
         if os.path.isdir(dataset_dir):
             
             # FIXME
-            if filename == 'UWashBladderTranscriptomesAlvinLiu':
+            # if filename == 'CPTACPhase1DavidTabb':
+            # if filename == 'UWashBladderTranscriptomesAlvinLiu':
             #if filename == 'Analysis_of_pancreatic_cancer_biomarkers_in_PLCO_set':
             #if filename == 'BCCA_Affy6.0RawData':
             #if filename == 'FHCRCHanashAnnexinLamr':
-            #if True:
+            if True:
                 input_xml_file = os.path.join(ecas_metadata_dir, ("%s.met" % filename))
  
                 # read product type metadata from XML, convert to dictionaries
@@ -514,15 +522,14 @@ if __name__== "__main__":
                 dataset_id = metadata['Dataset']['DatasetId']
                 
                 # write dictionary metadata to collection+dataset configuration file
-                collection_dir = os.path.join(labcas_data_dir, collection_id)
-                dataset_dir = os.path.join(collection_dir, dataset_id)
-                write_product_type_metadata(metadata, collection_dir, dataset_dir)
+                new_collection_dir = os.path.join(labcas_data_dir, collection_id)
+                new_dataset_dir = os.path.join(new_collection_dir, dataset_id)
+                write_product_type_metadata(metadata, new_collection_dir, new_dataset_dir)
                 
                 # read product type metadata from XML, convert to dictionaries
                 file_metadata_array = read_product_metadata(dataset_dir)
                 
                 # copy data files
-                # FIXME: remove 1
                 output_dir = os.path.join(labcas_data_dir, collection_id, dataset_id)
                 # FIXME
                 copy_products(collection_id, file_metadata_array, output_dir)
