@@ -11,12 +11,16 @@ import pydicom
 from gov.nasa.jpl.edrn.labcas.server.dicom_met_extractor import get_top_dataset_name
 
 # 1) 
-COLLECTION_NAME = "Combined_Imaging_and_Blood_Biomarkers_for_Breast_Cancer_Diagnosis"
-INSTITUTION = "Moffitt"
+# COLLECTION_NAME = "Combined_Imaging_and_Blood_Biomarkers_for_Breast_Cancer_Diagnosis"
+# INSTITUTION = "Moffitt"
 
 # 2)
 # COLLECTION_NAME = "Automated_System_For_Breast_Cancer_Biomarker_Analysis"
 # INSTITUTION = "Moffitt"
+
+# 3)
+COLLECTION_NAME='Automated_Quantitative_Measures_of_Breast_Density_Data'
+INSTITUTION = "Moffitt"
 
 DATA_DIR=os.environ['LABCAS_ARCHIVE'] + "/" + COLLECTION_NAME
 TEMPLATE_FILE = "%s/TEMPLATE_%s.cfg" % (DATA_DIR, INSTITUTION)
