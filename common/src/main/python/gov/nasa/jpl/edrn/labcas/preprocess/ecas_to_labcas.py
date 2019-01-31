@@ -490,6 +490,9 @@ def cleanup_text(val):
     # remove '\' character
     val = val.replace("\ ","")
     
+    # replace URL-encoded character including '+'
+    val = parse.unquote_plus(val)
+    
     return val
 
 if __name__== "__main__":
@@ -532,4 +535,4 @@ if __name__== "__main__":
                 # copy data files
                 output_dir = os.path.join(labcas_data_dir, collection_id, dataset_id)
                 # FIXME
-                copy_products(collection_id, file_metadata_array, output_dir)
+                #copy_products(collection_id, file_metadata_array, output_dir)
