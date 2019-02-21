@@ -491,7 +491,7 @@ def cleanup_text(val):
     val = val.replace("\ ","")
     
     # replace URL-encoded character including '+'
-    val = parse.unquote_plus(val)
+    val = urllib.parse.unquote_plus(val)
     
     return val
 

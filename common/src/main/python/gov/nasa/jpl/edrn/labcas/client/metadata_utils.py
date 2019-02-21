@@ -1,6 +1,7 @@
 # Metadata utility functions
     
 import os
+import sys
 import logging
 import ConfigParser
 from xml.sax.saxutils import escape
