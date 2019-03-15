@@ -1,0 +1,21 @@
+#!/bin/bash
+# Script to delete a Collection and all its Datasets and Files from Solr
+# Usage: labcas_unpublish_collection <collection_id>
+
+collection_id="$1"
+if [ "$collection_id" == "" ]; then
+  echo "Usage: labcas_unpublish_collection <collection_id>"
+  exit
+fi
+
+solr_url="http://localhost:${SOLR_PORT}/solr"
+
+echo "Deleting Files for CollectionId=$collection_id"
+wget "${solr_url}/files/update?stream.body=<delete><query>CollectionId:${collection_id}</query></delete>&commit=true"
+
+echo "Deleting Datasets for CollectionId=$collection_id"
+wget "${solr_url}/datasets/update?stream.body=<delete><query>CollectionId:${collection_id}</query></delete>&commit=true"
+
+echo "Deleting Collection for id=$collection_id"
+wget "${solr_url}/collections/update?stream.body=<delete><query>id:${collection_id}</query></delete>&commit=true"
+
