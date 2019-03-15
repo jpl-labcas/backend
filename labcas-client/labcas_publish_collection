@@ -1,0 +1,6 @@
+#!/bin/bash
+# Shortcut script to invoke the LabCAS client for publishing a collection
+
+THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+cd $THIS_DIR/../common/src/main/python/
+python gov/nasa/jpl/edrn/labcas/client/labcas_collection_publisher.py "$@"
