@@ -61,7 +61,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 			
 		// HTTP Basic Authentication
 		// Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
-		} else if (authCredentials.indexOf("Basic")>0) {
+		} else if (authCredentials.indexOf("Basic")>=0) {
 			
 			final String encodedUserPassword = authCredentials.replaceFirst("Basic" + " ", "");
 			String usernameAndPassword = null;
@@ -85,7 +85,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 			
 		// Jason Web Token
 		// Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibm.eFONFh7HgQ
-		} else if (authCredentials.indexOf("Bearer")>0) {
+		} else if (authCredentials.indexOf("Bearer")>=0) {
 			
 			try {
 				
