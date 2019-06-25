@@ -22,7 +22,7 @@ import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
  */
 public class UserServiceLdapImpl implements UserService {
 
-	private final static Logger LOG = Logger.getLogger(AuthenticationFilter.class.getName());
+	private final static Logger LOG = Logger.getLogger(UserServiceLdapImpl.class.getName());
 
 	// read from ~/labcas.properties
 	private final static String LDAP_USERS_URI_PROPERTY = "ldapUsersUri";

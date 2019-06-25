@@ -1,9 +1,8 @@
 package gov.nasa.jpl.edrn.labcas.filters;
 
 import java.io.IOException;
-import java.net.URL;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -18,6 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
+
 import gov.nasa.jpl.edrn.labcas.Constants;
 import gov.nasa.jpl.edrn.labcas.utils.RsaUtils;
 
@@ -30,7 +34,8 @@ import gov.nasa.jpl.edrn.labcas.utils.RsaUtils;
 public class AuthorizationFilter implements Filter {
 	
 	private FilterConfig filterConfig;
-	RsaUtils rsaUtils;
+	private RsaUtils rsaUtils;
+	private JWTVerifier verifier;
 	
 	private final Log LOG = LogFactory.getLog(this.getClass());
 
@@ -51,33 +56,26 @@ public class AuthorizationFilter implements Filter {
 		final String productId = request.getParameter(Constants.PARAMETER_PRODUCT_ID);
 		if (LOG.isInfoEnabled()) LOG.info("Establishing access control for productId="+productId);
 		
-		/**
-		 * Set authorization cookie.
-		 */
-		/**
-		try {
-					    
-		    // add cookie with signed data
-		    String signature = rsaUtils.sign(productId);
-		    // URL-encode the signature
-		    String encodedSignature = URLEncoder.encode(signature, "UTF-8");
-		    
-			final Cookie _cookie = new Cookie(Constants.COOKIE_PRODUCT_ID_NAME, encodedSignature);
-			_cookie.setSecure(true); 
-			_cookie.setMaxAge(Constants.COOKIE_PRODUCT_ID_LIFETIME);
-			final String url = req.getRequestURL().toString();
-			final URL reqURL = new URL(url);
-			_cookie.setDomain(reqURL.getHost()); // cookie sent to all applications on this host
-			_cookie.setPath("/");                // cookie will be sent to all pages in web application
-			if (LOG.isInfoEnabled()) LOG.debug("Set cookie name="+_cookie.getName()+" value="+_cookie.getValue()
-			                                   +" domain="+_cookie.getDomain()+" path="+_cookie.getPath()+" max age="+_cookie.getMaxAge());
-			resp.addCookie(_cookie);
-		
-		} catch (Exception e) {
-			LOG.error(e.getMessage());
-		}*/
+		// check authorization by using cookie or Json Web Token
+		boolean authorized = checkCookie(req, productId) || checkJwt(req, productId);
+				
+		if (authorized) {
+			  // request is authorized, keep processing
+			  chain.doFilter(req, resp);
+		} else {
+			// authorization cookie was NOT found, or signature validation failed
+			if (LOG.isDebugEnabled()) LOG.debug("Authorization failed for productID="+productId);
+			resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Sorry, you are not authorized to download this product.");
+		}
 
-		
+	}
+	
+	/**
+	 * Attempts authorization by checking a signed cookie containing the product id
+	 * @return
+	 */
+	private boolean checkCookie(HttpServletRequest req, String productId) throws UnsupportedEncodingException {
+				
 		// retrieve cookie to check authorization
 		boolean authorized = false;
 		Cookie[] cookies = req.getCookies();
@@ -104,16 +102,37 @@ public class AuthorizationFilter implements Filter {
 		          }
 		       }
 		 }
+		
+		return authorized;
+	}
+	
+	/**
+	 * Attempts authorization by using a Json Web Token that contains the productId in the 'sub' field
+	 * @param req
+	 * @param productId
+	 * @return
+	 */
+	private boolean checkJwt(HttpServletRequest req, String productId) throws JWTVerificationException {
+		
+		boolean authorized = false;
 				
-		if (authorized) {
-			  // request is authorized, keep processing
-			  chain.doFilter(req, resp);
-		} else {
-			// authorization cookie was NOT found, or signature validation failed
-			if (LOG.isDebugEnabled()) LOG.debug("Authorization failed for productID="+productId);
-			resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Sorry, you are not authorized to download this product.");
+		String authzHeader = req.getHeader("Authorization");
+		if (authzHeader!=null && authzHeader.indexOf("Bearer")>=0) {
+			
+			String token = authzHeader.replaceFirst("Bearer", "").trim();
+			LOG.info("Retrieved JWT="+token);
+			
+			DecodedJWT jwt = verifier.verify(token);
+			String pId = jwt.getSubject();
+			LOG.info("Retrieved product id = "+pId);
+			if (pId.equals(productId)) {
+				authorized = true;
+			}
+			
 		}
-
+		
+		return authorized;
+		
 	}
 
 	@Override
@@ -121,7 +140,7 @@ public class AuthorizationFilter implements Filter {
 		
 		// read private key location from filter configuration
 		this.filterConfig = filterConfig;
-		String privateKeyFilePath = filterConfig.getInitParameter("privateKeyFilePath");
+		String privateKeyFilePath = this.filterConfig.getInitParameter("privateKeyFilePath");
 		
 		// replace env variable
 		privateKeyFilePath = privateKeyFilePath.replace("[HOME]", System.getProperty("user.home"));
@@ -129,6 +148,12 @@ public class AuthorizationFilter implements Filter {
 		
 		// create re-usable signing utility
 		rsaUtils = new RsaUtils(privateKeyFilePath);
+		
+		// object used to validate JWT
+		verifier = JWT.require(Constants.algorithm)
+				.withIssuer(Constants.ISSUER)
+				.withAudience(Constants.AUDIENCE)
+				.build();
 		
 	}
 

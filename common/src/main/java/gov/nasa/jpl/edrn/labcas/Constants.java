@@ -1,5 +1,7 @@
 package gov.nasa.jpl.edrn.labcas;
 
+import com.auth0.jwt.algorithms.Algorithm;
+
 /**
  * Interface containing constants for Labcas-backend module.
  * 
@@ -95,5 +97,13 @@ public interface Constants {
 	// HTTP COOKIE
 	public final static int COOKIE_PRODUCT_ID_LIFETIME = 3600; // one hour
 	public final static String COOKIE_PRODUCT_ID_NAME = "labcasProductIDcookie";
+	
+	// JWT
+	public static Algorithm algorithm = Algorithm.HMAC256("secret");
+	public static String ISSUER = "LabCAS";
+	public static String AUDIENCE = "LabCAS";
+	// FIXME
+	public static int EXPIRES_IN_SECONDS = 600;
+
 	
 }

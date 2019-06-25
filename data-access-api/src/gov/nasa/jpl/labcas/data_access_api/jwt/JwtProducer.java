@@ -43,6 +43,7 @@ public class JwtProducer {
 		JwtProducer self = new JwtProducer();
 		String subject = "uid=lcinquini,ou=users,o=MCL";
 		String token = self.getToken(subject);
+		LOG.info("Token="+token);
 		
 		// pause
 		try {
