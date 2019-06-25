@@ -112,21 +112,26 @@ public class AuthorizationFilter implements Filter {
 	 * @param productId
 	 * @return
 	 */
-	private boolean checkJwt(HttpServletRequest req, String productId) throws JWTVerificationException {
+	private boolean checkJwt(HttpServletRequest req, String productId) {
 		
 		boolean authorized = false;
 				
 		String authzHeader = req.getHeader("Authorization");
 		if (authzHeader!=null && authzHeader.indexOf("Bearer")>=0) {
 			
-			String token = authzHeader.replaceFirst("Bearer", "").trim();
-			LOG.info("Retrieved JWT="+token);
-			
-			DecodedJWT jwt = verifier.verify(token);
-			String pId = jwt.getSubject();
-			LOG.info("Retrieved product id = "+pId);
-			if (pId.equals(productId)) {
-				authorized = true;
+			try {
+				String token = authzHeader.replaceFirst("Bearer", "").trim();
+				LOG.info("Retrieved JWT="+token);
+				
+				DecodedJWT jwt = verifier.verify(token);
+				String pId = jwt.getSubject();
+				LOG.info("Retrieved product id = "+pId);
+				if (pId.equals(productId)) {
+					authorized = true;
+				}
+				
+			} catch (JWTVerificationException e) {
+				e.printStackTrace();
 			}
 			
 		}

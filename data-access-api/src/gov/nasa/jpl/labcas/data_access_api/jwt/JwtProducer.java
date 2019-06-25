@@ -41,7 +41,10 @@ public class JwtProducer {
 		
 		// produce token
 		JwtProducer self = new JwtProducer();
-		String subject = "uid=lcinquini,ou=users,o=MCL";
+		// for querying
+		//String subject = "uid=lcinquini,ou=users,o=MCL";
+		// for download
+		String subject = "bac2152f-f013-450a-b1ae-89e24720dbdf";
 		String token = self.getToken(subject);
 		LOG.info("Token="+token);
 		
