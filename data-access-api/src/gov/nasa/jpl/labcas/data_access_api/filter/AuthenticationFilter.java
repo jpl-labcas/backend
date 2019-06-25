@@ -16,7 +16,11 @@ import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+
 import gov.nasa.jpl.labcas.data_access_api.exceptions.MissingAuthenticationHeaderException;
+import gov.nasa.jpl.labcas.data_access_api.jwt.JwtConsumer;
 
 /**
  * Filter that intercepts all requests to this service
@@ -36,6 +40,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 	
 	private UserService userService = new UserServiceLdapImpl();
 	
+	private JwtConsumer jwtConsumer = new JwtConsumer();
+	
 	@Override
 	public void filter(ContainerRequestContext containerRequest) throws WebApplicationException {
 		
@@ -53,7 +59,9 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 			// custom exception to send the "WWW-Authenticate" header and trigger client challenge
 			throw new MissingAuthenticationHeaderException(Status.UNAUTHORIZED);
 			
-		} else {
+		// HTTP Basic Authentication
+		// Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+		} else if (authCredentials.indexOf("Basic")>0) {
 			
 			final String encodedUserPassword = authCredentials.replaceFirst("Basic" + " ", "");
 			String usernameAndPassword = null;
@@ -70,25 +78,44 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 				userdn = userService.getValidUser(username, password);
 				LOG.info("Retrieved user DN = "+userdn);
 				
-				if (userdn!=null) {
-					
-					List<String> ugroups = userService.getUserGroups(userdn);
-					containerRequest.setProperty(USER_GROUPS_PROPERTY, ugroups);
-					LOG.info("Storing in request: user groups = "+ugroups);
-					
-				}
 				
 			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		// Jason Web Token
+		// Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibm.eFONFh7HgQ
+		} else if (authCredentials.indexOf("Bearer")>0) {
+			
+			try {
+				
+				final String token = authCredentials.replaceFirst("Bearer", "").trim();
+				LOG.info("Retrieved JWT="+token);
+				
+				DecodedJWT jwt = jwtConsumer.verifyToken(token);
+				userdn = jwt.getSubject();
+				LOG.info("Retrieved user DN = "+userdn);
+			
+			} catch(JWTVerificationException e) {
+				LOG.warning("Detected an invalid JWT token");
 				e.printStackTrace();
 			}
 			
 		}
 
 		if (userdn==null) {
+		
 			// 403: not authorized
 			throw new WebApplicationException(Status.FORBIDDEN);
+			
+		} else {
+			
+			List<String> ugroups = userService.getUserGroups(userdn);
+			containerRequest.setProperty(USER_GROUPS_PROPERTY, ugroups);
+			LOG.info("Storing in request: user groups = "+ugroups);
+			// then proceed with normal filter chain
+			
 		}
-		// else proceed with normal filter chain
-
+		
 	}
 }

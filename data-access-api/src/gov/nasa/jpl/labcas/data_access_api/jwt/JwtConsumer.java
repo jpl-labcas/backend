@@ -1,44 +1,42 @@
 package gov.nasa.jpl.labcas.data_access_api.jwt;
 
+import java.util.logging.Logger;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 
+/**
+ * Class to verify and decode a Json Web Token.
+ */
 public class JwtConsumer {
+	
+	private final static Logger LOG = Logger.getLogger(JwtConsumer.class.getName());
 	
 	// reusable instance
 	private JWTVerifier verifier;
 	
 	public JwtConsumer() {
 		
-		verifier = JWT.require(Constants.algorithm).withIssuer(Constants.ISSUER).build();
+		// the ISSUER and AUDIENCE fields are required
+		// otherwise the token is invalid
+		// also tokens are automatically checked for expiration
+		verifier = JWT.require(Constants.algorithm)
+				.withIssuer(Constants.ISSUER)
+				.withAudience(Constants.AUDIENCE)
+				.build();
 	
 	}
 	
-	public boolean verifyToken(String token)  {
+	public DecodedJWT verifyToken(String token) throws JWTVerificationException  {
 		
-		try {
-			
-			    DecodedJWT jwt = verifier.verify(token);
-			    System.out.println("Subject="+jwt.getSubject());
-			    System.out.println("Filename="+jwt.getClaim(Constants.CLAIM_FILENAME).asString());
-			    System.out.println(jwt.toString());
-			    
-			    return true;
-			    
-		} catch(JWTVerificationException e) {
-			   return false;
-		}
+	    DecodedJWT jwt = verifier.verify(token);
+	    LOG.info("Subject="+jwt.getSubject());
+	    //LOG.info("Filename="+jwt.getClaim(Constants.CLAIM_FILENAME).asString());
+	    return jwt;
 		   
 	}
 	
-	public static void main(String[] args) {
-		
-		String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsdWNhIiwiaXNzIjoiYXV0aDAifQ.Ms81CwW4i4QZ01CMAgplO4YlCZJMK79GQ5y7FyQmUw4";
-		JwtConsumer self = new JwtConsumer();
-		boolean tf = self.verifyToken(token);
-		System.out.println("TF="+tf);
-	}
 
 }
