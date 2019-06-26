@@ -1,8 +1,12 @@
 package gov.nasa.jpl.edrn.labcas.filters;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Enumeration;
+import java.util.Properties;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -18,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
@@ -149,12 +154,39 @@ public class AuthorizationFilter implements Filter {
 		// create re-usable signing utility
 		rsaUtils = new RsaUtils(privateKeyFilePath);
 		
+		// read JWT signing key from ~/labcas.properties
+		
 		// object used to validate JWT
-		verifier = JWT.require(Constants.algorithm)
+		String secret = getJwtKey();
+		Algorithm algorithm = Algorithm.HMAC256(secret); 
+		verifier = JWT.require(algorithm)
 				.withIssuer(Constants.ISSUER)
 				.withAudience(Constants.AUDIENCE)
 				.build();
 		
+	}
+	
+	private String getJwtKey() {
+		
+		Properties properties = new Properties();
+		
+		try {
+			
+			InputStream input = new FileInputStream(System.getProperty("user.home") + "/" + Constants.LABCAS_PROPERTIES_FILENAME);
+			properties.load(input);
+			Enumeration<Object> keys = properties.keys();
+			while (keys.hasMoreElements()) {
+			    String key = (String)keys.nextElement();
+			    if (key.equals(Constants.JWT_SECRET_KEY)) {
+			    		return (String)properties.get(key);
+			    }
+			}
+			
+		} catch (IOException e) {
+			LOG.warn("Eroor reading property file: " + Constants.LABCAS_PROPERTIES_FILENAME);
+		}
+		
+		return null;
 	}
 
 }

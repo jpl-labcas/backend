@@ -4,19 +4,32 @@ import java.util.Date;
 import java.util.logging.Logger;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+
+import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
 
 /**
  * Class that generates Json Web Tokens carrying the user identity.
  */
 public class JwtProducer {
 	
+	// the algorithm that will be used to sign the JWT tokens
+	private final Algorithm algorithm;
+	
 	private final static Logger LOG = Logger.getLogger(JwtProducer.class.getName());
 	
-	public JwtProducer() {}
+	public JwtProducer() {
+		
+		String secret = Parameters.getParameterValue(Constants.JWT_SECRET_KEY);
+		algorithm = Algorithm.HMAC256(secret);
+		
+	}
 		
 	public String getToken(String subject) throws JWTCreationException {
+		
+		
 		
 		Date now = new Date();
 		Date expires = new Date();
@@ -32,7 +45,7 @@ public class JwtProducer {
 	    				   .withExpiresAt(expires)
 	    				   .withSubject(subject)
 	    				   //.withClaim(Constants.CLAIM_FILENAME, fileName)
-	                   .sign(Constants.algorithm);
+	                   .sign(algorithm);
 	    return token;
 		
 	}

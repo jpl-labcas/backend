@@ -99,9 +99,11 @@ public interface Constants {
 	public final static String COOKIE_PRODUCT_ID_NAME = "labcasProductIDcookie";
 	
 	// JWT
-	public static Algorithm algorithm = Algorithm.HMAC256("secret");
 	public static String ISSUER = "LabCAS";
 	public static String AUDIENCE = "LabCAS";
+	public static String JWT_SECRET_KEY = "jwtSecret";
+	// located in home directory
+	public static String LABCAS_PROPERTIES_FILENAME = "labcas.properties";
 	// FIXME
 	public static int EXPIRES_IN_SECONDS = 600;
 
