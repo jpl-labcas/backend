@@ -3,8 +3,8 @@
 
 data_dir="/labcas-data/ecas"
 archive_dir="/usr/local/labcas/backend/archive"
-#metadata_dir="/usr/local/labcas/src/ecas-metadata"
-script="/usr/local/labcas/src/labcas-backend/common/src/main/python/gov/nasa/jpl/edrn/labcas/client/labcas_collection_publisher.py"
+script1="/usr/local/labcas/scripts/delete_collection.sh"
+script2="/usr/local/labcas/src/labcas-backend/common/src/main/python/gov/nasa/jpl/edrn/labcas/client/labcas_collection_publisher.py"
 
 # activate Python labcas virtual environment
 source /data/local/labcas/labcas_venv/bin/activate
@@ -22,11 +22,15 @@ for source_dir in $data_dir/* ; do
         echo "Symlinking $source_dir --> $target_dir"
  	ln -s $source_dir $target_dir
     fi
+
+    # 2) unpublish old collection first
+    # DANGER: PREVIOUSLY THIS WIPED OUT THE SOLR INDEX
+    #echo "Unpublishing collection: $dataset"
+    #$script1 $dataset
 	
-    # 2) publish collection=dataset
+    # 3) publish collection=dataset
     echo "Publishing collection: $dataset"
-    echo python $script --collection_dir=$archive_dir/$dataset --in_place=true
-   # $metadata_dir/$dataset/$dataset.cfg --in-place
+    python $script2 --collection_dir=$archive_dir/$dataset --in_place=true
     
 done
 
