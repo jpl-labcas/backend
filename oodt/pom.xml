@@ -355,7 +355,7 @@
 								<artifactItem>
 									<groupId>commons-codec</groupId>
 									<artifactId>commons-codec</artifactId>
-									<version>1.4</version>
+									<version>1.7</version>
 									<type>jar</type>
 								</artifactItem>	
 								<artifactItem>
@@ -397,7 +397,7 @@
 			                    <delete file="${install.dir}/apache-tomcat/webapps/fmprod/WEB-INF/lib/commons-codec-1.3.jar" />
 			                    <delete file="${install.dir}/apache-tomcat/webapps/fmprod/WEB-INF/lib/jackson-annotations-2.1.1.jar" />
 			                    <delete file="${install.dir}/apache-tomcat/webapps/fmprod/WEB-INF/lib/jackson-core-2.1.1.jar" />
-			                    <delete file="${install.dir}/apache-tomcat/webapps/fmprod/WEB-INF/lib/cjackson-databind-2.1.1.jar" />
+			                    <delete file="${install.dir}/apache-tomcat/webapps/fmprod/WEB-INF/lib/jackson-databind-2.1.1.jar" />
 			                </tasks>
 			            </configuration>
 			        </execution>
