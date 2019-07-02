@@ -16,6 +16,6 @@ public class Constants {
 	//public static String CLAIM_FILENAME = "FileName";
 	
 	// FIXME
-	public static int EXPIRES_IN_SECONDS = 600;
+	public static int EXPIRES_IN_SECONDS = 3600;
 
 }

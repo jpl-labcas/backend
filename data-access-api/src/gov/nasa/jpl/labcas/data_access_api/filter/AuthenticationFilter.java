@@ -21,6 +21,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 import gov.nasa.jpl.labcas.data_access_api.exceptions.MissingAuthenticationHeaderException;
 import gov.nasa.jpl.labcas.data_access_api.jwt.JwtConsumer;
+import gov.nasa.jpl.labcas.data_access_api.jwt.JwtProducer;
 
 /**
  * Filter that intercepts all requests to this service
@@ -34,6 +35,7 @@ import gov.nasa.jpl.labcas.data_access_api.jwt.JwtConsumer;
 //@PreMatching
 public class AuthenticationFilter implements ContainerRequestFilter {
 	
+	public final static String JWT = "JasonWebToken";
 	public final static String USER_GROUPS_PROPERTY = "userGroups";
 	
 	private final static Logger LOG = Logger.getLogger(AuthenticationFilter.class.getName());
@@ -41,6 +43,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 	private UserService userService = new UserServiceLdapImpl();
 	
 	private JwtConsumer jwtConsumer = new JwtConsumer();
+	private JwtProducer jwtProducer = new JwtProducer();
 	
 	@Override
 	public void filter(ContainerRequestContext containerRequest) throws WebApplicationException {
@@ -78,6 +81,10 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 				userdn = userService.getValidUser(username, password);
 				LOG.info("Retrieved user DN = "+userdn);
 				
+				// create Jason Web Token
+				String token = jwtProducer.getToken(userdn);
+				LOG.info("Generated token = "+token);
+				containerRequest.setProperty(JWT, token);
 				
 			} catch (IOException e) {
 				e.printStackTrace();
