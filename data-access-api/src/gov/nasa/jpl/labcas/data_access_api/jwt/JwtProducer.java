@@ -55,15 +55,17 @@ public class JwtProducer {
 		// produce token
 		JwtProducer self = new JwtProducer();
 		// for querying MCL
-		//String subject = "uid=lcinquini,ou=users,o=MCL";
+		String subject = "uid=lcinquini,ou=users,o=MCL";
 		// for querying EDRN
-		String subject = "uid=luca,dc=edrn,dc=jpl,dc=nasa,dc=gov";
+		//String subject = "uid=luca,dc=edrn,dc=jpl,dc=nasa,dc=gov";
 		// for download from labcas-dev
 		//String subject = "bac2152f-f013-450a-b1ae-89e24720dbdf";
 		// for download from mcl-labcas
 		//String subject = "66219c4a-d4d0-41ad-a120-ca392f4f218d";
 		// for download from edrn-labcas
 		//String subject = "907f3954-b5ea-45a2-9398-9cad2bff85ad";
+		// for download from aws-mcl
+		//String subject="6bd1a5f6-02ad-4cf3-8b5e-b7212a6d9fd3";
 		String token = self.getToken(subject);
 		LOG.info("Token="+token);
 		
