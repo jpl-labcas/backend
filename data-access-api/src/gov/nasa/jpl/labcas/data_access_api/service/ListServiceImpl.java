@@ -27,15 +27,15 @@ import gov.nasa.jpl.labcas.data_access_api.utils.UrlUtils;
 
 @Path("/")
 @Produces(MediaType.TEXT_PLAIN)
-public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
+public class ListServiceImpl extends SolrProxy implements ListService  {
 	
-	private final static Logger LOG = Logger.getLogger(DownloadServiceImpl.class.getName());
+	private final static Logger LOG = Logger.getLogger(ListServiceImpl.class.getName());
 	
 	// read from ~/labcas.properties
 	private final static String DATA_ACCESS_API_BASE_URL_PROPERTY = "dataAccessApiBaseUrl";
 	protected String dataAccessApiBaseUrl = null;
 
-	public DownloadServiceImpl() {
+	public ListServiceImpl() {
 		
 		this.dataAccessApiBaseUrl = Parameters.getParameterValue(DATA_ACCESS_API_BASE_URL_PROPERTY);
 		
@@ -43,8 +43,8 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 
 	@Override
 	@GET
-	@Path("/collections/download")
-	public Response downloadCollections(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext,
+	@Path("/collections/list")
+	public Response listCollections(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext,
 			@QueryParam("q") String q,
 			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
 		
@@ -78,8 +78,8 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 
 	@Override
 	@GET
-	@Path("/datasets/download")
-	public Response downloadDatasets(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext,
+	@Path("/datasets/list")
+	public Response listDatasets(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext,
 			@QueryParam("q") String q,
 			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
 
@@ -115,8 +115,8 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 
 	@Override
 	@GET
-	@Path("/files/download")
-	public Response downloadFiles(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext,
+	@Path("/files/list")
+	public Response listFiles(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext,
 			@QueryParam("q") String q,
 			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
 
