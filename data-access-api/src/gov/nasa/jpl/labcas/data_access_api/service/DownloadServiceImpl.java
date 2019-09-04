@@ -10,6 +10,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -27,7 +28,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 	@Override
 	@GET
 	@Path("/download")
-	public Response download(HttpServletRequest httpRequest, ContainerRequestContext requestContext, @QueryParam("id") String id) {
+	public Response download(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext, @QueryParam("id") String id) {
 		
 		try {
 			
