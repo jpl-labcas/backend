@@ -75,6 +75,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				DownloadHelper dh = new DownloadHelper(filePath);
 		        return Response
 		                .ok(dh, MediaType.APPLICATION_OCTET_STREAM)
+		                // "content-disposition" header instructs the client to keep the same file name
 		                .header("content-disposition","attachment; filename=\"" + fileName + "\"")
 		                .build();
 	        
