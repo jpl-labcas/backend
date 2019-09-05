@@ -1,6 +1,7 @@
 package gov.nasa.jpl.labcas.data_access_api.service;
 
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
@@ -74,7 +75,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				DownloadHelper dh = new DownloadHelper(filePath);
 		        return Response
 		                .ok(dh, MediaType.APPLICATION_OCTET_STREAM)
-		                .header("content-disposition","attachment; filename = " + fileName)
+		                .header("content-disposition","attachment; filename=\"" + fileName + "\"")
 		                .build();
 	        
 			} else {

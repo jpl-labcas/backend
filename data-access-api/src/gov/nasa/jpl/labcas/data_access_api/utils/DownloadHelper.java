@@ -1,11 +1,8 @@
 package gov.nasa.jpl.labcas.data_access_api.utils;
 
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.nio.file.Path;
 
 import javax.ws.rs.WebApplicationException;
