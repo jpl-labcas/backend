@@ -13,11 +13,14 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+
+import gov.nasa.jpl.labcas.data_access_api.utils.DownloadHelper;
 
 @Path("/")
 @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -31,6 +34,8 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 	public Response download(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext, @QueryParam("id") String id) {
 		
 		try {
+			
+			java.nio.file.Path filePath = null;
 			
 			// query Solr for file with that specific id
 			SolrQuery request = new SolrQuery();
@@ -55,23 +60,33 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				LOG.info(doc.toString());
 				String fileLocation = (String)doc.getFieldValue(SOLR_FIELD_FILE_LOCATION);
 				String fileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
-				java.nio.file.Path filePath = Paths.get(fileLocation, fileName);
+				filePath = Paths.get(fileLocation, fileName);
 				LOG.info("File path="+filePath.toString());
 				
-				return Response.status(200).entity(filePath.toString()).build();
+				//return Response.status(200).entity(filePath.toString()).build();
 				
 			}
 			
-			
+			if (filePath!=null) {
+				
+				String fileName = filePath.toFile().getName();
+				
+				DownloadHelper dh = new DownloadHelper(filePath);
+		        return Response
+		                .ok(dh, MediaType.APPLICATION_OCTET_STREAM)
+		                .header("content-disposition","attachment; filename = " + fileName)
+		                .build();
+	        
+			} else {
+				return Response.status(Status.NOT_FOUND).entity("File not found or not authorized").build();
+			}	
 			
 		} catch (Exception e) {
 			// send 500 "Internal Server Error" response
 			e.printStackTrace();
 			LOG.warning(e.getMessage());
-			return Response.status(500).entity(e.getMessage()).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
-		
-		return Response.status(200).entity("").build();
 
 	}
 	
