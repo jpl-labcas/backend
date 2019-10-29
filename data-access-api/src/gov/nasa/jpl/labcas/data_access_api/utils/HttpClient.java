@@ -86,12 +86,19 @@ public class HttpClient {
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setUseCaches(false);
 			connection.setDoOutput(true); // POST method
-			if (connectionTimeout != 0)
+			if (connectionTimeout != 0) {
 				connection.setConnectTimeout(connectionTimeout);
-			if (readTimeout != 0)
+			}
+			if (readTimeout != 0) {
 				connection.setReadTimeout(readTimeout);
-			if (xml)
+			}
+			if (xml) {
 				connection.setRequestProperty("Content-Type", "text/xml");
+			}
+			
+			// FIXME
+			connection.setRequestProperty("Content-Type", "application/json");
+			
 			connection.setRequestProperty("Charset", "utf-8");
 
 			// send HTTP request

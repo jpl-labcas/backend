@@ -1,5 +1,6 @@
 package gov.nasa.jpl.labcas.data_access_api.service;
 
+import java.net.URL;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,8 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+
+import gov.nasa.jpl.labcas.data_access_api.utils.HttpClient;
 
 /**
  * Service implementation to operate on user data.
@@ -32,11 +35,18 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 	public void create(@Context HttpServletRequest httpRequest,
 			@Context ContainerRequestContext requestContext, 
 			@Context HttpHeaders headers,
-			String document) {
+			String document) throws Exception {
 		
 		LOG.info("/userdata/create request: " + document);
 		String contentType = headers.getHeaderString(HttpHeaders.CONTENT_TYPE);
 		LOG.info("/userdata/create content type: " + contentType);
+		
+		HttpClient httpClient = new HttpClient();
+		String url = getBaseUrl(SolrProxy.SOLR_CORE_USERDATA) + "/update/json/docs";
+		String response = httpClient.doPost(new URL(url), document, false);
+		
+		LOG.info("/userdata/create response: " + response);
+		
 
 	}
 

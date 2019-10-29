@@ -18,6 +18,7 @@ public interface UserDataService {
 	 * @param headers
 	 * @param content
 	 */
-	public void create(HttpServletRequest httpRequest, ContainerRequestContext requestContext, HttpHeaders headers, String content);
+	public void create(HttpServletRequest httpRequest, ContainerRequestContext requestContext, 
+			HttpHeaders headers, String content) throws Exception;
 
 }

@@ -32,6 +32,8 @@ public class SolrProxy {
 	protected final static String SOLR_CORE_COLLECTIONS = "collections";
 	protected final static String SOLR_CORE_DATASETS = "datasets";
 	protected final static String SOLR_CORE_FILES = "files";
+	protected final static String SOLR_CORE_USERDATA = "userdata";
+	
 	protected final static String SOLR_FIELD_ID = "id";
 	protected final static String SOLR_FIELD_DATASET_ID = "DatasetId";
 	protected final static String SOLR_FIELD_COLLECTION_ID = "CollectionId";
@@ -57,6 +59,7 @@ public class SolrProxy {
 			solrServers.put(SOLR_CORE_COLLECTIONS, new CommonsHttpSolrServer(getBaseUrl(SOLR_CORE_COLLECTIONS)));
 			solrServers.put(SOLR_CORE_DATASETS, new CommonsHttpSolrServer(getBaseUrl(SOLR_CORE_DATASETS)));
 			solrServers.put(SOLR_CORE_FILES, new CommonsHttpSolrServer(getBaseUrl(SOLR_CORE_FILES)));
+			solrServers.put(SOLR_CORE_USERDATA, new CommonsHttpSolrServer(getBaseUrl(SOLR_CORE_USERDATA)));
 
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
