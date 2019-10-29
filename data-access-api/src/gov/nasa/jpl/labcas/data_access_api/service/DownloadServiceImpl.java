@@ -1,7 +1,6 @@
 package gov.nasa.jpl.labcas.data_access_api.service;
 
 import java.nio.file.Paths;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
