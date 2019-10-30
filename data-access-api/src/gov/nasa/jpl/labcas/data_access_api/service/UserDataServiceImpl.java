@@ -47,6 +47,11 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 			@Context HttpHeaders headers,
 			String document) {
 		
+		// check request for unsafe input
+		if (!isSafe(document)) {
+			return Response.status(Status.BAD_REQUEST).entity("Request contains unsafe characters").build();
+		}
+		
 		String dn = (String)requestContext.getProperty(AuthenticationFilter.USER_DN);
 		
 		// parse input json document to retrieve the user id
@@ -54,7 +59,7 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 		if (jobj.has("id")) {
 			
 			String id = jobj.getString("id");
-			
+						
 			if (authorize(dn, id)) {
 				
 				// proxy the client HTTP request to Solr as-is
@@ -93,6 +98,8 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 		
 		if (id==null) {
 			return Response.status(Status.BAD_REQUEST).entity("Missing mandatory parameter 'id'").build();
+		} else if (!isSafe(id)) {
+			return Response.status(Status.BAD_REQUEST).entity("'id' contains unsafe characters").build();
 		}
 		
 		String dn = (String)requestContext.getProperty(AuthenticationFilter.USER_DN);
@@ -121,6 +128,8 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 		
 		if (id==null) {
 			return Response.status(Status.BAD_REQUEST).entity("Missing mandatory parameter 'id'").build();
+		} else if (!isSafe(id)) {
+			return Response.status(Status.BAD_REQUEST).entity("'id' contains unsafe characters").build();
 		}
 		
 		String dn = (String)requestContext.getProperty(AuthenticationFilter.USER_DN);
@@ -163,5 +172,7 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 		}
 		return false;
 	}
+	
+
 
 }

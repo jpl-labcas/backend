@@ -1,7 +1,5 @@
 package gov.nasa.jpl.labcas.data_access_api.jwt;
 
-import com.auth0.jwt.algorithms.Algorithm;
-
 public class Constants {
 	
 	// FIXME: must read password from protected property file

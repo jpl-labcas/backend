@@ -55,6 +55,7 @@ public class SolrProxy {
 	protected final static String PUBLIC_OWNER_PRINCIPAL_PROPERTY = "publicOwnerPrincipal";
 	protected static String publicOwnerPrincipal;
 
+	protected final static String[] UNSAFE_CHARACTERS = new String[] { ">", "<", ".", "%", "*", "$", "@" };
 
 	// IMPORTANT: must re-use the same SolrServer instance across all requests to prevent memory leaks
 	// see https://issues.apache.org/jira/browse/SOLR-861
@@ -157,6 +158,23 @@ public class SolrProxy {
 		}
 		
 		return accessControlQueryStringValue;
+		
+	}
+	
+	/**
+	 * Method to check whether a string contains unsafe characters.
+	 * @param string
+	 * @return
+	 */
+	static boolean isSafe(String string) {
+		
+		for (String s : UNSAFE_CHARACTERS) {
+			if (string.contains(s)) {
+				return false;
+			}
+		}
+		
+		return true;
 		
 	}
 	
