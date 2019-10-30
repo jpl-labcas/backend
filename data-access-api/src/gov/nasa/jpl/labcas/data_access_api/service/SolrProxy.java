@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
@@ -118,7 +119,7 @@ public class SolrProxy {
 			// send 500 "Internal Server Error" response
 			e.printStackTrace();
 			LOG.warning(e.getMessage());
-			return Response.status(500).entity(e.getMessage()).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
 
 	}

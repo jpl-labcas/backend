@@ -15,6 +15,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
@@ -61,17 +62,17 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 			this.extractIds(response, collectionIds);
 
 		} catch (Exception e) {
-			// send 500 "Internal Server Error" response
+			// send Status.INTERNAL_SERVER_ERROR "Internal Server Error" response
 			e.printStackTrace();
 			LOG.warning(e.getMessage());
-			return Response.status(500).entity(e.getMessage()).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
 
 		// query for all files matching these collection ids
 		if (collectionIds.size() > 0) {
 			return executeFilesQuery(SOLR_FIELD_COLLECTION_ID, collectionIds);
 		} else {
-			return Response.status(200).entity("").build();
+			return Response.status(Status.OK).entity("").build();
 		}
 		
 	}
@@ -97,17 +98,17 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 			this.extractIds(response, datasetIds);
 
 		} catch (Exception e) {
-			// send 500 "Internal Server Error" response
+			// send Status.INTERNAL_SERVER_ERROR "Internal Server Error" response
 			e.printStackTrace();
 			LOG.warning(e.getMessage());
-			return Response.status(500).entity(e.getMessage()).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
 
 		// query for all files matching these dataset ids
 		if (datasetIds.size() > 0) {
 			return executeFilesQuery(SOLR_FIELD_DATASET_ID, datasetIds);
 		} else {
-			return Response.status(200).entity("").build();
+			return Response.status(Status.OK).entity("").build();
 		}
 
 
@@ -131,13 +132,13 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 			results = buildResultsDocument(response);
 			
 		} catch (Exception e) {
-			// send 500 "Internal Server Error" response
+			// send Status.INTERNAL_SERVER_ERROR "Internal Server Error" response
 			e.printStackTrace();
 			LOG.warning(e.getMessage());
-			return Response.status(500).entity(e.getMessage()).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
 
-		return Response.status(200).entity(results).build();
+		return Response.status(Status.OK).entity(results).build();
 
 	}
 	
@@ -227,13 +228,13 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 				
 			}
 	
-			return Response.status(200).entity(results).build();
+			return Response.status(Status.OK).entity(results).build();
 			
 		} catch(Exception e) {
-			// send 500 "Internal Server Error" response
+			// send Status.INTERNAL_SERVER_ERROR "Internal Server Error" response
 			e.printStackTrace();
 			LOG.warning(e.getMessage());
-			return Response.status(500).entity(e.getMessage()).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
 		
 	}

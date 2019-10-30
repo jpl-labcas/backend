@@ -37,6 +37,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 	
 	public final static String JWT = "JasonWebToken";
 	public final static String USER_GROUPS_PROPERTY = "userGroups";
+	public final static String USER_DN = "userDn";
 	
 	private final static Logger LOG = Logger.getLogger(AuthenticationFilter.class.getName());
 	
@@ -117,9 +118,11 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 			
 		} else {
 			
+			containerRequest.setProperty(USER_DN, userdn);
+			
 			List<String> ugroups = userService.getUserGroups(userdn);
 			containerRequest.setProperty(USER_GROUPS_PROPERTY, ugroups);
-			LOG.info("Storing in request: user groups = "+ugroups);
+			LOG.info("Storing in request user dn: "+userdn+", user groups: "+ugroups);
 			// then proceed with normal filter chain
 			
 		}

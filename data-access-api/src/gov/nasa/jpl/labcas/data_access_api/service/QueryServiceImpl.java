@@ -11,6 +11,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import gov.nasa.jpl.labcas.data_access_api.utils.UrlUtils;
 
@@ -77,7 +78,7 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 			// send 500 "Internal Server Error" response
 			e.printStackTrace();
 			LOG.warning(e.getMessage());
-			return Response.status(500).entity(e.getMessage()).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
 
 	}

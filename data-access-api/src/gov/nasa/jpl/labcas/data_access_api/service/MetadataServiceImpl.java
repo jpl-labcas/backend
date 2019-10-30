@@ -18,6 +18,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -93,11 +94,11 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 	    	} catch(Exception e) {
 	    		e.printStackTrace();
 	    		LOG.warning(e.getMessage());
-	    		return Response.status(500).entity(e.getMessage()).build();
+	    		return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 	    	}
     			
     		String message = "Total number of records updated: "+numRecordsUpdated+" (across all cores).";
-		return Response.status(200).entity( message ).build();
+		return Response.status(Status.OK).entity( message ).build();
 	}
 
 	@Override
@@ -128,11 +129,11 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 		} catch(Exception e) {
 	    		e.printStackTrace();
 	    		LOG.warning(e.getMessage());
-	    		return Response.status(500).entity(e.getMessage()).build();
+	    		return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
 		
 		String message = "Total number of records updated: "+numRecordsUpdated+" (across all cores).";
-		return Response.status(200).entity( message ).build();
+		return Response.status(Status.OK).entity( message ).build();
 
 		
 	}

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
@@ -50,7 +51,7 @@ public class HttpClient {
 			// send 500 "Internal Server Error" response
 			e.printStackTrace();
 			LOG.warning("HTTP Get response error: "+e.getMessage());
-			return Response.status(500).entity(e.getMessage()).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 			
 		} finally {
 			try {
@@ -100,7 +101,7 @@ public class HttpClient {
 			// send 500 "Internal Server Error" response
 			e.printStackTrace();
 			LOG.warning("HTTP Post response error: "+e.getMessage());
-			return Response.status(500).entity(e.getMessage()).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 			
 		} finally {
 			try {

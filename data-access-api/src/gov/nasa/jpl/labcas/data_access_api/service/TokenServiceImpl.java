@@ -8,6 +8,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import gov.nasa.jpl.labcas.data_access_api.filter.AuthenticationFilter;
 
@@ -28,7 +29,7 @@ public class TokenServiceImpl implements TokenService  {
 		String token = (String)requestContext.getProperty(AuthenticationFilter.JWT);
 		
 		// send as plain text response
-		return Response.status(200).entity(token).build();
+		return Response.status(Status.OK).entity(token).build();
 		
 	}
 

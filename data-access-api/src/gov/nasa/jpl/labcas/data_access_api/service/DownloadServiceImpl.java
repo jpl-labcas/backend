@@ -63,7 +63,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				filePath = Paths.get(fileLocation, fileName);
 				LOG.info("File path="+filePath.toString());
 				
-				//return Response.status(200).entity(filePath.toString()).build();
+				//return Response.status(Status.OK).entity(filePath.toString()).build();
 				
 			}
 			
