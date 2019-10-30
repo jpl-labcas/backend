@@ -44,11 +44,11 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 			LOG.info("/userdata/create request: " + document);
 			String contentType = headers.getHeaderString(HttpHeaders.CONTENT_TYPE);
 			LOG.info("/userdata/create content type: " + contentType);
-			HttpClient httpClient = new HttpClient();
 			String url = getBaseUrl(SolrProxy.SOLR_CORE_USERDATA) + "/update/json/docs?commit=true";
 			
 			// return the HTTP response as-is to the client
 			// (including possible error)
+			HttpClient httpClient = new HttpClient();
 			return httpClient.doPost(url, document, contentType);
 		
 	}
@@ -63,6 +63,24 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 		LOG.info("/userdata/read request: id="+id);
 		String url = getBaseUrl(SolrProxy.SOLR_CORE_USERDATA) + "/select?wt=json&q=id:"+id;
 		return SolrProxy.query(url);
+		
+	}
+	
+	@Override
+	@POST
+	@Path("/delete")
+	public Response delete(@Context HttpServletRequest httpRequest,
+			@Context ContainerRequestContext requestContext,
+			@QueryParam("id") String id) {
+		
+		// build HTTP Post request
+		LOG.info("/userdata/delete request: id="+id);
+		String url = getBaseUrl(SolrProxy.SOLR_CORE_USERDATA) + "/update?commit=true";
+		String doc = "{'delete': {'query': 'id:"+id+"'} }";
+		
+		// execut HTTP Post request and return HTTP response
+		HttpClient httpClient = new HttpClient();
+		return httpClient.doPost(url, doc, MediaType.APPLICATION_JSON);
 		
 	}
 

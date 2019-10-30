@@ -31,5 +31,15 @@ public interface UserDataService {
 	 * @return
 	 */
 	public Response read(HttpServletRequest httpRequest, ContainerRequestContext requestContext, String id);
+	
+	/**
+	 * Method to delete the user data associated with a given user id.
+	 * 
+	 * @param httpRequest
+	 * @param requestContext
+	 * @param id
+	 * @return
+	 */
+	public Response delete(HttpServletRequest httpRequest, ContainerRequestContext requestContext, String id);
 
 }
