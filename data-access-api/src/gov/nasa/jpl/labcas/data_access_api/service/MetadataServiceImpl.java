@@ -32,13 +32,13 @@ import gov.nasa.jpl.labcas.data_access_api.utils.UrlUtils;
 import gov.nasa.jpl.labcas.data_access_api.utils.XmlParser;
 
 /**
- * Service implementation to update the LabCAS metadata
+ * Service implementation to update the LabCAS metadata.
  * 
- * @author Luca Cinquini
+ * NOTE: this service is currently disabled to avoid security complications.
  *
  */
-@Path("/")
-@Produces(MediaType.TEXT_PLAIN)
+//@Path("/")
+//@Produces(MediaType.TEXT_PLAIN)
 public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 	
 	private final static String XPATH1 = "/response/result";
@@ -59,8 +59,8 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 	}
 
 	@Override
-	@GET
-	@Path("/updateById")
+	//@GET
+	//@Path("/updateById")
 	public Response updateById(@Context HttpServletRequest httpRequest, 
 			@Context ContainerRequestContext requestContext,
 			@Context HttpHeaders headers,
@@ -102,9 +102,9 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 	}
 
 	@Override
-	@POST
-	@Path("/update")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_XML })
+	//@POST
+	//@Path("/update")
+	//@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_XML })
 	public Response update(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext, @Context HttpHeaders headers,
 			String document) {
 		

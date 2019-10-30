@@ -8,10 +8,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 /**
- * Service used to update the LabCAS metadata stored in the Solr index
- * 
- * @author Luca Cinquini
- *
+ * Service used to update the LabCAS metadata stored in the Solr index.
  */
 public interface MetadataService {
 	
