@@ -12,13 +12,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-
 import gov.nasa.jpl.labcas.data_access_api.utils.UrlUtils;
 
 /**
@@ -65,10 +58,8 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 	}
 	
 	/**
-	 * Proxies the HTTP request to a specific Solr core.
-	 * NOTE: this method uses the HTTPClient API directly 
-	 * because SolrJ does not allow to return the raw response document as JSON or XML
-	 * without a lot of processing.
+	 * Proxies the HTTP query request to a specific Solr core,
+	 * after adding the access control constraints.
 	 * 
 	 * @param httpRequest
 	 * @param core
@@ -77,18 +68,11 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 	private Response queryCore(@Context HttpServletRequest httpRequest, ContainerRequestContext requestContext, String core) {
 		
 		try {
+			
 			String baseUrl = getBaseUrl(core) + "/select";
 			String url = baseUrl + "?" + httpRequest.getQueryString() + getAccessControlString(requestContext);
-			CloseableHttpClient httpclient = HttpClients.createDefault();
-			LOG.info("Executing Solr HTTP request: " + url);
-			HttpGet httpGet = new HttpGet(url);
-			CloseableHttpResponse response = httpclient.execute(httpGet);
-			HttpEntity entity = response.getEntity();
-
-			// return the same response to the client
-			String content = IOUtils.toString(entity.getContent(), "UTF-8");
-			return Response.status(response.getStatusLine().getStatusCode()).entity(content).build();
-
+			return SolrProxy.query(url);
+			
 		} catch (Exception e) {
 			// send 500 "Internal Server Error" response
 			e.printStackTrace();

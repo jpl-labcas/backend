@@ -1,6 +1,5 @@
 package gov.nasa.jpl.labcas.data_access_api.service;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

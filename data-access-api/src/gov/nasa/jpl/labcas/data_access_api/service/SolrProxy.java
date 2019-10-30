@@ -8,7 +8,14 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Response;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 
@@ -81,6 +88,39 @@ public class SolrProxy {
 	static String getBaseUrl(String core) {
 		
 		return SOLR_URL + "/" + core;
+	}
+	
+	/**
+	 * Method to send a generic HTTP query request to Solr and return the HTTP query response.
+	 * 
+	 * NOTE: this method uses the HTTPClient API directly because SolrJ does not allow to return 
+	 * the raw response document as JSON or XML without a lot of processing.
+	 * 
+	 * @param url: the complete query URL
+	 * @param core
+	 * @return
+	 */
+	static Response query(String url) {
+		
+		try {
+
+			CloseableHttpClient httpclient = HttpClients.createDefault();
+			LOG.info("Executing Solr HTTP request: " + url);
+			HttpGet httpGet = new HttpGet(url);
+			CloseableHttpResponse response = httpclient.execute(httpGet);
+			HttpEntity entity = response.getEntity();
+
+			// return the same response to the client
+			String content = IOUtils.toString(entity.getContent(), "UTF-8");
+			return Response.status(response.getStatusLine().getStatusCode()).entity(content).build();
+
+		} catch (Exception e) {
+			// send 500 "Internal Server Error" response
+			e.printStackTrace();
+			LOG.warning(e.getMessage());
+			return Response.status(500).entity(e.getMessage()).build();
+		}
+
 	}
 	
 	/**

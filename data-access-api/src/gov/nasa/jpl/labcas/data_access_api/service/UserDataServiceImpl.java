@@ -15,13 +15,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-
 import gov.nasa.jpl.labcas.data_access_api.utils.HttpClient;
 
 /**
@@ -68,27 +61,8 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 			@QueryParam("id") String id) {
 		
 		LOG.info("/userdata/read request: id="+id);
-		
-		try {
-			String baseUrl = getBaseUrl(SolrProxy.SOLR_CORE_USERDATA) + "/select";
-			String url = baseUrl + "?wt=json&q=id:"+id;
-			CloseableHttpClient httpclient = HttpClients.createDefault();
-			LOG.info("Executing Solr HTTP request: " + url);
-			HttpGet httpGet = new HttpGet(url);
-			CloseableHttpResponse response = httpclient.execute(httpGet);
-			HttpEntity entity = response.getEntity();
-
-			// return the same response to the client
-			String content = IOUtils.toString(entity.getContent(), "UTF-8");
-			return Response.status(response.getStatusLine().getStatusCode()).entity(content).build();
-
-		} catch (Exception e) {
-			// send 500 "Internal Server Error" response
-			e.printStackTrace();
-			LOG.warning(e.getMessage());
-			return Response.status(500).entity(e.getMessage()).build();
-		}
-
+		String url = getBaseUrl(SolrProxy.SOLR_CORE_USERDATA) + "/select?wt=json&q=id:"+id;
+		return SolrProxy.query(url);
 		
 	}
 
