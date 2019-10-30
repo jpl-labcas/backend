@@ -228,7 +228,7 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 			String updateUrl = solrCoreUrl + "/update?commit=true";
 			for (String xmlDoc : xmlDocs) {
 				LOG.info("Solr update document:"+xmlDoc);
-				httpClient.doPost(new URL(updateUrl), xmlDoc, MediaType.TEXT_XML); 
+				httpClient.doPost(updateUrl, xmlDoc, MediaType.TEXT_XML); 
 			}
 			
 			numRecordsUpdated += numFound;

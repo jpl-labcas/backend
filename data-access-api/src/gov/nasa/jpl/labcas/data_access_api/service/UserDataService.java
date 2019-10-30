@@ -21,5 +21,15 @@ public interface UserDataService {
 	 */
 	public Response create(HttpServletRequest httpRequest, ContainerRequestContext requestContext, 
 			HttpHeaders headers, String content);
+	
+	/**
+	 * Method to read the user data associated with a given user id.
+	 * 
+	 * @param httpRequest
+	 * @param requestContext
+	 * @param id
+	 * @return
+	 */
+	public Response read(HttpServletRequest httpRequest, ContainerRequestContext requestContext, String id);
 
 }
