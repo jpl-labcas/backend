@@ -12,6 +12,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import gov.nasa.jpl.labcas.data_access_api.utils.HttpClient;
 
@@ -31,23 +32,33 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 	@Override
 	@POST
 	@Path("/create")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_XML })
-	public void create(@Context HttpServletRequest httpRequest,
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_XML})
+	public Response create(@Context HttpServletRequest httpRequest,
 			@Context ContainerRequestContext requestContext, 
 			@Context HttpHeaders headers,
-			String document) throws Exception {
+			String document) {
 		
-		LOG.info("/userdata/create request: " + document);
-		String contentType = headers.getHeaderString(HttpHeaders.CONTENT_TYPE);
-		LOG.info("/userdata/create content type: " + contentType);
+		try {
+			
+			// proxy the client HTTP request to Solr as-is
+			// use the same content-type header
+			LOG.info("/userdata/create request: " + document);
+			String contentType = headers.getHeaderString(HttpHeaders.CONTENT_TYPE);
+			LOG.info("/userdata/create content type: " + contentType);
+			HttpClient httpClient = new HttpClient();
+			String url = getBaseUrl(SolrProxy.SOLR_CORE_USERDATA) + "/update/json/docs";
+			String response = httpClient.doPost(new URL(url), document, contentType);
+			LOG.info("/userdata/create response: " + response);
+			
+			// send Solr response back to client
+			return Response.status(200).entity(response).build();
 		
-		HttpClient httpClient = new HttpClient();
-		String url = getBaseUrl(SolrProxy.SOLR_CORE_USERDATA) + "/update/json/docs";
-		String response = httpClient.doPost(new URL(url), document, false);
+		} catch(Exception e) {
+			// return HTTP "Server Error" response back to client
+			LOG.warning("HTTP Post error:" + e.getMessage());
+			return Response.status(500).entity(e.getMessage()).build();
+		}
 		
-		LOG.info("/userdata/create response: " + response);
-		
-
 	}
 
 }

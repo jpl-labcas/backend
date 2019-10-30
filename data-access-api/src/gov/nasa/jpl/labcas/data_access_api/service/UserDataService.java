@@ -3,6 +3,7 @@ package gov.nasa.jpl.labcas.data_access_api.service;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 
 /**
  * Service to execute CRUD operations for user data versus the LabCAS Solr index.
@@ -18,7 +19,7 @@ public interface UserDataService {
 	 * @param headers
 	 * @param content
 	 */
-	public void create(HttpServletRequest httpRequest, ContainerRequestContext requestContext, 
-			HttpHeaders headers, String content) throws Exception;
+	public Response create(HttpServletRequest httpRequest, ContainerRequestContext requestContext, 
+			HttpHeaders headers, String content);
 
 }

@@ -10,9 +10,6 @@ import java.util.logging.Logger;
 /**
  * Class containing application-level parameters and constants.
  * Parameter values are read at startup from the property file ~/labcas.properties.
- * 
- * @author Luca Cinquini
- *
  */
 public class Parameters {
 	

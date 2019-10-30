@@ -64,18 +64,14 @@ public class HttpClient {
 	/**
 	 * Method to send an XML document as a POST request.
 	 * 
-	 * @param url
-	 *            : the URL to post the request to - without any additional HTTP
-	 *            parameters
-	 * @param data
-	 *            : the data to be posted - possibly an XML document
-	 * @param xml
-	 *            : true to post an XML document - sets the request content-type
-	 *            accordingly
+	 * @param url: the URL to post the request to - without any additional HTTP parameters
+	 * @param data: the data to be posted - possibly an XML document
+	 * @param contentType: "text/xml", "application/json", etc.
+	 *         
 	 * @return
 	 * @throws IOException
 	 */
-	public String doPost(final URL url, final String data, boolean xml) throws IOException {
+	public String doPost(final URL url, final String data, String contentType) throws IOException {
 
 		HttpURLConnection connection = null;
 		OutputStreamWriter wr = null;
@@ -86,19 +82,13 @@ public class HttpClient {
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setUseCaches(false);
 			connection.setDoOutput(true); // POST method
+			connection.setRequestProperty("Content-Type", contentType);
 			if (connectionTimeout != 0) {
 				connection.setConnectTimeout(connectionTimeout);
 			}
 			if (readTimeout != 0) {
 				connection.setReadTimeout(readTimeout);
-			}
-			if (xml) {
-				connection.setRequestProperty("Content-Type", "text/xml");
-			}
-			
-			// FIXME
-			connection.setRequestProperty("Content-Type", "application/json");
-			
+			}			
 			connection.setRequestProperty("Charset", "utf-8");
 
 			// send HTTP request
@@ -108,14 +98,20 @@ public class HttpClient {
 
 			// receive HTTP response
 			String response = getResponse(connection);
+			LOG.info("HTTP POST response:" + response);
 			return response;
+			
+		} catch (Exception e) {
+			
+			LOG.warning("ERROR RAISED FROM POST:"+e.getMessage());
+			e.printStackTrace();
+			return e.getMessage();
 
 		} finally {
 			if (wr != null) {
 				try {
 					wr.close();
-				} catch (IOException e) {
-				}
+				} catch (IOException e) {}
 			}
 			if (connection != null) {
 				connection.disconnect();
@@ -150,8 +146,7 @@ public class HttpClient {
 			if (rd != null) {
 				try {
 					rd.close();
-				} catch (Exception e) {
-				}
+				} catch (Exception e) {}
 			}
 
 		}
