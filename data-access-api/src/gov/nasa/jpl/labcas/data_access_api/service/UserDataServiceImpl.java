@@ -78,8 +78,7 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 			
 		} else {
 			
-			String message = "Json payload is missing mandatory field 'id'";
-			return Response.status(Status.BAD_REQUEST).entity(message).build();
+			return Response.status(Status.BAD_REQUEST).entity("Missing mandatory parameter 'id'").build();
 			
 		}
 		
@@ -91,6 +90,10 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 	public Response read(@Context HttpServletRequest httpRequest,
 			@Context ContainerRequestContext requestContext,
 			@QueryParam("id") String id) {
+		
+		if (id==null) {
+			return Response.status(Status.BAD_REQUEST).entity("Missing mandatory parameter 'id'").build();
+		}
 		
 		String dn = (String)requestContext.getProperty(AuthenticationFilter.USER_DN);
 		
@@ -115,6 +118,10 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 	public Response delete(@Context HttpServletRequest httpRequest,
 			@Context ContainerRequestContext requestContext,
 			@QueryParam("id") String id) {
+		
+		if (id==null) {
+			return Response.status(Status.BAD_REQUEST).entity("Missing mandatory parameter 'id'").build();
+		}
 		
 		String dn = (String)requestContext.getProperty(AuthenticationFilter.USER_DN);
 		
