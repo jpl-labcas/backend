@@ -53,7 +53,9 @@ public class SolrProxy {
 	protected final static String PUBLIC_OWNER_PRINCIPAL_PROPERTY = "publicOwnerPrincipal";
 	protected static String publicOwnerPrincipal;
 
-	protected final static String[] UNSAFE_CHARACTERS = new String[] { ">", "<", ".", "%", "*", "$" };
+	// These characters are not allowed in HTTP request parameter values 
+	// - AFTER the value has been URL-decoded
+	protected final static String[] UNSAFE_CHARACTERS = new String[] { ">", "<", "%", "*", "$", "\\" };
 
 	// IMPORTANT: must re-use the same SolrServer instance across all requests to prevent memory leaks
 	// see https://issues.apache.org/jira/browse/SOLR-861

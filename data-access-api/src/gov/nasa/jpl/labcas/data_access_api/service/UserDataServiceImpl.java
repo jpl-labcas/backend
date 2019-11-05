@@ -78,7 +78,7 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 				
 			} else {
 				
-				String message = "User: " + dn + " is not authorized to create data for user: "+id;
+				String message = "User is not authorized to create data for id: "+id;
 				return Response.status(Status.UNAUTHORIZED).entity(message).build();
 				
 			}
@@ -97,6 +97,8 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 	public Response read(@Context HttpServletRequest httpRequest,
 			@Context ContainerRequestContext requestContext,
 			@QueryParam("id") String id) {
+		
+		LOG.info("Requesting document for id="+id);
 		
 		if (id==null) {
 			return Response.status(Status.BAD_REQUEST).entity("Missing mandatory parameter 'id'").build();
@@ -118,7 +120,7 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 			
 		} else {
 			
-			String message = "User: " + dn + " is not authorized to read data for user: "+id;
+			String message = "User is not authorized to read data for id: "+id;
 			return Response.status(Status.UNAUTHORIZED).entity(message).build();
 			
 		}
@@ -153,7 +155,7 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 		
 		} else {
 			
-			String message = "User: " + dn + " is not authorized to delete data for user: "+id;
+			String message = "User is not authorized to delete data for id: "+id;
 			return Response.status(Status.UNAUTHORIZED).entity(message).build();
 			
 		}
