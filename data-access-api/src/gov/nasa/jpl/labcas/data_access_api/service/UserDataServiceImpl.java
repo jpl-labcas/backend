@@ -134,6 +134,7 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 			@Context ContainerRequestContext requestContext,
 			@QueryParam("id") String id) {
 		
+		// note: @QueryParam automatically URL-decodes the value of "id"
 		if (id==null) {
 			return Response.status(Status.BAD_REQUEST).entity("Missing mandatory parameter 'id'").build();
 		} else if (!isSafe(id)) {

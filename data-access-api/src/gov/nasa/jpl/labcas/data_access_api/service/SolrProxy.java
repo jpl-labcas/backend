@@ -98,7 +98,7 @@ public class SolrProxy {
 	 * NOTE: this method uses the HTTPClient API directly because SolrJ does not allow to return 
 	 * the raw response document as JSON or XML without a lot of processing.
 	 * 
-	 * @param url: the complete query URL
+	 * @param url: the complete query URL (must be URL-encoded)
 	 * @param core
 	 * @return
 	 */

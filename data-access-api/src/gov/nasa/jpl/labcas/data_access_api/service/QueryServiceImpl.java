@@ -1,6 +1,7 @@
 package gov.nasa.jpl.labcas.data_access_api.service;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,11 +68,21 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 	 * @return
 	 */
 	private Response queryCore(@Context HttpServletRequest httpRequest, ContainerRequestContext requestContext, String core) {
-		
+				
 		try {
+			
+			// check request for unsafe characters
+			// must URL-decode the query string first
+			String q = URLDecoder.decode(httpRequest.getQueryString(), "UTF-8");
+			if (!isSafe(q)) {
+				String message = "Request query string contains unsafe characters";
+				return Response.status(Status.BAD_REQUEST).entity(message).build();
+			}
+
 			
 			String baseUrl = getBaseUrl(core) + "/select";
 			String url = baseUrl + "?" + httpRequest.getQueryString() + getAccessControlString(requestContext);
+			LOG.info("Executing query: "+url);
 			return SolrProxy.query(url);
 			
 		} catch (Exception e) {
