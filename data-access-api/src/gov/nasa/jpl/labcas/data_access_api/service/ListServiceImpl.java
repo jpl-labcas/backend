@@ -297,7 +297,7 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 			LOG.fine(doc.toString());
 			String id = (String) doc.getFieldValue(SOLR_FIELD_ID);
 			try {
-				// example:  https://mcl-labcas.jpl.nasa.gov/ui/download/CBIS-DDSM.Calc-Training_Full_Mammogram_Images.1.3.6.1.4.1.9590.100.1.2.419956083811554531015420980802782572234.dcm
+				// example:  https://edrn-labcas.jpl.nasa.gov/data-access-api/download?id=Automated_Quantitative_Measures_of_Breast_Density_Data%2FN0580%2FRAW%2FN0580_MG_DAT_RCC.dcm
 				// note: spaces are URL-encoded as '+' but they should really be '%20'
 				results += this.dataAccessApiBaseUrl + UrlUtils.encode(id) + "\n";
 			} catch(UnsupportedEncodingException e) {
