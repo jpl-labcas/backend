@@ -1,5 +1,6 @@
 package gov.nasa.jpl.labcas.data_access_api.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,6 +23,7 @@ import org.json.JSONObject;
 
 import gov.nasa.jpl.labcas.data_access_api.filter.AuthenticationFilter;
 import gov.nasa.jpl.labcas.data_access_api.utils.HttpClient;
+import gov.nasa.jpl.labcas.data_access_api.utils.UrlUtils;
 
 /**
  * Service implementation to operate on user data.
@@ -107,8 +109,12 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 		if (authorize(dn, id)) {
 			
 			LOG.info("/userdata/read request: id="+id);
-			String url = getBaseUrl(SolrProxy.SOLR_CORE_USERDATA) + "/select?wt=json&q=id:"+id;
-			return SolrProxy.query(url);
+			try {
+				String url = getBaseUrl(SolrProxy.SOLR_CORE_USERDATA) + "/select?wt=json&q="+UrlUtils.encode("id:"+id);
+				return SolrProxy.query(url);
+			} catch(UnsupportedEncodingException e) {
+				return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+			}
 			
 		} else {
 			
@@ -141,7 +147,7 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 			String url = getBaseUrl(SolrProxy.SOLR_CORE_USERDATA) + "/update?commit=true";
 			String doc = "{'delete': {'query': 'id:"+id+"'} }";
 			
-			// execut HTTP Post request and return HTTP response
+			// execute HTTP Post request and return HTTP response
 			HttpClient httpClient = new HttpClient();
 			return httpClient.doPost(url, doc, MediaType.APPLICATION_JSON);
 		
