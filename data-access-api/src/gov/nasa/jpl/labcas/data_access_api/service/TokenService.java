@@ -5,10 +5,8 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Response;
 
 /**
- * Service used to issue and refresh Jason Web Tokens.
+ * Service used to issue and refresh JSON Web Tokens.
  * 
- * @author Luca Cinquini
- *
  */
 public interface TokenService {
 	

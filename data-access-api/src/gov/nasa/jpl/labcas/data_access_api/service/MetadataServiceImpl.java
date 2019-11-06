@@ -64,6 +64,10 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 		
 		LOG.info("/updateById request: cores="+cores+" action="+action+" id="+id+" field="+field+" values="+values);
 		
+		if (!isSafe(httpRequest)) {
+			return Response.status(Status.BAD_REQUEST).entity(UNSAFE_CHARACTERS_MESSAGE).build();
+		}
+		
 	    	// execute update across all cores
 	    	int numRecordsUpdated = 0;
 	    	try {
@@ -106,6 +110,11 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 		LOG.info("/update request: " + document);
 		String contentType = headers.getHeaderString(HttpHeaders.CONTENT_TYPE);
 		LOG.info("/update content type: " + contentType);
+		
+		// check request for unsafe input
+		if (!isSafe(document)) {
+			return Response.status(Status.BAD_REQUEST).entity(UNSAFE_CHARACTERS_MESSAGE).build();
+		}
 				
 		int numRecordsUpdated = 0;
 		try {

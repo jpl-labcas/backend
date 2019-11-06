@@ -82,10 +82,14 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 				userdn = userService.getValidUser(username, password);
 				LOG.info("Retrieved user DN = "+userdn);
 				
-				// create Jason Web Token
-				String token = jwtProducer.getToken(userdn);
-				LOG.info("Generated token = "+token);
-				containerRequest.setProperty(JWT, token);
+				// create Jason Web Token?
+				String uriPath = containerRequest.getUriInfo().getPath();
+				LOG.info("URI path="+uriPath);
+				if (uriPath.contains("auth")) {
+					String token = jwtProducer.getToken(userdn);
+					LOG.info("Generated token = "+token);
+					containerRequest.setProperty(JWT, token);
+				}
 				
 			} catch (IOException e) {
 				e.printStackTrace();

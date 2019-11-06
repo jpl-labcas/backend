@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -193,6 +194,26 @@ public class SolrProxy {
 		for (String str : strings) {
 			if (!isSafe(str)) {
 				return false;
+			}
+		}
+		return true;
+		
+	}
+	
+	/**
+	 * Method to check all HTTP parameter values for unsafe characters.
+	 * @param httpRequest
+	 * @return
+	 */
+	static boolean isSafe(HttpServletRequest httpRequest) {
+		
+		Map<String, String[]> params = httpRequest.getParameterMap();
+		
+		for (String key : params.keySet()) {
+			for (String value : params.get(key)) {
+				if (!isSafe(value)) {
+					return false;
+				}
 			}
 		}
 		return true;
