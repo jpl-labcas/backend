@@ -51,7 +51,7 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 		
 		// check request for unsafe input
 		if (!isSafe(document)) {
-			return Response.status(Status.BAD_REQUEST).entity("Request contains unsafe characters").build();
+			return Response.status(Status.BAD_REQUEST).entity(UNSAFE_CHARACTERS_MESSAGE).build();
 		}
 		
 		String dn = (String)requestContext.getProperty(AuthenticationFilter.USER_DN);
@@ -103,7 +103,7 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 		if (id==null) {
 			return Response.status(Status.BAD_REQUEST).entity("Missing mandatory parameter 'id'").build();
 		} else if (!isSafe(id)) {
-			return Response.status(Status.BAD_REQUEST).entity("'id' contains unsafe characters").build();
+			return Response.status(Status.BAD_REQUEST).entity(UNSAFE_CHARACTERS_MESSAGE).build();
 		}
 		
 		String dn = (String)requestContext.getProperty(AuthenticationFilter.USER_DN);
@@ -138,8 +138,12 @@ public class UserDataServiceImpl extends SolrProxy implements UserDataService {
 		if (id==null) {
 			return Response.status(Status.BAD_REQUEST).entity("Missing mandatory parameter 'id'").build();
 		} else if (!isSafe(id)) {
-			return Response.status(Status.BAD_REQUEST).entity("'id' contains unsafe characters").build();
+			return Response.status(Status.BAD_REQUEST).entity(UNSAFE_CHARACTERS_MESSAGE).build();
+		} else if (id.contains("*")) {
+			// extra precaution
+			return Response.status(Status.BAD_REQUEST).entity("'id' value cannot contain the wildcard '*'").build();
 		}
+		
 		
 		String dn = (String)requestContext.getProperty(AuthenticationFilter.USER_DN);
 		

@@ -2,6 +2,7 @@ package gov.nasa.jpl.labcas.data_access_api.service;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,9 @@ public class SolrProxy {
 
 	// These characters are not allowed in HTTP request parameter values 
 	// - AFTER the value has been URL-decoded
-	protected final static String[] UNSAFE_CHARACTERS = new String[] { ">", "<", "%", "*", "$", "\\" };
+	protected final static String[] UNSAFE_CHARACTERS = new String[] { ">", "<", "%", "$", "\\" };
+	
+	protected static String UNSAFE_CHARACTERS_MESSAGE = "HTTP request contains unsafe characters";
 
 	// IMPORTANT: must re-use the same SolrServer instance across all requests to prevent memory leaks
 	// see https://issues.apache.org/jira/browse/SOLR-861
@@ -127,6 +130,8 @@ public class SolrProxy {
 	
 	/**
 	 * Builds the query string to enforce access control.
+	 * Note that this method does NOT URL-encode the parameter value:
+	 * that is left to do by the calling method.
 	 * @param contex
 	 * @return
 	 */
@@ -173,7 +178,23 @@ public class SolrProxy {
 				return false;
 			}
 		}
+		return true;
 		
+	}
+	
+	/**
+	 * Method to check whether any element of a collection 
+	 * of strings contains unsafe characters.
+	 * @param strings
+	 * @return
+	 */
+	static boolean isSafe(Collection<String> strings) {
+		
+		for (String str : strings) {
+			if (!isSafe(str)) {
+				return false;
+			}
+		}
 		return true;
 		
 	}

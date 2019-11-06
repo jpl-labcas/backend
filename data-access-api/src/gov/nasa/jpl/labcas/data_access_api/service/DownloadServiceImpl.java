@@ -33,6 +33,13 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 	@Path("/download")
 	public Response download(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext, @QueryParam("id") String id) {
 		
+		// note: @QueryParam('id') automatically URL-decodes the 'id' value
+		if (id==null) {
+			return Response.status(Status.BAD_REQUEST).entity("Missing mandatory parameter 'id'").build();
+		} else if (!isSafe(id)) {
+			return Response.status(Status.BAD_REQUEST).entity(UNSAFE_CHARACTERS_MESSAGE).build();
+		}
+
 		try {
 			
 			java.nio.file.Path filePath = null;
@@ -50,6 +57,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			// return file location on file system or S3 + file name
 			request.setFields( new String[] { SOLR_FIELD_FILE_LOCATION, SOLR_FIELD_FILE_NAME } );
 			
+			// note: SolrJ will URL-encode the HTTP GET parameter values
 			LOG.info("Executing Solr request to 'files' core: "+request.toString());
 			QueryResponse response = solrServers.get(SOLR_CORE_FILES).query(request);
 			

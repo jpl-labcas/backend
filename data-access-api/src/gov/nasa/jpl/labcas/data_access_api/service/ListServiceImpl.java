@@ -23,6 +23,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 
+import gov.nasa.jpl.labcas.data_access_api.exceptions.UnsafeCharactersException;
 import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
 import gov.nasa.jpl.labcas.data_access_api.utils.UrlUtils;
 
@@ -48,7 +49,7 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 	public Response listCollections(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext,
 			@QueryParam("q") String q,
 			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
-		
+				
 		// execute Solr query to 'collections' core
 		// extract matching collection ids
 		List<String> collectionIds = new ArrayList<String>();
@@ -61,6 +62,9 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 			QueryResponse response = solrServers.get(SOLR_CORE_COLLECTIONS).query(request);
 			this.extractIds(response, collectionIds);
 
+		} catch(UnsafeCharactersException unsafe) {
+			return Response.status(Status.BAD_REQUEST).entity(unsafe.getMessage()).build();
+			
 		} catch (Exception e) {
 			// send Status.INTERNAL_SERVER_ERROR "Internal Server Error" response
 			e.printStackTrace();
@@ -84,7 +88,6 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 			@QueryParam("q") String q,
 			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
 
-
 		// execute Solr query to 'datasets' core
 		// extract matching dataset ids
 		List<String> datasetIds = new ArrayList<String>();
@@ -96,6 +99,9 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 			LOG.info("Executing Solr request to 'datasets' core: "+request.toString());
 			QueryResponse response = solrServers.get(SOLR_CORE_DATASETS).query(request);
 			this.extractIds(response, datasetIds);
+			
+		} catch(UnsafeCharactersException unsafe) {
+			return Response.status(Status.BAD_REQUEST).entity(unsafe.getMessage()).build();
 
 		} catch (Exception e) {
 			// send Status.INTERNAL_SERVER_ERROR "Internal Server Error" response
@@ -121,6 +127,7 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 			@QueryParam("q") String q,
 			@QueryParam("fq") List<String> fq, @QueryParam("start") int start, @QueryParam("rows") int rows) {
 
+
 		// execute Solr query to 'files' core, build result document
 		String results = "";
 		try {
@@ -130,6 +137,9 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 
 			QueryResponse response = solrServers.get(SOLR_CORE_FILES).query(request);
 			results = buildResultsDocument(response);
+			
+		} catch(UnsafeCharactersException unsafe) {
+			return Response.status(Status.BAD_REQUEST).entity(unsafe.getMessage()).build();
 			
 		} catch (Exception e) {
 			// send Status.INTERNAL_SERVER_ERROR "Internal Server Error" response
@@ -156,22 +166,30 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 	 * @param fields
 	 * @return
 	 */
-	protected SolrQuery buildPassThroughQuery(final HttpServletRequest httpRequest, 
+	private SolrQuery buildPassThroughQuery(final HttpServletRequest httpRequest, 
 			                                  final ContainerRequestContext requestContext,
 			                                  final String q, final List<String> fq,
 			                                  final int start, final int rows) throws Exception {
-
+		
+		// note: the arguments 'q', 'fq', 'start', 'rows' 
+		// have already been URL-decoded by the upstream methods
 		LOG.info("HTTP request URL=" + httpRequest.getRequestURL());
 		LOG.info("HTTP request query string=" + httpRequest.getQueryString());
 		
+		// check user input for unsafe characters
+		if (!isSafe(q) || !isSafe(fq)) {
+			LOG.warning("Detected UNSAFE CHARACTERS in request");
+			throw new UnsafeCharactersException(UNSAFE_CHARACTERS_MESSAGE, Status.BAD_REQUEST);
+		}
+
 		// enforce access control by adding OwnerPrincipal constraint
-		// encoding will be executed by SolrJ
 		String acfq = getAccessControlQueryStringValue(requestContext);
 		if (!acfq.isEmpty()) {
 			fq.add(acfq);
 		}
 
 		// build Solr query
+		// parameter value encoding will be executed by SolrJ
 		SolrQuery request = new SolrQuery();
 		if (q != null && !q.isEmpty()) {
 			request.setQuery(q);

@@ -75,8 +75,7 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 			// must URL-decode the query string first
 			String q = URLDecoder.decode(httpRequest.getQueryString(), "UTF-8");
 			if (!isSafe(q)) {
-				String message = "Request query string contains unsafe characters";
-				return Response.status(Status.BAD_REQUEST).entity(message).build();
+				return Response.status(Status.BAD_REQUEST).entity(UNSAFE_CHARACTERS_MESSAGE).build();
 			}
 
 			
