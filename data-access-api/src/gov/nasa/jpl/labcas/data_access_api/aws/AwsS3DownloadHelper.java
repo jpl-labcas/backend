@@ -16,36 +16,29 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
  * Utility class that generates pre-signed, time-limited URLs
  * for downloading files from AWS S3.
  */
-public class AwsS3DownloadUrlGenerator {
+public class AwsS3DownloadHelper {
 		
 	// class that generates the URLs using Amazon custom scheme
 	AmazonS3 s3Client = null;
 	
-	// only generates URLs for this bucket
+	// will only generate URLs for this bucket
 	String bucket = null;
 	
 	// number of seconds a URL will remain valid
 	int urlExpirationTimeSecs = 0;
 	
-	private final static Logger LOG = Logger.getLogger(AwsS3DownloadUrlGenerator.class.getName());
+	private final static Logger LOG = Logger.getLogger(AwsS3DownloadHelper.class.getName());
 	
 	/**
 	 * Constructor reads AWS parameters from environmental variables.
 	 */
-	public AwsS3DownloadUrlGenerator() throws Exception {
+	public AwsS3DownloadHelper() throws Exception {
 		
-		// FIXME
-		//String profile = AwsUtils.getProfile("AWS_S3_READONLY_PROFILE");		
-		String profile = "saml";
+		String profile = AwsUtils.getProfile("AWS_S3_READONLY_PROFILE");		
 		String awsRegion = AwsUtils.getRegion();
-		// FIXME
-		//bucket = AwsUtils.getArchiveBucketName();
-		bucket = "mcl-labcas";
-		
-		// FIXME
-		//urlExpirationTimeSecs = AwsUtils.getIntValueFromEnv(
-		//		"AWS_DOWNLOAD_URL_EXPIRATION_TIME_SECS", Constants.AWS_DOWNLOAD_URL_EXPIRATION_TIME_SECS_DEFAULT);
-		urlExpirationTimeSecs = 300;
+		bucket = AwsUtils.getArchiveBucketName();
+		urlExpirationTimeSecs = AwsUtils.getIntValueFromEnv(
+				"AWS_DOWNLOAD_URL_EXPIRATION_TIME_SECS", Constants.AWS_DOWNLOAD_URL_EXPIRATION_TIME_SECS_DEFAULT);
 		
 		// create S3 client to generate the URLs
         s3Client = AmazonS3ClientBuilder.standard()
@@ -53,7 +46,7 @@ public class AwsS3DownloadUrlGenerator {
         		                        .withCredentials(new ProfileCredentialsProvider(profile))
         		                        .build();
         LOG.info("Created Amazon S3 client with profile="+profile+", region="+awsRegion
-        		+" generating URLs for bucket="+bucket+" with validity="+urlExpirationTimeSecs+" secs");
+          		+" generating URLs for bucket="+bucket+" with validity="+urlExpirationTimeSecs+" secs");
         
 	}
 	
@@ -99,7 +92,7 @@ public class AwsS3DownloadUrlGenerator {
 	
 	public static void main(String[] args) throws Exception {
 		
-		AwsS3DownloadUrlGenerator self = new AwsS3DownloadUrlGenerator();
+		AwsS3DownloadHelper self = new AwsS3DownloadHelper();
 		
 		String key = "Pre_Cancer_Atlas/Smart-3Seq/mdanderson/bam/AM00-Ac_1.bam.bai";
 		

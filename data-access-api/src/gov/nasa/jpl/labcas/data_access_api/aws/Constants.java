@@ -2,7 +2,6 @@ package gov.nasa.jpl.labcas.data_access_api.aws;
 
 /**
  * Interface containing parameters for AWS services.
- *
  */
 public interface Constants {
 	

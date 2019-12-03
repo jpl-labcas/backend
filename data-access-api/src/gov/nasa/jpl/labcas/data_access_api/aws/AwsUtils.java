@@ -41,46 +41,20 @@ public class AwsUtils {
 	}
 	
 	/**
-	 * Returns the S3 staging bucket name (without the 's3//' prefix).
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	public static String getStagingBucketName() throws Exception {
-		
-		return _getBucketName("STAGING_AREA");
-		
-	}
-	
-	/**
-	 * Returns the S3 archive bucket name (without the 's3//' prefix).
+	 * Returns the S3 archive bucket name from the environment.
 	 * 
 	 * @return
 	 * @throws Exception
 	 */
 	public static String getArchiveBucketName() throws Exception {
 		
-		return _getBucketName("ARCHIVE_AREA");
-		
-	}
-		
-	/**
-	 * Retrieves a bucket name from the environment
-	 * and removes the 's3://' prefix.
-	 * @param bucketEnvVariable
-	 * @return
-	 * @throws Exception
-	 */
-	private static String _getBucketName(String bucketEnvVariable) throws Exception {
-		
-		String bucket = System.getenv(bucketEnvVariable);
+		String bucket = System.getenv("S3_BUCKET");
 		if (bucket==null) {
-			throw new Exception("Env variable " + bucketEnvVariable + " not found");
+			throw new Exception("Env variable 'S3_BUCKET' is not set");
 		} else {
-			bucket = bucket.substring(5);
+			return bucket;
 		}
 		
-		return bucket;
 	}
 	
 	/**
