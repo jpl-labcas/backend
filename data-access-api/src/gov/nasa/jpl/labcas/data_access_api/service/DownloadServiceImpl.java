@@ -97,7 +97,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				String fileName = filePath.toFile().getName();
 				String fileLocation = filePath.getParent().toString();
 				// FIXME: remove log statement
-				LOG.info("fileLocation="+fileLocation);
+				LOG.info("Using fileLocation="+fileLocation);
 				
 				if (fileLocation.startsWith("s3")) {
 					
