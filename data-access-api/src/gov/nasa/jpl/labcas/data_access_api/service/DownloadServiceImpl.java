@@ -1,5 +1,6 @@
 package gov.nasa.jpl.labcas.data_access_api.service;
 
+import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.logging.Logger;
@@ -20,6 +21,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 
+import gov.nasa.jpl.labcas.data_access_api.aws.AwsS3DownloadUrlGenerator;
 import gov.nasa.jpl.labcas.data_access_api.utils.DownloadHelper;
 
 @Path("/")
@@ -27,6 +29,17 @@ import gov.nasa.jpl.labcas.data_access_api.utils.DownloadHelper;
 public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 	
 	private final static Logger LOG = Logger.getLogger(DownloadServiceImpl.class.getName());
+	
+	// class that generates temporary URLs for S3 downloads
+	AwsS3DownloadUrlGenerator s3DownloadHelper;
+	
+	public DownloadServiceImpl() throws Exception {
+		
+		super();
+		
+		s3DownloadHelper = new AwsS3DownloadUrlGenerator();
+		
+	}
 
 	@Override
 	@GET
@@ -74,17 +87,36 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				//return Response.status(Status.OK).entity(filePath.toString()).build();
 				
 			}
-			
+						
 			if (filePath!=null) {
 				
+				// FIXME
+				filePath = Paths.get("s3://mcl-bucket/Pre_Cancer_Atlas/Smart-3Seq/mdanderson/bam/AM00-Ac_1.bam.bai");
+				LOG.info("FIXME: DOWNLOADING FILE: "+filePath.toString());
+
 				String fileName = filePath.toFile().getName();
+				String fileLocation = filePath.getParent().toString();
+				// FIXME: remove log statement
+				LOG.info("fileLocation="+fileLocation);
 				
-				DownloadHelper dh = new DownloadHelper(filePath);
-		        return Response
-		                .ok(dh, MediaType.APPLICATION_OCTET_STREAM)
-		                // "content-disposition" header instructs the client to keep the same file name
-		                .header("content-disposition","attachment; filename=\"" + fileName + "\"")
-		                .build();
+				if (fileLocation.startsWith("s3")) {
+					
+					// generate temporary URL and redirect client
+					String key = "Pre_Cancer_Atlas/Smart-3Seq/mdanderson/bam/AM00-Ac_1.bam.bai";
+					URL url = s3DownloadHelper.getUrl(key, null); // versionId=null
+					LOG.info("Redirecting client to S3 URL:"+url.toString());
+					return Response.temporaryRedirect(url.toURI()).build();
+					
+				} else {
+				
+					// read file from local file system and stream it to client
+					DownloadHelper dh = new DownloadHelper(filePath);
+			        return Response
+			                .ok(dh, MediaType.APPLICATION_OCTET_STREAM)
+			                // "content-disposition" header instructs the client to keep the same file name
+			                .header("content-disposition","attachment; filename=\"" + fileName + "\"")
+			                .build();
+				}
 	        
 			} else {
 				return Response.status(Status.NOT_FOUND).entity("File not found or not authorized").build();
