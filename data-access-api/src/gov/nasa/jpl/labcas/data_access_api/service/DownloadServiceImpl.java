@@ -99,13 +99,6 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				// FIXME: remove log statement
 				LOG.info("Using fileLocation="+fileLocation);
 				
-				// generate temporary URL and redirect client
-				String key = "Analysis_of_pancreatic_cancer_biomarkers_in_PLCO_set/Analysis_of_pancreatic_cancer_biomarkers_in_PLCO_set/SAN_VM_SNAPSHOT.xls";
-				URL url = awsS3DownloadHelper.getUrl(key, null); // versionId=null
-				LOG.info("Redirecting client to S3 URL:"+url.toString());
-				return Response.temporaryRedirect(url.toURI()).build();
-
-				/**
 				if (fileLocation.startsWith("s3")) {
 					
 					// generate temporary URL and redirect client
@@ -124,7 +117,6 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			                .header("content-disposition","attachment; filename=\"" + fileName + "\"")
 			                .build();
 				}
-				*/
 	        
 			} else {
 				return Response.status(Status.NOT_FOUND).entity("File not found or not authorized").build();
