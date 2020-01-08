@@ -1,5 +1,7 @@
 package gov.nasa.jpl.labcas.data_access_api.aws;
 
+import java.util.Arrays;
+
 /**
  * Common utilities to handle AWS configuration parameters.
  *
@@ -54,6 +56,20 @@ public class AwsUtils {
 		} else {
 			return bucket;
 		}
+		
+	}
+	
+	/**
+	 * Extract the S3 key from a full filepath of the form:
+	 * s3://<bucket>/<s3key>...
+	 * @param filePath
+	 * @return
+	 */
+	public static String getS3key(String filePath) {
+		
+		String[] parts = filePath.split("/");
+		String[] _parts = Arrays.copyOfRange(parts, 3, parts.length);
+		return String.join("/", _parts);
 		
 	}
 	

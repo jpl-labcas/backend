@@ -22,6 +22,7 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 
 import gov.nasa.jpl.labcas.data_access_api.aws.AwsS3DownloadHelper;
+import gov.nasa.jpl.labcas.data_access_api.aws.AwsUtils;
 import gov.nasa.jpl.labcas.data_access_api.utils.DownloadHelper;
 
 @Path("/")
@@ -55,7 +56,9 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 
 		try {
 			
-			java.nio.file.Path filePath = null;
+			String fileLocation = null;
+			String fileName = null;
+			String filePath = null;
 			
 			// query Solr for file with that specific id
 			SolrQuery request = new SolrQuery();
@@ -79,9 +82,9 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			while (iter.hasNext()) {
 				SolrDocument doc = iter.next();
 				LOG.info(doc.toString());
-				String fileLocation = (String)doc.getFieldValue(SOLR_FIELD_FILE_LOCATION);
-				String fileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
-				filePath = Paths.get(fileLocation, fileName);
+				fileLocation = (String)doc.getFieldValue(SOLR_FIELD_FILE_LOCATION);
+				fileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
+				filePath = fileLocation + "/" + fileName;
 				LOG.info("File path="+filePath.toString());
 				
 				//return Response.status(Status.OK).entity(filePath.toString()).build();
@@ -94,15 +97,16 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				//filePath = Paths.get("s3://mcl-bucket/Pre_Cancer_Atlas/Smart-3Seq/mdanderson/bam/AM00-Ac_1.bam.bai");
 				//LOG.info("FIXME: DOWNLOADING FILE: "+filePath.toString());
 
-				String fileName = filePath.toFile().getName();
-				String fileLocation = filePath.getParent().toString();
+				//String fileName = filePath.toFile().getName();
+				//String fileLocation = filePath.getParent().toString();
 				// FIXME: remove log statement
 				LOG.info("Using fileLocation="+fileLocation);
 				
 				if (fileLocation.startsWith("s3")) {
 					
 					// generate temporary URL and redirect client
-					String key = "Pre_Cancer_Atlas/Smart-3Seq/mdanderson/bam/AM00-Ac_1.bam.bai";
+					String key = AwsUtils.getS3key(filePath);
+					LOG.info("Using s3key="+key);
 					URL url = awsS3DownloadHelper.getUrl(key, null); // versionId=null
 					LOG.info("Redirecting client to S3 URL:"+url.toString());
 					return Response.temporaryRedirect(url.toURI()).build();
@@ -110,7 +114,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				} else {
 				
 					// read file from local file system and stream it to client
-					DownloadHelper dh = new DownloadHelper(filePath);
+					DownloadHelper dh = new DownloadHelper(Paths.get(filePath));
 			        return Response
 			                .ok(dh, MediaType.APPLICATION_OCTET_STREAM)
 			                // "content-disposition" header instructs the client to keep the same file name
