@@ -1,6 +1,7 @@
 package gov.nasa.jpl.labcas.data_access_api.filter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
@@ -19,7 +20,6 @@ import org.apache.commons.codec.binary.Base64;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
-import gov.nasa.jpl.labcas.data_access_api.exceptions.MissingAuthenticationHeaderException;
 import gov.nasa.jpl.labcas.data_access_api.jwt.JwtConsumer;
 import gov.nasa.jpl.labcas.data_access_api.jwt.JwtProducer;
 
@@ -38,6 +38,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 	public final static String JWT = "JasonWebToken";
 	public final static String USER_GROUPS_PROPERTY = "userGroups";
 	public final static String USER_DN = "userDn";
+	public final static String GUEST_USER_DN = "uid=guest,ou=public";
 	
 	private final static Logger LOG = Logger.getLogger(AuthenticationFilter.class.getName());
 	
@@ -59,9 +60,14 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		
 		if (authCredentials==null) {
 			
+			LOG.info("No authentication provided: grant guest access only");
+			containerRequest.setProperty(USER_DN, GUEST_USER_DN);
+			// empty group list
+			containerRequest.setProperty(USER_GROUPS_PROPERTY, new ArrayList<String>());
+			
 			// 401: authentication required
 			// custom exception to send the "WWW-Authenticate" header and trigger client challenge
-			throw new MissingAuthenticationHeaderException(Status.UNAUTHORIZED);
+			//throw new MissingAuthenticationHeaderException(Status.UNAUTHORIZED);
 			
 		// HTTP Basic Authentication
 		// Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
