@@ -64,6 +64,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 			containerRequest.setProperty(USER_DN, GUEST_USER_DN);
 			// empty group list
 			containerRequest.setProperty(USER_GROUPS_PROPERTY, new ArrayList<String>());
+			return;
 			
 			// 401: authentication required
 			// custom exception to send the "WWW-Authenticate" header and trigger client challenge
