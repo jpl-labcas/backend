@@ -3,6 +3,7 @@ package gov.nasa.jpl.labcas.data_access_api.filter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
@@ -11,6 +12,7 @@ import javax.ws.rs.Priorities;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
@@ -58,17 +60,31 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		String authCredentials = containerRequest.getHeaderString(HttpHeaders.AUTHORIZATION);
 		LOG.info("Establishing authentication: HTTP header="+authCredentials);
 		
+		// or extract information from "JasonWebToken" cookie
+		String cookie = getCookie(containerRequest, JWT);
+		LOG.info("Establishing authentication: '"+JWT+"' cookie="+cookie);
+		
 		if (authCredentials==null) {
 			
-			LOG.info("No authentication provided: grant guest access only");
-			containerRequest.setProperty(USER_DN, GUEST_USER_DN);
-			// empty group list
-			containerRequest.setProperty(USER_GROUPS_PROPERTY, new ArrayList<String>());
-			return;
+			if (cookie!=null) {
+				
+				DecodedJWT jwt = jwtConsumer.verifyToken(cookie);
+				userdn = jwt.getSubject();
+				LOG.info("Retrieved user DN = "+userdn);
+				
+			} else {
 			
-			// 401: authentication required
-			// custom exception to send the "WWW-Authenticate" header and trigger client challenge
-			//throw new MissingAuthenticationHeaderException(Status.UNAUTHORIZED);
+				LOG.info("No authentication provided: grant guest access only");
+				containerRequest.setProperty(USER_DN, GUEST_USER_DN);
+				// empty group list
+				containerRequest.setProperty(USER_GROUPS_PROPERTY, new ArrayList<String>());
+				return;
+				
+				// 401: authentication required
+				// custom exception to send the "WWW-Authenticate" header and trigger client challenge
+				//throw new MissingAuthenticationHeaderException(Status.UNAUTHORIZED);
+				
+			}
 			
 		// HTTP Basic Authentication
 		// Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
@@ -138,5 +154,16 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 			
 		}
 		
+	}
+	
+	private String getCookie(ContainerRequestContext containerRequest, String cookieName) {
+		
+		Map<String, Cookie> cookies = containerRequest.getCookies();
+		if (cookies.containsKey(cookieName)) {
+			return cookies.get(cookieName).getValue();
+		} else {
+			return null;
+		}
+
 	}
 }

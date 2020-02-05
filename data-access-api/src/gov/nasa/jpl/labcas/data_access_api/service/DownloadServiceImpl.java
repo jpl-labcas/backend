@@ -92,14 +92,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			}
 						
 			if (filePath!=null) {
-				
-				// FIXME
-				//filePath = Paths.get("s3://mcl-bucket/Pre_Cancer_Atlas/Smart-3Seq/mdanderson/bam/AM00-Ac_1.bam.bai");
-				//LOG.info("FIXME: DOWNLOADING FILE: "+filePath.toString());
 
-				//String fileName = filePath.toFile().getName();
-				//String fileLocation = filePath.getParent().toString();
-				// FIXME: remove log statement
 				LOG.info("Using fileLocation="+fileLocation);
 				
 				if (fileLocation.startsWith("s3")) {
