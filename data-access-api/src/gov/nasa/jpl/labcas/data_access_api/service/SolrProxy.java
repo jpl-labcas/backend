@@ -57,7 +57,7 @@ public class SolrProxy {
 
 	// These characters are not allowed in HTTP request parameter values 
 	// - AFTER the value has been URL-decoded
-	protected final static String[] UNSAFE_CHARACTERS = new String[] { ">", "<", "%", "$", "\\" };
+	protected final static String[] UNSAFE_CHARACTERS = new String[] { ">", "<", "%", "$" };
 	
 	protected static String UNSAFE_CHARACTERS_MESSAGE = "HTTP request contains unsafe characters";
 
