@@ -60,6 +60,8 @@ def get_sub_dataset_name(subDirPath):
         subDatasetName = 'Truth files'
     elif thisDir.lower() == '2d':
         subDatasetName = 'Full-Field Digital Mammography (FFDM) images (2D)'
+    elif thisDir.lower() == 'ffdm':
+        subDatasetName = 'Full-Field Digital Mammography (FFDM) images (2D)'
     elif thisDir.lower() == 'volume':
         subDatasetName = 'Digital Breast Tomosynthesis  (DBT) images (3D)'
     elif thisDir.lower() == 'proc':
