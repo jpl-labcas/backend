@@ -62,8 +62,6 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			
 			// query Solr for file with that specific id
 			SolrQuery request = new SolrQuery();
-			// FIXME
-			LOG.info("QUERYING FOR ID="+id);
 			request.setQuery("id:\""+id+"\"");
 			
 			// add access control
