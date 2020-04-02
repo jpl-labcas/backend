@@ -7,7 +7,7 @@ from utils import write_file_metadata
 root_dir = "/labcas-data/MD_Anderson_Pancreas_IPMN_images"
 archive_dirs = [d for d in glob.glob("%s/IPMN-0*" % root_dir)]
 for archive_dir in archive_dirs:
-    for filename in glob.glob("%s/1/*" % archive_dir):
+    for filename in glob.glob("%s/*" % archive_dir):
     
       # example filenames:
       # IPMN P2-01_L05_[56016,14321]_image_with_all_seg.tif
@@ -90,7 +90,7 @@ for archive_dir in archive_dirs:
       if 'IPMN P1' in filename:
          metadata['Panel'] = "Panel 1: PD-L1, CD68, PD-1, CD8, CD3, AE1/AE3, DAPI"
       elif 'IPMN P2' in filename:
-         metadata['Panel'] = "Panel2: CD20, CD45RO,FOXP3, Granzyme B, CD57, AE1/AE3, DAPI"
+         metadata['Panel'] = "Panel 2: CD20, CD45RO,FOXP3, Granzyme B, CD57, AE1/AE3, DAPI"
         
       
       # write out metadata file
