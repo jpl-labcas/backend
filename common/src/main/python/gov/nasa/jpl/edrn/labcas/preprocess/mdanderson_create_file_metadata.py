@@ -88,9 +88,9 @@ for archive_dir in archive_dirs:
     
       # Panel
       if 'IPMN P1' in filename:
-         metadata['Panel'] = "Panel 1: PD-L1, CD68, PD-1, CD8, CD3, AE1/AE3, DAPI"
+         metadata['Panel1'] = "PD-L1, CD68, PD-1, CD8, CD3, AE1/AE3, DAPI"
       elif 'IPMN P2' in filename:
-         metadata['Panel'] = "Panel 2: CD20, CD45RO,FOXP3, Granzyme B, CD57, AE1/AE3, DAPI"
+         metadata['Panel2'] = "CD20, CD45RO,FOXP3, Granzyme B, CD57, AE1/AE3, DAPI"
         
       
       # write out metadata file
