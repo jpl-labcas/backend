@@ -14,11 +14,7 @@ public interface TokenService {
 	 * Method to issue a new token
 	 * 
 	 * @param httpRequest
-	 * @param q
-	 * @param fq
-	 * @param start
-	 * @param rows
-	 * @param sort
+	 * @param requestContext
 	 * @return
 	 */
 	public Response auth(HttpServletRequest httpRequest, ContainerRequestContext requestContext);
