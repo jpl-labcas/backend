@@ -163,6 +163,7 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 		// enforce access control by adding OwnerPrincipal constraint
 		String acfq = getAccessControlQueryStringValue(requestContext);
 		
+		List<String> childrenDatasetIds = new ArrayList<String>();
 		for (String parentDatasetId : parentDatasetIds) {
 			
 			// build Solr query
@@ -185,9 +186,10 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 			List<String> childDatasetIds = this.extractIds(response);
 			// recursion
 			addChildrenDatasets(childDatasetIds, httpRequest, requestContext);
-			parentDatasetIds.addAll(childDatasetIds);
+			childrenDatasetIds.addAll(childDatasetIds);
 			
 		}
+		parentDatasetIds.addAll(childrenDatasetIds);
 		
 	}
 	
