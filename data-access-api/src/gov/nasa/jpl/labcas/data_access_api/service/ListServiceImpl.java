@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -60,7 +61,7 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 
 			LOG.info("Executing Solr request to 'collections' core: "+request.toString());
 			QueryResponse response = solrServers.get(SOLR_CORE_COLLECTIONS).query(request);
-			this.extractIds(response, collectionIds);
+			collectionIds.addAll( this.extractIds(response) );
 
 		} catch(UnsafeCharactersException unsafe) {
 			return Response.status(Status.BAD_REQUEST).entity(unsafe.getMessage()).build();
@@ -98,7 +99,10 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 
 			LOG.info("Executing Solr request to 'datasets' core: "+request.toString());
 			QueryResponse response = solrServers.get(SOLR_CORE_DATASETS).query(request);
-			this.extractIds(response, datasetIds);
+			datasetIds.addAll( this.extractIds(response) );
+			
+			// recursion over dataset children
+			addChildrenDatasets(datasetIds, httpRequest, requestContext);
 			
 		} catch(UnsafeCharactersException unsafe) {
 			return Response.status(Status.BAD_REQUEST).entity(unsafe.getMessage()).build();
@@ -109,10 +113,11 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 			LOG.warning(e.getMessage());
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
-
+		
 		// query for all files matching these dataset ids
 		if (datasetIds.size() > 0) {
 			return executeFilesQuery(SOLR_FIELD_DATASET_ID, datasetIds);
+			
 		} else {
 			return Response.status(Status.OK).entity("").build();
 		}
@@ -150,6 +155,40 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 
 		return Response.status(Status.OK).entity(results).build();
 
+	}
+	
+	private void addChildrenDatasets(List<String> parentDatasetIds,
+			final HttpServletRequest httpRequest, final ContainerRequestContext requestContext) throws UnsupportedEncodingException, SolrServerException {
+		
+		// enforce access control by adding OwnerPrincipal constraint
+		String acfq = getAccessControlQueryStringValue(requestContext);
+		
+		for (String parentDatasetId : parentDatasetIds) {
+			
+			// build Solr query
+			// parameter value encoding will be executed by SolrJ
+			SolrQuery request = new SolrQuery();
+			request.setQuery("DatasetParentId:"+parentDatasetId);
+			if (!acfq.isEmpty()) {
+				// enforce access control
+				request.setFilterQueries( new String[] {acfq} );
+			}
+			request.setStart(0);
+			request.setRows(1000);
+			// return sorted "id" field
+			request.setFields( new String[] { SOLR_FIELD_ID } );
+			// always sort by result "id"
+			request.setSortField(SOLR_FIELD_ID, ORDER.desc);
+			
+			LOG.info("Dataset children query: executing Solr request to 'datasets' core: "+request.toString());
+			QueryResponse response = solrServers.get(SOLR_CORE_DATASETS).query(request);
+			List<String> childDatasetIds = this.extractIds(response);
+			// recursion
+			addChildrenDatasets(childDatasetIds, httpRequest, requestContext);
+			parentDatasetIds.addAll(childDatasetIds);
+			
+		}
+		
 	}
 	
 	
@@ -289,7 +328,8 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 	 * @param response
 	 * @param ids
 	 */
-	private void extractIds(final QueryResponse response, List<String> ids) {
+	private List<String> extractIds(final QueryResponse response) {
+		List<String> ids = new ArrayList<String>();
 		SolrDocumentList docs = response.getResults();
 		Iterator<SolrDocument> iter = docs.iterator();
 		while (iter.hasNext()) {
@@ -298,6 +338,7 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 			String id = (String) doc.getFieldValue(SOLR_FIELD_ID);
 			ids.add(id);
 		}
+		return ids;
 	}
 	
 	/**
