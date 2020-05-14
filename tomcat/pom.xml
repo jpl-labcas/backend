@@ -82,6 +82,18 @@
 						</configuration>
 					</execution>
 					<execution>
+						<phase>install</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<id>override-server-xml</id>
+						<configuration>
+							<target>
+							    <copy file="server.xml" tofile="${tomcat.dir}/apache-tomcat/conf/server.xml"/>
+							</target>
+						</configuration>
+					</execution>
+					<execution>
 						<phase>clean</phase>
 						<goals>
 							<goal>run</goal>
