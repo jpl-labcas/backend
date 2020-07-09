@@ -1,12 +1,15 @@
 package gov.nasa.jpl.labcas.data_access_api.aws;
 
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 /**
  * Common utilities to handle AWS configuration parameters.
  *
  */
 public class AwsUtils {
+	
+	private final static Logger LOG = Logger.getLogger(AwsUtils.class.getName());
 	
 	/**
 	 * Retrieves the name of a profile from the environment,
@@ -52,7 +55,8 @@ public class AwsUtils {
 		
 		String bucket = System.getenv("S3_BUCKET");
 		if (bucket==null) {
-			throw new Exception("Env variable 'S3_BUCKET' is not set");
+			LOG.warning("Env variable 'S3_BUCKET' is not set");
+			return "S3_BUCKET";
 		} else {
 			return bucket;
 		}
