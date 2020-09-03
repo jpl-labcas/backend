@@ -31,7 +31,8 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>CorsFilter</filter-name>
-		<url-pattern>/*</url-pattern>
+		<!-- CORS filter currently disabled -->
+		<url-pattern>/XXX*</url-pattern>
 	</filter-mapping>
 
 </web-app>
