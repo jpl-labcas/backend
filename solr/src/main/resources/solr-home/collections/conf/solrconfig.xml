@@ -433,7 +433,8 @@
          will be overridden by parameters in the request
       -->
      <lst name="defaults">
-       <str name="echoParams">explicit</str>
+       <str name="echoParams">none</str>
+       <str name="omitHeader">true</str>
        <int name="rows">10</int>
      </lst>
 
@@ -442,7 +443,8 @@
   <!-- A request handler that returns indented JSON by default -->
   <requestHandler name="/query" class="solr.SearchHandler">
      <lst name="defaults">
-       <str name="echoParams">explicit</str>
+       <str name="echoParams">none</str>
+       <str name="omitHeader">true</str>
        <str name="wt">json</str>
        <str name="indent">true</str>
        <str name="df">text</str>
@@ -532,7 +534,7 @@
   <!-- Echo the request contents back to the client -->
   <requestHandler name="/debug/dump" class="solr.DumpRequestHandler" >
     <lst name="defaults">
-     <str name="echoParams">explicit</str> 
+     <str name="echoParams">none</str> 
      <str name="echoHandler">true</str>
     </lst>
   </requestHandler>
