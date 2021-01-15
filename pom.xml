@@ -35,7 +35,7 @@
     <oodt.dir>${env.LABCAS_HOME}</oodt.dir>
 
     <!-- Tomcat version and location -->
-    <tomcat.version>9.0.37</tomcat.version>
+    <tomcat.version>9.0.41</tomcat.version>
     <tomcat.dir>${env.LABCAS_HOME}</tomcat.dir>
 
     <!-- Solr/Solrj version and configuration location -->
