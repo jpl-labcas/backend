@@ -1,7 +1,7 @@
 // Script to export the image annotations in GeoJson format
 def imageData = getCurrentImageData()
 
-// Exract the annotations
+// Extract the annotations
 // def annotations = getAnnotationObjects()
 // def annotations = getDetectionObjects()
 def defaultColor = getColorRGB(200, 0, 0)
@@ -18,8 +18,8 @@ def gson = GsonTools.getInstance(prettyPrint)
 println gson.toJson(annotations)
 
 // Define output path (relative to project)
-//def outputDir = buildFilePath(PROJECT_BASE_DIR, 'geoJson')
-def outputDir = "/home/cinquini/geoJson"
+def outputDir = buildFilePath(PROJECT_BASE_DIR, 'geoJson')
+//def outputDir = "/home/cinquini/geoJson"
 mkdirs(outputDir)
 def name = GeneralTools.getNameWithoutExtension(imageData.getServer().getMetadata().getName())
 def path = buildFilePath(outputDir, name + "-geo.json")
