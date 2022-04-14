@@ -84,6 +84,10 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				LOG.info(doc.toString());
 				fileLocation = (String)doc.getFieldValue(SOLR_FIELD_FILE_LOCATION);
 				fileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
+				name=(String)doc.getFieldValue(SOLR_FIELD_NAME);
+				if (name!=null) {
+					fileName=name
+				}
 				filePath = fileLocation + "/" + fileName;
 				LOG.info("File path="+filePath.toString());
 				
