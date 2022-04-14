@@ -46,6 +46,7 @@ public class SolrProxy {
 	protected final static String SOLR_FIELD_DATASET_ID = "DatasetId";
 	protected final static String SOLR_FIELD_COLLECTION_ID = "CollectionId";
 	protected final static String SOLR_FIELD_FILE_NAME = "FileName";
+	protected final static String SOLR_FIELD_NAME = "name";
 	protected final static String SOLR_FIELD_FILE_LOCATION = "FileLocation";
 	protected final static int SOLR_MAX_NUM_FILES = 100;  // maximum number of files returned for each query
 	
