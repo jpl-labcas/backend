@@ -59,6 +59,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			String fileLocation = null;
 			String fileName = null;
 			String filePath = null;
+			String name = null;
 			
 			// query Solr for file with that specific id
 			SolrQuery request = new SolrQuery();
