@@ -74,7 +74,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			}
 			
 			// return file location on file system or S3 + file name
-			request.setFields( new String[] { SOLR_FIELD_FILE_LOCATION, SOLR_FIELD_FILE_NAME } );
+			request.setFields( new String[] { SOLR_FIELD_FILE_LOCATION, SOLR_FIELD_FILE_NAME, SOLR_FIELD_NAME } );
 			
 			// note: SolrJ will URL-encode the HTTP GET parameter values
 			LOG.info("Executing Solr request to 'files' core: "+request.toString());
