@@ -90,6 +90,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				LOG.warning("=== 2 got fileLocation = «" + fileLocation + "»");
 				fileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
 				LOG.warning("=== 3 got fileName = «" + fileName + "»");
+				LOG.warning("=== 3½ the class of «" + SOLR_FIELD_NAME + "» in the doc is «" + doc.getFieldValue(SOLR_FIELD_NAME).getClass().getName() + "»");
 				name=(String)doc.getFieldValue(SOLR_FIELD_NAME);
 				LOG.warning("=== 4 got name = «" + name + "»");
 				LOG.warning("HEYO 🚨 For id «" + id + "» and field «" + SOLR_FIELD_NAME + "» I got «" + name + "»");
