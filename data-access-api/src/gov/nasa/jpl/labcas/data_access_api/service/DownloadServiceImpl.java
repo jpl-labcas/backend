@@ -46,7 +46,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 	@GET
 	@Path("/download")
 	public Response download(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext, @QueryParam("id") String id) {
-		
+		LOG.warning("📯 HEYO! I am in the download part");
 		// note: @QueryParam('id') automatically URL-decodes the 'id' value
 		if (id==null) {
 			return Response.status(Status.BAD_REQUEST).entity("Missing mandatory parameter 'id'").build();
@@ -64,6 +64,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			// query Solr for file with that specific id
 			SolrQuery request = new SolrQuery();
 			request.setQuery("id:\""+id+"\"");
+			LOG.warning("🆔 HEYO! The id is «" + id + "»");
 			
 			// add access control
 			String acfq = getAccessControlQueryStringValue(requestContext);
