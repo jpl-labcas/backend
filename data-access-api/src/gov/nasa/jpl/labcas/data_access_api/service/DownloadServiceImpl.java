@@ -91,11 +91,14 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				fileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
 				LOG.warning("=== 3 got fileName = «" + fileName + "»");
 				name=(String)doc.getFieldValue(SOLR_FIELD_NAME);
+				LOG.warning("=== 4 got name = «" + name + "»");
 				LOG.warning("HEYO 🚨 For id «" + id + "» and field «" + SOLR_FIELD_NAME + "» I got «" + name + "»");
 				if (name!=null) {
+					LOG.warning("=== 5 since name is not null, setting fileName to «" + name + "»");
 					fileName=name;
 				}
 				filePath = fileLocation + "/" + fileName;
+				LOG.warning("=== 6 filePath is «" + filePath + "»");
 				LOG.info("File path="+filePath.toString());
 				
 				//return Response.status(Status.OK).entity(filePath.toString()).build();
@@ -130,6 +133,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				return Response.status(Status.NOT_FOUND).entity("File not found or not authorized").build();
 			}	
 		} catch (RuntimeException e) {
+			LOG.warning("=== RUNTIME EXCEPTION " + e.getClass().getName());
 			throw e;
 		} catch (Exception e) {
 			// send 500 "Internal Server Error" response
