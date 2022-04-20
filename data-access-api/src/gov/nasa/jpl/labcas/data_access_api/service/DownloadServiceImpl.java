@@ -2,6 +2,7 @@ package gov.nasa.jpl.labcas.data_access_api.service;
 
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
@@ -91,7 +92,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				fileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
 				LOG.warning("=== 3 got fileName = «" + fileName + "»");
 				LOG.warning("=== 3½ the class of «" + SOLR_FIELD_NAME + "» in the doc is «" + doc.getFieldValue(SOLR_FIELD_NAME).getClass().getName() + "»");
-				name=(String)doc.getFieldValue(SOLR_FIELD_NAME);
+				name = (String)((ArrayList)doc.getFieldValue(SOLR_FIELD_NAME)).get(0);
 				LOG.warning("=== 4 got name = «" + name + "»");
 				LOG.warning("HEYO 🚨 For id «" + id + "» and field «" + SOLR_FIELD_NAME + "» I got «" + name + "»");
 				if (name!=null) {
