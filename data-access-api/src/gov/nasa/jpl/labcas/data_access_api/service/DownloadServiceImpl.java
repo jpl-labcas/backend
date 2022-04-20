@@ -92,6 +92,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				fileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
 				LOG.info("=== 3 got fileName = «" + fileName + "»");
 				Object nameFieldValue = doc.getFieldValue(SOLR_FIELD_NAME);
+				LOG.info("=== 3½ ok");
 				if (nameFieldValue != null) {
 					ArrayList asList = (ArrayList) nameFieldValue;
 					if (asList.size() > 0) {
