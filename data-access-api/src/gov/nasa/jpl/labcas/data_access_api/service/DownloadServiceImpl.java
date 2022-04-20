@@ -91,15 +91,17 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				LOG.info("=== 2 got fileLocation = «" + fileLocation + "»");
 				fileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
 				LOG.info("=== 3 got fileName = «" + fileName + "»");
-				Object nameFieldValue = doc.getFieldValue(SOLR_FIELD_NAME);
-				LOG.info("=== 3½ ok");
-				if (nameFieldValue != null) {
-					ArrayList asList = (ArrayList) nameFieldValue;
-					if (asList.size() > 0) {
-						String firstNameField = (String) asList.get(0);
-						if (firstNameField != null && firstNameField.length() > 0) {
-							LOG.info("=== 4 name field value «" + firstNameField + "» overriding fileName «" + fileName + "»");
-							fileName = firstNameField;
+				if (doc.getFieldValuesMap().containsKey(SOLR_FIELD_NAME)) {
+					LOG.info("=== 3½ ok");
+					Object nameFieldValue = doc.getFieldValue(SOLR_FIELD_NAME);
+					if (nameFieldValue != null) {
+						ArrayList asList = (ArrayList) nameFieldValue;
+						if (asList.size() > 0) {
+							String firstNameField = (String) asList.get(0);
+							if (firstNameField != null && firstNameField.length() > 0) {
+								LOG.info("=== 4 name field value «" + firstNameField + "» overriding fileName «" + fileName + "»");
+								fileName = firstNameField;
+							}
 						}
 					}
 				}
