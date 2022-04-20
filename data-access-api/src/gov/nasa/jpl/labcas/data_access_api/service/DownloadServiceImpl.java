@@ -124,9 +124,11 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			} else {
 				return Response.status(Status.NOT_FOUND).entity("File not found or not authorized").build();
 			}	
-			
+		} catch (RuntimeException e) {
+			throw e;
 		} catch (Exception e) {
 			// send 500 "Internal Server Error" response
+			LOG.warning("💥 HEYO … nope! We got an exception of type «" + e.getClass().getName() + "»");
 			e.printStackTrace();
 			LOG.warning(e.getMessage());
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
