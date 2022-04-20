@@ -91,13 +91,16 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				LOG.info("=== 2 got fileLocation = «" + fileLocation + "»");
 				fileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
 				LOG.info("=== 3 got fileName = «" + fileName + "»");
-				LOG.info("=== 3½ the class of «" + SOLR_FIELD_NAME + "» in the doc is «" + doc.getFieldValue(SOLR_FIELD_NAME).getClass().getName() + "»");
-				name = (String)((ArrayList)doc.getFieldValue(SOLR_FIELD_NAME)).get(0);
-				LOG.info("=== 4 got name = «" + name + "»");
-				LOG.info("HEYO 🚨 For id «" + id + "» and field «" + SOLR_FIELD_NAME + "» I got «" + name + "»");
-				if (name!=null) {
-					LOG.info("=== 5 since name is not null, setting fileName to «" + name + "»");
-					fileName=name;
+				Object nameFieldValue = doc.getFieldValue(SOLR_FIELD_NAME);
+				if (nameFieldValue != null) {
+					ArrayList asList = (ArrayList) nameFieldValue;
+					if (asList.size() > 0) {
+						String firstNameField = (String) asList.get(0);
+						if (firstNameField != null && firstNameField.length() > 0) {
+							LOG.info("=== 4 name field value «" + firstNameField + "» overriding fileName «" + fileName + "»");
+							fileName = firstNameField;
+						}
+					}
 				}
 				filePath = fileLocation + "/" + fileName;
 				LOG.info("=== 6 filePath is «" + filePath + "»");
