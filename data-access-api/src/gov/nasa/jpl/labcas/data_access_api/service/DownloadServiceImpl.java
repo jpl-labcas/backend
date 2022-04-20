@@ -47,7 +47,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 	@GET
 	@Path("/download")
 	public Response download(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext, @QueryParam("id") String id) {
-		LOG.warning("📯 HEYO! I am in the download part");
+		LOG.info("📯 HEYO! I am in the download part");
 
 		// note: @QueryParam('id') automatically URL-decodes the 'id' value
 		if (id==null) {
@@ -66,7 +66,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			// query Solr for file with that specific id
 			SolrQuery request = new SolrQuery();
 			request.setQuery("id:\""+id+"\"");
-			LOG.warning("🆔 HEYO! The id is «" + id + "»");
+			LOG.info("🆔 HEYO! The id is «" + id + "»");
 			
 			// add access control
 			String acfq = getAccessControlQueryStringValue(requestContext);
@@ -86,21 +86,21 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			while (iter.hasNext()) {
 				SolrDocument doc = iter.next();
 				LOG.info(doc.toString());
-				LOG.warning("=== 1 about to get fileLocation");
+				LOG.info("=== 1 about to get fileLocation");
 				fileLocation = (String)doc.getFieldValue(SOLR_FIELD_FILE_LOCATION);
-				LOG.warning("=== 2 got fileLocation = «" + fileLocation + "»");
+				LOG.info("=== 2 got fileLocation = «" + fileLocation + "»");
 				fileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
-				LOG.warning("=== 3 got fileName = «" + fileName + "»");
-				LOG.warning("=== 3½ the class of «" + SOLR_FIELD_NAME + "» in the doc is «" + doc.getFieldValue(SOLR_FIELD_NAME).getClass().getName() + "»");
+				LOG.info("=== 3 got fileName = «" + fileName + "»");
+				LOG.info("=== 3½ the class of «" + SOLR_FIELD_NAME + "» in the doc is «" + doc.getFieldValue(SOLR_FIELD_NAME).getClass().getName() + "»");
 				name = (String)((ArrayList)doc.getFieldValue(SOLR_FIELD_NAME)).get(0);
-				LOG.warning("=== 4 got name = «" + name + "»");
-				LOG.warning("HEYO 🚨 For id «" + id + "» and field «" + SOLR_FIELD_NAME + "» I got «" + name + "»");
+				LOG.info("=== 4 got name = «" + name + "»");
+				LOG.info("HEYO 🚨 For id «" + id + "» and field «" + SOLR_FIELD_NAME + "» I got «" + name + "»");
 				if (name!=null) {
-					LOG.warning("=== 5 since name is not null, setting fileName to «" + name + "»");
+					LOG.info("=== 5 since name is not null, setting fileName to «" + name + "»");
 					fileName=name;
 				}
 				filePath = fileLocation + "/" + fileName;
-				LOG.warning("=== 6 filePath is «" + filePath + "»");
+				LOG.info("=== 6 filePath is «" + filePath + "»");
 				LOG.info("File path="+filePath.toString());
 				
 				//return Response.status(Status.OK).entity(filePath.toString()).build();
@@ -135,7 +135,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				return Response.status(Status.NOT_FOUND).entity("File not found or not authorized").build();
 			}	
 		} catch (RuntimeException e) {
-			LOG.warning("=== RUNTIME EXCEPTION " + e.getClass().getName());
+			LOG.info("=== RUNTIME EXCEPTION " + e.getClass().getName());
 			throw e;
 		} catch (Exception e) {
 			// send 500 "Internal Server Error" response
