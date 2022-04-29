@@ -59,6 +59,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 		try {
 			
 			String fileLocation = null;
+			String realFileName = null;
 			String fileName = null;
 			String filePath = null;
 			String name = null;
@@ -90,6 +91,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				fileLocation = (String)doc.getFieldValue(SOLR_FIELD_FILE_LOCATION);
 				LOG.info("=== 2 got fileLocation = «" + fileLocation + "»");
 				fileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
+				realFileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
 				LOG.info("=== 3 got fileName = «" + fileName + "»");
 				if (doc.getFieldValuesMap().containsKey(SOLR_FIELD_NAME)) {
 					LOG.info("=== 3½ ok");
@@ -100,12 +102,12 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 							String firstNameField = (String) asList.get(0);
 							if (firstNameField != null && firstNameField.length() > 0) {
 								LOG.info("=== 4 name field value «" + firstNameField + "» overriding fileName «" + fileName + "»");
-								fileName = firstNameField;
+								realFileName = firstNameField;
 							}
 						}
 					}
 				}
-				filePath = fileLocation + "/" + fileName;
+				filePath = fileLocation + "/" + realFileName;
 				LOG.info("=== 6 filePath is «" + filePath + "»");
 				LOG.info("File path="+filePath.toString());
 				
