@@ -24,7 +24,7 @@ cd $CATALINA_HOME/bin
 # solr.autoSoftCommit.maxTime: time to use a new searcher after last update (changes are visible to clients, but not persisted to disk)
 # solr.autoCommit.maxTime: time to commit changes to disk after last update
 cd $SOLR_DIR/solr/bin
-./solr start -p 8983 -s $SOLR_HOME -Dsolr.autoSoftCommit.maxTime=1000 -Dsolr.autoCommit.maxTime=10000
+./solr start -memory 1g -p 8983 -s $SOLR_HOME -Dsolr.autoSoftCommit.maxTime=1000 -Dsolr.autoCommit.maxTime=10000
 
 cd $LABCAS_HOME
 
