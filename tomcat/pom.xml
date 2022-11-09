@@ -101,7 +101,19 @@
 						<id>do-not-show-tomcat-version</id>
 						<configuration>
 							<target>
-							    <copy file="ServerInfo.properties" tofile="${tomcat.dir}/apache-tomcat/lib/org/apache/catalina/util/ServerInfo.properties "/>
+							    <copy file="ServerInfo.properties" tofile="${tomcat.dir}/apache-tomcat/lib/org/apache/catalina/util/ServerInfo.properties"/>
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<phase>install</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<id>hide-error-page-stack-traces</id>
+						<configuration>
+							<target>
+							    <copy file="web.xml" tofile="${tomcat.dir}/apache-tomcat/conf/web.xml"/>
 							</target>
 						</configuration>
 					</execution>
