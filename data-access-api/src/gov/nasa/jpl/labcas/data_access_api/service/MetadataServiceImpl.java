@@ -144,7 +144,7 @@ public class MetadataServiceImpl extends SolrProxy implements MetadataService {
 	
 	/**
 	 * Method to change/add/remove metadata fields to/from existing records.
-	 * @param solrCoreUrl: core specific Solr URL (example: "http://localhost:8983/solr/datasets")
+	 * @param solrCoreUrl: core specific Solr URL (example: "https://localhost:8984/solr/datasets")
 	 * @param action: one of "set", "add", "remove"
 	 * @param metadata: dictionary of queries to map of field name and values to be updated for all matching results
 	 *                  example:

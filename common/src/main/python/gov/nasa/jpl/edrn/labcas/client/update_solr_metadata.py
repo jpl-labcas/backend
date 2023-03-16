@@ -15,7 +15,7 @@ import json
 from pprint import pprint
 from solr_utils import updateSolr
 
-SOLR_URL = 'http://localhost:8983/solr'
+SOLR_URL = 'https://localhost:8984/solr'
 
 if __name__ == '__main__':
     

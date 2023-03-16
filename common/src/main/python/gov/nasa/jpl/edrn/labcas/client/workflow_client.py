@@ -15,7 +15,7 @@ class WorkflowManagerClient(object):
     def __init__(self, 
                  workflowManagerUrl='http://localhost:9001/',
                  fileManagerUrl='http://localhost:9000/',
-                 solrUrl='http://localhost:8983/solr/oodt-fm',
+                 solrUrl='https://localhost:8984/solr/oodt-fm',
                  verbose=False):
         
         self.workflowManagerServerProxy = xmlrpclib.ServerProxy(workflowManagerUrl, verbose=verbose, allow_none=True)

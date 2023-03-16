@@ -13,14 +13,15 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.HttpEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.client.solrj.SolrServer;
 
 import gov.nasa.jpl.labcas.data_access_api.filter.AuthenticationFilter;
 import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
@@ -35,7 +36,7 @@ public class SolrProxy {
 
 	// default base Solr URL if $FILEMGR_URL is not set
 	protected final static String SOLR_URL_PROPERTY = "solrUrl";
-	static String SOLR_URL = "http://localhost:8983/solr";
+	static String SOLR_URL = "https://localhost:8984/solr";
 	
 	protected final static String SOLR_CORE_COLLECTIONS = "collections";
 	protected final static String SOLR_CORE_DATASETS = "datasets";
@@ -69,6 +70,10 @@ public class SolrProxy {
 
 	static {
 		try {
+			// Since Solr is using a self-signed cert on https://localhost, we need to ignore cert errors:
+			Protocol https = new Protocol("https", new InsecureSocketFactory(), 443);
+			Protocol.registerProtocol("https", https);
+
 			SOLR_URL = Parameters.getParameterValue(SOLR_URL_PROPERTY);
 			solrServers.put(SOLR_CORE_COLLECTIONS, new CommonsHttpSolrServer(getBaseUrl(SOLR_CORE_COLLECTIONS)));
 			solrServers.put(SOLR_CORE_DATASETS, new CommonsHttpSolrServer(getBaseUrl(SOLR_CORE_DATASETS)));

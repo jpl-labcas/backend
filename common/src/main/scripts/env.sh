@@ -7,7 +7,7 @@ export JAVA_OPTS=-Xss2m
 export SOLR_DIR=$LABCAS_HOME
 export SOLR_HOME=$LABCAS_HOME/solr-home
 export SOLR_DATA_DIR=$LABCAS_HOME/solr-index
-export SOLR_URL=http://localhost:8983/solr/oodt-fm
+export SOLR_URL=https://localhost:8984/solr/oodt-fm
 
 #export PGE_ROOT=$LABCAS_HOME/pges
 

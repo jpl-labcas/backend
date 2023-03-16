@@ -7,7 +7,7 @@ dataset_id=$1
 echo 'Deleting dataset_id=$dataset_id'
 
 # delete products (aka files) metadata from Solr
-wget "http://localhost:8983/solr/oodt-fm/update?stream.body=<delete><query>DatasetId:${dataset_id}</query></delete>&commit=true"
+wget --no-check-certificate "https://localhost:8984/solr/oodt-fm/update?stream.body=<delete><query>DatasetId:${dataset_id}</query></delete>&commit=true"
 # cleanup
 rm update*
 

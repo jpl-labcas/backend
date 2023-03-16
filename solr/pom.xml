@@ -62,7 +62,6 @@
               </target>
             </configuration>
           </execution>
-         
           <execution>
             <id>symlink-solr</id>
             <phase>install</phase>
@@ -72,6 +71,28 @@
             <configuration>
               <target>
                 <symlink resource="${solr.dir}/solr-${solr.version}" link="${solr.dir}/solr" overwrite="true" />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-keypair</id>
+            <phase>install</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <genkey alias='solr-ssl' keyalg='RSA' keysize='4096' keypass='secret' storepass='secret'
+                  validity='720' keystore='${solr.dir}/etc/solr-ssl.keystore.p12' storetype='PKCS12'>
+                  <dname>
+                    <param name='CN' value='localhost'/>
+                    <param name='OU' value="Rojeh's International House of Solr-Powered Pancakes"/>
+                    <param name='O'  value='Jet Propulsion Laboratory'/>
+                    <param name='L'  value='Pasadena'/>
+                    <param name='ST' value='California'/>
+                    <param name='C'  value='US'/>
+                  </dname>
+                </genkey>
               </target>
             </configuration>
           </execution>
@@ -106,16 +127,17 @@
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
+          <failOnError>false</failOnError>
           <filesets>
             <fileset>
               <directory>${solr.dir}/solr-${solr.version}</directory>
             </fileset>
-            <!-- <fileset>
-              <directory>${solr.data.dir}</directory>
-            </fileset> -->
-            <!-- <fileset>
-              <directory>${solr.data.dir}</directory>
-            </fileset> -->
+            <fileset>
+              <directory>${solr.dir}/etc</directory>
+              <includes>
+                <include>solr-ssl.keystore.p12</include>
+              </includes>
+            </fileset>
           </filesets>
         </configuration>
       </plugin>

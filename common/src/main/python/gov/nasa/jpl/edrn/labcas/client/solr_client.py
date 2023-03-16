@@ -2,17 +2,17 @@ import json
 import urllib2
 import logging
 
+
 class SolrClient(object):
     
-    def __init__(self, solr_base_url='http://localhost:8983/solr'):
+    def __init__(self, solr_base_url='https://localhost:8984/solr'):
         self._solr_base_url = solr_base_url
         
     def post(self, metadata, solr_core):
         
         json_data_str = self._to_json(metadata)
         self._post_json(json_data_str, solr_core)
-        
-        
+
     def _to_json(self, data):
         '''
         Converts a Python dictionary or list to json format

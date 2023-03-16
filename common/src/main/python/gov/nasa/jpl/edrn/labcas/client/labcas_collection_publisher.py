@@ -9,13 +9,14 @@ from gov.nasa.jpl.edrn.labcas.utils import str2bool
 
 logging.basicConfig(level=logging.DEBUG)
 
+
 class LabcasCollectionPublisher(object):
     '''
     Publishes all datasets within a collection
     '''
     
     def __init__(self, 
-                 solr_url='http://localhost:8983/solr', 
+                 solr_url='https://localhost:8984/solr', 
                  workflow_url='http://localhost:9001',
                  update_collection=True):
         
@@ -91,7 +92,7 @@ if __name__ == '__main__':
                         help='Optional flag to update the datasets metadata (default: True)')
     parser.add_argument('--update_files', type=str2bool, default=True,
                         help='Optional flag to publish files (default: True)')
-    parser.add_argument('--solr_url', type=str, default='http://localhost:8983/solr',
+    parser.add_argument('--solr_url', type=str, default='https://localhost:8984/solr',
                         help='URL of Solr Index')
     parser.add_argument('--workflow_url', type=str, default='http://localhost:9001',
                         help='URL of Workflow Manager XML/RPC server')

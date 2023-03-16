@@ -6,7 +6,7 @@
 
 # Solr
 cd $SOLR_DIR/solr/bin
-./solr stop -p 8983
+./solr stop -p 8984
 
 # Apache Tomcat
 cd $CATALINA_HOME/bin

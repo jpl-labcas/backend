@@ -18,10 +18,9 @@ class LabcasDatasetPublisher(object):
     '''
     
     def __init__(self, 
-                 collection_name, solr_url='http://localhost:8983/solr', 
+                 collection_name, solr_url='https://localhost:8984/solr', 
                  workflow_url='http://localhost:9001', update_collection=True):
-        
-        
+
         self._collection_name = collection_name
         # NOTE: "CollectionId" must match directory location 
         # under $LABCAS_ARCHIVE or $LABCAS_STAGING
@@ -33,7 +32,6 @@ class LabcasDatasetPublisher(object):
         
         self._solr_client = SolrClient(solr_url)
         self._wmgr_client = WorkflowManagerClient(workflowManagerUrl=workflow_url)
-        
             
     def crawl(self, directory_path, dataset_parent_id=None, in_place=True, 
               update_datasets=True, update_files=True):
@@ -46,7 +44,7 @@ class LabcasDatasetPublisher(object):
         # collect metadata for this dataset
         metadata = self._get_dataset_metadata(directory_path, dataset_parent_id=dataset_parent_id)
         # FIXME: inject metadata from the client side
-        #metadata['DatasetSequenceType'] = 'MIP'
+        # metadata['DatasetSequenceType'] = 'MIP'
         logging.info("Dataset metadata: %s" % metadata)
         
         # update dataset metadata

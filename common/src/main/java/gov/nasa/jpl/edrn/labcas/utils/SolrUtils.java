@@ -15,23 +15,24 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.apache.oodt.cas.filemgr.repository.XMLRepositoryManager;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.commons.io.DirectorySelector;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrQuery.ORDER;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.SolrQuery.ORDER;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
@@ -53,7 +54,7 @@ public class SolrUtils {
 	private final static Logger LOG = Logger.getLogger(SolrUtils.class.getName());
 	
 	// default base Solr URL if $FILEMGR_URL is not set
-	private static String SOLR_URL = "http://localhost:8983/solr"; 
+	private static String SOLR_URL = "https://localhost:8984/solr"; 
 	
 	// list of OODT fields that are NOT transferred to the public Solr index
 	private static Set<String> IGNORED_FIELDS = new HashSet<String>(
@@ -87,20 +88,28 @@ public class SolrUtils {
 		try {
 			
 			if (System.getenv("FILEMGR_URL")!=null) {
-				SOLR_URL = System.getenv("FILEMGR_URL").replaceAll("9000", "8983")+"/solr";
+				SOLR_URL = System.getenv("FILEMGR_URL").replaceAll("9000", "8984")+"/solr";
 				// remove possible '//'
-				SOLR_URL = SOLR_URL.replaceAll("8983//","8983/");
+				SOLR_URL = SOLR_URL.replaceAll("8984//", "8984/");
+				SOLR_URL = SOLR_URL.replaceAll("http://", "https://");
 			}
 			LOG.info("Using base SOLR_URL="+SOLR_URL);
-			
+
+			// Since Solr is using a self-signed cert on https://localhost, we need to ignore cert errors:
+			Protocol https = new Protocol("https", new InsecureSocketFactory(), 443);
+			Protocol.registerProtocol("https", https);
+
 			solrServers.put(SOLR_CORE_COLLECTIONS, new CommonsHttpSolrServer(SOLR_URL+"/"+SOLR_CORE_COLLECTIONS) );
 			solrServers.put(SOLR_CORE_DATASETS, new CommonsHttpSolrServer(SOLR_URL+"/"+SOLR_CORE_DATASETS) );
 			solrServers.put(SOLR_CORE_FILES, new CommonsHttpSolrServer(SOLR_URL+"/"+SOLR_CORE_FILES) );
 			solrServers.put(SOLR_CORE_OODT, new CommonsHttpSolrServer(SOLR_URL+"/"+SOLR_CORE_OODT) );
 			
-		} catch(MalformedURLException e) {
-			e.printStackTrace();
-			LOG.warning(e.getMessage());
+		} catch (RuntimeException ex) {
+			throw ex;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			LOG.warning(ex.getMessage());
+			System.exit(-42);
 		}
 	}
 
