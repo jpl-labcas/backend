@@ -14,13 +14,18 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.oodt.cas.crawl.action.CrawlerAction;
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.metadata.Metadata;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
 import gov.nasa.jpl.edrn.labcas.utils.GeneralUtils;
+
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+
 
 /**
  * Class that publishes images of compatible type to the QUIP Image Viewer.
@@ -84,7 +89,19 @@ public class QuipImageViewerPostIngestionAction extends CrawlerAction {
 		
 		LOG.info("QUIP: uploading file: "+product.getAbsolutePath());
 
-		HttpClient httpclient = new DefaultHttpClient();
+		HttpClient httpclient = null;
+		try {
+			httpclient = HttpClients.custom()
+				.setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, TrustSelfSignedStrategy.INSTANCE).build())
+				.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+				.build();
+		} catch (RuntimeException ex) {
+			throw ex;
+		} catch (Exception ex) {
+			System.err.println("I give up in QuipImageViewerPostIngestionAction.uploadFile");
+			System.exit(42);
+		}
+
 		HttpEntity resEntity = null;
 		
 		try {

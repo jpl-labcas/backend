@@ -15,6 +15,11 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+
+
 /**
  * Simple class to execute an HTTP GET/POST request.
  * This class is a wrapper around the Apache HTTP client.
@@ -32,7 +37,19 @@ public class HttpClient {
 	 */
 	public Response doGet(final String url) {
 
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+		CloseableHttpClient httpclient = null;
+		try {
+			httpclient = HttpClients.custom()
+				.setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, TrustSelfSignedStrategy.INSTANCE).build())
+				.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+				.build();
+		} catch (RuntimeException ex) {
+			throw ex;
+		} catch (Exception ex) {
+			System.err.println("I give up in HttpClient.doGet");
+			System.exit(42);
+		}
+
 		LOG.info("HTTP request: " + url);
 		HttpGet httpGet = new HttpGet(url);
 			

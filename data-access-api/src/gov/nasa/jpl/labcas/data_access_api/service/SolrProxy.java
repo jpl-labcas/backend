@@ -26,6 +26,10 @@ import org.apache.solr.client.solrj.SolrServer;
 import gov.nasa.jpl.labcas.data_access_api.filter.AuthenticationFilter;
 import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
 
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+
 /**
  * Base class to proxy query/download/metadata requests to a multi-core Solr server.
  * 
@@ -115,8 +119,19 @@ public class SolrProxy {
 	static Response query(String url) {
 		
 		try {
+			CloseableHttpClient httpclient = null;
+			try {
+				httpclient = HttpClients.custom()
+					.setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, TrustSelfSignedStrategy.INSTANCE).build())
+					.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+					.build();
+			} catch (RuntimeException ex) {
+				throw ex;
+			} catch (Exception ex) {
+				System.err.println("I give up in SolrProxy.query");
+				System.exit(42);
+			}
 
-			CloseableHttpClient httpclient = HttpClients.createDefault();
 			LOG.info("Executing Solr HTTP request: " + url);
 			HttpGet httpGet = new HttpGet(url);
 			CloseableHttpResponse response = httpclient.execute(httpGet);

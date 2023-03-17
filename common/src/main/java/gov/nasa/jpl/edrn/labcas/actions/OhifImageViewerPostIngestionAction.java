@@ -10,12 +10,15 @@ import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpEntity;
+
+	
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
+
+	
 import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.oodt.cas.crawl.action.CrawlerAction;
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.metadata.Metadata;
@@ -23,6 +26,12 @@ import org.apache.oodt.cas.metadata.Metadata;
 import gov.nasa.jpl.edrn.labcas.Constants;
 import gov.nasa.jpl.edrn.labcas.utils.FileManagerUtils;
 import gov.nasa.jpl.edrn.labcas.utils.GeneralUtils;
+
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+
 
 /**
  * Class that publishes DICOM images to the Open Health Image Foundation (OHIF) Viewer.
@@ -82,8 +91,20 @@ public class OhifImageViewerPostIngestionAction extends CrawlerAction {
 		LOG.info("OHIF: uploading file: "+product.getAbsolutePath()+" StudyInstanceUID="+studyInstanceId);
 
 		FileManagerUtils.printMetadata(productMetadata);
-		
-		HttpClient httpclient = new DefaultHttpClient();
+
+		HttpClient httpclient = null;
+		try {
+			httpclient = HttpClients.custom()
+				.setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, TrustSelfSignedStrategy.INSTANCE).build())
+				.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+				.build();
+		} catch (RuntimeException ex) {
+			throw ex;
+		} catch (Exception ex) {
+			System.err.println("I give up in OhifImageViewerPostIngestionAction.uploadFile");
+			System.exit(42);
+		}
+
 		HttpEntity resEntity = null;
 		
 		try {

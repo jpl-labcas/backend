@@ -22,7 +22,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.apache.oodt.cas.filemgr.repository.XMLRepositoryManager;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
@@ -42,6 +41,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import gov.nasa.jpl.edrn.labcas.Constants;
+
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+
+
 
 /**
  * Class containing general utilities to query/update the Solr index.
@@ -611,14 +617,27 @@ public class SolrUtils {
 	    //String strURL = "http://edrn-frontend.jpl.nasa.gov:8080/solr/oodt-fm/update?commit=true";
 	    String solrUpdateUrl = SOLR_URL + "/update?commit=true";
 	
-	    HttpClient client = new DefaultHttpClient();
+		HttpClient httpclient = null;
+		try {
+			httpclient = HttpClients.custom()
+				.setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, TrustSelfSignedStrategy.INSTANCE).build())
+				.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+				.build();
+		} catch (RuntimeException ex) {
+			throw ex;
+		} catch (Exception ex) {
+			System.err.println("I give up in SolrUtils.postSolrXml");
+			System.exit(42);
+		}
+
+
 	    HttpPost post = new HttpPost(solrUpdateUrl);
 	    
 	    try {
 		    HttpEntity entity = new ByteArrayEntity(solrXmlDocument.getBytes("UTF-8"));
 		    post.setEntity(entity);
 		    post.setHeader("Content-Type", "application/xml");
-		    HttpResponse response = client.execute(post);
+		    HttpResponse response = httpclient.execute(post);
 		    String result = EntityUtils.toString(response.getEntity());
 		    LOG.info("POST result="+result);
 	   
