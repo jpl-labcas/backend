@@ -92,13 +92,24 @@ public class HttpClient {
 	 */
 	public Response doPost(final String url, final String data, String contentType) {
 		
-			
 		LOG.info("Posting to url="+url+" data="+data);
-		CloseableHttpClient client = HttpClients.createDefault();
+
+		CloseableHttpClient client = null;
+		try {
+			client = HttpClients.custom()
+				.setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, TrustSelfSignedStrategy.INSTANCE).build())
+				.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+				.build();
+		} catch (RuntimeException ex) {
+			throw ex;
+		} catch (Exception ex) {
+			System.err.println("I give up in HttpClient.doGet");
+			System.exit(42);
+		}
+
 	    HttpPost httpPost = new HttpPost(url);
 		    
 		try {
-			
 		    StringEntity payload = new StringEntity(data);
 		    httpPost.setEntity(payload);
 		    httpPost.setHeader("Accept", contentType);
