@@ -16,4 +16,7 @@ Development
 To build locally, maybe try:
 
     mkdir /tmp/labcas
-    env "JAVA_HOME=`/usr/libexec/java_home --version 1.8.0`" LABCAS_HOME=/tmp/labcas mvn clean install
+    export "JAVA_HOME=`/usr/libexec/java_home --version 1.8.0`"
+    export LABCAS_HOME=/tmp/labcas
+    export PATH=${JAVA_HOME}/bin:$PATH
+    mvn clean install
