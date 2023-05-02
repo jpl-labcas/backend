@@ -53,9 +53,13 @@
          APR (HTTP/AJP) Connector: /docs/apr.html
          Define a non-SSL/TLS HTTP/1.1 Connector on port 8080
     -->
+
+    <!-- SPL: we can't listen on port 8080 unencrypted anymore
     <Connector port="8080" protocol="HTTP/1.1" server="Get bent"
                connectionTimeout="20000"
                redirectPort="8444" />
+    -->
+
     <!-- A "Connector" using the shared thread pool-->
     <!--
     <Connector executor="tomcatThreadPool"
