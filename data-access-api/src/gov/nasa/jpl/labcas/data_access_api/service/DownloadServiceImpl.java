@@ -146,8 +146,9 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 						// TODO: rotation? Or just use Java Logging?
 						PrintWriter writer = null;
 						try {
-							writer = new PrintWriter(new BufferedWriter(new FileWriter(downloadLog)));
-							writer.print(now + ";" + dn + ";" + id);
+							// true to FileWriter means append
+							writer = new PrintWriter(new BufferedWriter(new FileWriter(downloadLog, true)));
+							writer.println(now + ";" + dn + ";" + id);
 						} finally {
 							if (writer != null) writer.close();
 						}
