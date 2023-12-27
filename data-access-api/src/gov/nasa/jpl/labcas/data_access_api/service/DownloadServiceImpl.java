@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +41,9 @@ import gov.nasa.jpl.labcas.data_access_api.utils.DownloadHelper;
 public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 	
 	private final static Logger LOG = Logger.getLogger(DownloadServiceImpl.class.getName());
+
+	// Download audit track
+	private static final SimpleDateFormat iso8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
 	
 	// class that generates temporary URLs for S3 downloads
 	AwsS3DownloadHelper awsS3DownloadHelper;
@@ -141,7 +145,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 					// Download audit track
 					try {
 						String dn = (String) requestContext.getProperty(AuthenticationFilter.USER_DN);
-						Date now = new Date();
+						String now = iso8601.format(new Date());
 						File downloadLog = new File(System.getenv("LABCAS_HOME"), "download.log");
 						// TODO: rotation? Or just use Java Logging?
 						PrintWriter writer = null;
