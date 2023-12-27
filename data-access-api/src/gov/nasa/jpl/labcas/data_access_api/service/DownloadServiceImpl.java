@@ -6,6 +6,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
+// Download audit track
+import gov.nasa.jpl.labcas.data_access_api.filter.AuthenticationFilter;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -129,7 +138,26 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 					return Response.temporaryRedirect(url.toURI()).build();
 					
 				} else {
-					// log it
+					// Download audit track
+					try {
+						String dn = (String) requestContext.getProperty(AuthenticationFilter.USER_DN);
+						Date now = new Date();
+						File downloadLog = new File(System.getenv("LABCAS_HOME"), "download.log");
+						// TODO: rotation? Or just use Java Logging?
+						PrintWriter writer = null;
+						try {
+							writer = new PrintWriter(new BufferedWriter(new FileWriter(downloadLog)));
+							writer.print(now + ";" + dn + ";" + id);
+						} finally {
+							if (writer != null) writer.close();
+						}
+					} catch (IOException ex) {
+						LOG.warning("Could not log this download (" + ex.getClass().getName() + ") but continuing");
+						ex.printStackTrace();
+						LOG.warning(ex.getMessage());
+						LOG.warning("Now continuing to download the file with the download helper…");
+					}
+
 					// read file from local file system and stream it to client
 					DownloadHelper dh = new DownloadHelper(Paths.get(filePath));
 			        return Response
