@@ -129,7 +129,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 					return Response.temporaryRedirect(url.toURI()).build();
 					
 				} else {
-				
+					// log it
 					// read file from local file system and stream it to client
 					DownloadHelper dh = new DownloadHelper(Paths.get(filePath));
 			        return Response
