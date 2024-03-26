@@ -114,6 +114,8 @@
 
    <!-- LABCAS SCHEMA START -->
 
+   <field name='uuid' type='string' indexed='true' stored='true' required='false' multiValued='false' />
+
    <!-- start LabCAS core attributes specific to datasets -->
    <field name="CollectionName" type="string" indexed="true" stored="true" required="true" multiValued="false" />
    <field name="CollectionId" type="string" indexed="true" stored="true" required="true" multiValued="false" />
