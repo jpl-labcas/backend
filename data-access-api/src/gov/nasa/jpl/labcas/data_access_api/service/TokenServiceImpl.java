@@ -22,7 +22,6 @@ public class TokenServiceImpl implements TokenService  {
 	public TokenServiceImpl() {}
 
 	@Override
-	@GET
 	@POST
 	@Path("/auth")
 	public Response auth(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext) {
