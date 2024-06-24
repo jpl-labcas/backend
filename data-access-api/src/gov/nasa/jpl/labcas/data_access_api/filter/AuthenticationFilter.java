@@ -1,11 +1,16 @@
 package gov.nasa.jpl.labcas.data_access_api.filter;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.logging.Logger;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+import java.util.NoSuchElementException;
 
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
@@ -16,6 +21,11 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.MultivaluedHashMap;
+
+import java.net.URLDecoder;
+import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -57,6 +67,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		// extract username and password from encoded HTTP 'Authorization' header
 		// header value format will be "Basic encodedstring" for Basic authentication.
 		// Example "Basic YWRtaW46YWRtaW4="
+		//
+		// But if POST'ed, then the username and password are url-form-encoded 
 		String authCredentials = containerRequest.getHeaderString(HttpHeaders.AUTHORIZATION);
 		LOG.info("Establishing authentication: HTTP header="+authCredentials);
 		
@@ -65,21 +77,52 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		LOG.info("Establishing authentication: '"+JWT+"' cookie="+cookie);
 		
 		if (authCredentials==null) {
-			
+			LOG.info("👉 authCredentials is null");
 			if (cookie!=null) {
-				
+				LOG.info("👉 cookie is not null");
 				DecodedJWT jwt = jwtConsumer.verifyToken(cookie);
 				userdn = jwt.getSubject();
 				LOG.info("Retrieved user DN = "+userdn);
 				
 			} else {
-			
-				LOG.info("No authentication provided: grant guest access only");
-				containerRequest.setProperty(USER_DN, GUEST_USER_DN);
-				// empty group list
-				containerRequest.setProperty(USER_GROUPS_PROPERTY, new ArrayList<String>());
-				return;
-				
+				LOG.info("👉 checking for POST'ed creds");
+				// Check for POST'ed credentials
+				try {
+					InputStream entityStream = containerRequest.getEntityStream();
+					String body = new Scanner(entityStream, StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
+					MultivaluedMap<String, String> formParams = parseFormParams(body);
+					String username = formParams.getFirst("username");
+					String password = formParams.getFirst("password");
+					containerRequest.setEntityStream(new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8)));
+
+					LOG.info("👉 Possible POST username «" + username + "»");
+
+					userdn = userService.getValidUser(username, password);
+					LOG.info("Retrieved user DN = "+userdn);
+					// create Jason Web Token?
+					String uriPath = containerRequest.getUriInfo().getPath();
+					LOG.info("URI path="+uriPath);
+					if (uriPath.contains("auth")) {
+						String token = jwtProducer.getToken(userdn);
+						LOG.info("Generated token = "+token);
+						containerRequest.setProperty(JWT, token);
+					}
+				} catch (NoSuchElementException ex) {
+					LOG.info("🕵️ No creds given, so grant guest access only");
+					containerRequest.setProperty(USER_DN, GUEST_USER_DN);
+					// empty group list
+					containerRequest.setProperty(USER_GROUPS_PROPERTY, new ArrayList<String>());
+					return;
+				} catch (RuntimeException ex) {
+					LOG.warning("🚨 how did we get here? exception " + ex);
+					throw ex;
+				} catch (Exception ex) {
+					LOG.info("🤷 Can't figure out creds, so grant guest access only");
+					containerRequest.setProperty(USER_DN, GUEST_USER_DN);
+					// empty group list
+					containerRequest.setProperty(USER_GROUPS_PROPERTY, new ArrayList<String>());
+					return;
+				}
 				// 401: authentication required
 				// custom exception to send the "WWW-Authenticate" header and trigger client challenge
 				//throw new MissingAuthenticationHeaderException(Status.UNAUTHORIZED);
@@ -164,6 +207,22 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		} else {
 			return null;
 		}
+	}
 
+	private MultivaluedMap<String, String> parseFormParams(String body) {
+		try {
+			MultivaluedMap<String, String> formParams = new MultivaluedHashMap<>();
+			String[] params = body.split("&");
+			for (String param: params) {
+				String[] keyValue = param.split("=");
+				String key = URLDecoder.decode(keyValue[0], "UTF-8");
+				String value = keyValue.length > 1? URLDecoder.decode(keyValue[1], "UTF-8") : "";
+				formParams.add(key, value);
+			}
+			return formParams;
+		} catch (UnsupportedEncodingException ex) {
+			ex.printStackTrace();
+			throw new IllegalStateException("Unexpected UnsupportedEncodingException, aborting", ex);
+		}
 	}
 }
