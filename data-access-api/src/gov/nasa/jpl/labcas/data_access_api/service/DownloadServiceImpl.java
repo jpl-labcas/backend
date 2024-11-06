@@ -36,6 +36,12 @@ import gov.nasa.jpl.labcas.data_access_api.aws.AwsS3DownloadHelper;
 import gov.nasa.jpl.labcas.data_access_api.aws.AwsUtils;
 import gov.nasa.jpl.labcas.data_access_api.utils.DownloadHelper;
 
+import java.net.URLEncoder;
+import java.net.HttpURLConnection;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+
 @Path("/")
 @Produces(MediaType.APPLICATION_OCTET_STREAM)
 public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
@@ -185,7 +191,71 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			LOG.warning(e.getMessage());
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
-
 	}
-	
+
+
+	private static String initiateZIP(String email, String query) throws IOException {
+		LOG.info("👀 initiateZIP for " + email + " and query " + query);
+		// Should we make this a parameter?
+		String urlString = String.format(
+			"https://edrn-docker/zipperlab/initiate?email=%s&query=%s",
+			URLEncoder.encode(email, "UTF-8"),
+			URLEncoder.encode(query, "UTF-8")
+		);
+		LOG.info("👀 URL string formatted: " + urlString);
+		URL url = new URL(urlString);
+		LOG.info("👀 calling URL " + url);
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+			LOG.info("👀 got OK status, so reading the UUID");
+			BufferedReader in = null;
+			try {
+				in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				String uuid = in.readLine();
+				LOG.info("👀 Got UUID " + uuid);
+				return uuid;
+			} finally {
+				if (in != null) in.close();
+			}
+		} else {
+			LOG.info("🚨 Got HTTP status " + connection.getResponseCode());
+			throw new IOException("Request failed with HTTP status " + connection.getResponseCode());
+		}
+	}
+
+
+	@Override
+	@GET
+	@Path("/zip")
+	@Produces("text/plain")
+	public Response zip(
+		@Context HttpServletRequest httpRequest,
+		@Context ContainerRequestContext requestContext,
+		@QueryParam("email") String email,
+		@QueryParam("query") String query
+	) {
+		LOG.info("👀 I see you, " + email + ", with your zip request for " + query);
+		try {
+			LOG.info("👀 getting uuid");
+			String uuid = initiateZIP(email, query);
+			LOG.info("👀 uuid is " + uuid);
+			return Response.status(Status.OK).entity("Your UIID is: " + uuid + "\n").build();
+		} catch (IOException ex) {
+			LOG.warning("🚨🚨🚨 " + ex.getMessage());
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+		}
+	}
+
+	@Override
+	@GET
+	@Path("/ping")
+	@Produces("text/plain")
+	public Response ping(
+		@Context HttpServletRequest httpRequest,
+		@Context ContainerRequestContext requestContext,
+		@QueryParam("message") String message
+	) {
+		LOG.info("📡 Message received: " + message);
+		return Response.status(Status.OK).entity("🧾 Message received, " + message + "\n").build();
+	}
 }

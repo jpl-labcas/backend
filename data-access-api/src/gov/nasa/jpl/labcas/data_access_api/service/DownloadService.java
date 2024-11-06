@@ -15,5 +15,11 @@ public interface DownloadService {
 	 * @return
 	 */
 	public Response download(HttpServletRequest httpRequest, ContainerRequestContext requestContext, String id);
-	
+
+	public Response zip(
+		HttpServletRequest httpRequest, ContainerRequestContext requestContext, String email, String query
+	);
+
+	public Response ping(HttpServletRequest httpRequest, ContainerRequestContext requestContext, String message);
+
 }
