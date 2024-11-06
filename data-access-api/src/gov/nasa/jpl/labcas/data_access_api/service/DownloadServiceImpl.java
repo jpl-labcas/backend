@@ -198,7 +198,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 		LOG.info("👀 initiateZIP for " + email + " and query " + query);
 		// Should we make this a parameter?
 		String urlString = String.format(
-			"https://edrn-docker/zipperlab/initiate?email=%s&query=%s",
+			"https://edrn-docker/zipperlab/edrn?operation=initiate&email=%s&query=%s",
 			URLEncoder.encode(email, "UTF-8"),
 			URLEncoder.encode(query, "UTF-8")
 		);
