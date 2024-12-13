@@ -14,3 +14,7 @@
 **/*.class
 **/bin
 **/$*
+**/__pycache__/*
+*.py[cod]
+.venv/
+venv/

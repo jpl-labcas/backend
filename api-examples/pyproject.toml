@@ -1,0 +1,47 @@
+[project]
+name = 'jpl.labcas.examples'
+dynamic = ['version']
+requires-python = '>=3.9'
+dependencies = [
+    'pysolr ~= 3.10.0',
+]
+authors = [
+    {name = 'Sean Kelly', email='kelly@seankelly.biz'}
+]
+description = 'Example clients of the Solr API for the Laboratory Catalog and Archive Service of the Early Detection Research Network'
+readme = 'README.md'
+keywords = ['data', 'catalog', 'archive', 'edrn', 'labcas', 'cancer', 'nih', 'nci', 'jpl', 'nasa', 'examples', 'solr']
+classifiers = [
+    'Development Status :: 2 - Pre-Alpha',
+    'Intended Audience :: Healthcare Industry',
+    'Intended Audience :: Science/Research',
+    'License :: OSI Approved :: Apache Software License',
+    'Natural Language :: English',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python :: 3',
+]
+license = {file = 'LICENSE.md'}
+
+
+[project.urls]
+Homepage = 'https://github.com/EDRN/labcas-backend'
+Issues = 'https://github.com/EDRN/labcas-backend/issues'
+
+
+[project.scripts]
+events-by-blind = 'jpl.labcas.examples.events_by_blind:main'
+cibbbcd-events = 'jpl.labcas.examples.cibbbcd_events:main'
+
+
+[tool.hatch.version]
+path = 'src/jpl/labcas/examples/VERSION.txt'
+pattern = '(?P<version>.+)'
+
+
+[tool.hatch.build.targets.wheel]
+packages = ['src/jpl']
+
+
+[build-system]
+requires = ['hatchling']
+build-backend = 'hatchling.build'
