@@ -1,4 +1,4 @@
-SOLR_HEAP="1g"
+SOLR_HEAP="2g"
 
 # By default we now run Solr with SSL on:
 SOLR_SSL_ENABLED=true
