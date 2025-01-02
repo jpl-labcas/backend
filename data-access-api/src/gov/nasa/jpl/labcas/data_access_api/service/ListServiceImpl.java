@@ -97,7 +97,7 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 			// build Solr query to 'datasets' core
 			SolrQuery request = this.buildPassThroughQuery(httpRequest, requestContext, q, fq, start, rows);
 
-			LOG.info("Executing Solr request to 'datasets' core: "+request.toString());
+			LOG.info("Executing Solr request to 'datasets' core: " + request.toString());
 			QueryResponse response = solrServers.get(SOLR_CORE_DATASETS).query(request);
 			datasetIds.addAll( this.extractIds(response) );
 			
@@ -216,7 +216,9 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 		// have already been URL-decoded by the upstream methods
 		LOG.info("HTTP request URL=" + httpRequest.getRequestURL());
 		LOG.info("HTTP request query string=" + httpRequest.getQueryString());
-		
+		LOG.info("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+		LOG.info("The start = " + start + " and the rows = " + rows);
+
 		// check user input for unsafe characters
 		if (!isSafe(q) || !isSafe(fq)) {
 			LOG.warning("Detected UNSAFE CHARACTERS in request");
@@ -249,6 +251,9 @@ public class ListServiceImpl extends SolrProxy implements ListService  {
 		request.setFields( new String[] { SOLR_FIELD_ID } );
 		// always sort by result "id"
 		request.setSortField(SOLR_FIELD_ID, ORDER.desc);
+
+		LOG.info("So the computed request = " + request);
+		LOG.info("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 		
 		return request;
 
