@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.Date;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -172,7 +173,17 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 				
 				DecodedJWT jwt = jwtConsumer.verifyToken(token);
 				userdn = jwt.getSubject();
-				LOG.info("Retrieved user DN = "+userdn);
+				LOG.info("🧐🧐🧐 Retrieved user DN = " + userdn);
+
+				Date modified = userService.getModificationTime(userdn);
+				Date issued = jwt.getIssuedAt();
+
+				if (modified.after(issued)) {
+					LOG.info("🚨‼️🚨‼️ user " + userdn + " LDAP record was modified on " + modified
+						+ " which is later than JWT issue date of " + issued + " so this JWT is no longer valid"
+					);
+					throw new WebApplicationException(Status.UNAUTHORIZED);
+				}
 			
 			} catch(JWTVerificationException e) {
 				LOG.warning("Detected an invalid JWT token");

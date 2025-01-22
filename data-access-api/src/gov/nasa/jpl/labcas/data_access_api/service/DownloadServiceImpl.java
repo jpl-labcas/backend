@@ -82,6 +82,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			String fileName = null;
 			String filePath = null;
 			String name = null;
+			boolean iterating_through_possibilities = false;
 			
 			// query Solr for file with that specific id
 			SolrQuery request = new SolrQuery();
@@ -90,6 +91,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			
 			// add access control
 			String acfq = getAccessControlQueryStringValue(requestContext);
+			LOG.info("🧏 ACFQ = " + acfq + ".");
 			if (!acfq.isEmpty()) {
 				request.setFilterQueries(acfq);
 			}
@@ -100,10 +102,12 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			// note: SolrJ will URL-encode the HTTP GET parameter values
 			LOG.info("Executing Solr request to 'files' core: "+request.toString());
 			QueryResponse response = solrServers.get(SOLR_CORE_FILES).query(request);
-			
+			LOG.info("💯 Num found: " + response.getResults().getNumFound());
+
 			SolrDocumentList docs = response.getResults();
 			Iterator<SolrDocument> iter = docs.iterator();
 			while (iter.hasNext()) {
+				iterating_through_possibilities = true;
 				SolrDocument doc = iter.next();
 				LOG.info(doc.toString());
 				LOG.info("=== 1 about to get fileLocation");
@@ -179,7 +183,9 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 				}
 	        
 			} else {
-				return Response.status(Status.NOT_FOUND).entity("File not found or not authorized").build();
+				return Response.status(Status.NOT_FOUND).entity(
+					"🤢 File not found or not authorized; " + iterating_through_possibilities
+				).build();
 			}	
 		} catch (RuntimeException e) {
 			LOG.info("=== RUNTIME EXCEPTION " + e.getClass().getName());

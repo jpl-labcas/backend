@@ -1,6 +1,7 @@
 package gov.nasa.jpl.labcas.data_access_api.filter;
 
 import java.util.List;
+import java.util.Date;
 
 /**
  * Specification of service used to query the 
@@ -27,4 +28,11 @@ public interface UserService {
 	 */
 	List<String> getUserGroups(String userdn);
 
+	/**
+	 * Get the modification time of the user.
+	 *
+	 * @param userDN
+	 * return Time stamp
+	 */
+	Date getModificationTime(String userDN);
 }

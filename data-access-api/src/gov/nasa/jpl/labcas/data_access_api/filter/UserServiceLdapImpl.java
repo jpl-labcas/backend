@@ -1,18 +1,24 @@
 package gov.nasa.jpl.labcas.data_access_api.filter;
 
+import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
-
+import java.util.TimeZone;
 import javax.naming.Context;
-import javax.naming.NamingEnumeration;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-
-import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
+import javax.naming.NamingEnumeration;
 
 /**
  * Implementation of @see UserService that queries an LDAP database.
@@ -21,6 +27,13 @@ import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
  *
  */
 public class UserServiceLdapImpl implements UserService {
+	private static final Date UNIX_EPOCH = new Date(0L);
+	private static final SimpleDateFormat LDAP_DATE_FORMAT;
+
+	static {
+		LDAP_DATE_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss'Z'");
+		LDAP_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+	}
 
 	private final static Logger LOG = Logger.getLogger(UserServiceLdapImpl.class.getName());
 
@@ -193,6 +206,51 @@ public class UserServiceLdapImpl implements UserService {
 		return new InitialDirContext(env);
 	}
 
+	/**
+	 * Convert an LDAP timestamp string `YYYYMMDDHHMMSSZ` to a Date.
+	 *
+	 * @param ts timestamp
+	 * @return a Date of ts
+	 */
+	private Date convertTStoDate(String ts) {
+        try {
+            return LDAP_DATE_FORMAT.parse(ts);
+        } catch (ParseException ex) {
+			LOG.info("🕰️ Cannot convert «" + ts + "» to Date: " + ex + "; returnin Unix epoch");
+			return UNIX_EPOCH;
+        }
+	}
+
+	/**
+	 * Get the "last modified" timestamp for the user with the given userDN
+	 * 
+	 * @return a Date
+	 */
+	public Date getModificationTime(String userDN) {
+		try {
+			LdapName ldapName = new LdapName(userDN);
+			Rdn relativeDN = ldapName.getRdn(ldapName.size() - 1);
+			LOG.info("🤔 userDN " + userDN + " gives ldapName " + ldapName + " and relativeDN is " + relativeDN);
+			DirContext ctx = ldapContext(ldapAdminDn, ldapAdminPassword, ldapUsersUri);
+			String[] attrIDs = {"modifyTimestamp"};
+			Attributes attrs = ctx.getAttributes(relativeDN.toString(), attrIDs);
+			Attribute modifyTimestamp = attrs.get("modifyTimestamp");
+			if (modifyTimestamp != null) {
+				String ts = (String) modifyTimestamp.get();
+				LOG.info("🪢 String version of attribute is «" + ts + "»");
+				return convertTStoDate(ts);
+			} else {
+				LOG.info("🤷 No modifyTimestamp for " + relativeDN + " so returning Unix epoch");
+				return UNIX_EPOCH;
+			}
+		} catch (RuntimeException ex) {
+			throw ex;
+		} catch (Exception ex) {
+			LOG.info("😬 Exception «" + ex + "» while getting modification time for " + userDN
+				+ " using context at URI " + ldapUsersUri + "; so returning Unix epoch");
+			return UNIX_EPOCH;
+		}
+	}
 	
 	/**
 	 * Method to debug LDAP connection
@@ -212,11 +270,12 @@ public class UserServiceLdapImpl implements UserService {
 			
 			// found user - test password
 			if ( self.validateUserCredentials( dn, password ) ) {
-				LOG.info( "User '" + user + "' authentication succeeded" );
 				
 				// retrieve groups
 				List<String> groups= self.getUserGroups(dn);
-				LOG.info("User groups="+groups);
+
+				LOG.info("🧑‍🔬 User «" + user + "» authentication succeeded");
+				LOG.info("🧑‍🧑‍🧒‍🧒 User groups = " + groups);
 				
 			} else {
 				LOG.info( "User '" + user + "' authentication failed" );

@@ -170,6 +170,7 @@ public class SolrProxy {
 				// super user --> no query constraint
 				//String testOwnerPrincipal = "uid=testuser,dc=edrn,dc=jpl,dc=nasa,dc=gov";
 				//return "OwnerPrincipal:(\""+testOwnerPrincipal+"\"" + ")";
+				LOG.info("🦸 SUPER USER DETECTED (play triumphant theme here 🎶");
 				return "";
 			} else {
 				accessControlQueryStringValue = "OwnerPrincipal:(\""+publicOwnerPrincipal+"\"";
