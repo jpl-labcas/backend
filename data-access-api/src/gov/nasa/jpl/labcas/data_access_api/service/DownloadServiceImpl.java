@@ -46,12 +46,48 @@ import java.io.DataOutputStream;
 import java.nio.charset.StandardCharsets;
 import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
 import org.apache.solr.client.solrj.SolrServerException;
+import java.security.cert.X509Certificate;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
 
 
 @Path("/")
 @Produces(MediaType.APPLICATION_OCTET_STREAM)
 public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 	
+	static {
+		// Because our sysadmins require us to use HTTPS between systems, and services
+		// on edrn-docker use self-signed certs, we need to trust all certs. Is this really 
+		// more secure? 🙄
+		try {
+			TrustManager[] trustAllCerts = new TrustManager[] {
+				new X509TrustManager() {
+					public X509Certificate[] getAcceptedIssuers() {
+						return new X509Certificate[0];
+					}
+					public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+					public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+				}
+			};
+			SSLContext sslContext = SSLContext.getInstance("SSL");
+			sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+			HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+			HostnameVerifier allHostsValid = new HostnameVerifier() {
+				public boolean verify(String hostname, SSLSession session) { return true; }
+			};
+			HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+		} catch (RuntimeException ex) {
+			throw ex;
+		} catch (Exception ex) {
+			System.err.println("💣 Cannot install all-trusting trust manager for SSL; aborting");
+			System.exit(-1);
+		}
+	}
+
 	private final static Logger LOG = Logger.getLogger(DownloadServiceImpl.class.getName());
 
 	// Download audit track
