@@ -19,13 +19,23 @@ public class Parameters {
 	 * Configuration file located in user home directory
 	 */
 	private final static String LABCAS_PROPERTIES = "/labcas.properties";
+
+	// Default Zipperlab URL
+	private static final String DEFAULT_ZIPPERLAB_URL = "https://edrn-docker/ops/zipperlab";  // Default Zipperlab URL
 	
 	private static Properties properties = new Properties();
 	
 	static {
 		try {
 			InputStream input = new FileInputStream(System.getProperty("user.home") + LABCAS_PROPERTIES);
+
+			// Default Zipperlab URL
+			properties.put("zipperlab", DEFAULT_ZIPPERLAB_URL);  // Default Zipperlab URL
+
+			// Override defaults (which right now is default Zipperlab URL) with those in ~/labcas.properties:
 			properties.load(input);
+
+			// Show your work
 			Enumeration<Object> keys = properties.keys();
 			while (keys.hasMoreElements()) {
 			    String key = (String)keys.nextElement();

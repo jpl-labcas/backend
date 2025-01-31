@@ -52,7 +52,7 @@ To try it, try:
 You can exercise the `/auth` endpoint as follows:
 
     curl --request POST --insecure \
-        --url 'https://localhost:8444/labcas-backend-data-access-api/auth'\
+        --url 'https://localhost:8444/labcas-backend-data-access-api/auth' \
         --header 'Content-type: application/x-www-form-urlencoded' \
         --data-urlencode 'username=USERNAME' \
         --data-urlencode 'password=PASSWORD' > /tmp/jwt
@@ -63,7 +63,10 @@ To use that JWT, try downloading a file:
 
     curl --verbose --request GET --insecure \
         --url 'https://localhost:8444/labcas-backend-data-access-api/download?id=UMiami_RP/Documentation/UM_RP.pptx' \
+        --cookie "JasonWebToken=`cat /tmp/jwt`" \
         --header "Authentication: Bearer `cat /tmp/jwt`"
+
+Note: I'm not sure why you need both `--cookie` and `--header` 🤷.
 
 To exercise the `UserServiceLdapImpl`'s `main` method:
 
@@ -72,3 +75,21 @@ To exercise the `UserServiceLdapImpl`'s `main` method:
 To exercise JwtConsumer's `main` method (after doing `mvn clean install` and `start.sh`):
 
     ./support/jwt.sh JWTFILE
+
+
+## Zipperlab Integration
+
+To test sending queries to Zipperlab, try:
+
+    curl --verbose --insecure 'https://localhost:8444/labcas-backend-data-access-api/zip?email=hello@a.co&query=id:Pre-diagnostic_PDAC_Images/City_of_Hope/COH_0171/COH_01710003/DICOM/I883*'
+
+
+## Loading Solr Data
+
+If you have [downloaded backups of Solr data you can reload it](https://github.com/EDRN/EDRN-metadata/issues/122) generally as follows:
+
+    curl --insecure --verbose "https://localhost:8984/solr/collections/replication?command=restore&location=$BACKUP_PATH/collections"
+    curl --insecure --verbose "https://localhost:8984/solr/datasets/replication?command=restore&location=$BACKUP_PATH/datasets"
+    curl --insecure --verbose "https://localhost:8984/solr/files/replication?command=restore&location=$BACKUP_PATH/files"
+
+Replace `$BACKUP_PATH` with the location of the downloaded backups.

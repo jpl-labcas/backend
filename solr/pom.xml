@@ -83,6 +83,7 @@
             <configuration>
               <target>
                 <mkdir dir='${solr.dir}/etc'/>
+                <delete file='${solr.dir}/etc/solr-ssl.keystore.p12' quiet='true' failonerror='false'/>
                 <genkey alias='solr-ssl' keyalg='RSA' keysize='4096' keypass='secret' storepass='secret'
                   validity='720' keystore='${solr.dir}/etc/solr-ssl.keystore.p12' storetype='PKCS12'>
                   <dname>

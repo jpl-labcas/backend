@@ -2,6 +2,7 @@ package gov.nasa.jpl.labcas.data_access_api.service;
 
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Logger;
@@ -36,10 +37,15 @@ import gov.nasa.jpl.labcas.data_access_api.aws.AwsS3DownloadHelper;
 import gov.nasa.jpl.labcas.data_access_api.aws.AwsUtils;
 import gov.nasa.jpl.labcas.data_access_api.utils.DownloadHelper;
 
+// Zipperlab
 import java.net.URLEncoder;
 import java.net.HttpURLConnection;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.DataOutputStream;
+import java.nio.charset.StandardCharsets;
+import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
+import org.apache.solr.client.solrj.SolrServerException;
 
 
 @Path("/")
@@ -100,7 +106,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			request.setFields( new String[] { SOLR_FIELD_FILE_LOCATION, SOLR_FIELD_FILE_NAME, SOLR_FIELD_NAME } );
 			
 			// note: SolrJ will URL-encode the HTTP GET parameter values
-			LOG.info("Executing Solr request to 'files' core: "+request.toString());
+			LOG.info("❓ Executing Solr request to 'files' core: " + request.toString());
 			QueryResponse response = solrServers.get(SOLR_CORE_FILES).query(request);
 			LOG.info("💯 Num found: " + response.getResults().getNumFound());
 
@@ -200,18 +206,37 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 	}
 
 
-	private static String initiateZIP(String email, String query) throws IOException {
-		LOG.info("👀 initiateZIP for " + email + " and query " + query);
-		// Should we make this a parameter?
-		String urlString = String.format(
-			"https://edrn-docker/zipperlab/edrn?operation=initiate&email=%s&query=%s",
-			URLEncoder.encode(email, "UTF-8"),
-			URLEncoder.encode(query, "UTF-8")
-		);
-		LOG.info("👀 URL string formatted: " + urlString);
-		URL url = new URL(urlString);
-		LOG.info("👀 calling URL " + url);
+	private static String initiateZIP(String email, List<String> files) throws IOException {
+		LOG.info("👀 initiateZIP for " + email + " and files " + files);
+
+		// Newer Javas include JSON support directly; we're stuck on 1.8 so we assemble by hand:
+		StringBuilder jsonPayload = new StringBuilder();
+		jsonPayload.append("{");
+		jsonPayload.append("\"operation\":\"initiate\",");
+		jsonPayload.append("\"email\":\"").append(email).append("\",");
+		jsonPayload.append("\"files\":[");
+		for (int i = 0; i < files.size(); ++i) {
+			jsonPayload.append("\"").append(files.get(i)).append("\"");
+			if (i < files.size() - 1) jsonPayload.append(",");
+		}
+		jsonPayload.append("]}");
+		LOG.info("👀 POST data to Zipperlab is: «" + jsonPayload + "»");
+		byte[] postData = jsonPayload.toString().getBytes(StandardCharsets.UTF_8);
+
+		String stringURL = Parameters.getParameterValue("zipperlab") + "/edrn/";
+		URL url = new URL(stringURL);
+		LOG.info("👀 Zipperlab URL is " + url);
+
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("POST");
+		connection.setRequestProperty("Content-Type", "application/json");
+		connection.setDoOutput(true);
+
+		DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
+		dataOutputStream.write(postData);
+		dataOutputStream.flush();
+		dataOutputStream.close();
+
 		if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 			LOG.info("👀 got OK status, so reading the UUID");
 			BufferedReader in = null;
@@ -229,6 +254,62 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 		}
 	}
 
+	private List<String> getFilePathsForQuery(ContainerRequestContext requestContext, String query) throws IOException {
+		List<String> files = new ArrayList();
+		try {
+			LOG.info("🦠 Getting file paths for query " + query);
+
+			// Start with the basic query and an empty list of files
+			SolrQuery request = new SolrQuery();
+			request.setQuery(query);
+
+			// Add access control to it
+
+			// 🚨🚨🚨 RE-ENABLE THIS
+			String acfq = getAccessControlQueryStringValue(requestContext);
+			if (!acfq.isEmpty()) request.setFilterQueries(acfq);
+
+			// Get the fields relevant for zipping only
+			request.setFields(new String[] {
+				SOLR_FIELD_FILE_LOCATION, SOLR_FIELD_FILE_NAME, SOLR_FIELD_NAME
+			});
+
+			// Query Solr
+			LOG.info("🗄️ Query to files core «" + request + "»");
+			QueryResponse response = solrServers.get(SOLR_CORE_FILES).query(request);
+			LOG.info("℀ Number of results = " + response.getResults().getNumFound());
+			Iterator<SolrDocument> iter = response.getResults().iterator();
+			while (iter.hasNext()) {
+				SolrDocument doc = iter.next();
+
+				// What happens next; no idea! This is duplicated from the "download" method above
+				String fileLocation = (String) doc.getFieldValue(SOLR_FIELD_FILE_LOCATION);
+				String fileName = (String) doc.getFieldValue(SOLR_FIELD_FILE_NAME);
+				String realFileName = (String) doc.getFieldValue(SOLR_FIELD_FILE_NAME);
+				if (doc.getFieldValuesMap().containsKey(SOLR_FIELD_NAME)) {
+					Object nameFieldValue = doc.getFieldValue(SOLR_FIELD_NAME);
+					if (nameFieldValue != null) {
+						ArrayList asList = (ArrayList) nameFieldValue;
+						String firstNameField = (String) asList.get(0);
+						if (firstNameField != null && firstNameField.length() > 0) {
+							LOG.info("🧑‍⚖️ Overriding realFileName «" + realFileName +
+								 "» with firstNameField value «" + firstNameField + "»");
+							realFileName = firstNameField;
+						}
+					}
+				}
+				String filePath = fileLocation + "/" + realFileName;
+				LOG.info("🕵️‍♀️ Adding filePath «" + filePath + "» to list of files");
+				files.add(filePath);
+			}
+			LOG.info("🕵️‍♀️ Returning " + files.size() + " files to query " + query);
+			return files;
+		} catch (SolrServerException ex) {
+			LOG.warning("🔥 SolrServerException: " + ex.getMessage() + "; returning files so far (if any)");
+			ex.printStackTrace();
+			return files;
+		}
+	}
 
 	@Override
 	@GET
@@ -243,9 +324,9 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 		LOG.info("👀 I see you, " + email + ", with your zip request for " + query);
 		try {
 			LOG.info("👀 getting uuid");
-			String uuid = initiateZIP(email, query);
+			String uuid = initiateZIP(email, getFilePathsForQuery(requestContext, query));
 			LOG.info("👀 uuid is " + uuid);
-			return Response.status(Status.OK).entity("Your UIID is: " + uuid + "\n").build();
+			return Response.status(Status.OK).entity(uuid).build();
 		} catch (IOException ex) {
 			LOG.warning("🚨🚨🚨 " + ex.getMessage());
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
