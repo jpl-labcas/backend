@@ -223,7 +223,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 		LOG.info("👀 POST data to Zipperlab is: «" + jsonPayload + "»");
 		byte[] postData = jsonPayload.toString().getBytes(StandardCharsets.UTF_8);
 
-		String stringURL = Parameters.getParameterValue("zipperlab") + "/edrn/";
+		String stringURL = Parameters.getParameterValue("zipperlab");
 		URL url = new URL(stringURL);
 		LOG.info("👀 Zipperlab URL is " + url);
 
