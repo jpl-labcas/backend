@@ -217,8 +217,11 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 
 					// read file from local file system and stream it to client
 					DownloadHelper dh = new DownloadHelper(Paths.get(filePath));
+					String mediaType = filePath.endsWith(".dcm") || filePath.contains("DICOM")?
+						"application/dicom" : MediaType.APPLICATION_OCTET_STREAM;
+					LOG.info("😒 using mediaType = " + mediaType);
 			        return Response
-			                .ok(dh, MediaType.APPLICATION_OCTET_STREAM)
+			                .ok(dh, mediaType)
 			                // "content-disposition" header instructs the client to keep the same file name
 			                .header("content-disposition","attachment; filename=\"" + fileName + "\"")
 			                .build();
@@ -300,8 +303,6 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			request.setQuery(query);
 
 			// Add access control to it
-
-			// 🚨🚨🚨 RE-ENABLE THIS
 			String acfq = getAccessControlQueryStringValue(requestContext);
 			if (!acfq.isEmpty()) request.setFilterQueries(acfq);
 
