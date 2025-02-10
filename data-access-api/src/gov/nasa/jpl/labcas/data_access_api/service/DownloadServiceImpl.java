@@ -22,6 +22,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -107,7 +108,10 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 	@Override
 	@GET
 	@Path("/download")
-	public Response download(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext, @QueryParam("id") String id) {
+	public Response download(
+		@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext,
+		@QueryParam("id") String id,
+		@QueryParam("suppressContentDisposition") @DefaultValue("false") boolean suppressContentDisposition) {
 		LOG.info("📯 HEYO! I am in the download part");
 
 		// note: @QueryParam('id') automatically URL-decodes the 'id' value
@@ -118,7 +122,6 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 		}
 
 		try {
-			
 			String fileLocation = null;
 			String realFileName = null;
 			String fileName = null;
@@ -217,14 +220,23 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 
 					// read file from local file system and stream it to client
 					DownloadHelper dh = new DownloadHelper(Paths.get(filePath));
-					String mediaType = filePath.endsWith(".dcm") || filePath.contains("DICOM")?
+					String lowercase = filePath.toLowerCase();
+					String mediaType = lowercase.endsWith(".dcm") || lowercase.contains("dicom")?
 						"application/dicom" : MediaType.APPLICATION_OCTET_STREAM;
 					LOG.info("😒 using mediaType = " + mediaType);
-			        return Response
-			                .ok(dh, mediaType)
-			                // "content-disposition" header instructs the client to keep the same file name
-			                .header("content-disposition","attachment; filename=\"" + fileName + "\"")
-			                .build();
+					if (suppressContentDisposition) {
+                       return Response
+	                       .ok(dh, mediaType)
+	                       // Insert Buddhist joke here
+	                       .header("X-Content-disposition", "non-attachment; filename=\"" + fileName + "\"")
+	                       .build();
+					} else {
+                       return Response
+                           .ok(dh, mediaType)
+                           // "Content-disposition" header instructs the client to keep the same file name
+                           .header("Content-disposition", "attachment; filename=\"" + fileName + "\"")
+                           .build();
+					}
 				}
 	        
 			} else {

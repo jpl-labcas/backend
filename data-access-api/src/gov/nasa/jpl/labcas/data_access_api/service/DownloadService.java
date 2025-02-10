@@ -14,7 +14,10 @@ public interface DownloadService {
 	 * @param id
 	 * @return
 	 */
-	public Response download(HttpServletRequest httpRequest, ContainerRequestContext requestContext, String id);
+	public Response download(
+		HttpServletRequest httpRequest, ContainerRequestContext requestContext, String id,
+		boolean suppressContentDisposition
+	);
 
 	public Response zip(
 		HttpServletRequest httpRequest, ContainerRequestContext requestContext, String email, String query
