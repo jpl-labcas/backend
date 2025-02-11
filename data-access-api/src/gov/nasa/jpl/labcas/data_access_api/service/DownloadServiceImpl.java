@@ -55,6 +55,9 @@ import javax.net.ssl.X509TrustManager;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
+// David's OHIF viewer
+import javax.ws.rs.Produces;
+
 
 @Path("/")
 @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -108,6 +111,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 	@Override
 	@GET
 	@Path("/download")
+	@Produces({CustomMediaTypes.APPLICATION_DICOM, MediaType.APPLICATION_OCTET_STREAM})
 	public Response download(
 		@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext,
 		@QueryParam("id") String id,
@@ -135,12 +139,11 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			LOG.info("🆔 HEYO! The id is «" + id + "»");
 			
 			// add access control
-			//  🚨🚨🚨 re-enable this!
-			// String acfq = getAccessControlQueryStringValue(requestContext);
-			// LOG.info("🧏 ACFQ = " + acfq + ".");
-			// if (!acfq.isEmpty()) {
-			// 	request.setFilterQueries(acfq);
-			// }
+			String acfq = getAccessControlQueryStringValue(requestContext);
+			LOG.info("🧏 ACFQ = " + acfq + ".");
+			if (!acfq.isEmpty()) {
+				request.setFilterQueries(acfq);
+			}
 			
 			// return file location on file system or S3 + file name
 			request.setFields( new String[] { SOLR_FIELD_FILE_LOCATION, SOLR_FIELD_FILE_NAME, SOLR_FIELD_NAME } );
