@@ -4,7 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
-
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
 
@@ -29,6 +29,10 @@ public class DownloadHelper implements StreamingOutput {
 		// String replaced = "/Users/kelly" + filePath.toString().substring("/labcas-data".length());
 		// this.filePath = Paths.get(replaced);
 		// LOG.info("🪵🪵🪵📄📄📄 filePath is now = " + this.filePath + "‼️");
+	}
+
+	public long getFileSize() throws IOException {
+		return Files.size(this.filePath);
 	}
 
 	@Override

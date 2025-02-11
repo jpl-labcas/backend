@@ -135,11 +135,12 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 			LOG.info("🆔 HEYO! The id is «" + id + "»");
 			
 			// add access control
-			String acfq = getAccessControlQueryStringValue(requestContext);
-			LOG.info("🧏 ACFQ = " + acfq + ".");
-			if (!acfq.isEmpty()) {
-				request.setFilterQueries(acfq);
-			}
+			//  🚨🚨🚨 re-enable this!
+			// String acfq = getAccessControlQueryStringValue(requestContext);
+			// LOG.info("🧏 ACFQ = " + acfq + ".");
+			// if (!acfq.isEmpty()) {
+			// 	request.setFilterQueries(acfq);
+			// }
 			
 			// return file location on file system or S3 + file name
 			request.setFields( new String[] { SOLR_FIELD_FILE_LOCATION, SOLR_FIELD_FILE_NAME, SOLR_FIELD_NAME } );
@@ -220,6 +221,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 
 					// read file from local file system and stream it to client
 					DownloadHelper dh = new DownloadHelper(Paths.get(filePath));
+					long size = dh.getFileSize();
 					String lowercase = filePath.toLowerCase();
 					String mediaType = lowercase.endsWith(".dcm") || lowercase.contains("dicom")?
 						"application/dicom" : MediaType.APPLICATION_OCTET_STREAM;
@@ -227,12 +229,12 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 					if (suppressContentDisposition) {
                        return Response
 	                       .ok(dh, mediaType)
-	                       // Insert Buddhist joke here
-	                       .header("X-Content-disposition", "non-attachment; filename=\"" + fileName + "\"")
+	                       .header("Content-length", size)
 	                       .build();
 					} else {
                        return Response
                            .ok(dh, mediaType)
+	                       .header("Content-length", size)
                            // "Content-disposition" header instructs the client to keep the same file name
                            .header("Content-disposition", "attachment; filename=\"" + fileName + "\"")
                            .build();
