@@ -3,6 +3,7 @@ package gov.nasa.jpl.labcas.data_access_api.service;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 public interface DownloadService {
 	
@@ -20,7 +21,8 @@ public interface DownloadService {
 	);
 
 	public Response zip(
-		HttpServletRequest httpRequest, ContainerRequestContext requestContext, String email, String query
+		HttpServletRequest httpRequest, ContainerRequestContext requestContext, String email, String query,
+		List<String> ids
 	);
 
 	public Response ping(HttpServletRequest httpRequest, ContainerRequestContext requestContext, String message);

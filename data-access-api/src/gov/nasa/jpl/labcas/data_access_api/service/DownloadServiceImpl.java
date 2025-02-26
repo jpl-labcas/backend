@@ -19,9 +19,12 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
@@ -365,20 +368,97 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 		}
 	}
 
+
+	private String getFile(ContainerRequestContext requestContext, String id) {
+		try {
+			// query Solr for file with that specific id
+			SolrQuery request = new SolrQuery();
+			request.setQuery("id:\""+id+"\"");
+			LOG.info("🪪 HEY! The id is «" + id + "»");
+			
+			// add access control
+			String acfq = getAccessControlQueryStringValue(requestContext);
+			LOG.info("🧏 ACFQ = " + acfq + ".");
+			if (!acfq.isEmpty()) {
+				request.setFilterQueries(acfq);
+			}
+			
+			// return file location on file system or S3 + file name
+			request.setFields( new String[] { SOLR_FIELD_FILE_LOCATION, SOLR_FIELD_FILE_NAME, SOLR_FIELD_NAME } );
+			
+			// note: SolrJ will URL-encode the HTTP GET parameter values
+			LOG.info("❓ Executing Solr request to 'files' core: " + request.toString());
+			QueryResponse response = solrServers.get(SOLR_CORE_FILES).query(request);
+			LOG.info("#️⃣ Num found: " + response.getResults().getNumFound());
+
+			SolrDocumentList docs = response.getResults();
+			Iterator<SolrDocument> iter = docs.iterator();
+			String fileLocation;
+			String realFileName;
+			String fileName;
+			String filePath;
+			while (iter.hasNext()) {
+				SolrDocument doc = iter.next();
+				LOG.info(doc.toString());
+				LOG.info("=== 1 about to get fileLocation");
+				fileLocation = (String)doc.getFieldValue(SOLR_FIELD_FILE_LOCATION);
+				LOG.info("=== 2 got fileLocation = «" + fileLocation + "»");
+				fileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
+				realFileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
+				LOG.info("=== 3 got fileName = «" + fileName + "»");
+				if (doc.getFieldValuesMap().containsKey(SOLR_FIELD_NAME)) {
+					LOG.info("=== 3½ ok");
+					Object nameFieldValue = doc.getFieldValue(SOLR_FIELD_NAME);
+					if (nameFieldValue != null) {
+						ArrayList asList = (ArrayList) nameFieldValue;
+						if (asList.size() > 0) {
+							String firstNameField = (String) asList.get(0);
+							if (firstNameField != null && firstNameField.length() > 0) {
+								LOG.info("=== 4 name field value «" + firstNameField + "» overriding fileName «" + fileName + "»");
+								realFileName = firstNameField;
+							}
+						}
+					}
+				}
+				filePath = fileLocation + "/" + realFileName;
+				LOG.info("So the filePath is «" + filePath + "»");
+				return filePath;
+			}
+		} catch (RuntimeException ex) {
+			throw ex;
+		} catch (Exception ex) {
+			return null;
+		}
+		return null;
+	}
+
 	@Override
-	@GET
+	@POST
 	@Path("/zip")
 	@Produces("text/plain")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response zip(
 		@Context HttpServletRequest httpRequest,
 		@Context ContainerRequestContext requestContext,
-		@QueryParam("email") String email,
-		@QueryParam("query") String query
+		@FormParam("email") String email,
+		@FormParam("query") @DefaultValue("") String query,
+		@FormParam("id") List<String> ids
 	) {
-		LOG.info("👀 I see you, " + email + ", with your zip request for " + query);
+		LOG.info("👀 I see you, " + email + ", with your zip request for query " + query + " or file ids " + ids);
 		try {
-			LOG.info("👀 getting uuid");
-			String uuid = initiateZIP(email, getFilePathsForQuery(requestContext, query));
+			List<String> files = null;
+			if (query.length() > 0) {
+				files = getFilePathsForQuery(requestContext, query);
+				LOG.info("👀 For query " + query + " the file IDs are " + files);
+			} else {
+				files = new ArrayList<String>();
+				for (String fileID: ids) {
+					String f = getFile(requestContext, fileID);
+					if (f != null) files.add(f);
+				}
+			}
+			LOG.info("👀 the files are: " + files);
+			String uuid = initiateZIP(email, files);
 			LOG.info("👀 uuid is " + uuid);
 			return Response.status(Status.OK).entity(uuid).build();
 		} catch (IOException ex) {

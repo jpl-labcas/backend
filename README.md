@@ -79,9 +79,27 @@ To exercise JwtConsumer's `main` method (after doing `mvn clean install` and `st
 
 ## Zipperlab Integration
 
-To test sending queries to Zipperlab, try:
+To test sending queries to Zipperlab, first get your JWT (above) then do:
 
-    curl --verbose --insecure 'https://localhost:8444/labcas-backend-data-access-api/zip?email=hello@a.co&query=id:Pre-diagnostic_PDAC_Images/City_of_Hope/COH_0171/COH_01710003/DICOM/I883*'
+    curl --request POST --verbose --insecure \
+        --cookie "JasonWebToken=`cat /tmp/jwt`" \
+        --header "Authentication: Bearer `cat /tmp/jwt`" \
+        --header 'Content-Type: application/x-www-form-urlencoded' \
+        --data 'email=hello@a.co&query=id:Pre-diagnostic_PDAC_Images/City_of_Hope/COH_0171/COH_01710003/DICOM/I883*' \
+        https://localhost:8444/labcas-backend-data-access-api/zip
+
+Make sure you have Zipperlab running and set its URL in `~/labcas.properties`.
+
+If you want to send file IDs instead, do:
+
+    curl --request POST --verbose --insecure \
+        --cookie "JasonWebToken=`cat /tmp/jwt`" \
+        --header "Authentication: Bearer `cat /tmp/jwt`" \
+        --header 'Content-Type: application/x-www-form-urlencoded' \
+        --data 'email=hello@a.co&id=FILE1&id=FILE2&id=FILE3' \
+        https://localhost:8444/labcas-backend-data-access-api/zip
+
+
 
 
 ## Loading Solr Data
