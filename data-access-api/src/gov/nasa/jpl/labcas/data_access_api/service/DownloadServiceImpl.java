@@ -444,7 +444,7 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 		@FormParam("query") @DefaultValue("") String query,
 		@FormParam("id") List<String> ids
 	) {
-		LOG.info("👀 I see you, " + email + ", with your zip request for query " + query + " or file ids " + ids);
+		LOG.info("👀 I see you, " + email + ", with your zip request for query «" + query + "» or file id «" + ids + "»");
 		try {
 			List<String> files = null;
 			if (query.length() > 0) {
@@ -457,7 +457,11 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 					if (f != null) files.add(f);
 				}
 			}
+
 			LOG.info("👀 the files are: " + files);
+			if (files.isEmpty())
+				return null;  // Should give 204 no content
+
 			String uuid = initiateZIP(email, files);
 			LOG.info("👀 uuid is " + uuid);
 			return Response.status(Status.OK).entity(uuid).build();
