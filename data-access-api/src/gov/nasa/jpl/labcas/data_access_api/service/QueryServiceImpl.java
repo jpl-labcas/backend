@@ -15,6 +15,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import gov.nasa.jpl.labcas.data_access_api.utils.UrlUtils;
+import gov.nasa.jpl.labcas.data_access_api.filter.AuthenticationFilter;
+
 
 /**
  * Service implementation to issue a query request to Solr.
@@ -27,6 +29,7 @@ import gov.nasa.jpl.labcas.data_access_api.utils.UrlUtils;
 public class QueryServiceImpl extends SolrProxy implements QueryService {
 
 	private final static Logger LOG = Logger.getLogger(QueryServiceImpl.class.getName());
+	private final static int MAX_ROWS = 2500;
 
 	public QueryServiceImpl() {
 		super();
@@ -54,7 +57,6 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 	@GET
 	@Path("/files/select")
 	public Response queryFiles(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext) {
-		
 		return queryCore(httpRequest, requestContext, SOLR_CORE_FILES);
 
 	}
@@ -68,9 +70,16 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 	 * @return
 	 */
 	private Response queryCore(@Context HttpServletRequest httpRequest, ContainerRequestContext requestContext, String core) {
-				
 		try {
-			
+			// VDP_1645_SC-9999-L-JPL-0220 — ensure credentials are always provided
+			String distinguishedName = (String) requestContext.getProperty(AuthenticationFilter.USER_DN);
+			LOG.info("🪪 the distinguishedName is «" + distinguishedName + "»");
+			if (distinguishedName == null || distinguishedName.equals(AuthenticationFilter.GUEST_USER_DN)) {
+				LOG.info("VDP_1645_SC-9999-L-JPL-0220 violation: login required to query (even for public data)");
+				return Response.status(Status.UNAUTHORIZED)
+					.entity("User login required to query (even for public data)").build();
+			}
+
 			// check request for unsafe characters
 			// must URL-decode the query string first
 			String q = URLDecoder.decode(httpRequest.getQueryString(), "UTF-8");
@@ -78,17 +87,32 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 				return Response.status(Status.BAD_REQUEST).entity(UNSAFE_CHARACTERS_MESSAGE).build();
 			}
 
+			// VDP_1645_SC-9999-L-JPL-0220; limit the rows
+			String rowsParam = httpRequest.getParameter("rows");
+			if (rowsParam != null) {
+				try {
+					int rows = Integer.parseInt(rowsParam);
+					if (rows > MAX_ROWS) {
+						return Response.status(Status.BAD_REQUEST)
+							.entity("«rows» must be ≤" + MAX_ROWS).build();
+					}
+				} catch (NumberFormatException ex) {
+					return Response.status(Status.BAD_REQUEST).entity("«rows» must be a valid integer").build();
+				}
+			}
 			
 			String baseUrl = getBaseUrl(core) + "/select";
 			String url = baseUrl + "?" + httpRequest.getQueryString() + getAccessControlString(requestContext);
-			LOG.info("Executing query: "+url);
+			LOG.info("🕵️‍♀️ Executing query: "+url);
 			return SolrProxy.query(url);
-			
-		} catch (Exception e) {
+		} catch (RuntimeException ex) {
+			// Java "gotcha" that only I seem to know about
+			throw ex;
+		} catch (Exception ex) {
 			// send 500 "Internal Server Error" response
-			e.printStackTrace();
-			LOG.warning(e.getMessage());
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+			ex.printStackTrace();
+			LOG.warning(ex.getMessage());
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
 		}
 
 	}
