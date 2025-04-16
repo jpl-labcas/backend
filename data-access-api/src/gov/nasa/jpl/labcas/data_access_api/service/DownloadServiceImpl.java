@@ -121,6 +121,15 @@ public class DownloadServiceImpl extends SolrProxy implements DownloadService  {
 		@QueryParam("suppressContentDisposition") @DefaultValue("false") boolean suppressContentDisposition) {
 		LOG.info("📯 HEYO! I am in the download part");
 
+		// VDP_1645_SC-9999-L-JPL-0220 — ensure credentials are always provided
+		String distinguishedName = (String) requestContext.getProperty(AuthenticationFilter.USER_DN);
+		LOG.info("🪪 the distinguishedName is «" + distinguishedName + "»");
+		if (distinguishedName == null || distinguishedName.equals(AuthenticationFilter.GUEST_USER_DN)) {
+			LOG.info("VDP_1645_SC-9999-L-JPL-0220 violation: login required to download (even for public data)");
+			return Response.status(Status.UNAUTHORIZED)
+				.entity("User login required to download (even for public data)").build();
+		}
+
 		// note: @QueryParam('id') automatically URL-decodes the 'id' value
 		if (id==null) {
 			return Response.status(Status.BAD_REQUEST).entity("Missing mandatory parameter 'id'").build();

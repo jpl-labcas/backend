@@ -23,11 +23,21 @@ public class DownloadHelper implements StreamingOutput {
 	
 	private Path filePath;
 	
+	private static Path replacePathPrefix(Path path, String oldPrefix, String newPrefix) {
+		String pathStr = path.toString();
+		if (pathStr.startsWith(oldPrefix)) {
+			String newPathStr = newPrefix + pathStr.substring(oldPrefix.length());
+			return Paths.get(newPathStr);
+		}
+		return path;
+	}
+
 	public DownloadHelper(Path filePath) {
+		LOG.info("🪵🪵🪵📄📄📄 filePath passed in was = " + filePath + "‼️");
 		this.filePath = filePath;
 		// ⚠️ DEBUGGING ONLY for the following three lines (normal operation is line above)
-		// String replaced = "/Users/kelly" + filePath.toString().substring("/labcas-data".length());
-		// this.filePath = Paths.get(replaced);
+		// filePath = replacePathPrefix(filePath, "/usr/local/labcas/backend", "/Users/kelly");
+		// this.filePath = replacePathPrefix(filePath, "/labcas-data", "/Users/kelly");
 		// LOG.info("🪵🪵🪵📄📄📄 filePath is now = " + this.filePath + "‼️");
 	}
 
