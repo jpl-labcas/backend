@@ -1,5 +1,7 @@
 package gov.nasa.jpl.labcas.data_access_api.service;
 
+import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.logging.Logger;
@@ -29,10 +31,12 @@ import gov.nasa.jpl.labcas.data_access_api.filter.AuthenticationFilter;
 public class QueryServiceImpl extends SolrProxy implements QueryService {
 
 	private final static Logger LOG = Logger.getLogger(QueryServiceImpl.class.getName());
-	private final static int MAX_ROWS = 2500;
+	private final static String MAX_SOLR_ROWS_PROPERTY = "max_solr_rows";
+	private final int maxRows;
 
 	public QueryServiceImpl() {
 		super();
+		maxRows = Integer.parseInt(Parameters.getParameterValue(MAX_SOLR_ROWS_PROPERTY));
 	}
 
 	@Override
@@ -92,9 +96,9 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 			if (rowsParam != null) {
 				try {
 					int rows = Integer.parseInt(rowsParam);
-					if (rows > MAX_ROWS) {
+					if (rows > maxRows) {
 						return Response.status(Status.BAD_REQUEST)
-							.entity("«rows» must be ≤" + MAX_ROWS).build();
+							.entity("«rows» must be ≤" + maxRows).build();
 					}
 				} catch (NumberFormatException ex) {
 					return Response.status(Status.BAD_REQUEST).entity("«rows» must be a valid integer").build();

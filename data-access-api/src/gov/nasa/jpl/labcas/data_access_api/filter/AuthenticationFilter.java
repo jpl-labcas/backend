@@ -105,7 +105,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 					LOG.info("URI path="+uriPath);
 					if (uriPath.contains("auth")) {
 						String token = jwtProducer.getToken(userdn);
-						LOG.info("Generated token = "+token);
+						LOG.info("Generated token1 = "+token);
 						containerRequest.setProperty(JWT, token);
 					}
 				} catch (NoSuchElementException ex) {
@@ -154,7 +154,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 				LOG.info("URI path="+uriPath);
 				if (uriPath.contains("auth")) {
 					String token = jwtProducer.getToken(userdn);
-					LOG.info("Generated token = "+token);
+					LOG.info("Generated token2 = "+token);
 					containerRequest.setProperty(JWT, token);
 				}
 				

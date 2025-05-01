@@ -7,8 +7,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.TimeZone;
+import javax.net.ssl.*;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.io.IOException;
+import javax.net.SocketFactory;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import javax.naming.Context;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -137,12 +145,18 @@ public class UserServiceLdapImpl implements UserService {
 	 * @throws Exception
 	 */
 	private String getUserId(String username) throws Exception {
-		
-		DirContext ctx = ldapContext(ldapAdminDn, ldapAdminPassword, ldapUsersUri);
+		LOG.warning("🚔 making dir context with dn=" + ldapAdminDn + " and ldapUsersUri=" + ldapUsersUri);
+		DirContext ctx = null;
+		try {
+			ctx = ldapContext(ldapAdminDn, ldapAdminPassword, ldapUsersUri);
+		} catch (Exception ex) {
+			LOG.log(Level.SEVERE, "🚔🚔🚔 OH POOP: ", ex);
+		}
 
 		String filter = "(uid=" + username + ")";
 		SearchControls ctrl = new SearchControls();
 		ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		LOG.warning("🚔 searching on ctx with filter=" + filter + ", ctrl=" + ctrl);
 		NamingEnumeration<SearchResult> answer = ctx.search("", filter, ctrl);
 
 		String dn;
@@ -154,7 +168,7 @@ public class UserServiceLdapImpl implements UserService {
 		}
 		answer.close();
 		ctx.close();
-		
+		LOG.warning("🚔 returning dn=" + dn);
 		return dn;
 		
 	}
@@ -198,6 +212,8 @@ public class UserServiceLdapImpl implements UserService {
 		env.put(Context.INITIAL_CONTEXT_FACTORY, contextFactory);
 		env.put(Context.PROVIDER_URL, uri);
 		env.put(Context.SECURITY_AUTHENTICATION, "simple");
+		// JPL-issued certificates are dodgy
+		env.put("java.naming.ldap.factory.socket", "gov.nasa.jpl.labcas.data_access_api.filter.InsecureLDAPFactory");
 		
 		// use the given credentials
 		env.put(Context.SECURITY_PRINCIPAL, dn);
@@ -205,6 +221,7 @@ public class UserServiceLdapImpl implements UserService {
 	
 		return new InitialDirContext(env);
 	}
+
 
 	/**
 	 * Convert an LDAP timestamp string `YYYYMMDDHHMMSSZ` to a Date.

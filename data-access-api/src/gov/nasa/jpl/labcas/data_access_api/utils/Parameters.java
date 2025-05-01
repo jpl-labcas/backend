@@ -23,6 +23,10 @@ public class Parameters {
 	// Default Zipperlab URL
 	private static final String DEFAULT_ZIPPERLAB_URL = "https://edrn-docker/ops/zipperlab";  // Default Zipperlab URL
 	
+	// Default max number of rows we allow Solr to return; note this must be a string because of the way
+	// this class was originally coded.
+	private static final String DEFAULT_MAX_ROWS = "5000";
+
 	private static Properties properties = new Properties();
 	
 	static {
@@ -31,6 +35,9 @@ public class Parameters {
 
 			// Default Zipperlab URL
 			properties.put("zipperlab", DEFAULT_ZIPPERLAB_URL);  // Default Zipperlab URL
+
+			// Default max number of rows
+			properties.put("max_solr_rows", DEFAULT_MAX_ROWS);  // Default max number of rows
 
 			// Override defaults (which right now is default Zipperlab URL) with those in ~/labcas.properties:
 			properties.load(input);
@@ -41,7 +48,7 @@ public class Parameters {
 			    String key = (String)keys.nextElement();
 			    String value = (String)properties.get(key);
 			    if (key.toLowerCase().contains("password")) {
-			    	LOG.info("Using parameter key=" + key + " value=....");
+			    	LOG.info("Using parameter key=" + key + " value…");
 			    } else {
 			    	LOG.info("Using parameter key=" + key + " value=" + value);
 			    }
