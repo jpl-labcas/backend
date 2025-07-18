@@ -24,17 +24,35 @@ public class JwtConsumer {
 	private JWTVerifier verifier;
 	
 	public JwtConsumer() {
-		
-		String secret = Parameters.getParameterValue(Constants.JWT_SECRET_KEY);
-		Algorithm algorithm = Algorithm.HMAC256(secret);
-		
-		// the ISSUER and AUDIENCE fields are required
-		// otherwise the token is invalid
-		// also tokens are automatically checked for expiration
-		verifier = JWT.require(algorithm)
-				.withIssuer(Constants.ISSUER)
-				.withAudience(Constants.AUDIENCE)
-				.build();
+
+		// For development, it may be useful to accept any JWT. Note this is highly insecure
+		// and the ACCEPT_ANY_JWT=DANGEROUS environment variable must be set for this to be
+		// enabled. You will also get noisy logging when this happens, because this must never
+		// happen in production.
+
+		String acceptAnyJWT = System.getenv("ACCEPT_ANY_JWT");
+		if ("DANGEROUS".equals(acceptAnyJWT)) {
+			verifier = new JWTVerifier() {
+				@Override
+				public DecodedJWT verify(String token) throws JWTVerificationException {
+					LOG.warning("🚨 BYPASSING JWT VERIFICATION given a string token");
+					return JWT.decode(token);
+				}
+				@Override
+				public DecodedJWT verify(DecodedJWT jwt) throws JWTVerificationException {
+					LOG.warning("🚨 IDENTITY JWT return given a decoded jwt");
+					return jwt;
+				}
+			};
+		} else {
+			String secret = Parameters.getParameterValue(Constants.JWT_SECRET_KEY);
+			Algorithm algorithm = Algorithm.HMAC256(secret);
+
+			// the ISSUER and AUDIENCE fields are required
+			// otherwise the token is invalid
+			// also tokens are automatically checked for expiration
+			verifier = JWT.require(algorithm).withIssuer(Constants.ISSUER).withAudience(Constants.AUDIENCE).build();
+		}
 	
 	}
 	
