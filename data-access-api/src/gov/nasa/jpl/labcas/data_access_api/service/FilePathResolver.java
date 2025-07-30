@@ -37,44 +37,13 @@ public class FilePathResolver extends SolrProxy {
         try {
             LOG.info("🦠 Getting file paths for query " + query);
 
-            // Start with the basic query and an empty list of files
-            SolrQuery request = new SolrQuery();
-            request.setQuery(query);
-
-            // Add access control to it
-            String acfq = getAccessControlQueryStringValue(requestContext);
-            if (!acfq.isEmpty()) request.setFilterQueries(acfq);
-
-            // Get the fields relevant for zipping only
-            request.setFields(new String[] {
-                SOLR_FIELD_FILE_LOCATION, SOLR_FIELD_FILE_NAME, SOLR_FIELD_NAME
-            });
-
-            // Query Solr
-            LOG.info("🗄️ Query to files core «" + request + "»");
-            QueryResponse response = solrServers.get(SOLR_CORE_FILES).query(request);
-            LOG.info("℀ Number of results = " + response.getResults().getNumFound());
-            Iterator<SolrDocument> iter = response.getResults().iterator();
+            SolrDocumentList docs = executeFileQuery(requestContext, query);
+            LOG.info("℀ Number of results = " + docs.getNumFound());
+            
+            Iterator<SolrDocument> iter = docs.iterator();
             while (iter.hasNext()) {
                 SolrDocument doc = iter.next();
-
-                // Extract file path information
-                String fileLocation = (String) doc.getFieldValue(SOLR_FIELD_FILE_LOCATION);
-                String fileName = (String) doc.getFieldValue(SOLR_FIELD_FILE_NAME);
-                String realFileName = (String) doc.getFieldValue(SOLR_FIELD_FILE_NAME);
-                if (doc.getFieldValuesMap().containsKey(SOLR_FIELD_NAME)) {
-                    Object nameFieldValue = doc.getFieldValue(SOLR_FIELD_NAME);
-                    if (nameFieldValue != null) {
-                        ArrayList asList = (ArrayList) nameFieldValue;
-                        String firstNameField = (String) asList.get(0);
-                        if (firstNameField != null && firstNameField.length() > 0) {
-                            LOG.info("🧑‍⚖️ Overriding realFileName «" + realFileName +
-                                     "» with firstNameField value «" + firstNameField + "»");
-                            realFileName = firstNameField;
-                        }
-                    }
-                }
-                String filePath = fileLocation + "/" + realFileName;
+                String filePath = extractFilePathFromDocument(doc);
                 LOG.info("🕵️‍♀️ Adding filePath «" + filePath + "» to list of files");
                 files.add(filePath);
             }
@@ -96,56 +65,16 @@ public class FilePathResolver extends SolrProxy {
      */
     public String getFile(ContainerRequestContext requestContext, String id) {
         try {
-            // query Solr for file with that specific id
-            SolrQuery request = new SolrQuery();
-            request.setQuery("id:\""+id+"\"");
             LOG.info("🪪 HEY! The id is «" + id + "»");
             
-            // add access control
-            String acfq = getAccessControlQueryStringValue(requestContext);
-            LOG.info("🧏 ACFQ = " + acfq + ".");
-            if (!acfq.isEmpty()) {
-                request.setFilterQueries(acfq);
-            }
-            
-            // return file location on file system or S3 + file name
-            request.setFields( new String[] { SOLR_FIELD_FILE_LOCATION, SOLR_FIELD_FILE_NAME, SOLR_FIELD_NAME } );
-            
-            // note: SolrJ will URL-encode the HTTP GET parameter values
-            LOG.info("❓ Executing Solr request to 'files' core: " + request.toString());
-            QueryResponse response = solrServers.get(SOLR_CORE_FILES).query(request);
-            LOG.info("#️⃣ Num found: " + response.getResults().getNumFound());
+            SolrDocumentList docs = executeFileQuery(requestContext, "id:\"" + id + "\"");
+            LOG.info("#️⃣ Num found: " + docs.getNumFound());
 
-            SolrDocumentList docs = response.getResults();
             Iterator<SolrDocument> iter = docs.iterator();
-            String fileLocation;
-            String realFileName;
-            String fileName;
-            String filePath;
             while (iter.hasNext()) {
                 SolrDocument doc = iter.next();
                 LOG.info(doc.toString());
-                LOG.info("=== 1 about to get fileLocation");
-                fileLocation = (String)doc.getFieldValue(SOLR_FIELD_FILE_LOCATION);
-                LOG.info("=== 2 got fileLocation = «" + fileLocation + "»");
-                fileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
-                realFileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
-                LOG.info("=== 3 got fileName = «" + fileName + "»");
-                if (doc.getFieldValuesMap().containsKey(SOLR_FIELD_NAME)) {
-                    LOG.info("=== 3½ ok");
-                    Object nameFieldValue = doc.getFieldValue(SOLR_FIELD_NAME);
-                    if (nameFieldValue != null) {
-                        ArrayList asList = (ArrayList) nameFieldValue;
-                        if (asList.size() > 0) {
-                            String firstNameField = (String) asList.get(0);
-                            if (firstNameField != null && firstNameField.length() > 0) {
-                                LOG.info("=== 4 name field value «" + firstNameField + "» overriding fileName «" + fileName + "»");
-                                realFileName = firstNameField;
-                            }
-                        }
-                    }
-                }
-                filePath = fileLocation + "/" + realFileName;
+                String filePath = extractFilePathFromDocument(doc);
                 LOG.info("So the filePath is «" + filePath + "»");
                 return filePath;
             }
@@ -166,27 +95,11 @@ public class FilePathResolver extends SolrProxy {
      */
     public FileInfo getFileInfo(ContainerRequestContext requestContext, String id) {
         try {
-            // query Solr for file with that specific id
-            SolrQuery request = new SolrQuery();
-            request.setQuery("id:\""+id+"\"");
             LOG.info("🆔 HEYO! The id is «" + id + "»");
             
-            // add access control
-            String acfq = getAccessControlQueryStringValue(requestContext);
-            LOG.info("🧏 ACFQ = " + acfq + ".");
-            if (!acfq.isEmpty()) {
-                request.setFilterQueries(acfq);
-            }
-            
-            // return file location on file system or S3 + file name
-            request.setFields( new String[] { SOLR_FIELD_FILE_LOCATION, SOLR_FIELD_FILE_NAME, SOLR_FIELD_NAME } );
-            
-            // note: SolrJ will URL-encode the HTTP GET parameter values
-            LOG.info("❓ Executing Solr request to 'files' core: " + request.toString());
-            QueryResponse response = solrServers.get(SOLR_CORE_FILES).query(request);
-            LOG.info("💯 Num found: " + response.getResults().getNumFound());
+            SolrDocumentList docs = executeFileQuery(requestContext, "id:\"" + id + "\"");
+            LOG.info("💯 Num found: " + docs.getNumFound());
 
-            SolrDocumentList docs = response.getResults();
             Iterator<SolrDocument> iter = docs.iterator();
             boolean iterating_through_possibilities = false;
             
@@ -194,31 +107,10 @@ public class FilePathResolver extends SolrProxy {
                 iterating_through_possibilities = true;
                 SolrDocument doc = iter.next();
                 LOG.info(doc.toString());
-                LOG.info("=== 1 about to get fileLocation");
-                String fileLocation = (String)doc.getFieldValue(SOLR_FIELD_FILE_LOCATION);
-                LOG.info("=== 2 got fileLocation = «" + fileLocation + "»");
-                String fileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
-                String realFileName = (String)doc.getFieldValue(SOLR_FIELD_FILE_NAME);
-                LOG.info("=== 3 got fileName = «" + fileName + "»");
-                if (doc.getFieldValuesMap().containsKey(SOLR_FIELD_NAME)) {
-                    LOG.info("=== 3½ ok");
-                    Object nameFieldValue = doc.getFieldValue(SOLR_FIELD_NAME);
-                    if (nameFieldValue != null) {
-                        ArrayList asList = (ArrayList) nameFieldValue;
-                        if (asList.size() > 0) {
-                            String firstNameField = (String) asList.get(0);
-                            if (firstNameField != null && firstNameField.length() > 0) {
-                                LOG.info("=== 4 name field value «" + firstNameField + "» overriding fileName «" + fileName + "»");
-                                realFileName = firstNameField;
-                            }
-                        }
-                    }
-                }
-                String filePath = fileLocation + "/" + realFileName;
-                LOG.info("=== 6 filePath is «" + filePath + "»");
-                LOG.info("File path="+filePath.toString());
-                
-                return new FileInfo(fileLocation, fileName, realFileName, filePath);
+                FileInfo fileInfo = extractFileInfoFromDocument(doc);
+                LOG.info("=== 6 filePath is «" + fileInfo.getFilePath() + "»");
+                LOG.info("File path=" + fileInfo.getFilePath());
+                return fileInfo;
             }
             
             if (!iterating_through_possibilities) {
@@ -231,6 +123,102 @@ public class FilePathResolver extends SolrProxy {
             return null;
         }
         return null;
+    }
+    
+    /**
+     * Executes a file query against Solr with access control.
+     * 
+     * @param requestContext The request context for access control
+     * @param query The Solr query string
+     * @return SolrDocumentList containing the results
+     * @throws Exception if query fails
+     */
+    private SolrDocumentList executeFileQuery(ContainerRequestContext requestContext, String query) throws Exception {
+        // Create the Solr query
+        SolrQuery request = new SolrQuery();
+        request.setQuery(query);
+
+        // Add access control
+        String acfq = getAccessControlQueryStringValue(requestContext);
+        LOG.info("🧏 ACFQ = " + acfq + ".");
+        if (!acfq.isEmpty()) {
+            request.setFilterQueries(acfq);
+        }
+        
+        // Set the fields we need
+        request.setFields(new String[] {
+            SOLR_FIELD_FILE_LOCATION, SOLR_FIELD_FILE_NAME, SOLR_FIELD_NAME
+        });
+        
+        // Execute the query
+        LOG.info("❓ Executing Solr request to 'files' core: " + request.toString());
+        QueryResponse response = solrServers.get(SOLR_CORE_FILES).query(request);
+        
+        return response.getResults();
+    }
+    
+    /**
+     * Extracts file path information from a Solr document.
+     * 
+     * @param doc The Solr document
+     * @return The constructed file path
+     */
+    private String extractFilePathFromDocument(SolrDocument doc) {
+        String fileLocation = (String) doc.getFieldValue(SOLR_FIELD_FILE_LOCATION);
+        String fileName = (String) doc.getFieldValue(SOLR_FIELD_FILE_NAME);
+        String realFileName = (String) doc.getFieldValue(SOLR_FIELD_FILE_NAME);
+        
+        // Override with name field if available
+        if (doc.getFieldValuesMap().containsKey(SOLR_FIELD_NAME)) {
+            Object nameFieldValue = doc.getFieldValue(SOLR_FIELD_NAME);
+            if (nameFieldValue != null) {
+                ArrayList asList = (ArrayList) nameFieldValue;
+                if (asList.size() > 0) {
+                    String firstNameField = (String) asList.get(0);
+                    if (firstNameField != null && firstNameField.length() > 0) {
+                        LOG.info("🧑‍⚖️ Overriding realFileName «" + realFileName +
+                                 "» with firstNameField value «" + firstNameField + "»");
+                        realFileName = firstNameField;
+                    }
+                }
+            }
+        }
+        
+        return fileLocation + "/" + realFileName;
+    }
+    
+    /**
+     * Extracts complete file information from a Solr document.
+     * 
+     * @param doc The Solr document
+     * @return FileInfo object with all file details
+     */
+    private FileInfo extractFileInfoFromDocument(SolrDocument doc) {
+        LOG.info("=== 1 about to get fileLocation");
+        String fileLocation = (String) doc.getFieldValue(SOLR_FIELD_FILE_LOCATION);
+        LOG.info("=== 2 got fileLocation = «" + fileLocation + "»");
+        String fileName = (String) doc.getFieldValue(SOLR_FIELD_FILE_NAME);
+        String realFileName = (String) doc.getFieldValue(SOLR_FIELD_FILE_NAME);
+        LOG.info("=== 3 got fileName = «" + fileName + "»");
+        
+        // Override with name field if available
+        if (doc.getFieldValuesMap().containsKey(SOLR_FIELD_NAME)) {
+            LOG.info("=== 3½ ok");
+            Object nameFieldValue = doc.getFieldValue(SOLR_FIELD_NAME);
+            if (nameFieldValue != null) {
+                ArrayList asList = (ArrayList) nameFieldValue;
+                if (asList.size() > 0) {
+                    String firstNameField = (String) asList.get(0);
+                    if (firstNameField != null && firstNameField.length() > 0) {
+                        LOG.info("=== 4 name field value «" + firstNameField + "» overriding fileName «" + fileName + "»");
+                        realFileName = firstNameField;
+                    }
+                }
+            }
+        }
+        
+        String filePath = fileLocation + "/" + realFileName;
+        return new FileInfo(fileLocation, fileName, realFileName, filePath);
     }
     
     /**
