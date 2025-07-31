@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -51,7 +54,20 @@ public class DownloadServiceImpl implements DownloadService  {
 	}
 
 
-
+	private List<String> fixDoubleURLDecode(List<String> ids) {
+		List<String> decodedIDs = new ArrayList<String>();
+		for (String id: ids) {
+			try {
+				decodedIDs.add(URLDecoder.decode(id, StandardCharsets.UTF_8.name()));
+			} catch (RuntimeException ex) {
+				throw ex;
+			} catch (Exception ex) {
+				// Fallback to the original ID
+				decodedIDs.add(id);
+			}
+		}
+		return decodedIDs;
+	}
 
 	@Override
 	@POST
@@ -65,6 +81,9 @@ public class DownloadServiceImpl implements DownloadService  {
 		@FormParam("query") @DefaultValue("") String query,
 		@FormParam("id") List<String> ids
 	) {
+		// AI says that the ids are double-URL-encode, so fix that
+		ids = fixDoubleURLDecode(ids);
+
 		LOG.info("👀 I see you, " + email + ", with your zip request for query «" + query + "» or for "
 			+ ids.size() + " files with IDs «" + ids + "»");
 		try {
