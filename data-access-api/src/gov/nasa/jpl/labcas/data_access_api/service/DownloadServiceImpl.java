@@ -65,17 +65,25 @@ public class DownloadServiceImpl implements DownloadService  {
 		@FormParam("query") @DefaultValue("") String query,
 		@FormParam("id") List<String> ids
 	) {
-		LOG.info("👀 I see you, " + email + ", with your zip request for query «" + query + "» or file id «" + ids + "»");
+		LOG.info("👀 I see you, " + email + ", with your zip request for query «" + query + "» or for "
+			+ ids.size() + " files with IDs «" + ids + "»");
 		try {
 			List<String> files = null;
 			if (query.length() > 0) {
+				LOG.info("👀 The query length was > 0 so resolving using " + query);
 				files = filePathResolver.getFilePathsForQuery(requestContext, query);
 				LOG.info("👀 For query " + query + " the file IDs are " + files);
 			} else {
 				files = new ArrayList<String>();
 				for (String fileID: ids) {
+					LOG.info("👀🔎 resolving file ID " + fileID);
 					String f = filePathResolver.getFile(requestContext, fileID);
-					if (f != null) files.add(f);
+					LOG.info("👀🔎 resolved file ID " + fileID + " to " + f);
+					if (f != null) {
+						files.add(f);
+					} else {
+						LOG.warning("🚨🚨🚨 file ID " + fileID + " not found");
+					}
 				}
 			}
 
