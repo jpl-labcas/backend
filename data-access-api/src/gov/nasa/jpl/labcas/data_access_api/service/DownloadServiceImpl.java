@@ -80,9 +80,10 @@ public class DownloadServiceImpl implements DownloadService  {
 					String f = filePathResolver.getFile(requestContext, fileID);
 					LOG.info("👀🔎 resolved file ID " + fileID + " to " + f);
 					if (f != null) {
+						LOG.info("👀🔍🎉 success! Adding file " + f + " to files");
 						files.add(f);
 					} else {
-						LOG.warning("🚨🚨🚨 file ID " + fileID + " not found");
+						LOG.warning("👀🔍💥 file ID " + fileID + " not found");
 					}
 				}
 			}
