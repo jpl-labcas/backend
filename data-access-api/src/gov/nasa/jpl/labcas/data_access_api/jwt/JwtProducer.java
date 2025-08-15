@@ -1,7 +1,9 @@
 package gov.nasa.jpl.labcas.data_access_api.jwt;
 
+import java.security.SecureRandom;
 import java.util.Date;
 import java.util.logging.Logger;
+import java.util.Base64;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -21,33 +23,34 @@ public class JwtProducer {
 	private final static Logger LOG = Logger.getLogger(JwtProducer.class.getName());
 	
 	public JwtProducer() {
-		
 		String secret = Parameters.getParameterValue(Constants.JWT_SECRET_KEY);
 		algorithm = Algorithm.HMAC256(secret);
-		
 	}
-		
-	public String getToken(String subject) throws JWTCreationException {
-		
-		
-		
-		Date now = new Date();
-		Date expires = new Date();
-		expires.setTime(now.getTime()+Constants.EXPIRES_IN_SECONDS*1000);
-		
-		// JWT tokens have an expiration date
-		// which will automatically be used for validation
-	    String token = JWT.create()
-	    				   .withIssuer(Constants.ISSUER)
-	    				   .withAudience(Constants.ISSUER)
-	    				   .withIssuedAt(now)
-	    				   .withNotBefore(now)
-	    				   .withExpiresAt(expires)
-	    				   .withSubject(subject)
-	    				   //.withClaim(Constants.CLAIM_FILENAME, fileName)
-	                   .sign(algorithm);
-	    return token;
-		
+
+	private String generateRandomNonce() {
+		byte[] randomBytes = new byte[16]; // 128-bit
+		new SecureRandom().nextBytes(randomBytes);
+		return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
+	}
+	
+	public synchronized String getToken(String subject) throws JWTCreationException {
+		Session session = Sessions.INSTANCE.startSession(subject);
+		try {
+			String token = JWT.create()
+				.withIssuer(Constants.ISSUER)
+				.withAudience(Constants.AUDIENCE)
+				.withIssuedAt(session.getCreatedAt())
+				.withNotBefore(session.getCreatedAt())
+				.withExpiresAt(session.getExpiresAt())
+				.withSubject(subject)
+				.withClaim(Constants.SESSION_ID, session.getSessionID())
+				.sign(algorithm);
+			return token;
+		} catch (JWTCreationException e) {
+			LOG.severe("Error creating JWT: " + e.getMessage());
+			Sessions.INSTANCE.endSession(session.getSessionID());
+			throw e;
+		}
 	}
 	
 	public static void main(String[] args) {
