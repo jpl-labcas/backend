@@ -142,6 +142,8 @@ public class DownloadServiceImpl implements DownloadService  {
 		String path = S3_PUBLIC_COLLECTIONS + collectionID;
 
 		// Create JSON response with nested structure
+		// See https://github.com/jpl-labcas/backend/issues/12 for details of this JSON structure
+		// and https://github.com/jpl-labcas/backend/issues/20 for the task.
 		JSONObject jsonResponse = new JSONObject();
 		JSONObject transferRequest = new JSONObject();
 		JSONObject source = new JSONObject();
