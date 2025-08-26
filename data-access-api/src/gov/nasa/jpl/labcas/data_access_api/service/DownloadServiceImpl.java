@@ -18,6 +18,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.json.JSONObject;
 
 @Path("/")
 @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -29,7 +30,35 @@ public class DownloadServiceImpl implements DownloadService  {
 	}
 
 	private final static Logger LOG = Logger.getLogger(DownloadServiceImpl.class.getName());
+
+	/**
+	 * This is the S3 URI for the public collections for Aspera transfers.
+	 *
+	 * Apparently this should be the S3 URI but without the `s3://edrn-labcas/uploads` prefix.
+	 * Don't forget to add the trailing slash.
+	 */
+	private static final String S3_PUBLIC_COLLECTIONS = "/workspaces/107571/home/edrn-bot@jpl.nasa.gov (1251184)/";
 	
+	/**
+	 * This is the remote host for Aspera transfers: `ats-aws-us-west-2.aspera.io`.
+	 */
+	private static final String ASPERA_REMOTE_HOST = "ats-aws-us-west-2.aspera.io";
+
+	/**
+	 * Remote user for Aspera transfers: `xfer`.
+	 */
+	private static final String ASPERA_REMOTE_USER = "xfer";
+
+	/**
+	 * Transfer direction for Aspera transfers: `receive`.
+	 */
+	private static final String ASPERA_TRANSFER_DIRECTION = "receive";
+
+	/**
+	 * SSH port for Aspera transfers: `33001`.
+	 */
+	private static final int ASPERA_SSH_PORT = 33001;
+
 	private final FileDownloadHandler fileDownloadHandler;
 	private final FilePathResolver filePathResolver;
 	
@@ -49,8 +78,6 @@ public class DownloadServiceImpl implements DownloadService  {
 		
 		return fileDownloadHandler.downloadFile(requestContext, id, suppressContentDisposition);
 	}
-
-
 
 
 	@Override
@@ -98,6 +125,40 @@ public class DownloadServiceImpl implements DownloadService  {
 			LOG.warning("🚨🚨🚨 " + ex.getMessage());
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
 		}
+	}
+
+	@Override
+	@GET
+	@Path("/rapidly-download-collection")
+	@Produces("application/json")
+	public Response rapidlyDownloadCollection(
+		@Context HttpServletRequest httpRequest,
+		@Context ContainerRequestContext requestContext,
+		@QueryParam("collectionID") String collectionID,
+		@QueryParam("token") String token
+	) {
+		LOG.info("🏎️ I see you, with your Aspera request for collection " + collectionID + " with token «" + token + "»");
+
+		String path = S3_PUBLIC_COLLECTIONS + collectionID;
+
+		// Create JSON response with nested structure
+		JSONObject jsonResponse = new JSONObject();
+		JSONObject transferRequest = new JSONObject();
+		JSONObject source = new JSONObject();
+		source.put("source", path);
+		JSONObject singleRequest = new JSONObject();
+		singleRequest.put("paths", new JSONObject[]{source});
+		singleRequest.put("authentication", token);
+		singleRequest.put("remote_host", ASPERA_REMOTE_HOST);
+		singleRequest.put("remote_user", ASPERA_REMOTE_USER);
+		singleRequest.put("direction", ASPERA_TRANSFER_DIRECTION);
+		singleRequest.put("ssh_port", ASPERA_SSH_PORT);
+		transferRequest.put("transfer_request", singleRequest);
+
+		JSONObject[] transferRequestsArray = new JSONObject[]{transferRequest};
+		jsonResponse.put("transfer_requests", transferRequestsArray);
+
+		return Response.status(Status.OK).entity(jsonResponse.toString()).build();
 	}
 
 	@Override

@@ -20,3 +20,4 @@
 venv/
 *.sublime-workspace
 private-notes.md
+.vscode/

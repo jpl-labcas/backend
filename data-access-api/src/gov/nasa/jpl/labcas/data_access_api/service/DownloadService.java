@@ -27,4 +27,7 @@ public interface DownloadService {
 
 	public Response ping(HttpServletRequest httpRequest, ContainerRequestContext requestContext, String message);
 
+	public Response rapidlyDownloadCollection(
+		HttpServletRequest httpRequest, ContainerRequestContext requestContext, String collectionID, String token
+	);
 }
