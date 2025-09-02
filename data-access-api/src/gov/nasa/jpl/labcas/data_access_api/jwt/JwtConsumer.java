@@ -51,16 +51,22 @@ public class JwtConsumer {
 			// the ISSUER and AUDIENCE fields are required
 			// otherwise the token is invalid
 			// also tokens are automatically checked for expiration
-			verifier = JWT.require(algorithm).withIssuer(Constants.ISSUER).withAudience(Constants.AUDIENCE).build();
+			verifier = JWT.require(algorithm).withIssuer(Constants.ISSUER).withAudience(Constants.AUDIENCE)
+				.acceptLeeway(60).build();
 		}
 	
 	}
 	
 	public DecodedJWT verifyToken(String token) throws JWTVerificationException  {
-		
 	    DecodedJWT jwt = verifier.verify(token);
-	    LOG.info("Subject="+jwt.getSubject());
-	    //LOG.info("Filename="+jwt.getClaim(Constants.CLAIM_FILENAME).asString());
+		String subject = jwt.getSubject();
+		String sessionID = jwt.getClaim(Constants.SESSION_ID).asString();
+		LOG.info("💆 Verifying: Subject=" + subject + ", session ID = " + sessionID);
+
+		if (!Sessions.INSTANCE.isSessionValid(sessionID, subject)) {
+			LOG.severe("💆🚨 Session is invalid for " + subject + " with ID " + sessionID);
+			throw new JWTVerificationException("Session is invalid");
+		}
 	    return jwt;
 	}
 	

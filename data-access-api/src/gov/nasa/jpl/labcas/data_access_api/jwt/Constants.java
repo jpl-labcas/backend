@@ -11,9 +11,8 @@ public class Constants {
 	
 	public static String AUDIENCE = "LabCAS";
 	
-	//public static String CLAIM_FILENAME = "FileName";
+	public static String SESSION_ID = "Shubhneek";  // "Shubhneek" means "session identifier"
 	
-	// FIXME
-	public static int EXPIRES_IN_SECONDS = 3600;
+	public static int EXPIRES_IN_SECONDS = 3600;  // 1 hour
 
 }

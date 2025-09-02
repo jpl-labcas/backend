@@ -18,5 +18,15 @@ public interface TokenService {
 	 * @return
 	 */
 	public Response auth(HttpServletRequest httpRequest, ContainerRequestContext requestContext);
+
+	/**
+	 * Method to log out a session
+	 * 
+	 * @param httpRequest
+	 * @param requestContext
+	 * @param sessionID
+	 * @return
+	 */
+	public Response logout(HttpServletRequest httpRequest, ContainerRequestContext requestContext, String sessionID);
 	
 }
