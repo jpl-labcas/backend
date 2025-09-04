@@ -78,11 +78,17 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 			// VDP_1645_SC-9999-L-JPL-0220 — ensure credentials are always provided
 			String distinguishedName = (String) requestContext.getProperty(AuthenticationFilter.USER_DN);
 			LOG.info("🪪 the distinguishedName is «" + distinguishedName + "»");
-			if (distinguishedName == null || distinguishedName.equals(AuthenticationFilter.GUEST_USER_DN)) {
-				LOG.info("VDP_1645_SC-9999-L-JPL-0220 violation: login required to query (even for public data)");
-				return Response.status(Status.UNAUTHORIZED)
-					.entity("User login required to query (even for public data)").build();
-			}
+
+			// EDRN/labcas-ui#254: we do want to allow guests to query *public* data. The front-end
+			// Apache HTTPD has mod_evasive installed which should help prevent mass-exfiltration.
+			// Therefore, I'm commenting this out. However, if the security red team balks and wants
+			// EDRN/Infrastructure#144 back in action, we can re-enable it.
+			//
+			// if (distinguishedName == null || distinguishedName.equals(AuthenticationFilter.GUEST_USER_DN)) {
+			// 	LOG.info("VDP_1645_SC-9999-L-JPL-0220 violation: login required to query (even for public data)");
+			// 	return Response.status(Status.UNAUTHORIZED)
+			// 		.entity("User login required to query (even for public data)").build();
+			// }
 
 			// check request for unsafe characters
 			// must URL-decode the query string first
