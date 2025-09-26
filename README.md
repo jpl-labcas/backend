@@ -9,6 +9,19 @@ Documentation
 
 See the `docs/documentation.pdf` file.
 
+Build and Deployment
+--------------------
+
+Run the following as the "edrn" user:
+```
+cd $LABCAS_HOME
+./stop.sh
+cd ~/src/backend
+git pull
+mvn clean install
+cd $LABCAS_HOME
+./start.sh
+```
 
 Development
 -----------
