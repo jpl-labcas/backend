@@ -1,5 +1,8 @@
 package gov.nasa.jpl.labcas.data_access_api.service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.Collection;
@@ -12,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.io.IOUtils;
@@ -111,6 +115,8 @@ public class SolrProxy {
 	 * 
 	 * NOTE: this method uses the HTTPClient API directly because SolrJ does not allow to return 
 	 * the raw response document as JSON or XML without a lot of processing.
+	 * This implementation uses streaming to handle large responses efficiently without loading
+	 * the entire response into memory.
 	 * 
 	 * @param url: the complete query URL (must be URL-encoded)
 	 * @param core
@@ -118,36 +124,86 @@ public class SolrProxy {
 	 */
 	static Response query(String url) {
 		
+		CloseableHttpClient httpclient = null;
+		CloseableHttpResponse response = null;
+		
 		try {
-			CloseableHttpClient httpclient = null;
-			try {
-				httpclient = HttpClients.custom()
+			httpclient = HttpClients.custom()
 					.setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, TrustSelfSignedStrategy.INSTANCE).build())
 					.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
 					.build();
-			} catch (RuntimeException ex) {
-				throw ex;
-			} catch (Exception ex) {
-				System.err.println("I give up in SolrProxy.query");
-				System.exit(42);
-			}
-
+			
 			LOG.info("Executing Solr HTTP request: " + url);
 			HttpGet httpGet = new HttpGet(url);
-			CloseableHttpResponse response = httpclient.execute(httpGet);
-			HttpEntity entity = response.getEntity();
-
-			// return the same response to the client
-			String content = IOUtils.toString(entity.getContent(), "UTF-8");
-			return Response.status(response.getStatusLine().getStatusCode()).entity(content).build();
-
+			response = httpclient.execute(httpGet);
+			final HttpEntity entity = response.getEntity();
+			
+			if (entity == null) {
+				return Response.status(response.getStatusLine().getStatusCode())
+						.entity("No response entity").build();
+			}
+			
+			// Create final references for the inner class
+			final CloseableHttpClient finalHttpclient = httpclient;
+			final CloseableHttpResponse finalResponse = response;
+			
+			// Create a streaming response to handle large content efficiently
+			StreamingOutput streamingOutput = new StreamingOutput() {
+				@Override
+				public void write(OutputStream outputStream) throws IOException {
+					InputStream inputStream = null;
+					try {
+						inputStream = entity.getContent();
+						IOUtils.copy(inputStream, outputStream);
+					} finally {
+						// Clean up HTTP resources after streaming is complete
+						if (inputStream != null) {
+							try {
+								inputStream.close();
+							} catch (IOException e) {
+								LOG.warning("Error closing input stream: " + e.getMessage());
+							}
+						}
+						cleanupResources(finalResponse, finalHttpclient);
+					}
+				}
+			};
+			
+			return Response.status(response.getStatusLine().getStatusCode())
+					.entity(streamingOutput)
+					.header("Content-Type", entity.getContentType() != null ? entity.getContentType().getValue() : "application/json")
+					.build();
+		} catch (RuntimeException ex) {
+			// Clean up resources on RuntimeException
+			cleanupResources(response, httpclient);
+			throw ex;
 		} catch (Exception e) {
-			// send 500 "Internal Server Error" response
+			// Clean up resources on Exception and send 500 "Internal Server Error" response
+			cleanupResources(response, httpclient);
 			e.printStackTrace();
 			LOG.warning(e.getMessage());
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
-
+	}
+	
+	/**
+	 * Helper method to clean up HTTP resources
+	 */
+	private static void cleanupResources(CloseableHttpResponse response, CloseableHttpClient httpclient) {
+		if (response != null) {
+			try {
+				response.close();
+			} catch (IOException e) {
+				LOG.warning("Error closing HTTP response: " + e.getMessage());
+			}
+		}
+		if (httpclient != null) {
+			try {
+				httpclient.close();
+			} catch (IOException e) {
+				LOG.warning("Error closing HTTP client: " + e.getMessage());
+			}
+		}
 	}
 	
 	/**
