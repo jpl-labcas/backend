@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "c73af22a-3ef6-4fbc-a3c5-9e00433251a5",
 		"name": "LabCAS Backend",
-		"description": "This is a collection of ReST endpoints supported by LabCAS, the software that powers the Data Commons of the Early Detection Research Network (EDRN) and the National Institute of Standards and Technologies (NIST).\n\nThe base URLs are:\n\n- For EDRN, [https://edrn-labcas.jpl.nasa.gov](https://edrn-labcas.jpl.nasa.gov)\n    \n- For NIST, [https://labcas.jpl.nasa.gov/nist](https://labcas.jpl.nasa.gov/nist)\n    \n\nNote that all endpoints require authentication to function. This can be provided using either:\n\n- HTTP Basic authentication with a username and password.\n    \n- JSON Web Token (JWT) bearer authorization by first passing a username and password with HTTP Basic authentication to the `/auth` endpoint to generate a JWT, which can then be passed all other endpoints.\n    \n\n👉 **Note**: When using this API collection under Postman, use the Token Service → Authentication request first to generate a JWT that can be used with other requests. The `username` and `password` must appear in the Postman environment.",
+		"description": "This is a collection of ReST endpoints supported by LabCAS, the software that powers the Data Commons of the Early Detection Research Network (EDRN) and the National Institute of Standards and Technologies (NIST).\n\nThe base URLs are:\n\n- For EDRN, [https://edrn-labcas.jpl.nasa.gov](https://edrn-labcas.jpl.nasa.gov)\n    \n- For NIST, [https://labcas.jpl.nasa.gov/nist](https://labcas.jpl.nasa.gov/nist)\n    \n\nNote that all endpoints require authentication to function. This can be provided using either:\n\n- HTTP Basic authentication with a username and password _(if supported by your consortium)_\n    \n- JSON Web Token (JWT) bearer authorization _(preferred)_\n    \n    - The source of your JWT may vary depending on consortium; for EDRN you use the `/auth` endpoint to generate one. For NIST, you may be required to use your SSO.\n        \n\n👉 **Note**: When using this API collection under Postman, use the Token Service → Authentication request first to generate a JWT that can be used with other requests. The `username` and `password` must appear in the Postman environment.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "10615558"
 	},
@@ -130,7 +130,7 @@
 					"response": []
 				}
 			],
-			"description": "The Token service has a single endpoint whose responsibility is to generate JSON Web Tokens (JWTs) for use with the other ReST API endpoints, track sessions, and invalidate a session when a user wishes to log out."
+			"description": "The Token service has a single endpoint whose responsibility is to generate JSON Web Tokens (JWTs) for use with the other ReST API endpoints, track sessions, and invalidate a session when a user wishes to log out.\n\n👉 **Note**: these endpoints may not be in use, depending on the consortium's installation of LabCAS."
 		},
 		{
 			"name": "User Data Service",
