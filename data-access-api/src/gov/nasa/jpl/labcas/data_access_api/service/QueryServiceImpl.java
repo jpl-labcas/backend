@@ -61,8 +61,20 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 	@GET
 	@Path("/files/select")
 	public Response queryFiles(@Context HttpServletRequest httpRequest, @Context ContainerRequestContext requestContext) {
-		return queryCore(httpRequest, requestContext, SOLR_CORE_FILES);
+		// jpl-labcas/backend#29
+		//
+		// Require a logged-in user to query file metadata
 
+		String distinguishedName = (String) requestContext.getProperty(AuthenticationFilter.USER_DN);
+		LOG.info("🪪 the DN for queryFiles (/files/select) is «" + distinguishedName + "»");
+
+		if (distinguishedName == null || distinguishedName.equals(AuthenticationFilter.GUEST_USER_DN)) {
+			LOG.info("VDP_1645_SC-9999-L-JPL-0220 violation: login required to query (even for public data)");
+			return Response.status(Status.UNAUTHORIZED)
+				.entity("User login required to query file metadata (even for public data, so there!)").build();
+		}
+
+		return queryCore(httpRequest, requestContext, SOLR_CORE_FILES);
 	}
 	
 	/**
