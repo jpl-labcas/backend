@@ -1,9 +1,0 @@
-<updates core="collections" action="set">
-   <update>
-      <query>id:Boston_University_Lung_Tumor_Sequencing</query>
-      <field name="LeadPI">
-         <value>John Smith</value>
-         <value>Jane Johns</value>
-      </field>
-   </update>
-</updates>

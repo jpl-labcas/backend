@@ -1,3 +1,0 @@
-#!/bin/sh
-#htseq-count -r name sorted.sam ../../genes.gtf  > gene.counts
-echo 123
