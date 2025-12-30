@@ -2,18 +2,71 @@
 
 from __future__ import annotations
 
+import os
 from functools import lru_cache
+from pathlib import Path
 from typing import Literal
 
 from pydantic import Field, HttpUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Module-level variable to store CLI-provided env file path
+_cli_env_file: str | None = None
+
+
+def set_env_file(path: str) -> None:
+    '''Set the env file path from command line argument.
+    
+    This should be called before get_settings() is first invoked.
+    '''
+    global _cli_env_file
+    _cli_env_file = path
+    # Clear the cache so new settings are loaded with the new env file
+    get_settings.cache_clear()
+
+
+def _find_env_file() -> str | None:
+    '''Find the .env file using the priority order:
+    
+    1. --env command line argument (stored in _cli_env_file)
+    2. LABCAS_ENV_FILE environment variable
+    3. $HOME/.env
+    4. $CWD/.env
+    5. Return None if none found (will use defaults from Settings)
+    '''
+    # Priority 1: CLI argument
+    if _cli_env_file is not None:
+        env_path = Path(_cli_env_file)
+        if env_path.exists():
+            return str(env_path.resolve())
+        raise FileNotFoundError(f'Environment file specified via --env not found: {_cli_env_file}')
+    
+    # Priority 2: LABCAS_ENV_FILE environment variable
+    env_file_from_env = os.getenv('LABCAS_ENV_FILE')
+    if env_file_from_env:
+        env_path = Path(env_file_from_env)
+        if env_path.exists():
+            return str(env_path.resolve())
+        raise FileNotFoundError(f'Environment file specified via LABCAS_ENV_FILE not found: {env_file_from_env}')
+    
+    # Priority 3: $HOME/.env
+    home_env = Path.home() / '.env'
+    if home_env.exists():
+        return str(home_env.resolve())
+    
+    # Priority 4: $CWD/.env
+    cwd_env = Path.cwd() / '.env'
+    if cwd_env.exists():
+        return str(cwd_env.resolve())
+    
+    # Priority 5: Return None (will use defaults from Settings)
+    return None
 
 
 class Settings(BaseSettings):
     '''Application settings loaded from environment variables.'''
 
     model_config = SettingsConfigDict(
-        env_file='.env',
         env_file_encoding='utf-8',
         case_sensitive=False,
         extra='ignore',
@@ -59,14 +112,24 @@ class Settings(BaseSettings):
 
     accept_any_jwt: bool = Field(False, alias='ACCEPT_ANY_JWT')
 
-    ssl_keyfile: str | None = Field(None, alias='LABCAS_SSL_KEYFILE')
-    ssl_certfile: str | None = Field(None, alias='LABCAS_SSL_CERTFILE')
+
+__all__ = ['Settings', 'get_settings', 'set_env_file']
 
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
-    '''Return a cached Settings instance.'''
-
+    '''Return a cached Settings instance.
+    
+    The .env file is located using the priority order:
+    1. --env command line argument
+    2. LABCAS_ENV_FILE environment variable
+    3. $HOME/.env
+    4. $CWD/.env
+    5. Use defaults from Settings if none found
+    '''
+    env_file = _find_env_file()
+    if env_file is not None:
+        return Settings(_env_file=env_file)
     return Settings()
 
 
