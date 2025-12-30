@@ -24,8 +24,10 @@ class QueryService:
 
     def __init__(self, *, settings: Settings | None = None, client: httpx.AsyncClient | None = None) -> None:
         self.settings = settings or get_settings()
-        if not self.settings.solr_url:
-            msg = "SOLR_URL configuration is required for the query service."
+        
+        # Only require solr_url if we need to create a client
+        if client is None and not self.settings.solr_url:
+            msg = "SOLR_URL configuration is required for the query service when no client is provided."
             raise ValueError(msg)
 
         verify = self.settings.solr_verify_ssl

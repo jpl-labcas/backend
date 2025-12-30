@@ -101,7 +101,7 @@ class Settings(BaseSettings):
     aws_region: str | None = Field(None, alias='AWS_REGION')
     aws_access_key_id: str | None = Field(None, alias='AWS_ACCESS_KEY_ID')
     aws_secret_access_key: str | None = Field(None, alias='AWS_SECRET_ACCESS_KEY')
-    s3_bucket: str | None = Field(None, alias='S3_BUCKET')
+    s3_bucket: str = Field('unknown', alias='S3_BUCKET')
     aws_download_url_expiration_seconds: int = Field(20, alias='AWS_DOWNLOAD_URL_EXPIRATION_TIME_SECS')
 
     # Path prefix replacement for local file debugging (e.g., "/usr/local/labcas/backend:/Users/kelly")

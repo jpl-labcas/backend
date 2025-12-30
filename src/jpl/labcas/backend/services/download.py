@@ -44,8 +44,15 @@ class DownloadService:
         s3_client_factory: S3ClientFactory | None = None,
     ) -> None:
         self.settings = settings or get_settings()
-        self.query_service = query_service or get_query_service()
+        self._query_service = query_service
         self.s3_client_factory = s3_client_factory or S3ClientFactory(settings=self.settings)
+
+    @property
+    def query_service(self) -> QueryService:
+        """Lazy initialization of query service."""
+        if self._query_service is None:
+            self._query_service = QueryService(settings=self.settings)
+        return self._query_service
 
     async def get_file_info(self, *, security: SecurityContext, file_id: str) -> FileInfo | None:
         """Query Solr for file information by ID."""
