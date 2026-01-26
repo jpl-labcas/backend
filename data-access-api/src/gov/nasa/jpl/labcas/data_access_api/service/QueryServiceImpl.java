@@ -4,6 +4,7 @@ import gov.nasa.jpl.labcas.data_access_api.utils.Parameters;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Enumeration;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +34,15 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 	private final static Logger LOG = Logger.getLogger(QueryServiceImpl.class.getName());
 	private final static String MAX_SOLR_ROWS_PROPERTY = "max_solr_rows";
 	private final int maxRows;
+
+	// Parameters that could be used for SSRF attacks - these will be filtered out
+	private final static String[] DANGEROUS_PARAMETERS = new String[] {
+		"shards",           // Can point to arbitrary Solr servers
+		"shards.qt",        // Can specify query template on remote shards
+		"stream.url",       // Can stream from arbitrary URLs
+		"stream.file",      // Can read arbitrary files
+		"stream.body"       // Can execute arbitrary code
+	};
 
 	public QueryServiceImpl() {
 		super();
@@ -123,8 +133,19 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 				}
 			}
 			
+			// Filter out dangerous parameters that could be used for SSRF attacks
+			String safeQueryString = buildSafeQueryString(httpRequest);
+			String accessControlString = getAccessControlString(requestContext);
+			
 			String baseUrl = getBaseUrl(core) + "/select";
-			String url = baseUrl + "?" + httpRequest.getQueryString() + getAccessControlString(requestContext);
+			// Build URL: if safeQueryString is empty, use accessControlString directly (it starts with &)
+			// Otherwise, combine them with &
+			String url;
+			if (safeQueryString.isEmpty()) {
+				url = baseUrl + (accessControlString.isEmpty() ? "" : "?" + accessControlString.substring(1));
+			} else {
+				url = baseUrl + "?" + safeQueryString + accessControlString;
+			}
 			LOG.info("🕵️‍♀️ Executing query: "+url);
 			return SolrProxy.query(url);
 		} catch (RuntimeException ex) {
@@ -156,6 +177,50 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 			return "";
 		}
 		
+	}
+	
+	/**
+	 * Builds a safe query string by filtering out dangerous parameters that could be used
+	 * for SSRF attacks (e.g., shards, stream.url, etc.).
+	 * 
+	 * @param httpRequest
+	 * @return A safe query string with dangerous parameters removed
+	 */
+	private String buildSafeQueryString(HttpServletRequest httpRequest) throws UnsupportedEncodingException {
+		StringBuilder safeQuery = new StringBuilder();
+		Enumeration<String> paramNames = httpRequest.getParameterNames();
+		boolean first = true;
+		
+		while (paramNames.hasMoreElements()) {
+			String paramName = paramNames.nextElement();
+			
+			// Check if this parameter is dangerous
+			boolean isDangerous = false;
+			for (String dangerous : DANGEROUS_PARAMETERS) {
+				// Check exact match or if parameter starts with dangerous prefix (e.g., "shards.qt")
+				if (paramName.equals(dangerous) || paramName.startsWith(dangerous + ".")) {
+					isDangerous = true;
+					LOG.warning("⚠️ Blocked dangerous parameter: " + paramName);
+					break;
+				}
+			}
+			
+			if (!isDangerous) {
+				String[] values = httpRequest.getParameterValues(paramName);
+				for (String value : values) {
+					if (!first) {
+						safeQuery.append("&");
+					}
+					first = false;
+					// URL-encode parameter name and value
+					safeQuery.append(UrlUtils.encode(paramName));
+					safeQuery.append("=");
+					safeQuery.append(UrlUtils.encode(value));
+				}
+			}
+		}
+		
+		return safeQuery.toString();
 	}
 
 }
