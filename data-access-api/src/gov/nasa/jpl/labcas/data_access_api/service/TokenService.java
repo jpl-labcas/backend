@@ -28,5 +28,13 @@ public interface TokenService {
 	 * @return
 	 */
 	public Response logout(HttpServletRequest httpRequest, ContainerRequestContext requestContext, String sessionID);
-	
+
+	/**
+	 * Get a string value by key.
+	 *
+	 * @param key the key to look up
+	 * @return 200 with the string value for a known key, 404 for unknown key
+	 */
+	public Response kvp(HttpServletRequest httpRequest, ContainerRequestContext requestContext, String key);
+
 }

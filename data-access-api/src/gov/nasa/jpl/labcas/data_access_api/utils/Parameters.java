@@ -55,7 +55,7 @@ public class Parameters {
 			}
 
 		} catch (IOException e) {
-			LOG.warning("Eroor reading property file: " + LABCAS_PROPERTIES);
+			LOG.warning("Error reading property file: " + LABCAS_PROPERTIES);
 		}
 	}
 	
