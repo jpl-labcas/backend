@@ -132,7 +132,7 @@ search layer.
 
 ## Development
 
-```bash
+```sh
 python -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
@@ -140,7 +140,7 @@ pip install --editable .
 labcas-backend --help
 ```
 
-Create a `.env` file based on `.env.example` before running the service or tests.
+Create a `.env` file based on `env.example` before running the service or tests.
 
 
 ## Solr Migration

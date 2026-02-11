@@ -7,7 +7,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, HttpUrl
+from pydantic import Field, HttpUrl, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Module-level variable to store CLI-provided env file path
@@ -111,6 +111,27 @@ class Settings(BaseSettings):
     zipperlab_url: HttpUrl | None = Field(None, alias='LABCAS_ZIPPERLAB_URL')
 
     accept_any_jwt: bool = Field(False, alias='ACCEPT_ANY_JWT')
+
+    # Key-value pairs for /kvp service; from LABCAS_KEY_VALUE_PAIRS (colon-separated key=value pairs)
+    # Stored as string so env/dotenv are not JSON-decoded; parsed via key_value_pairs computed field
+    key_value_pairs_env: str = Field(default='asp=foobar', alias='LABCAS_KEY_VALUE_PAIRS')
+
+    @computed_field
+    @property
+    def key_value_pairs(self) -> dict[str, str]:
+        """Parse LABCAS_KEY_VALUE_PAIRS (colon-separated key=value) into a dict."""
+        s = (self.key_value_pairs_env or '').strip()
+        if not s:
+            return {}
+        result: dict[str, str] = {}
+        for part in s.split(':'):
+            part = part.strip()
+            if not part:
+                continue
+            key, _, value = part.partition('=')
+            if key.strip():
+                result[key.strip()] = value.strip()
+        return result
 
 
 __all__ = ['Settings', 'get_settings', 'set_env_file']

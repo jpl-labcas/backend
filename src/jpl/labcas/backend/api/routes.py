@@ -19,6 +19,7 @@ from ..auth.dependencies import (
     require_authenticated_user,
 )
 from ..auth.jwt_manager import JwtManager
+from ..config import Settings, get_settings
 from ..directory import DirectoryProvider
 from ..services import (
     DownloadService,
@@ -42,6 +43,24 @@ def create_router() -> APIRouter:
     @router.get("/health", tags=["health"])
     async def healthcheck() -> dict[str, str]:
         return {"status": "ok"}
+
+    @data_router.get(
+        "/kvp",
+        response_class=PlainTextResponse,
+        tags=["kvp"],
+        summary="Key-Value Pair lookup",
+        description="Return the string value for a given key. Requires authentication (HTTP Basic or JWT). Returns 404 if the key is unknown.",
+    )
+    async def kvp_get(
+        key: str = Query(..., description="Name of the key to look up"),
+        security: SecurityContext = Depends(require_authenticated_user),
+        settings: Settings = Depends(get_settings),
+    ) -> PlainTextResponse:
+        """Return the value for the given key, or 404 if unknown."""
+        value = settings.key_value_pairs.get(key)
+        if value is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Unknown key")
+        return PlainTextResponse(content=value, media_type="text/plain")
 
     @data_router.post(
         "/auth",
@@ -93,7 +112,7 @@ def create_router() -> APIRouter:
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid username or password",
+                detail="🧐 Invalid username or password",
                 headers={"WWW-Authenticate": "Basic"},
             )
 

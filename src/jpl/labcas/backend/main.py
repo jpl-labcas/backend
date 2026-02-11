@@ -7,8 +7,10 @@ from __future__ import annotations
 import argparse
 import ipaddress
 import logging
+import os
 import tempfile
 from datetime import datetime, timedelta
+from pathlib import Path
 from typing import Optional
 
 import uvicorn
@@ -122,8 +124,13 @@ def cli(argv: Optional[list[str]] = None) -> None:
     args = parser.parse_args(argv)
 
     # Set env file from CLI if provided (must be done before get_settings())
+    # Also set as environment variable so it persists across uvicorn reloads
     if args.env:
-        set_env_file(args.env)
+        env_path = Path(args.env).resolve()
+        if not env_path.exists():
+            raise FileNotFoundError(f'Environment file specified via --env not found: {args.env}')
+        os.environ['LABCAS_ENV_FILE'] = str(env_path)
+        set_env_file(str(env_path))
 
     settings = get_settings()
     # Configure logging early so log messages in cli() function are visible

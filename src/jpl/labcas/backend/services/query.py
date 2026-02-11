@@ -89,6 +89,7 @@ class QueryService:
 
         # Add access control filter
         ac_filter = self._build_access_control_filter(security)
+        LOG.info('🔒 The access control filter is %r', ac_filter)
         if ac_filter:
             # Add to existing fq parameters
             existing_fq = safe_params.get("fq", [])

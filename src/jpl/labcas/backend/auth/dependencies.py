@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import base64
+import base64, logging
 
 from dataclasses import dataclass
 from typing import List, Optional
@@ -12,6 +12,8 @@ from fastapi import Depends, HTTPException, Request, status
 from ..config import Settings, get_settings
 from ..directory import DirectoryProvider, LdapDirectoryProvider, MockDirectoryProvider
 from .jwt_manager import JwtManager
+
+_logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -28,8 +30,10 @@ def get_directory_provider(settings: Settings = Depends(get_settings)) -> Direct
 
     # Better to use some kind of a factory pattern
     if settings.directory_provider == "mock":
+        _logger.warning('⚠️ CAUTION: using mock directory provider')
         return MockDirectoryProvider()
 
+    _logger.warning('🎉 Using LDAP directory provider!')
     return LdapDirectoryProvider(settings=settings)
 
 
@@ -106,7 +110,7 @@ async def require_authenticated_user(
             if not user:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Invalid username or password",
+                    detail="🤔 Invalid username or password",
                     headers={"WWW-Authenticate": "Basic"},
                 )
             
