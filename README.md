@@ -1,93 +1,11 @@
-LabCAS Backend
-==============
+# LabCAS Backend
 
 Repository containing back-end services and configuration for executing EDRN LabCAS data processing workflows.
 
 
-Documentation
--------------
+## Starting the Service
 
-See the `docs/documentation.pdf` file.
-
-Build and Deployment
---------------------
-
-Run the following as the "edrn" user:
-```
-cd $LABCAS_HOME
-./stop.sh
-cd ~/src/backend
-git pull
-mvn clean install
-cd $LABCAS_HOME
-./start.sh
-```
-
-Development
------------
-
-To build locally, maybe try (sh-compatible users):
-
-    mkdir /tmp/labcas
-    export "JAVA_HOME=`/usr/libexec/java_home --version 1.8.0`"
-    export LABCAS_HOME=/tmp/labcas
-    export PATH=${JAVA_HOME}/bin:$PATH
-    mvn clean install
-
-Or for csh-compatible users:
-
-    mkdir /tmp/labcas
-    setenv JAVA_HOME `/usr/libexec/java_home --version 1.8.0`
-    setenv LABCAS_HOME /tmp/labcas
-    set path = ( ${JAVA_HOME}/bin $path )
-    mvn clean install
-
-To run locally, try (for sh-compatible users):
-
-    export "JAVA_HOME=`/usr/libexec/java_home --version 1.8.0`"
-    export LABCAS_HOME=/tmp/labcas
-    cd $LABCAS_HOME
-    ./start.sh
-
-And if you insist on still using a csh-compatible shell:
-
-    setenv JAVA_HOME `/usr/libexec/java_home --version 1.8.0`
-    setenv LABCAS_HOME /tmp/labcas
-    cd $LABCAS_HOME
-    ./start.sh
-
-Note: you'll need a `~/.keystore` and a `~/labcas.properties`.
-
-To try it, try:
-
-    curl --insecure 'https://localhost:8444/labcas-backend-data-access-api/ping?message=Hello+world'
-
-You can exercise the `/auth` endpoint as follows:
-
-    curl --request POST --insecure \
-        --url 'https://localhost:8444/labcas-backend-data-access-api/auth' \
-        --header 'Content-type: application/x-www-form-urlencoded' \
-        --data-urlencode 'username=USERNAME' \
-        --data-urlencode 'password=PASSWORD' > /tmp/jwt
-
-substituting values for `USERNAME` and `PASSWORD`, of course. The JWT will be in `/tmp/jwt`.
-
-To use that JWT, try downloading a file:
-
-    curl --verbose --request GET --insecure \
-        --url 'https://localhost:8444/labcas-backend-data-access-api/download?id=UMiami_RP/Documentation/UM_RP.pptx' \
-        --cookie "JasonWebToken=`cat /tmp/jwt`" \
-        --header "Authentication: Bearer `cat /tmp/jwt`"
-
-Note: I'm not sure why you need both `--cookie` and `--header` 🤷.
-
-To exercise the `UserServiceLdapImpl`'s `main` method:
-
-    java -classpath data-access-api/target/classes gov.nasa.jpl.labcas.data_access_api.filter.UserServiceLdapImpl USERNAME PASSWORD
-
-To exercise JwtConsumer's `main` method (after doing `mvn clean install` and `start.sh`):
-
-    ./support/jwt.sh JWTFILE
+Create a `.env` file (or specify one with `--env`) and launch it with `labcas-backend`. Run `labcas-backend --help` for more information.
 
 
 ## Zipperlab Integration
@@ -111,8 +29,6 @@ If you want to send file IDs instead, do:
         --header 'Content-Type: application/x-www-form-urlencoded' \
         --data 'email=hello@a.co&id=FILE1&id=FILE2&id=FILE3' \
         https://localhost:8444/labcas-backend-data-access-api/zip
-
-
 
 
 ## Loading Solr Data
@@ -186,11 +102,13 @@ migrate-solr --mode import https://newhost:8983/solr --backup-dir /tmp/solr-back
 
 ### Your Solr Cores
 
-Based on your configuration, you have the following cores:
+The LabCAS Solr engine has the following cores:
+
 - `collections` - Collection metadata
 - `datasets` - Dataset metadata  
 - `files` - File metadata
 - `userdata` - User data
+
 
 ### Migration Process
 
@@ -218,11 +136,13 @@ The migration process consists of two phases:
 
 3. **Backup first**: Always backup your data before migration!
 
+
 #### During Migration
 
 - The tool will prompt you if a core doesn't exist in the target instance
 - Large cores may take significant time to export/import
 - Progress is shown during the process with progress bars
+
 
 #### After Migration
 
@@ -236,15 +156,18 @@ The migration process consists of two phases:
 
 3. **Test thoroughly**: Run your application tests to ensure everything works
 
+
 ### Alternative: Using Solr Backup API
 
 For very large datasets, you might prefer using Solr's built-in backup API:
+
 
 #### Export (on old Solr)
 ```bash
 # For each core
 curl "https://localhost:8984/solr/collections/replication?command=backup&location=/path/to/backup"
 ```
+
 
 #### Import (on new Solr)
 ```bash
