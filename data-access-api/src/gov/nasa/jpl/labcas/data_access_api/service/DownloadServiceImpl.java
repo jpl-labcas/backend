@@ -40,7 +40,7 @@ public class DownloadServiceImpl implements DownloadService  {
 	 * Apparently this should be the S3 URI but without the `s3://edrn-labcas/uploads` prefix.
 	 * Don't forget to add the trailing slash.
 	 */
-	private static final String S3_PUBLIC_COLLECTIONS = "/workspaces/107571/home/edrn-bot@jpl.nasa.gov (1251184)/";
+	private static final String S3_PUBLIC_COLLECTIONS = "/workspaces/151006/home/edrn-bot@jpl.nasa.gov (1251184)/";
 	
 	/**
 	 * This is the remote host for Aspera transfers: `ats-aws-us-west-2.aspera.io`.
