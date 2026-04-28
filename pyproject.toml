@@ -7,7 +7,7 @@ name = 'jpl.labcas.backend'
 dynamic = ['version']
 description = 'Python implementation of the LabCAS data access API with flexible security system.'
 keywords = ['data', 'LabCAS', 'cancer', 'backend', 'jpl', 'nist', 'edrn', 'nasa']
-requires-python = '>=3.13,<3.15'
+requires-python = '>=3.12,<3.15'
 license = {file = 'LICENSE.md'}
 authors = [
     {name = 'Sean Kelly', email = 'kelly@seankelly.biz'}
