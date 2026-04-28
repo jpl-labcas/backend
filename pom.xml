@@ -38,7 +38,7 @@
     <!-- Note that for mcl-labcas and labcas-dev, 9.0.111 is the latest that works (for now)
          And for edrn-labcas, 9.0.102 is the latest. We should either figure out why or just
          wait for the Python rewrite. -->
-    <tomcat.version>9.0.111</tomcat.version>
+    <tomcat.version>9.0.102</tomcat.version>
     <tomcat.dir>${env.LABCAS_HOME}</tomcat.dir>
 
     <!-- Solr/Solrj version and configuration location -->
