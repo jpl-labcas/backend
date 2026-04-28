@@ -38,7 +38,7 @@ def create_router() -> APIRouter:
     """Assemble and return the application's root router."""
 
     router = APIRouter()
-    data_router = APIRouter(prefix="/data-access-api")
+    data_router = APIRouter()
 
     @router.get("/health", tags=["health"])
     async def healthcheck() -> dict[str, str]:

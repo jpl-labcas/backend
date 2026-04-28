@@ -76,6 +76,7 @@ class Settings(BaseSettings):
     host: str = Field('0.0.0.0', alias='LABCAS_HOST')
     port: int = Field(8000, alias='LABCAS_PORT')
     log_level: str = Field('INFO', alias='LABCAS_LOG_LEVEL')
+    subpath_prefix: str = Field('', alias='LABCAS_SUBPATH_PREFIX')
 
     directory_provider: Literal['ldap', 'mock'] = Field('mock', alias='LABCAS_DIRECTORY_PROVIDER')
     ldap_uri: str | None = Field(None, alias='LABCAS_LDAP_URI')
@@ -94,7 +95,7 @@ class Settings(BaseSettings):
     solr_url: HttpUrl | None = Field(None, alias='LABCAS_SOLR_URL')
     solr_max_rows: int = Field(5000, alias='LABCAS_SOLR_MAX_ROWS')
     solr_verify_ssl: bool = Field(True, alias='LABCAS_SOLR_VERIFY_SSL')
-    download_base_url: HttpUrl = Field('http://localhost:8000/data-access-api/download', alias='LABCAS_DOWNLOAD_BASE_URL')
+    download_base_url: HttpUrl = Field('http://localhost:8000/download', alias='LABCAS_DOWNLOAD_BASE_URL')
     super_owner_principal: str | None = Field(None, alias='LABCAS_SUPER_OWNER_PRINCIPAL')
     public_owner_principal: str | None = Field(None, alias='LABCAS_PUBLIC_OWNER_PRINCIPAL')
 

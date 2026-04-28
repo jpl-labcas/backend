@@ -27,6 +27,15 @@ from .logging_config import configure_logging
 LOG = logging.getLogger(__name__)
 
 
+def _normalize_subpath_prefix(prefix: str | None) -> str:
+    '''Return a FastAPI router prefix from an optional environment value.'''
+
+    if not prefix:
+        return ''
+    normalized = prefix.strip().strip('/')
+    return f'/{normalized}' if normalized else ''
+
+
 def generate_self_signed_certificate() -> tuple[str, str]:
     '''Generate a self-signed SSL certificate and key pair.
     
@@ -105,9 +114,14 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
     )
 
     app.state.settings = settings
-    app.include_router(create_router())
+    subpath_prefix = _normalize_subpath_prefix(settings.subpath_prefix)
+    app.include_router(create_router(), prefix=subpath_prefix)
 
-    LOG.debug('FastAPI application created with environment=%s', settings.environment)
+    LOG.debug(
+        'FastAPI application created with environment=%s, subpath_prefix=%s',
+        settings.environment,
+        subpath_prefix or '«none»',
+    )
     return app
 
 

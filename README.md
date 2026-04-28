@@ -7,6 +7,8 @@ Repository containing back-end services and configuration for executing EDRN Lab
 
 Create a `.env` file (or specify one with `--env`) and launch it with `labcas-backend`. Run `labcas-backend --help` for more information.
 
+By default, API endpoints are served from the root path, such as `/auth`. If the service is behind a reverse proxy that keeps a subpath in forwarded requests, set `LABCAS_SUBPATH_PREFIX` in `.env`, for example `LABCAS_SUBPATH_PREFIX=labcas-backend-data-access-api`, to serve endpoints such as `/labcas-backend-data-access-api/auth`.
+
 
 ## Zipperlab Integration
 

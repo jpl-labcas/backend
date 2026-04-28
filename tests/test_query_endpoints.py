@@ -62,12 +62,12 @@ def _make_app(stub_service: StubQueryService) -> TestClient:
 
 
 def test_collections_select_basic_query() -> None:
-    """Test /data-access-api/collections/select with basic query."""
+    """Test /collections/select with basic query."""
     stub_service = StubQueryService()
     client = _make_app(stub_service)
 
     response = client.get(
-        "/data-access-api/collections/select",
+        "/collections/select",
         params={"q": "*:*", "rows": "10"},
     )
 
@@ -83,12 +83,12 @@ def test_collections_select_basic_query() -> None:
 
 
 def test_collections_select_with_filters() -> None:
-    """Test /data-access-api/collections/select with filter queries."""
+    """Test /collections/select with filter queries."""
     stub_service = StubQueryService()
     client = _make_app(stub_service)
 
     response = client.get(
-        "/data-access-api/collections/select",
+        "/collections/select",
         params={"q": "*:*", "fq": ["field1:value1", "field2:value2"], "rows": "10"},
     )
 
@@ -98,12 +98,12 @@ def test_collections_select_with_filters() -> None:
 
 
 def test_collections_select_with_pagination() -> None:
-    """Test /data-access-api/collections/select with pagination."""
+    """Test /collections/select with pagination."""
     stub_service = StubQueryService()
     client = _make_app(stub_service)
 
     response = client.get(
-        "/data-access-api/collections/select",
+        "/collections/select",
         params={"q": "*:*", "start": "5", "rows": "20"},
     )
 
@@ -115,12 +115,12 @@ def test_collections_select_with_pagination() -> None:
 
 
 def test_datasets_select_basic_query() -> None:
-    """Test /data-access-api/datasets/select with basic query."""
+    """Test /datasets/select with basic query."""
     stub_service = StubQueryService()
     client = _make_app(stub_service)
 
     response = client.get(
-        "/data-access-api/datasets/select",
+        "/datasets/select",
         params={"q": "*:*", "rows": "10"},
     )
 
@@ -133,12 +133,12 @@ def test_datasets_select_basic_query() -> None:
 
 
 def test_datasets_select_with_sort() -> None:
-    """Test /data-access-api/datasets/select with sort parameter."""
+    """Test /datasets/select with sort parameter."""
     stub_service = StubQueryService()
     client = _make_app(stub_service)
 
     response = client.get(
-        "/data-access-api/datasets/select",
+        "/datasets/select",
         params={"q": "*:*", "sort": "name desc", "rows": "10"},
     )
 
@@ -148,7 +148,7 @@ def test_datasets_select_with_sort() -> None:
 
 
 def test_files_select_basic_query() -> None:
-    """Test /data-access-api/files/select with basic query."""
+    """Test /files/select with basic query."""
     stub_service = StubQueryService()
     app = create_app()
     app.dependency_overrides[require_authenticated_user] = lambda: SecurityContext(
@@ -158,7 +158,7 @@ def test_files_select_basic_query() -> None:
     client = TestClient(app)
 
     response = client.get(
-        "/data-access-api/files/select",
+        "/files/select",
         params={"q": "*:*", "rows": "10"},
         headers={"Authorization": "Bearer test-token"},
     )
@@ -171,12 +171,12 @@ def test_files_select_basic_query() -> None:
 
 
 def test_files_select_requires_authentication() -> None:
-    """Test /data-access-api/files/select requires authentication."""
+    """Test /files/select requires authentication."""
     app = create_app()
     client = TestClient(app)
 
     response = client.get(
-        "/data-access-api/files/select",
+        "/files/select",
         params={"q": "*:*"},
     )
 
@@ -184,7 +184,7 @@ def test_files_select_requires_authentication() -> None:
 
 
 def test_files_select_rejects_guest_user() -> None:
-    """Test /data-access-api/files/select rejects guest users."""
+    """Test /files/select rejects guest users."""
     from jpl.labcas.backend.auth.dependencies import GUEST_USER_DN
 
     stub_service = StubQueryService()
@@ -196,7 +196,7 @@ def test_files_select_rejects_guest_user() -> None:
     client = TestClient(app)
 
     response = client.get(
-        "/data-access-api/files/select",
+        "/files/select",
         params={"q": "*:*"},
         headers={"Authorization": "Bearer test-token"},
     )
@@ -206,12 +206,12 @@ def test_files_select_rejects_guest_user() -> None:
 
 
 def test_collections_select_with_field_list() -> None:
-    """Test /data-access-api/collections/select with field list."""
+    """Test /collections/select with field list."""
     stub_service = StubQueryService()
     client = _make_app(stub_service)
 
     response = client.get(
-        "/data-access-api/collections/select",
+        "/collections/select",
         params={"q": "*:*", "fl": "id,name,description", "rows": "10"},
     )
 
@@ -221,7 +221,7 @@ def test_collections_select_with_field_list() -> None:
 
 
 def test_collections_select_with_unsafe_characters() -> None:
-    """Test /data-access-api/collections/select rejects unsafe characters."""
+    """Test /collections/select rejects unsafe characters."""
     # Note: The actual validation happens in the query service, not in the route handler
     # The route handler catches ValueError and returns 400, but our stub doesn't validate
     # So this test documents expected behavior but may need a real query service to test
@@ -231,7 +231,7 @@ def test_collections_select_with_unsafe_characters() -> None:
     # The stub doesn't validate, so this will pass through
     # In real usage, QueryService._sanitize_params would catch this
     response = client.get(
-        "/data-access-api/collections/select",
+        "/collections/select",
         params={"q": "test<value", "rows": "10"},
     )
     
@@ -241,7 +241,7 @@ def test_collections_select_with_unsafe_characters() -> None:
 
 
 def test_collections_select_with_rows_limit_exceeded() -> None:
-    """Test /data-access-api/collections/select rejects rows exceeding limit."""
+    """Test /collections/select rejects rows exceeding limit."""
     # Note: The actual validation happens in QueryService._query_core, not in the route handler
     # The stub doesn't validate, so this test documents expected behavior
     stub_service = StubQueryService()
@@ -250,7 +250,7 @@ def test_collections_select_with_rows_limit_exceeded() -> None:
     # The stub doesn't validate, so this will pass through
     # In real usage, QueryService would catch this
     response = client.get(
-        "/data-access-api/collections/select",
+        "/collections/select",
         params={"q": "*:*", "rows": "10000"},
     )
     
@@ -260,12 +260,12 @@ def test_collections_select_with_rows_limit_exceeded() -> None:
 
 
 def test_collections_select_multi_value_params() -> None:
-    """Test /data-access-api/collections/select with multiple values for same param."""
+    """Test /collections/select with multiple values for same param."""
     stub_service = StubQueryService()
     client = _make_app(stub_service)
 
     response = client.get(
-        "/data-access-api/collections/select",
+        "/collections/select",
         params=[("q", "*:*"), ("fq", "field1:value1"), ("fq", "field2:value2"), ("rows", "10")],
     )
 

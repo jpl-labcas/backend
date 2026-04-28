@@ -42,7 +42,7 @@ def test_collections_list_returns_plain_text_response() -> None:
     client = _make_app(stub_service)
 
     response = client.get(
-        "/data-access-api/collections/list",
+        "/collections/list",
         params=[
             ("q", "Field:value"),
             ("fq", "OwnerPrincipal:\"grp\""),
@@ -66,7 +66,7 @@ def test_datasets_list_returns_plain_text_response() -> None:
     client = _make_app(stub_service)
 
     response = client.get(
-        "/data-access-api/datasets/list",
+        "/datasets/list",
         params=[
             ("q", "Dataset:value"),
             ("fq", "OwnerPrincipal:\"grp\""),
@@ -90,7 +90,7 @@ def test_files_list_returns_plain_text_response() -> None:
     client = _make_app(stub_service)
 
     response = client.get(
-        "/data-access-api/files/list",
+        "/files/list",
         params=[
             ("q", "File:value"),
             ("fq", "OwnerPrincipal:\"grp\""),

@@ -60,7 +60,7 @@ def _make_app(stub_service: StubDownloadService) -> TestClient:
 
 
 def test_download_local_file() -> None:
-    """Test /data-access-api/download with local file."""
+    """Test /download with local file."""
     stub_service = StubDownloadService()
     with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as tmp:
         tmp.write("test content")
@@ -78,7 +78,7 @@ def test_download_local_file() -> None:
         client = _make_app(stub_service)
 
         response = client.get(
-            "/data-access-api/download",
+            "/download",
             params={"id": "test-file-id"},
         )
 
@@ -90,7 +90,7 @@ def test_download_local_file() -> None:
 
 
 def test_download_local_file_with_content_disposition() -> None:
-    """Test /data-access-api/download includes Content-Disposition header."""
+    """Test /download includes Content-Disposition header."""
     stub_service = StubDownloadService()
     with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as tmp:
         tmp.write("test content")
@@ -108,7 +108,7 @@ def test_download_local_file_with_content_disposition() -> None:
         client = _make_app(stub_service)
 
         response = client.get(
-            "/data-access-api/download",
+            "/download",
             params={"id": "test-file-id"},
         )
 
@@ -121,7 +121,7 @@ def test_download_local_file_with_content_disposition() -> None:
 
 
 def test_download_suppress_content_disposition() -> None:
-    """Test /data-access-api/download can suppress Content-Disposition."""
+    """Test /download can suppress Content-Disposition."""
     stub_service = StubDownloadService()
     with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as tmp:
         tmp.write("test content")
@@ -139,7 +139,7 @@ def test_download_suppress_content_disposition() -> None:
         client = _make_app(stub_service)
 
         response = client.get(
-            "/data-access-api/download",
+            "/download",
             params={"id": "test-file-id", "suppressContentDisposition": "true"},
         )
 
@@ -150,7 +150,7 @@ def test_download_suppress_content_disposition() -> None:
 
 
 def test_download_s3_file_redirects() -> None:
-    """Test /data-access-api/download redirects to S3 for S3 files."""
+    """Test /download redirects to S3 for S3 files."""
     stub_service = StubDownloadService()
     stub_service.file_info = FileInfo(
         file_location="s3://bucket",
@@ -165,7 +165,7 @@ def test_download_s3_file_redirects() -> None:
     client = _make_app(stub_service)
 
     response = client.get(
-        "/data-access-api/download",
+        "/download",
         params={"id": "test-file-id"},
         follow_redirects=False,
     )
@@ -175,14 +175,14 @@ def test_download_s3_file_redirects() -> None:
 
 
 def test_download_file_not_found() -> None:
-    """Test /data-access-api/download returns 404 when file not found."""
+    """Test /download returns 404 when file not found."""
     stub_service = StubDownloadService()
     stub_service.file_info = None
 
     client = _make_app(stub_service)
 
     response = client.get(
-        "/data-access-api/download",
+        "/download",
         params={"id": "nonexistent-file-id"},
     )
 
@@ -191,12 +191,12 @@ def test_download_file_not_found() -> None:
 
 
 def test_download_requires_authentication() -> None:
-    """Test /data-access-api/download requires authentication."""
+    """Test /download requires authentication."""
     app = create_app()
     client = TestClient(app)
 
     response = client.get(
-        "/data-access-api/download",
+        "/download",
         params={"id": "test-file-id"},
     )
 
@@ -204,12 +204,12 @@ def test_download_requires_authentication() -> None:
 
 
 def test_download_rejects_unsafe_characters() -> None:
-    """Test /data-access-api/download rejects unsafe characters in ID."""
+    """Test /download rejects unsafe characters in ID."""
     stub_service = StubDownloadService()
     client = _make_app(stub_service)
 
     response = client.get(
-        "/data-access-api/download",
+        "/download",
         params={"id": "test<file"},
     )
 
@@ -218,7 +218,7 @@ def test_download_rejects_unsafe_characters() -> None:
 
 
 def test_download_file_not_found_on_disk() -> None:
-    """Test /data-access-api/download returns 404 when file doesn't exist on disk."""
+    """Test /download returns 404 when file doesn't exist on disk."""
     stub_service = StubDownloadService()
     stub_service.file_info = FileInfo(
         file_location="/nonexistent",
@@ -231,7 +231,7 @@ def test_download_file_not_found_on_disk() -> None:
     client = _make_app(stub_service)
 
     response = client.get(
-        "/data-access-api/download",
+        "/download",
         params={"id": "test-file-id"},
     )
 
@@ -240,7 +240,7 @@ def test_download_file_not_found_on_disk() -> None:
 
 
 def test_download_with_dicom_file() -> None:
-    """Test /data-access-api/download handles DICOM files correctly."""
+    """Test /download handles DICOM files correctly."""
     stub_service = StubDownloadService()
     with tempfile.NamedTemporaryFile(mode="wb", delete=False, suffix=".dcm") as tmp:
         tmp.write(b"dicom content")
@@ -268,7 +268,7 @@ def test_download_with_dicom_file() -> None:
         client = _make_app(stub_service)
 
         response = client.get(
-            "/data-access-api/download",
+            "/download",
             params={"id": "test-file-id"},
         )
 
@@ -279,7 +279,7 @@ def test_download_with_dicom_file() -> None:
 
 
 def test_download_with_quotes_in_filename() -> None:
-    """Test /data-access-api/download handles quotes in filename."""
+    """Test /download handles quotes in filename."""
     stub_service = StubDownloadService()
     with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as tmp:
         tmp.write("test content")
@@ -298,7 +298,7 @@ def test_download_with_quotes_in_filename() -> None:
         client = _make_app(stub_service)
 
         response = client.get(
-            "/data-access-api/download",
+            "/download",
             params={"id": "test-file-id"},
         )
 

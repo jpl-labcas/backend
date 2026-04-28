@@ -10,6 +10,7 @@ from fastapi.testclient import TestClient
 
 from jpl.labcas.backend.auth.dependencies import SecurityContext, require_authenticated_user
 from jpl.labcas.backend.auth.jwt_manager import JwtManager
+from jpl.labcas.backend.config import Settings
 from jpl.labcas.backend.directory.mock import MockDirectoryProvider
 from jpl.labcas.backend.main import create_app
 
@@ -33,7 +34,7 @@ def mock_jwt_manager() -> MagicMock:
 
 
 def test_auth_endpoint_with_form_data(mock_directory: MockDirectoryProvider, mock_jwt_manager: MagicMock) -> None:
-    """Test /data-access-api/auth endpoint with form data."""
+    """Test /auth endpoint with form data."""
     app = create_app()
     app.dependency_overrides[require_authenticated_user] = lambda: SecurityContext(
         subject="uid=testuser,ou=users,dc=example,dc=com", groups=[]
@@ -47,7 +48,7 @@ def test_auth_endpoint_with_form_data(mock_directory: MockDirectoryProvider, moc
     client = TestClient(app)
     
     response = client.post(
-        "/data-access-api/auth",
+        "/auth",
         data={"username": "testuser", "password": "testpass"},
     )
     
@@ -58,7 +59,7 @@ def test_auth_endpoint_with_form_data(mock_directory: MockDirectoryProvider, moc
 
 
 def test_auth_endpoint_with_basic_auth(mock_directory: MockDirectoryProvider, mock_jwt_manager: MagicMock) -> None:
-    """Test /data-access-api/auth endpoint with Basic auth."""
+    """Test /auth endpoint with Basic auth."""
     app = create_app()
     app.dependency_overrides[require_authenticated_user] = lambda: SecurityContext(
         subject="uid=testuser,ou=users,dc=example,dc=com", groups=[]
@@ -72,7 +73,7 @@ def test_auth_endpoint_with_basic_auth(mock_directory: MockDirectoryProvider, mo
     
     credentials = base64.b64encode(b"testuser:testpass").decode("utf-8")
     response = client.post(
-        "/data-access-api/auth",
+        "/auth",
         headers={"Authorization": f"Basic {credentials}"},
     )
     
@@ -82,7 +83,7 @@ def test_auth_endpoint_with_basic_auth(mock_directory: MockDirectoryProvider, mo
 
 
 def test_auth_endpoint_invalid_credentials(mock_directory: MockDirectoryProvider, mock_jwt_manager: MagicMock) -> None:
-    """Test /data-access-api/auth endpoint with invalid credentials."""
+    """Test /auth endpoint with invalid credentials."""
     app = create_app()
     app.dependency_overrides[require_authenticated_user] = lambda: SecurityContext(
         subject="uid=testuser,ou=users,dc=example,dc=com", groups=[]
@@ -95,7 +96,7 @@ def test_auth_endpoint_invalid_credentials(mock_directory: MockDirectoryProvider
     client = TestClient(app)
     
     response = client.post(
-        "/data-access-api/auth",
+        "/auth",
         data={"username": "testuser", "password": "wrongpass"},
     )
     
@@ -104,7 +105,7 @@ def test_auth_endpoint_invalid_credentials(mock_directory: MockDirectoryProvider
 
 
 def test_auth_endpoint_missing_credentials(mock_directory: MockDirectoryProvider, mock_jwt_manager: MagicMock) -> None:
-    """Test /data-access-api/auth endpoint with missing credentials."""
+    """Test /auth endpoint with missing credentials."""
     app = create_app()
     app.dependency_overrides[require_authenticated_user] = lambda: SecurityContext(
         subject="uid=testuser,ou=users,dc=example,dc=com", groups=[]
@@ -116,14 +117,14 @@ def test_auth_endpoint_missing_credentials(mock_directory: MockDirectoryProvider
     
     client = TestClient(app)
     
-    response = client.post("/data-access-api/auth")
+    response = client.post("/auth")
     
     assert response.status_code == 401
     assert "Authentication required" in response.json()["detail"]
 
 
 def test_logout_endpoint_success(mock_jwt_manager: MagicMock) -> None:
-    """Test /data-access-api/logout endpoint with valid session."""
+    """Test /logout endpoint with valid session."""
     app = create_app()
     app.dependency_overrides[require_authenticated_user] = lambda: SecurityContext(
         subject="uid=testuser,ou=users,dc=example,dc=com", groups=[]
@@ -135,7 +136,7 @@ def test_logout_endpoint_success(mock_jwt_manager: MagicMock) -> None:
     client = TestClient(app)
     
     response = client.get(
-        "/data-access-api/logout",
+        "/logout",
         params={"sessionID": "test-session-id"},
     )
     
@@ -146,12 +147,12 @@ def test_logout_endpoint_success(mock_jwt_manager: MagicMock) -> None:
 
 
 def test_logout_endpoint_requires_authentication() -> None:
-    """Test /data-access-api/logout endpoint requires authentication."""
+    """Test /logout endpoint requires authentication."""
     app = create_app()
     client = TestClient(app)
     
     response = client.get(
-        "/data-access-api/logout",
+        "/logout",
         params={"sessionID": "test-session-id"},
     )
     
@@ -159,7 +160,7 @@ def test_logout_endpoint_requires_authentication() -> None:
 
 
 def test_logout_endpoint_missing_session_id(mock_jwt_manager: MagicMock) -> None:
-    """Test /data-access-api/logout endpoint with missing session ID."""
+    """Test /logout endpoint with missing session ID."""
     app = create_app()
     app.dependency_overrides[require_authenticated_user] = lambda: SecurityContext(
         subject="uid=testuser,ou=users,dc=example,dc=com", groups=[]
@@ -170,13 +171,13 @@ def test_logout_endpoint_missing_session_id(mock_jwt_manager: MagicMock) -> None
     
     client = TestClient(app)
     
-    response = client.get("/data-access-api/logout")
+    response = client.get("/logout")
     
     assert response.status_code == 422  # Validation error
 
 
 def test_auth_endpoint_invalid_basic_auth_format(mock_directory: MockDirectoryProvider, mock_jwt_manager: MagicMock) -> None:
-    """Test /data-access-api/auth endpoint with invalid Basic auth format."""
+    """Test /auth endpoint with invalid Basic auth format."""
     app = create_app()
     app.dependency_overrides[require_authenticated_user] = lambda: SecurityContext(
         subject="uid=testuser,ou=users,dc=example,dc=com", groups=[]
@@ -189,9 +190,33 @@ def test_auth_endpoint_invalid_basic_auth_format(mock_directory: MockDirectoryPr
     client = TestClient(app)
     
     response = client.post(
-        "/data-access-api/auth",
+        "/auth",
         headers={"Authorization": "Basic invalid-base64"},
     )
     
     assert response.status_code == 401
+
+
+def test_auth_endpoint_with_configured_subpath_prefix(
+    mock_directory: MockDirectoryProvider, mock_jwt_manager: MagicMock
+) -> None:
+    """Test /auth endpoint under a configured reverse-proxy subpath."""
+    app = create_app(Settings(subpath_prefix="labcas-backend-data-access-api"))
+    app.dependency_overrides[require_authenticated_user] = lambda: SecurityContext(
+        subject="uid=testuser,ou=users,dc=example,dc=com", groups=[]
+    )
+
+    from jpl.labcas.backend.auth.dependencies import get_directory_provider, get_jwt_manager
+    app.dependency_overrides[get_directory_provider] = lambda: mock_directory
+    app.dependency_overrides[get_jwt_manager] = lambda: mock_jwt_manager
+
+    client = TestClient(app)
+
+    response = client.post(
+        "/labcas-backend-data-access-api/auth",
+        data={"username": "testuser", "password": "testpass"},
+    )
+
+    assert response.status_code == 200
+    assert response.text == "test-jwt-token"
 

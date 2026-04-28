@@ -18,7 +18,7 @@
 #         --env LABCAS_REDIS_URL=redis://host.docker.internal:6379/0 \
 #         --env LABCAS_SOLR_URL=https://host.docker.internal:8984/solr \
 #         --env LABCAS_SOLR_VERIFY_SSL=False \
-#         --env LABCAS_DOWNLOAD_BASE_URL=https://localhost:8000/data-access-api/download \
+#         --env LABCAS_DOWNLOAD_BASE_URL=https://localhost:8000/download \
 #         --env LABCAS_SUPER_OWNER_PRINCIPAL=cn=Super User,dc=edrn,dc=jpl,dc=nasa,dc=gov \
 #         --env LABCAS_PUBLIC_OWNER_PRINCIPAL=cn=All Users,dc=edrn,dc=jpl,dc=nasa,dc=gov \
 #         --env AWS_REGION=us-west-2 \
