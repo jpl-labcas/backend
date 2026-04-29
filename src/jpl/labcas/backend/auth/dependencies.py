@@ -33,7 +33,7 @@ def get_directory_provider(settings: Settings = Depends(get_settings)) -> Direct
         _logger.warning('⚠️ CAUTION: using mock directory provider')
         return MockDirectoryProvider()
 
-    _logger.warning('🎉 Using LDAP directory provider!')
+    _logger.debug('🎉 Using LDAP directory provider!')
     return LdapDirectoryProvider(settings=settings)
 
 

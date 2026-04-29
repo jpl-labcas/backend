@@ -89,6 +89,40 @@ def test_download_local_file() -> None:
         os.unlink(tmp_path)
 
 
+def test_download_head_local_file_returns_headers_without_body() -> None:
+    """Test HEAD /download returns metadata headers without file content."""
+    stub_service = StubDownloadService()
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as tmp:
+        tmp.write("test content")
+        tmp_path = tmp.name
+
+    try:
+        stub_service.file_info = FileInfo(
+            file_location=os.path.dirname(tmp_path),
+            file_name="test-file.txt",
+            real_file_name="test-file.txt",
+            file_path=tmp_path,
+        )
+        stub_service.is_local = True
+
+        client = _make_app(stub_service)
+
+        response = client.head(
+            "/download",
+            params={"id": "test-file-id"},
+        )
+
+        assert response.status_code == 200
+        assert response.content == b""
+        assert response.headers["content-type"] == "application/octet-stream"
+        assert response.headers["content-length"] == "1024"
+        assert "attachment" in response.headers["content-disposition"]
+        assert "test-file.txt" in response.headers["content-disposition"]
+        assert stub_service.file_id == "test-file-id"
+    finally:
+        os.unlink(tmp_path)
+
+
 def test_download_local_file_with_content_disposition() -> None:
     """Test /download includes Content-Disposition header."""
     stub_service = StubDownloadService()

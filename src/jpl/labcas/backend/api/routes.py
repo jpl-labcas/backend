@@ -8,7 +8,7 @@ import os
 from typing import Optional
 
 from fastapi import APIRouter, Depends, Form, HTTPException, Query, Request, status
-from fastapi.responses import JSONResponse, PlainTextResponse, RedirectResponse, StreamingResponse
+from fastapi.responses import JSONResponse, PlainTextResponse, RedirectResponse, Response, StreamingResponse
 
 from ..auth.dependencies import (
     GUEST_USER_DN,
@@ -342,19 +342,21 @@ def create_router() -> APIRouter:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exc)
             ) from exc
 
-    @data_router.get(
+    @data_router.api_route(
         "/download",
+        methods=["GET", "HEAD"],
         tags=["download"],
         summary="Download a file by ID",
         description="Download a file by its ID. Returns the file content or redirects to S3 presigned URL.",
         response_model=None,
     )
     async def download(
+        request: Request,
         id: str = Query(..., description="File ID to download"),
         suppressContentDisposition: bool = Query(False, description="Suppress Content-Disposition header"),
         security: SecurityContext = Depends(require_authenticated_user),
         download_service: DownloadService = Depends(get_download_service),
-    ) -> StreamingResponse | RedirectResponse:
+    ) -> Response | StreamingResponse | RedirectResponse:
         """Download a file by ID."""
 
         # Validate ID is safe
@@ -414,6 +416,10 @@ def create_router() -> APIRouter:
                 # Escape filename for Content-Disposition header
                 filename = file_info.file_name.replace('"', '\\"')
                 headers["Content-Disposition"] = f'attachment; filename="{filename}"'
+
+            if request.method == "HEAD":
+                LOG.info("Returning download headers: path=%s, size=%s, mediaType=%s", file_path, file_size, media_type)
+                return Response(content=b"", media_type=media_type, headers=headers)
 
             LOG.info("Streaming file: path=%s, size=%s, mediaType=%s", file_path, file_size, media_type)
             return StreamingResponse(
