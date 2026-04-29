@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 import os
 import tempfile
 from pathlib import Path
@@ -10,7 +11,14 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from fastapi.testclient import TestClient
 
-from jpl.labcas.backend.auth.dependencies import SecurityContext, require_authenticated_user
+from jpl.labcas.backend.auth.dependencies import (
+    SecurityContext,
+    get_directory_provider,
+    get_jwt_manager,
+    require_authenticated_user,
+)
+from jpl.labcas.backend.auth.jwt_manager import JwtManager
+from jpl.labcas.backend.directory import MockDirectoryProvider
 from jpl.labcas.backend.main import create_app
 from jpl.labcas.backend.services.download import DownloadService, FileInfo, get_download_service
 from jpl.labcas.backend.services.query import QueryService
@@ -235,6 +243,114 @@ def test_download_requires_authentication() -> None:
     )
 
     assert response.status_code == 401
+
+
+@pytest.mark.parametrize("cookie_name", ["token", "JasonWebToken"])
+def test_download_accepts_legacy_jwt_cookie_without_authorization_header(cookie_name: str) -> None:
+    """Test /download can authenticate legacy browser requests via JWT cookies."""
+    stub_service = StubDownloadService()
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as tmp:
+        tmp.write("test content")
+        tmp_path = tmp.name
+
+    try:
+        stub_service.file_info = FileInfo(
+            file_location=os.path.dirname(tmp_path),
+            file_name="test-file.txt",
+            real_file_name="test-file.txt",
+            file_path=tmp_path,
+        )
+
+        jwt_manager = MagicMock(spec=JwtManager)
+        jwt_manager.verify_token.return_value = {"sub": "test-user"}
+
+        app = create_app()
+        app.dependency_overrides[get_jwt_manager] = lambda: jwt_manager
+        app.dependency_overrides[get_download_service] = lambda: stub_service
+        client = TestClient(app)
+        client.cookies.set(cookie_name, "test-jwt-token")
+
+        response = client.head(
+            "/download",
+            params={"id": "test-file-id"},
+        )
+
+        assert response.status_code == 200
+        assert response.headers["content-length"] == "1024"
+        jwt_manager.verify_token.assert_called_once_with("test-jwt-token")
+    finally:
+        os.unlink(tmp_path)
+
+
+def test_download_prefers_bearer_token_over_legacy_jwt_cookie() -> None:
+    """Test explicit Bearer auth wins when both Bearer and cookie JWT are present."""
+    stub_service = StubDownloadService()
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as tmp:
+        tmp.write("test content")
+        tmp_path = tmp.name
+
+    try:
+        stub_service.file_info = FileInfo(
+            file_location=os.path.dirname(tmp_path),
+            file_name="test-file.txt",
+            real_file_name="test-file.txt",
+            file_path=tmp_path,
+        )
+
+        jwt_manager = MagicMock(spec=JwtManager)
+        jwt_manager.verify_token.return_value = {"sub": "test-user"}
+
+        app = create_app()
+        app.dependency_overrides[get_jwt_manager] = lambda: jwt_manager
+        app.dependency_overrides[get_download_service] = lambda: stub_service
+        client = TestClient(app)
+        client.cookies.set("JasonWebToken", "cookie-jwt-token")
+
+        response = client.head(
+            "/download",
+            params={"id": "test-file-id"},
+            headers={"Authorization": "Bearer bearer-jwt-token"},
+        )
+
+        assert response.status_code == 200
+        jwt_manager.verify_token.assert_called_once_with("bearer-jwt-token")
+    finally:
+        os.unlink(tmp_path)
+
+
+def test_download_falls_back_to_basic_auth_when_no_jwt_is_present() -> None:
+    """Test Basic auth is still accepted after Bearer and cookie JWT checks."""
+    stub_service = StubDownloadService()
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as tmp:
+        tmp.write("test content")
+        tmp_path = tmp.name
+
+    try:
+        stub_service.file_info = FileInfo(
+            file_location=os.path.dirname(tmp_path),
+            file_name="test-file.txt",
+            real_file_name="test-file.txt",
+            file_path=tmp_path,
+        )
+
+        directory = MockDirectoryProvider()
+        directory.add_user("testuser", "testpass", "uid=testuser,ou=users,dc=example,dc=com")
+
+        app = create_app()
+        app.dependency_overrides[get_directory_provider] = lambda: directory
+        app.dependency_overrides[get_download_service] = lambda: stub_service
+        client = TestClient(app)
+
+        credentials = base64.b64encode(b"testuser:testpass").decode("utf-8")
+        response = client.head(
+            "/download",
+            params={"id": "test-file-id"},
+            headers={"Authorization": f"Basic {credentials}"},
+        )
+
+        assert response.status_code == 200
+    finally:
+        os.unlink(tmp_path)
 
 
 def test_download_rejects_unsafe_characters() -> None:

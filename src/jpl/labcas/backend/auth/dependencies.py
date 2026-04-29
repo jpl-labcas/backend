@@ -14,6 +14,7 @@ from ..directory import DirectoryProvider, LdapDirectoryProvider, MockDirectoryP
 from .jwt_manager import JwtManager
 
 _logger = logging.getLogger(__name__)
+JWT_COOKIE_NAMES = ("token", "JasonWebToken")
 
 
 @dataclass
@@ -44,6 +45,23 @@ def get_jwt_manager(settings: Settings = Depends(get_settings)) -> JwtManager:
 GUEST_USER_DN = "uid=guest,ou=public"
 
 
+def _security_context_from_jwt(token: str, jwt_manager: JwtManager) -> SecurityContext:
+    payload = jwt_manager.verify_token(token)
+    subject = payload.get("sub")
+    if not subject:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token.")
+    groups: List[str] = []
+    return SecurityContext(subject=subject, groups=groups, token=token)
+
+
+def _get_jwt_from_cookies(request: Request) -> str | None:
+    for cookie_name in JWT_COOKIE_NAMES:
+        token = request.cookies.get(cookie_name)
+        if token:
+            return token
+    return None
+
+
 async def get_security_context(
     request: Request,
     directory: DirectoryProvider = Depends(get_directory_provider),
@@ -57,24 +75,16 @@ async def get_security_context(
     if auth_header and auth_header.startswith("Bearer "):
         token = auth_header.removeprefix("Bearer ").strip()
         try:
-            payload = jwt_manager.verify_token(token)
-            subject = payload.get("sub")
-            if subject:
-                groups: List[str] = []
-                return SecurityContext(subject=subject, groups=groups, token=token)
+            return _security_context_from_jwt(token, jwt_manager)
         except Exception:
             # If token verification fails, fall through to guest access
             pass
     
     # Try to get JWT from cookie (matching Java implementation)
-    cookie = request.cookies.get("JasonWebToken")
+    cookie = _get_jwt_from_cookies(request)
     if cookie:
         try:
-            payload = jwt_manager.verify_token(cookie)
-            subject = payload.get("sub")
-            if subject:
-                groups: List[str] = []
-                return SecurityContext(subject=subject, groups=groups, token=cookie)
+            return _security_context_from_jwt(cookie, jwt_manager)
         except Exception:
             # If token verification fails, fall through to guest access
             pass
@@ -88,18 +98,40 @@ async def require_authenticated_user(
     directory: DirectoryProvider = Depends(get_directory_provider),
     jwt_manager: JwtManager = Depends(get_jwt_manager),
 ) -> SecurityContext:
-    """Authenticate the request via Basic auth or JWT Bearer token. Raises 401 if no valid auth."""
+    """Authenticate via Bearer token, legacy JWT cookie, or Basic auth."""
 
     auth_header = request.headers.get("Authorization")
-    if not auth_header:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authentication required!",
-            headers={"WWW-Authenticate": "Basic"},
-        )
 
-    # Handle HTTP Basic Authentication
-    if auth_header.startswith("Basic "):
+    # Prefer explicit Bearer tokens when the frontend sends them.
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.removeprefix("Bearer ").strip()
+        if not token:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Authentication required!",
+            )
+
+        try:
+            return _security_context_from_jwt(token, jwt_manager)
+        except Exception as exc:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=f"Invalid or expired token: {str(exc)}",
+            ) from exc
+
+    # Match the Java backend's download behavior for browser requests that omit Authorization.
+    cookie_token = _get_jwt_from_cookies(request)
+    if cookie_token:
+        try:
+            return _security_context_from_jwt(cookie_token, jwt_manager)
+        except Exception as exc:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=f"Invalid or expired token: {str(exc)}",
+            ) from exc
+
+    # Handle HTTP Basic Authentication after cookie JWT fallback.
+    if auth_header and auth_header.startswith("Basic "):
         try:
             encoded = auth_header.split(" ", 1)[1]
             decoded = base64.b64decode(encoded).decode("utf-8")
@@ -131,31 +163,13 @@ async def require_authenticated_user(
                 headers={"WWW-Authenticate": "Basic"},
             ) from exc
 
-    # Handle JWT Bearer token
-    if auth_header.startswith("Bearer "):
-        token = auth_header.removeprefix("Bearer ").strip()
-        if not token:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Authentication required!",
-            )
+    if not auth_header:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required!",
+            headers={"WWW-Authenticate": "Basic"},
+        )
 
-        try:
-            payload = jwt_manager.verify_token(token)
-        except Exception as exc:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=f"Invalid or expired token: {str(exc)}",
-            ) from exc
-
-        subject = payload.get("sub")
-        if not subject:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token.")
-
-        groups: List[str] = []
-        return SecurityContext(subject=subject, groups=groups, token=token)
-
-    # Unsupported authentication method
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid authentication header format. Use 'Basic' or 'Bearer'.",
