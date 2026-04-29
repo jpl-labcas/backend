@@ -26,6 +26,13 @@ from .logging_config import configure_logging
 
 LOG = logging.getLogger(__name__)
 
+_REDACTED_HEADERS = {
+    # 'authorization',
+    # 'cookie',
+    'proxy-authorization',
+    'x-api-key',
+}
+
 
 def _normalize_subpath_prefix(prefix: str | None) -> str:
     '''Return a FastAPI router prefix from an optional environment value.'''
@@ -34,6 +41,31 @@ def _normalize_subpath_prefix(prefix: str | None) -> str:
         return ''
     normalized = prefix.strip().strip('/')
     return f'/{normalized}' if normalized else ''
+
+
+def _redact_header_value(name: str, value: str) -> str:
+    '''Redact sensitive header values while preserving useful presence information.'''
+
+    lower_name = name.lower()
+    if lower_name == 'authorization':
+        scheme, _, _ = value.partition(' ')
+        return f'{scheme} <redacted>' if scheme else '<redacted>'
+    if lower_name == 'cookie':
+        cookie_names = [
+            cookie.partition('=')[0].strip()
+            for cookie in value.split(';')
+            if cookie.partition('=')[0].strip()
+        ]
+        return f'<redacted; names={",".join(cookie_names)}>' if cookie_names else '<redacted>'
+    if lower_name in _REDACTED_HEADERS:
+        return '<redacted>'
+    return value
+
+
+def _format_headers_for_log(headers: list[tuple[str, str]]) -> dict[str, str]:
+    '''Return request headers formatted for diagnostic logging.'''
+
+    return {name: _redact_header_value(name, value) for name, value in headers}
 
 
 def generate_self_signed_certificate() -> tuple[str, str]:
@@ -114,6 +146,18 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
     )
 
     app.state.settings = settings
+    if settings.log_request_headers:
+        @app.middleware('http')
+        async def log_request_headers(request, call_next):
+            headers = _format_headers_for_log(list(request.headers.items()))
+            LOG.info(
+                'Incoming request headers: method=%s path=%s headers=%s',
+                request.method,
+                request.url.path,
+                headers,
+            )
+            return await call_next(request)
+
     subpath_prefix = _normalize_subpath_prefix(settings.subpath_prefix)
     app.include_router(create_router(), prefix=subpath_prefix)
 

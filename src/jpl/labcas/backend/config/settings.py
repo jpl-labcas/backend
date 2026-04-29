@@ -77,6 +77,7 @@ class Settings(BaseSettings):
     host: str = Field('0.0.0.0', alias='LABCAS_HOST')
     port: int = Field(8000, alias='LABCAS_PORT')
     log_level: str = Field('INFO', alias='LABCAS_LOG_LEVEL')
+    log_request_headers: bool = Field(False, alias='LABCAS_LOG_REQUEST_HEADERS')
     subpath_prefix: str = Field('', alias='LABCAS_SUBPATH_PREFIX')
 
     directory_provider: Literal['ldap', 'mock'] = Field('mock', alias='LABCAS_DIRECTORY_PROVIDER')
