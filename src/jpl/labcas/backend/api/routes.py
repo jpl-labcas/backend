@@ -7,6 +7,7 @@ import logging
 import os
 from typing import Optional
 
+import httpx
 from fastapi import APIRouter, Depends, Form, HTTPException, Query, Request, status
 from fastapi.responses import JSONResponse, PlainTextResponse, RedirectResponse, Response, StreamingResponse
 
@@ -25,9 +26,11 @@ from ..services import (
     DownloadService,
     ListService,
     QueryService,
+    ZipperlabService,
     get_download_service,
     get_list_service,
     get_query_service,
+    get_zipperlab_service,
 )
 from ..utils.security import ensure_safe_value
 
@@ -61,6 +64,46 @@ def create_router() -> APIRouter:
         if value is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Unknown key")
         return PlainTextResponse(content=value, media_type="text/plain")
+
+    @data_router.post(
+        "/zip",
+        response_class=PlainTextResponse,
+        tags=["zip"],
+        summary="Initiate a ZIP creation request",
+        description="Resolve authorized LabCAS files from a query or repeated file IDs and ask Zipperlab to create a ZIP.",
+    )
+    async def zip_request(
+        email: str = Form(..., description="Email address to notify when the ZIP is ready"),
+        query: str | None = Form(None, description="Solr files-core query identifying files to ZIP"),
+        id: list[str] | None = Form(None, description="One or more file IDs to ZIP"),
+        security: SecurityContext = Depends(require_authenticated_user),
+        zipperlab_service: ZipperlabService = Depends(get_zipperlab_service),
+    ) -> PlainTextResponse:
+        """Initiate ZIP creation through Zipperlab and return its UUID."""
+
+        try:
+            files = await zipperlab_service.resolve_file_paths(
+                security=security,
+                query=query,
+                ids=id or [],
+            )
+            uuid = await zipperlab_service.initiate_zip(email=email, files=files)
+        except ValueError as exc:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+        except httpx.HTTPStatusError as exc:
+            LOG.warning("Zipperlab request failed: %s", exc)
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail=f"Zipperlab request failed with HTTP status {exc.response.status_code}",
+            ) from exc
+        except httpx.HTTPError as exc:
+            LOG.warning("Zipperlab request failed: %s", exc)
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail="Zipperlab request failed",
+            ) from exc
+
+        return PlainTextResponse(content=uuid, media_type="text/plain")
 
     @data_router.post(
         "/auth",
