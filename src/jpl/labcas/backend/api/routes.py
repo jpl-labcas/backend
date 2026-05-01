@@ -385,6 +385,30 @@ def create_router() -> APIRouter:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exc)
             ) from exc
 
+    @data_router.get(
+        "/rapidly-download-collection",
+        tags=["download"],
+        summary="Create an Aspera transfer request for a collection",
+        description="Return the JSON payload used by Aspera to rapidly download a public collection.",
+    )
+    async def rapidly_download_collection(
+        collectionID: str = Query(..., description="Collection ID to include in the Aspera source path"),
+        token: str = Query(..., description="Aspera authentication token"),
+        download_service: DownloadService = Depends(get_download_service),
+    ) -> JSONResponse:
+        """Return an Aspera transfer request for the requested collection."""
+
+        LOG.info(
+            "Aspera transfer requested for collection %s with token present=%s",
+            collectionID,
+            bool(token),
+        )
+        payload = download_service.create_aspera_transfer_request(
+            collection_id=collectionID,
+            token=token,
+        )
+        return JSONResponse(content=payload)
+
     @data_router.api_route(
         "/download",
         methods=["GET", "HEAD"],

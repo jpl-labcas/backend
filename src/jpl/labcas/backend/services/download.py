@@ -135,6 +135,29 @@ class DownloadService:
         LOG.info("Generated presigned URL: %s", url)
         return url
 
+    def create_aspera_transfer_request(self, *, collection_id: str, token: str) -> dict[str, Any]:
+        """Build the Aspera transfer request payload for a public collection."""
+
+        path = f"{self.settings.s3_public_collections}{collection_id}"
+        return {
+            "transfer_requests": [
+                {
+                    "transfer_request": {
+                        "paths": [
+                            {
+                                "source": path,
+                            }
+                        ],
+                        "authentication": token,
+                        "remote_host": self.settings.aspera_remote_host,
+                        "remote_user": self.settings.aspera_remote_user,
+                        "direction": self.settings.aspera_transfer_direction,
+                        "ssh_port": self.settings.aspera_ssh_port,
+                    }
+                }
+            ]
+        }
+
     def extract_s3_key(self, file_path: str) -> str:
         """Extract S3 key from a file path of the form s3://bucket/key..."""
 

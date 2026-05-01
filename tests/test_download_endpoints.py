@@ -56,6 +56,26 @@ class StubDownloadService:
     def get_media_type(self, file_path: str) -> str:
         return "application/octet-stream"
 
+    def create_aspera_transfer_request(self, *, collection_id: str, token: str) -> dict[str, object]:
+        return {
+            "transfer_requests": [
+                {
+                    "transfer_request": {
+                        "paths": [
+                            {
+                                "source": f"/public/{collection_id}",
+                            }
+                        ],
+                        "authentication": token,
+                        "remote_host": "aspera.example.org",
+                        "remote_user": "xfer",
+                        "direction": "receive",
+                        "ssh_port": 33001,
+                    }
+                }
+            ]
+        }
+
 
 def _make_app(stub_service: StubDownloadService) -> TestClient:
     """Create test app with stub service."""
@@ -214,6 +234,37 @@ def test_download_s3_file_redirects() -> None:
 
     assert response.status_code == 307
     assert response.headers["location"] == stub_service.presigned_url
+
+
+def test_rapidly_download_collection_returns_aspera_payload() -> None:
+    """Test /rapidly-download-collection returns an Aspera transfer request."""
+    stub_service = StubDownloadService()
+    client = _make_app(stub_service)
+
+    response = client.get(
+        "/rapidly-download-collection",
+        params={"collectionID": "collection-123", "token": "aspera-token"},
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "transfer_requests": [
+            {
+                "transfer_request": {
+                    "paths": [
+                        {
+                            "source": "/public/collection-123",
+                        }
+                    ],
+                    "authentication": "aspera-token",
+                    "remote_host": "aspera.example.org",
+                    "remote_user": "xfer",
+                    "direction": "receive",
+                    "ssh_port": 33001,
+                }
+            }
+        ]
+    }
 
 
 def test_download_file_not_found() -> None:

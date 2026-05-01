@@ -106,6 +106,14 @@ class Settings(BaseSettings):
     aws_secret_access_key: str | None = Field(None, alias='AWS_SECRET_ACCESS_KEY')
     s3_bucket: str = Field('unknown', alias='S3_BUCKET')
     aws_download_url_expiration_seconds: int = Field(20, alias='AWS_DOWNLOAD_URL_EXPIRATION_TIME_SECS')
+    s3_public_collections: str = Field(
+        '/workspaces/151006/home/edrn-bot@jpl.nasa.gov (1251184)/',
+        alias='S3_PUBLIC_COLLECTIONS',
+    )
+    aspera_remote_host: str = Field('ats-aws-us-west-2.aspera.io', alias='ASPERA_REMOTE_HOST')
+    aspera_remote_user: str = Field('xfer', alias='ASPERA_REMOTE_USER')
+    aspera_transfer_direction: str = Field('receive', alias='ASPERA_TRANSFER_DIRECTION')
+    aspera_ssh_port: int = Field(33001, alias='ASPERA_SSH_PORT')
 
     # Path prefix replacement for local file debugging (e.g., "/usr/local/labcas/backend:/Users/kelly")
     # Format: "old_prefix:new_prefix" (multiple replacements can be comma-separated)

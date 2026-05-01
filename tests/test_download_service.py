@@ -224,6 +224,42 @@ def test_get_s3_presigned_url_custom_expiration(test_settings: Settings, mock_s3
     assert call_kwargs["ExpiresIn"] == 600
 
 
+def test_create_aspera_transfer_request() -> None:
+    """Test Aspera transfer request payload generation."""
+    settings = Settings(
+        s3_public_collections="/public/",
+        aspera_remote_host="aspera.example.org",
+        aspera_remote_user="xfer-user",
+        aspera_transfer_direction="receive",
+        aspera_ssh_port=33002,
+    )
+    service = DownloadService(settings=settings)
+
+    payload = service.create_aspera_transfer_request(
+        collection_id="collection-123",
+        token="aspera-token",
+    )
+
+    assert payload == {
+        "transfer_requests": [
+            {
+                "transfer_request": {
+                    "paths": [
+                        {
+                            "source": "/public/collection-123",
+                        }
+                    ],
+                    "authentication": "aspera-token",
+                    "remote_host": "aspera.example.org",
+                    "remote_user": "xfer-user",
+                    "direction": "receive",
+                    "ssh_port": 33002,
+                }
+            }
+        ]
+    }
+
+
 def test_get_s3_presigned_url_no_bucket(mock_s3_client_factory: MagicMock) -> None:
     """Test S3 presigned URL generation fails without bucket."""
     # Create a mock settings object that explicitly has no bucket
