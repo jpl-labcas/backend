@@ -103,8 +103,8 @@ class QueryService:
         # Ensure JSON response format
         safe_params.setdefault("wt", "json")
 
-        # Execute query and return full Solr response
-        response = await self.client.get(f"/{core}/select", params=safe_params)
+        # Use POST so long query strings from /zip don't exceed proxy/server URI limits.
+        response = await self.client.post(f"/{core}/select", data=safe_params)
         response.raise_for_status()
         solr_response = response.json()
         LOG.debug("Solr query core=%s params=%s returned response", core, safe_params)

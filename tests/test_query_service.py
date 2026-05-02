@@ -31,7 +31,7 @@ def mock_httpx_client() -> AsyncMock:
     response = MagicMock()
     response.json.return_value = {"response": {"docs": [], "numFound": 0}}
     response.raise_for_status = MagicMock()
-    client.get = AsyncMock(return_value=response)
+    client.post = AsyncMock(return_value=response)
     return client
 
 
@@ -45,8 +45,8 @@ async def test_query_collections(test_settings: Settings, mock_httpx_client: Asy
     
     assert result is not None
     assert "response" in result
-    assert mock_httpx_client.get.called
-    call_args = mock_httpx_client.get.call_args
+    assert mock_httpx_client.post.called
+    call_args = mock_httpx_client.post.call_args
     assert call_args[0][0] == "/collections/select"
 
 
@@ -60,8 +60,8 @@ async def test_query_datasets(test_settings: Settings, mock_httpx_client: AsyncM
     
     assert result is not None
     assert "response" in result
-    assert mock_httpx_client.get.called
-    call_args = mock_httpx_client.get.call_args
+    assert mock_httpx_client.post.called
+    call_args = mock_httpx_client.post.call_args
     assert call_args[0][0] == "/datasets/select"
 
 
@@ -75,8 +75,8 @@ async def test_query_files(test_settings: Settings, mock_httpx_client: AsyncMock
     
     assert result is not None
     assert "response" in result
-    assert mock_httpx_client.get.called
-    call_args = mock_httpx_client.get.call_args
+    assert mock_httpx_client.post.called
+    call_args = mock_httpx_client.post.call_args
     assert call_args[0][0] == "/files/select"
 
 
@@ -88,8 +88,8 @@ async def test_build_access_control_filter_with_groups(test_settings: Settings, 
     
     await service.query_collections(security=security, params={"q": "*:*"})
     
-    call_args = mock_httpx_client.get.call_args
-    params = call_args[1]["params"]
+    call_args = mock_httpx_client.post.call_args
+    params = call_args[1]["data"]
     assert "fq" in params
     fq = params["fq"]
     assert isinstance(fq, list)
@@ -114,8 +114,8 @@ async def test_build_access_control_filter_with_public_principal(test_settings: 
     
     await service.query_collections(security=security, params={"q": "*:*"})
     
-    call_args = mock_httpx_client.get.call_args
-    params = call_args[1]["params"]
+    call_args = mock_httpx_client.post.call_args
+    params = call_args[1]["data"]
     assert "fq" in params
     fq = params["fq"]
     assert isinstance(fq, list)
@@ -139,8 +139,8 @@ async def test_build_access_control_filter_super_owner(test_settings: Settings, 
     
     await service.query_collections(security=security, params={"q": "*:*"})
     
-    call_args = mock_httpx_client.get.call_args
-    params = call_args[1]["params"]
+    call_args = mock_httpx_client.post.call_args
+    params = call_args[1]["data"]
     # Super owner should not have access control filter (returns None, so no OwnerPrincipal filter)
     if "fq" in params:
         fq = params["fq"]
@@ -187,8 +187,8 @@ async def test_rows_limit_allows_max(test_settings: Settings, mock_httpx_client:
     result = await service.query_collections(security=security, params={"rows": 1000})
     
     assert result is not None
-    call_args = mock_httpx_client.get.call_args
-    params = call_args[1]["params"]
+    call_args = mock_httpx_client.post.call_args
+    params = call_args[1]["data"]
     assert params["rows"] == 1000
 
 
@@ -200,8 +200,8 @@ async def test_wt_parameter_defaults_to_json(test_settings: Settings, mock_httpx
     
     await service.query_collections(security=security, params={"q": "*:*"})
     
-    call_args = mock_httpx_client.get.call_args
-    params = call_args[1]["params"]
+    call_args = mock_httpx_client.post.call_args
+    params = call_args[1]["data"]
     assert params.get("wt") == "json"
 
 
@@ -213,8 +213,8 @@ async def test_multi_value_fq_parameters(test_settings: Settings, mock_httpx_cli
     
     await service.query_collections(security=security, params={"q": "*:*", "fq": ["field1:value1", "field2:value2"]})
     
-    call_args = mock_httpx_client.get.call_args
-    params = call_args[1]["params"]
+    call_args = mock_httpx_client.post.call_args
+    params = call_args[1]["data"]
     assert "fq" in params
     fq = params["fq"]
     assert isinstance(fq, list)
