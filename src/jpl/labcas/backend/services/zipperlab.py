@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 from functools import lru_cache
 from typing import Iterable, Sequence
+from urllib.parse import unquote_plus
 
 import httpx
 
@@ -50,9 +51,15 @@ class ZipperlabService:
         if query and ids:
             raise ValueError("Specify either query or id values, not both.")
         if query:
-            return await self._resolve_query_file_paths(security=security, query=query)
+            return await self._resolve_query_file_paths(
+                security=security,
+                query=self._decode_frontend_value(query),
+            )
         if ids:
-            return await self._resolve_id_file_paths(security=security, ids=ids)
+            return await self._resolve_id_file_paths(
+                security=security,
+                ids=[self._decode_frontend_value(file_id) for file_id in ids],
+            )
         raise ValueError("Specify either a query or at least one id value.")
 
     async def initiate_zip(self, *, email: str, files: Sequence[str]) -> str:
@@ -115,6 +122,12 @@ class ZipperlabService:
     @staticmethod
     def _escape_solr_value(value: str) -> str:
         return value.replace("\\", "\\\\").replace('"', '\\"')
+
+    @staticmethod
+    def _decode_frontend_value(value: str) -> str:
+        """Mirror the Java service workaround for double URL-encoded form values."""
+
+        return unquote_plus(value)
 
     @classmethod
     def _file_paths_from_docs(cls, docs: Iterable[dict]) -> list[str]:

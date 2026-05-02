@@ -82,6 +82,26 @@ async def test_resolve_query_file_paths(test_settings: Settings, mock_query_serv
 
 
 @pytest.mark.asyncio
+async def test_resolve_query_file_paths_decodes_frontend_encoded_query(
+    test_settings: Settings,
+    mock_query_service: MagicMock,
+) -> None:
+    """Test /zip query values tolerate Java-compatible double URL encoding."""
+
+    service = ZipperlabService(settings=test_settings, query_service=mock_query_service, client=AsyncMock())
+    security = SecurityContext(subject="test-user", groups=["group1"])
+
+    await service.resolve_file_paths(
+        security=security,
+        query="id:(Pre-diagnostic_PDAC_Images/UPMC/Case%201/CT%201/file.dcm)",
+        ids=[],
+    )
+
+    params = mock_query_service.query_files.call_args.kwargs["params"]
+    assert params["q"] == "id:(Pre-diagnostic_PDAC_Images/UPMC/Case 1/CT 1/file.dcm)"
+
+
+@pytest.mark.asyncio
 async def test_resolve_id_file_paths(test_settings: Settings, mock_query_service: MagicMock) -> None:
     """Test resolving file paths from repeated file IDs."""
 
@@ -94,6 +114,32 @@ async def test_resolve_id_file_paths(test_settings: Settings, mock_query_service
     params = mock_query_service.query_files.call_args.kwargs["params"]
     assert params["q"] == 'id:("FILE1" OR "FILE2")'
     assert params["rows"] == 2
+
+
+@pytest.mark.asyncio
+async def test_resolve_id_file_paths_decodes_frontend_encoded_ids(
+    test_settings: Settings,
+    mock_query_service: MagicMock,
+) -> None:
+    """Test repeated /zip id values match the Java double-decode workaround."""
+
+    service = ZipperlabService(settings=test_settings, query_service=mock_query_service, client=AsyncMock())
+    security = SecurityContext(subject="test-user", groups=[])
+
+    await service.resolve_file_paths(
+        security=security,
+        query=None,
+        ids=[
+            "Pre-diagnostic_PDAC_Images/UPMC/Case%201/CT%201/file.dcm",
+            "Pre-diagnostic_PDAC_Images/UPMC/Case+2/CT+2/file.dcm",
+        ],
+    )
+
+    params = mock_query_service.query_files.call_args.kwargs["params"]
+    assert params["q"] == (
+        'id:("Pre-diagnostic_PDAC_Images/UPMC/Case 1/CT 1/file.dcm" OR '
+        '"Pre-diagnostic_PDAC_Images/UPMC/Case 2/CT 2/file.dcm")'
+    )
 
 
 @pytest.mark.asyncio
