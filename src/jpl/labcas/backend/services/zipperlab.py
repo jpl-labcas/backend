@@ -28,7 +28,7 @@ class ZipperlabService:
     ) -> None:
         self.settings = settings or get_settings()
         self._query_service = query_service
-        self.client = client or httpx.AsyncClient()
+        self.client = client or httpx.AsyncClient(verify=False)
 
     @property
     def query_service(self) -> QueryService:

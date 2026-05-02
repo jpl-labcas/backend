@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import httpx
 import pytest
@@ -50,6 +50,19 @@ def mock_query_service() -> MagicMock:
         }
     )
     return service
+
+
+def test_default_client_allows_self_signed_certificates(test_settings: Settings) -> None:
+    """Test the default Zipperlab client skips certificate verification."""
+
+    with patch("jpl.labcas.backend.services.zipperlab.httpx.AsyncClient") as client_class:
+        client = MagicMock()
+        client_class.return_value = client
+
+        service = ZipperlabService(settings=test_settings)
+
+    assert service.client is client
+    client_class.assert_called_once_with(verify=False)
 
 
 @pytest.mark.asyncio
