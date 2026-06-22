@@ -17,6 +17,7 @@ def build_owner_principal_filter(settings: Settings, security: SecurityContext) 
 
     _logger.info('🔒 Building owner principal filter for security context: %r', security)
 
+    _logger.info('🦸 Super owner principal from settings is: %r', settings.super_owner_principal)
     super_owner = (settings.super_owner_principal or "").strip()
     if super_owner and super_owner in security.groups:
         _logger.info('🦸 Super owner principal found in security context, returning None')
