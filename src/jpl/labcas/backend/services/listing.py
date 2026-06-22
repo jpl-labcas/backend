@@ -12,6 +12,7 @@ from ..auth.dependencies import SecurityContext
 from ..config import Settings, get_settings
 from ..search import SearchEngine, SolrSearchEngine
 from ..utils.security import ensure_safe_value
+from .access_control import build_owner_principal_filter
 
 LOG = logging.getLogger(__name__)
 
@@ -134,7 +135,7 @@ class ListService:
     ) -> ListRequest:
         safe_query = self._sanitize_query(query) or "*:*"
         safe_filters = self._sanitize_filters(filters)
-        ac_filter = self._build_access_control_filter(security)
+        ac_filter = build_owner_principal_filter(self.settings, security)
         if ac_filter:
             safe_filters.append(ac_filter)
 
@@ -201,24 +202,6 @@ class ListService:
                 break
 
         return self._build_urls_from_ids(identifiers)
-
-    def _build_access_control_filter(self, security: SecurityContext) -> str | None:
-        super_owner = (self.settings.super_owner_principal or "").strip()
-        if super_owner and super_owner in security.groups:
-            return None
-
-        principals = []
-        if self.settings.public_owner_principal:
-            principals.append(self.settings.public_owner_principal.strip())
-        principals.extend(security.groups)
-        principals = [p for p in principals if p]
-
-        if not principals:
-            return None
-
-        unique = list(dict.fromkeys(principals))
-        joined = " OR ".join(f'"{principal}"' for principal in unique)
-        return f"OwnerPrincipal:({joined})"
 
     @staticmethod
     def _build_or_query(field_name: str, values: Sequence[str]) -> str:

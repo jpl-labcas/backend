@@ -8,6 +8,7 @@ import pytest
 
 from jpl.labcas.backend.auth.dependencies import SecurityContext
 from jpl.labcas.backend.config import Settings
+from jpl.labcas.backend.services.access_control import build_owner_principal_filter
 from jpl.labcas.backend.services.listing import ListService
 from jpl.labcas.backend.search.base import SearchResult
 
@@ -227,7 +228,7 @@ def test_build_access_control_filter(test_settings: Settings, mock_search_engine
     service = ListService(settings=test_settings, search_engine=mock_search_engine)
     security = SecurityContext(subject="test-user", groups=["group1", "group2"])
     
-    filter_str = service._build_access_control_filter(security)
+    filter_str = build_owner_principal_filter(test_settings, security)
     
     assert filter_str is not None
     assert "OwnerPrincipal:" in filter_str
@@ -252,7 +253,7 @@ def test_build_access_control_filter_super_owner(test_settings: Settings, mock_s
     service = ListService(settings=settings, search_engine=mock_search_engine)  # type: ignore
     security = SecurityContext(subject="test-user", groups=["super-admin"])
     
-    filter_str = service._build_access_control_filter(security)
+    filter_str = build_owner_principal_filter(settings, security)
     
     # Super owner should bypass access control - returns None when super_owner is in groups
     assert filter_str is None, f"Expected None but got {filter_str!r}, super_owner={settings.super_owner_principal!r}, groups={security.groups!r}"

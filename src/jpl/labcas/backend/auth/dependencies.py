@@ -10,7 +10,7 @@ from typing import List, Optional
 from fastapi import Depends, HTTPException, Request, status
 
 from ..config import Settings, get_settings
-from ..directory import DirectoryProvider, LdapDirectoryProvider, MockDirectoryProvider
+from ..directory import DirectoryProvider, DirectoryUser, LdapDirectoryProvider, MockDirectoryProvider
 from .jwt_manager import JwtManager
 
 _logger = logging.getLogger(__name__)
@@ -45,12 +45,25 @@ def get_jwt_manager(settings: Settings = Depends(get_settings)) -> JwtManager:
 GUEST_USER_DN = "uid=guest,ou=public"
 
 
-def _security_context_from_jwt(token: str, jwt_manager: JwtManager) -> SecurityContext:
+def _groups_for_subject(directory: DirectoryProvider, subject: str) -> List[str]:
+    """Resolve LDAP group membership for an authenticated subject DN."""
+
+    if subject == GUEST_USER_DN:
+        return []
+
+    return directory.get_groups(DirectoryUser(username=subject, dn=subject))
+
+
+def _security_context_from_jwt(
+    token: str,
+    jwt_manager: JwtManager,
+    directory: DirectoryProvider,
+) -> SecurityContext:
     payload = jwt_manager.verify_token(token)
     subject = payload.get("sub")
     if not subject:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token.")
-    groups: List[str] = []
+    groups = _groups_for_subject(directory, subject)
     return SecurityContext(subject=subject, groups=groups, token=token)
 
 
@@ -75,7 +88,7 @@ async def get_security_context(
     if auth_header and auth_header.startswith("Bearer "):
         token = auth_header.removeprefix("Bearer ").strip()
         try:
-            return _security_context_from_jwt(token, jwt_manager)
+            return _security_context_from_jwt(token, jwt_manager, directory)
         except Exception:
             # If token verification fails, fall through to guest access
             pass
@@ -84,7 +97,7 @@ async def get_security_context(
     cookie = _get_jwt_from_cookies(request)
     if cookie:
         try:
-            return _security_context_from_jwt(cookie, jwt_manager)
+            return _security_context_from_jwt(cookie, jwt_manager, directory)
         except Exception:
             # If token verification fails, fall through to guest access
             pass
@@ -112,7 +125,7 @@ async def require_authenticated_user(
             )
 
         try:
-            return _security_context_from_jwt(token, jwt_manager)
+            return _security_context_from_jwt(token, jwt_manager, directory)
         except Exception as exc:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -123,7 +136,7 @@ async def require_authenticated_user(
     cookie_token = _get_jwt_from_cookies(request)
     if cookie_token:
         try:
-            return _security_context_from_jwt(cookie_token, jwt_manager)
+            return _security_context_from_jwt(cookie_token, jwt_manager, directory)
         except Exception as exc:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -147,7 +160,7 @@ async def require_authenticated_user(
                 )
             
             # Return security context with user DN
-            groups: List[str] = []
+            groups = directory.get_groups(user)
             return SecurityContext(subject=user.dn, groups=groups, token=None)
             
         except ValueError as exc:

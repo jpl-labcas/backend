@@ -7,8 +7,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 import httpx
 
-from jpl.labcas.backend.auth.dependencies import SecurityContext
+from jpl.labcas.backend.auth.dependencies import GUEST_USER_DN, SecurityContext
 from jpl.labcas.backend.config import Settings
+from jpl.labcas.backend.services.access_control import NO_ACCESS_FILTER
 from jpl.labcas.backend.services.query import QueryService
 
 
@@ -147,6 +148,45 @@ async def test_build_access_control_filter_super_owner(test_settings: Settings, 
         # If fq exists, it might be from other params, but OwnerPrincipal filter should not be added
         owner_filters = [f for f in fq if "OwnerPrincipal" in str(f)]
         assert len(owner_filters) == 0, f"Super owner should bypass access control, but found: {owner_filters}"
+
+
+@pytest.mark.asyncio
+async def test_build_access_control_filter_authenticated_without_groups(
+    test_settings: Settings,
+    mock_httpx_client: AsyncMock,
+) -> None:
+    """Authenticated users with no LDAP groups should receive no Solr matches."""
+    service = QueryService(settings=test_settings, client=mock_httpx_client)
+    security = SecurityContext(subject="uid=tester,ou=users,dc=example,dc=com", groups=[])
+
+    await service.query_collections(security=security, params={"q": "*:*"})
+
+    call_args = mock_httpx_client.post.call_args
+    params = call_args[1]["data"]
+    assert "fq" in params
+    fq = params["fq"]
+    assert isinstance(fq, list)
+    assert any(NO_ACCESS_FILTER in str(filter_query) for filter_query in fq)
+
+
+@pytest.mark.asyncio
+async def test_build_access_control_filter_guest_still_gets_public(
+    test_settings: Settings,
+    mock_httpx_client: AsyncMock,
+) -> None:
+    """Guest users should still be limited to the public principal."""
+    service = QueryService(settings=test_settings, client=mock_httpx_client)
+    security = SecurityContext(subject=GUEST_USER_DN, groups=[])
+
+    await service.query_collections(security=security, params={"q": "*:*"})
+
+    call_args = mock_httpx_client.post.call_args
+    params = call_args[1]["data"]
+    assert "fq" in params
+    fq = params["fq"]
+    assert isinstance(fq, list)
+    assert any("public" in str(filter_query) for filter_query in fq)
+    assert not any(NO_ACCESS_FILTER in str(filter_query) for filter_query in fq)
 
 
 @pytest.mark.asyncio

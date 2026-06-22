@@ -11,6 +11,7 @@ import httpx
 from ..auth.dependencies import SecurityContext
 from ..config import Settings, get_settings
 from ..utils.security import ensure_safe_value
+from .access_control import build_owner_principal_filter
 
 LOG = logging.getLogger(__name__)
 
@@ -88,7 +89,7 @@ class QueryService:
                 raise ValueError("rows must be a valid integer") from exc
 
         # Add access control filter
-        ac_filter = self._build_access_control_filter(security)
+        ac_filter = build_owner_principal_filter(self.settings, security)
         LOG.info('🔒 The access control filter is %r', ac_filter)
         if ac_filter:
             # Add to existing fq parameters
@@ -109,26 +110,6 @@ class QueryService:
         solr_response = response.json()
         LOG.debug("Solr query core=%s params=%s returned response", core, safe_params)
         return solr_response
-
-    def _build_access_control_filter(self, security: SecurityContext) -> str | None:
-        """Build the access control filter query string."""
-
-        super_owner = (self.settings.super_owner_principal or "").strip()
-        if super_owner and super_owner in security.groups:
-            return None
-
-        principals = []
-        if self.settings.public_owner_principal:
-            principals.append(self.settings.public_owner_principal.strip())
-        principals.extend(security.groups)
-        principals = [p for p in principals if p]
-
-        if not principals:
-            return None
-
-        unique = list(dict.fromkeys(principals))
-        joined = " OR ".join(f'"{principal}"' for principal in unique)
-        return f"OwnerPrincipal:({joined})"
 
     def _sanitize_params(self, params: dict[str, Any]) -> dict[str, Any]:
         """Sanitize query parameters to prevent unsafe characters."""
