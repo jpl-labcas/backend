@@ -101,10 +101,9 @@ public class QueryServiceImpl extends SolrProxy implements QueryService {
 			String distinguishedName = (String) requestContext.getProperty(AuthenticationFilter.USER_DN);
 			LOG.info("🪪 the distinguishedName is «" + distinguishedName + "»");
 
-			// EDRN/labcas-ui#254: we do want to allow guests to query *public* data. The front-end
-			// Apache HTTPD has mod_evasive installed which should help prevent mass-exfiltration.
-			// Therefore, I'm commenting this out. However, if the security red team balks and wants
-			// EDRN/Infrastructure#144 back in action, we can re-enable it.
+			// EDRN/labcas-ui#254 previously allowed guests to query public data; that behavior is
+			// superseded — guests and authenticated users with no LDAP groups now receive no results
+			// via SolrProxy.NO_ACCESS_FILTER. See EDRN/Infrastructure#23 and VDP-2979.
 			//
 			// if (distinguishedName == null || distinguishedName.equals(AuthenticationFilter.GUEST_USER_DN)) {
 			// 	LOG.info("VDP_1645_SC-9999-L-JPL-0220 violation: login required to query (even for public data)");

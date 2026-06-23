@@ -65,6 +65,11 @@ public class SolrProxy {
 	protected final static String PUBLIC_OWNER_PRINCIPAL_PROPERTY = "publicOwnerPrincipal";
 	protected static String publicOwnerPrincipal;
 
+	// Solr filter that matches no documents. Used when a user has no LDAP group memberships
+	// or is the guest DN — such users are denied all data access (including public data).
+	// See EDRN/Infrastructure#23 and VDP-2979.
+	protected final static String NO_ACCESS_FILTER = "-*:*";
+
 	// These characters are not allowed in HTTP request parameter values 
 	// - AFTER the value has been URL-decoded
 	protected final static String[] UNSAFE_CHARACTERS = new String[] { ">", "<", "%", "$" };
@@ -210,39 +215,40 @@ public class SolrProxy {
 	 * Builds the query string to enforce access control.
 	 * Note that this method does NOT URL-encode the parameter value:
 	 * that is left to do by the calling method.
-	 * @param contex
+	 *
+	 * Users with no LDAP group memberships, and guest users ({@link AuthenticationFilter#GUEST_USER_DN}),
+	 * receive {@link #NO_ACCESS_FILTER} so Solr returns no results. Super users receive no constraint.
+	 * See EDRN/Infrastructure#23 and VDP-2979.
+	 *
+	 * @param requestContext
 	 * @return
 	 */
 	static String getAccessControlQueryStringValue(ContainerRequestContext requestContext) throws UnsupportedEncodingException {
 		
 		@SuppressWarnings("unchecked")
 		List<String> ugroups = (List<String>)requestContext.getProperty(AuthenticationFilter.USER_GROUPS_PROPERTY);
-		LOG.info("Retrieving from request context: user groups = "+ugroups);
-		String accessControlQueryStringValue = "";
-				
-		if (ugroups!=null && ugroups.size()>0) {
-			
-			if (ugroups.contains(superOwnerPrincipal)) {
-				// super user --> no query constraint
-				//String testOwnerPrincipal = "uid=testuser,dc=edrn,dc=jpl,dc=nasa,dc=gov";
-				//return "OwnerPrincipal:(\""+testOwnerPrincipal+"\"" + ")";
-				LOG.info("🦸 SUPER USER DETECTED (play triumphant theme here 🎶)");
-				return "";
-			} else {
-				accessControlQueryStringValue = "OwnerPrincipal:(\""+publicOwnerPrincipal+"\"";
-				for (String ugroup : ugroups) {
-					accessControlQueryStringValue += " OR \"" + ugroup + "\"";
-				}
-				accessControlQueryStringValue += ")";
-			}
-			
-		} else {
-			// no groups --> can only read public data
-			accessControlQueryStringValue = "OwnerPrincipal:(\""+publicOwnerPrincipal+"\")";
+		String userdn = (String) requestContext.getProperty(AuthenticationFilter.USER_DN);
+		LOG.info("Retrieving from request context: user dn = " + userdn + ", user groups = " + ugroups);
+
+		if (ugroups != null && !ugroups.isEmpty() && ugroups.contains(superOwnerPrincipal)) {
+			// super user --> no query constraint
+			LOG.info("🦸 SUPER USER DETECTED (play triumphant theme here 🎶)");
+			return "";
 		}
-		
+
+		if (userdn == null || userdn.equals(AuthenticationFilter.GUEST_USER_DN)
+				|| ugroups == null || ugroups.isEmpty()) {
+			LOG.info("No LDAP group membership or guest user — denying all data access");
+			return NO_ACCESS_FILTER;
+		}
+
+		String accessControlQueryStringValue = "OwnerPrincipal:(\"" + publicOwnerPrincipal + "\"";
+		for (String ugroup : ugroups) {
+			accessControlQueryStringValue += " OR \"" + ugroup + "\"";
+		}
+		accessControlQueryStringValue += ")";
+
 		return accessControlQueryStringValue;
-		
 	}
 	
 	/**
