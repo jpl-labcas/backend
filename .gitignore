@@ -21,3 +21,9 @@ venv/
 *.sublime-workspace
 private-notes.md
 .vscode/
+certs/
+.env
+dot-env
+dist/
+build/
+**/*.egg-info/

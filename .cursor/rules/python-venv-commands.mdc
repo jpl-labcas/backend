@@ -1,0 +1,13 @@
+---
+description: Use the project virtualenv for Python commands
+alwaysApply: true
+---
+
+# Python Command Execution
+
+- In this Python project, always run Python tooling with `.venv/bin/python`.
+- Do not use system Python interpreters such as `/opt/homebrew/bin/python`, `/opt/homebrew/bin/python3.12`, `/usr/bin/python`, or `python3`.
+- Examples:
+  - Use `.venv/bin/python -m pytest`.
+  - Use `.venv/bin/python -m py_compile path/to/file.py`.
+  - Use `.venv/bin/python -m pip` only if dependency installation is explicitly needed.

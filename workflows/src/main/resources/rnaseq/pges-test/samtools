@@ -1,4 +1,0 @@
-#!/bin/sh
-# samtools sort -n accepted_hits.bam -o sorted.bam
-# samtools view -h sorted.bam > sorted.sam
-echo 123 > sorted.sam
