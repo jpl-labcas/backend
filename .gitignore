@@ -24,3 +24,6 @@ private-notes.md
 certs/
 .env
 dot-env
+dist/
+build/
+**/*.egg-info/
