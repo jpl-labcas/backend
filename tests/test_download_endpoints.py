@@ -87,6 +87,29 @@ def _make_app(stub_service: StubDownloadService) -> TestClient:
     return TestClient(app)
 
 
+def test_download_forbidden_without_groups() -> None:
+    """Users with no LDAP groups may not download files."""
+    stub_service = StubDownloadService()
+    stub_service.file_info = FileInfo(
+        file_location="/tmp",
+        file_name="secret.txt",
+        real_file_name="secret.txt",
+        file_path="/tmp/secret.txt",
+    )
+
+    app = create_app()
+    app.dependency_overrides[require_authenticated_user] = lambda: SecurityContext(
+        subject="uid=tester,ou=users,dc=example,dc=com", groups=[]
+    )
+    app.dependency_overrides[get_download_service] = lambda: stub_service
+    client = TestClient(app)
+
+    response = client.get("/download", params={"id": "test-file-id"})
+
+    assert response.status_code == 403
+    assert stub_service.file_id is None
+
+
 def test_download_local_file() -> None:
     """Test /download with local file."""
     stub_service = StubDownloadService()
@@ -315,8 +338,12 @@ def test_download_accepts_legacy_jwt_cookie_without_authorization_header(cookie_
         jwt_manager = MagicMock(spec=JwtManager)
         jwt_manager.verify_token.return_value = {"sub": "test-user"}
 
+        directory = MockDirectoryProvider()
+        directory.set_groups("test-user", ["group1"])
+
         app = create_app()
         app.dependency_overrides[get_jwt_manager] = lambda: jwt_manager
+        app.dependency_overrides[get_directory_provider] = lambda: directory
         app.dependency_overrides[get_download_service] = lambda: stub_service
         client = TestClient(app)
         client.cookies.set(cookie_name, "test-jwt-token")
@@ -351,8 +378,12 @@ def test_download_prefers_bearer_token_over_legacy_jwt_cookie() -> None:
         jwt_manager = MagicMock(spec=JwtManager)
         jwt_manager.verify_token.return_value = {"sub": "test-user"}
 
+        directory = MockDirectoryProvider()
+        directory.set_groups("test-user", ["group1"])
+
         app = create_app()
         app.dependency_overrides[get_jwt_manager] = lambda: jwt_manager
+        app.dependency_overrides[get_directory_provider] = lambda: directory
         app.dependency_overrides[get_download_service] = lambda: stub_service
         client = TestClient(app)
         client.cookies.set("JasonWebToken", "cookie-jwt-token")
@@ -386,6 +417,7 @@ def test_download_falls_back_to_basic_auth_when_no_jwt_is_present() -> None:
 
         directory = MockDirectoryProvider()
         directory.add_user("testuser", "testpass", "uid=testuser,ou=users,dc=example,dc=com")
+        directory.set_groups("uid=testuser,ou=users,dc=example,dc=com", ["group1"])
 
         app = create_app()
         app.dependency_overrides[get_directory_provider] = lambda: directory

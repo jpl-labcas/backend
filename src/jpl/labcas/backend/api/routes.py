@@ -32,6 +32,7 @@ from ..services import (
     get_query_service,
     get_zipperlab_service,
 )
+from ..services.access_control import user_may_download
 from ..utils.security import ensure_safe_value
 
 LOG = logging.getLogger(__name__)
@@ -425,6 +426,13 @@ def create_router() -> APIRouter:
         download_service: DownloadService = Depends(get_download_service),
     ) -> Response | StreamingResponse | RedirectResponse:
         """Download a file by ID."""
+
+        # Users with no LDAP group memberships may browse metadata but cannot download.
+        if not user_may_download(security):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Download requires membership in at least one group",
+            )
 
         # Validate ID is safe
         try:

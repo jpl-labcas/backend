@@ -155,7 +155,7 @@ async def test_build_access_control_filter_authenticated_without_groups(
     test_settings: Settings,
     mock_httpx_client: AsyncMock,
 ) -> None:
-    """Authenticated users with no LDAP groups should receive no Solr matches."""
+    """Authenticated users with no LDAP groups may still query public metadata."""
     service = QueryService(settings=test_settings, client=mock_httpx_client)
     security = SecurityContext(subject="uid=tester,ou=users,dc=example,dc=com", groups=[])
 
@@ -166,7 +166,8 @@ async def test_build_access_control_filter_authenticated_without_groups(
     assert "fq" in params
     fq = params["fq"]
     assert isinstance(fq, list)
-    assert any(NO_ACCESS_FILTER in str(filter_query) for filter_query in fq)
+    assert any("public" in str(filter_query) for filter_query in fq)
+    assert not any(NO_ACCESS_FILTER in str(filter_query) for filter_query in fq)
 
 
 @pytest.mark.asyncio
