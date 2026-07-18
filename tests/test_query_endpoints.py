@@ -132,6 +132,25 @@ def test_datasets_select_basic_query() -> None:
     assert stub_service.datasets_params["q"] == "*:*"
 
 
+def test_datasets_select_trailing_slash_does_not_redirect() -> None:
+    """Trailing slash should serve the handler directly, not 307."""
+    stub_service = StubQueryService()
+    client = _make_app(stub_service)
+
+    response = client.get(
+        "/datasets/select/",
+        params={"q": "*:*", "rows": "10"},
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 200
+    assert "location" not in response.headers
+    data = response.json()
+    assert data["response"]["numFound"] == 1
+    assert stub_service.datasets_params is not None
+    assert stub_service.datasets_params["q"] == "*:*"
+
+
 def test_datasets_select_with_sort() -> None:
     """Test /datasets/select with sort parameter."""
     stub_service = StubQueryService()

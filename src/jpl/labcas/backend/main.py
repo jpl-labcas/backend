@@ -143,9 +143,22 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
         version='0.1.0',
         docs_url='/docs',
         redoc_url='/redoc',
+        # Avoid 307 redirects for trailing slashes; those Location headers can be
+        # wrong behind reverse proxies. Normalize the path instead.
+        redirect_slashes=False,
     )
 
     app.state.settings = settings
+
+    @app.middleware('http')
+    async def strip_trailing_slash(request, call_next):
+        '''Treat /path/ the same as /path without issuing a redirect.'''
+
+        path = request.scope.get('path', '')
+        if len(path) > 1 and path.endswith('/'):
+            request.scope['path'] = path.rstrip('/')
+        return await call_next(request)
+
     if settings.log_request_headers:
         @app.middleware('http')
         async def log_request_headers(request, call_next):
