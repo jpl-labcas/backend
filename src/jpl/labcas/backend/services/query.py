@@ -23,6 +23,15 @@ class QueryService:
     DATASETS_CORE = "datasets"
     FILES_CORE = "files"
 
+    #: Parameters that could be used for SSRF attacks — these will be filtered out.
+    DANGEROUS_PARAMETERS = (
+        "shards",       # Can point to arbitrary Solr servers
+        "shards.qt",    # Can specify query template on remote shards
+        "stream.url",   # Can stream from arbitrary URLs
+        "stream.file",  # Can read arbitrary files
+        "stream.body",  # Can execute arbitrary code
+    )
+
     def __init__(self, *, settings: Settings | None = None, client: httpx.AsyncClient | None = None) -> None:
         self.settings = settings or get_settings()
         
@@ -117,6 +126,9 @@ class QueryService:
         safe_params: dict[str, Any] = {}
 
         for key, value in params.items():
+            if self._is_dangerous_param(key):
+                LOG.warning("⚠️ Blocked dangerous parameter: %s", key)
+                continue
             if key in ("q", "fq", "fl", "sort", "q.op", "df", "wt"):
                 if isinstance(value, str):
                     # For query strings (q, fq), allow quotes as they're part of Solr syntax
@@ -156,6 +168,15 @@ class QueryService:
                     safe_params[key] = value
 
         return safe_params
+
+    @classmethod
+    def _is_dangerous_param(cls, key: str) -> bool:
+        """Return True if the parameter could be used for SSRF attacks.
+
+        Matches either the exact parameter name or any sub-parameter of it
+        (e.g. ``shards`` also blocks ``shards.tolerant``).
+        """
+        return any(key == dangerous or key.startswith(dangerous + ".") for dangerous in cls.DANGEROUS_PARAMETERS)
 
 
 @lru_cache(maxsize=1)
