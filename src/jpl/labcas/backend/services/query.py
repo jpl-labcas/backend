@@ -30,6 +30,12 @@ class QueryService:
         "stream.url",   # Can stream from arbitrary URLs
         "stream.file",  # Can read arbitrary files
         "stream.body",  # Can execute arbitrary code
+        "expr",         # Streaming expressions can open connections to arbitrary hosts
+    )
+
+    #: Parameter name suffixes that could be used for SSRF attacks (e.g. ``terms.shards``).
+    DANGEROUS_SUFFIXES = (
+        ".shards",      # Per-component shard targeting can point to arbitrary Solr servers
     )
 
     def __init__(self, *, settings: Settings | None = None, client: httpx.AsyncClient | None = None) -> None:
@@ -173,10 +179,13 @@ class QueryService:
     def _is_dangerous_param(cls, key: str) -> bool:
         """Return True if the parameter could be used for SSRF attacks.
 
-        Matches either the exact parameter name or any sub-parameter of it
-        (e.g. ``shards`` also blocks ``shards.tolerant``).
+        Matches the exact parameter name, any sub-parameter of it
+        (e.g. ``shards`` also blocks ``shards.tolerant``), or any parameter
+        ending in a dangerous suffix (e.g. ``terms.shards``).
         """
-        return any(key == dangerous or key.startswith(dangerous + ".") for dangerous in cls.DANGEROUS_PARAMETERS)
+        if any(key == dangerous or key.startswith(dangerous + ".") for dangerous in cls.DANGEROUS_PARAMETERS):
+            return True
+        return any(key.endswith(suffix) for suffix in cls.DANGEROUS_SUFFIXES)
 
 
 @lru_cache(maxsize=1)
