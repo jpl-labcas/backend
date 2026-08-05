@@ -7,7 +7,7 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from fastapi.testclient import TestClient
 
-from jpl.labcas.backend.auth.dependencies import SecurityContext, get_security_context
+from jpl.labcas.backend.auth.dependencies import SecurityContext, get_security_context, require_authenticated_user
 from jpl.labcas.backend.main import create_app
 from jpl.labcas.backend.services.query import QueryService, get_query_service
 
@@ -169,11 +169,17 @@ def test_datasets_select_with_sort() -> None:
 def test_files_select_basic_query() -> None:
     """Test /files/select with basic query."""
     stub_service = StubQueryService()
-    client = _make_app(stub_service)
+    app = create_app()
+    app.dependency_overrides[require_authenticated_user] = lambda: SecurityContext(
+        subject="test-user", groups=["group1"]
+    )
+    app.dependency_overrides[get_query_service] = lambda: stub_service
+    client = TestClient(app)
 
     response = client.get(
         "/files/select",
         params={"q": "*:*", "rows": "10"},
+        headers={"Authorization": "Bearer test-token"},
     )
 
     assert response.status_code == 200
@@ -183,13 +189,26 @@ def test_files_select_basic_query() -> None:
     assert stub_service.files_params["q"] == "*:*"
 
 
-def test_files_select_allows_guest() -> None:
-    """Guests may query file metadata (public OwnerPrincipal filter applied in service)."""
+def test_files_select_requires_authentication() -> None:
+    """Test /files/select requires authentication."""
+    app = create_app()
+    client = TestClient(app)
+
+    response = client.get(
+        "/files/select",
+        params={"q": "*:*"},
+    )
+
+    assert response.status_code == 401
+
+
+def test_files_select_rejects_guest_user() -> None:
+    """Test /files/select rejects guest users."""
     from jpl.labcas.backend.auth.dependencies import GUEST_USER_DN
 
     stub_service = StubQueryService()
     app = create_app()
-    app.dependency_overrides[get_security_context] = lambda: SecurityContext(
+    app.dependency_overrides[require_authenticated_user] = lambda: SecurityContext(
         subject=GUEST_USER_DN, groups=[]
     )
     app.dependency_overrides[get_query_service] = lambda: stub_service
@@ -198,10 +217,11 @@ def test_files_select_allows_guest() -> None:
     response = client.get(
         "/files/select",
         params={"q": "*:*"},
+        headers={"Authorization": "Bearer test-token"},
     )
 
-    assert response.status_code == 200
-    assert "response" in response.json()
+    assert response.status_code == 401
+    assert "User login required" in response.json()["detail"]
 
 
 def test_collections_select_with_field_list() -> None:
