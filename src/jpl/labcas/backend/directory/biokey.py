@@ -50,6 +50,7 @@ def is_pending(biokey: dict[str, Any] | None) -> bool:
     Missing biokey, missing ``pending`` key, or any other value means the account is pending.
     """
 
-    if biokey is None:
-        return True
-    return biokey.get("pending") != "false"
+    if biokey is None: return False    # No biokey, we assume you're good to go.
+    pending = biokey.get("pending")    # Okay, get your pending status.
+    if pending is None: return False   # No pending status? No problem, you're good.
+    return pending == "true"           # Pending status yes? Well, only if it's `true`.
