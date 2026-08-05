@@ -32,14 +32,16 @@ def test_parse_biokey(description: str | None, expected: dict | None) -> None:
 @pytest.mark.parametrize(
     ("biokey", "expected_pending"),
     [
-        (None, True),
-        ({}, True),
+        (None, False),
+        ({}, False),
         ({"pending": "true"}, True),
-        ({"pending": "True"}, True),
-        ({"pending": "FALSE"}, True),
-        ({"pending": False}, True),  # boolean false is not the string "false"
+        ({"pending": "True"}, False),
+        ({"pending": "FALSE"}, False),
+        ({"pending": False}, False),
+        ({"pending": True}, False),
         ({"pending": "false"}, False),
         ({"pending": "false", "other": "x"}, False),
+        ({"pending": "true", "other": "x"}, True),
     ],
 )
 def test_is_pending(biokey: dict | None, expected_pending: bool) -> None:
@@ -86,7 +88,7 @@ def test_ldap_is_pending_when_missing_biokey() -> None:
     user = DirectoryUser(username="alice", dn="uid=alice,ou=users,dc=example,dc=com")
 
     with patch.object(provider, "_read_description", return_value="no biokey"):
-        assert provider.is_pending(user) is True
+        assert provider.is_pending(user) is False
 
 
 def test_ldap_is_pending_fail_closed_on_error() -> None:

@@ -12,7 +12,6 @@ from fastapi import APIRouter, Depends, Form, HTTPException, Query, Request, sta
 from fastapi.responses import JSONResponse, PlainTextResponse, RedirectResponse, Response, StreamingResponse
 
 from ..auth.dependencies import (
-    GUEST_USER_DN,
     SecurityContext,
     get_directory_provider,
     get_jwt_manager,
@@ -362,19 +361,10 @@ def create_router() -> APIRouter:
     )
     async def files_select(
         request: Request,
-        security: SecurityContext = Depends(require_authenticated_user),
+        security: SecurityContext = Depends(get_security_context),
         query_service: QueryService = Depends(get_query_service),
     ) -> JSONResponse:
         """Query files core and return Solr JSON response."""
-
-        # jpl-labcas/backend#29
-        # Require a logged-in user to query file metadata
-        # Reject guest users explicitly (matching Java implementation)
-        if not security.subject or security.subject == GUEST_USER_DN:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="User login required to query file metadata (even for public data, so there!)",
-            )
 
         # Extract all query parameters (handling multi-value params)
         params = _extract_query_params(request)

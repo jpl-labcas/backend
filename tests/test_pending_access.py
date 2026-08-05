@@ -68,16 +68,17 @@ def _pending_directory() -> MockDirectoryProvider:
     return directory
 
 
-def test_pending_jwt_rejected_on_files_select() -> None:
-    """Pending JWTs are valid for login but denied on approved-only endpoints."""
+def test_pending_jwt_falls_back_to_guest_on_files_select() -> None:
+    """Pending JWTs browse file metadata with guest-equivalent access."""
     directory = _pending_directory()
     jwt_manager = MagicMock(spec=JwtManager)
     jwt_manager.verify_token.return_value = {"sub": PENDING_DN}
+    stub = StubQueryService()
 
     app = create_app()
     app.dependency_overrides[get_directory_provider] = lambda: directory
     app.dependency_overrides[get_jwt_manager] = lambda: jwt_manager
-    app.dependency_overrides[get_query_service] = lambda: StubQueryService()
+    app.dependency_overrides[get_query_service] = lambda: stub
     client = TestClient(app)
 
     response = client.get(
@@ -86,8 +87,9 @@ def test_pending_jwt_rejected_on_files_select() -> None:
         headers={"Authorization": "Bearer pending-token"},
     )
 
-    assert response.status_code == 401
-    assert "pending" in response.json()["detail"].lower()
+    assert response.status_code == 200
+    assert stub.last_security is not None
+    assert stub.last_security.subject == GUEST_USER_DN
 
 
 def test_pending_basic_auth_rejected_on_download() -> None:
@@ -132,7 +134,7 @@ def test_pending_jwt_falls_back_to_guest_on_collections_select() -> None:
     assert stub.last_security.subject == GUEST_USER_DN
 
 
-def test_guest_can_browse_collections_and_datasets() -> None:
+def test_guest_can_browse_collections_datasets_and_files() -> None:
     stub = StubQueryService()
     app = create_app()
     app.dependency_overrides[get_query_service] = lambda: stub
@@ -140,9 +142,11 @@ def test_guest_can_browse_collections_and_datasets() -> None:
 
     collections = client.get("/collections/select", params={"q": "*:*"})
     datasets = client.get("/datasets/select", params={"q": "*:*"})
+    files = client.get("/files/select", params={"q": "*:*"})
 
     assert collections.status_code == 200
     assert datasets.status_code == 200
+    assert files.status_code == 200
     assert stub.last_security is not None
     assert stub.last_security.subject == GUEST_USER_DN
 
