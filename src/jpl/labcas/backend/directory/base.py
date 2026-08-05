@@ -33,6 +33,9 @@ class DirectoryProvider(Protocol):
     def get_last_modified(self, user: DirectoryUser) -> datetime:
         """Return the directory record modification time for the user."""
 
+    def is_pending(self, user: DirectoryUser) -> bool:
+        """Return True when the account is pending approval (not yet activated)."""
+
 
 def epoch() -> datetime:
     """Return the Unix epoch."""

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import pytest
 from fastapi.testclient import TestClient
 
 from jpl.labcas.backend.auth.dependencies import SecurityContext, require_authenticated_user
@@ -107,4 +108,15 @@ def test_files_list_returns_plain_text_response() -> None:
     assert stub_service.files_payload["filters"] == ["OwnerPrincipal:\"grp\""]
     assert stub_service.files_payload["rows"] == 7
     assert stub_service.files_payload["start"] == 1
+
+
+@pytest.mark.parametrize("path", ["/collections/list", "/datasets/list", "/files/list"])
+def test_list_endpoints_require_authentication(path: str) -> None:
+    """Guests may not obtain download URL lists."""
+    app = create_app()
+    app.dependency_overrides[get_list_service] = lambda: StubListService()
+    client = TestClient(app)
+
+    response = client.get(path, params={"q": "*:*"})
+    assert response.status_code == 401
 

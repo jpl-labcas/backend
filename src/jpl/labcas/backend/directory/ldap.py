@@ -12,6 +12,8 @@ from ldap3.core.exceptions import LDAPBindError, LDAPException, LDAPSocketReceiv
 
 from ..config import Settings, get_settings
 from .base import DirectoryProvider, DirectoryUser, epoch
+from .biokey import is_pending as biokey_is_pending
+from .biokey import parse_biokey
 
 LOG = logging.getLogger(__name__)
 
@@ -128,7 +130,50 @@ class LdapDirectoryProvider(DirectoryProvider):
 
         return epoch()
 
+    def is_pending(self, user: DirectoryUser) -> bool:
+        """Return True when the account is pending approval based on LDAP biokey metadata.
+
+        Fail closed: LDAP/read/parse failures are treated as pending.
+        """
+
+        try:
+            description = self._read_description(user)
+        except Exception:  # noqa: BLE001
+            LOG.warning("Failed to read description for %s; treating as pending", user.dn, exc_info=True)
+            return True
+
+        return biokey_is_pending(parse_biokey(description))
+
     # Internal helpers -------------------------------------------------
+
+    def _read_description(self, user: DirectoryUser) -> str | None:
+        """Return the LDAP description attribute for the user, if present."""
+
+        with self._admin_connection() as conn:
+            conn.search(
+                search_base=user.dn,
+                search_filter="(objectClass=*)",
+                attributes=["description"],
+            )
+            if not conn.entries:
+                return None
+
+            value = conn.entries[0]["description"]
+            if value is None:
+                return None
+            # ldap3 may expose multi-valued attributes; take the first non-empty string.
+            if hasattr(value, "value"):
+                raw = value.value
+            else:
+                raw = value
+            if isinstance(raw, (list, tuple)):
+                for item in raw:
+                    if item:
+                        return str(item)
+                return None
+            if raw is None or raw == "":
+                return None
+            return str(raw)
 
     def _resolve_user_dn(self, username: str) -> str | None:
         if not self.settings.ldap_user_base:

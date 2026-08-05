@@ -290,6 +290,21 @@ def test_rapidly_download_collection_returns_aspera_payload() -> None:
     }
 
 
+def test_rapidly_download_collection_requires_authentication() -> None:
+    """Guests may not create Aspera transfer requests."""
+    stub_service = StubDownloadService()
+    app = create_app()
+    app.dependency_overrides[get_download_service] = lambda: stub_service
+    client = TestClient(app)
+
+    response = client.get(
+        "/rapidly-download-collection",
+        params={"collectionID": "collection-123", "token": "aspera-token"},
+    )
+
+    assert response.status_code == 401
+
+
 def test_download_file_not_found() -> None:
     """Test /download returns 404 when file not found."""
     stub_service = StubDownloadService()

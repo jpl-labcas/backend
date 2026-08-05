@@ -15,6 +15,8 @@ class MockDirectoryProvider(DirectoryProvider):
         self._users = users or {"guest": "guest"}
         self._groups = groups or {}
         self._modified: Dict[str, datetime] = {}
+        # Default to approved so existing tests keep working without biokey setup.
+        self._pending: Dict[str, bool] = {}
 
     def authenticate(self, username: str, password: str) -> DirectoryUser | None:
         stored_password = self._users.get(username)
@@ -28,16 +30,31 @@ class MockDirectoryProvider(DirectoryProvider):
     def get_last_modified(self, user: DirectoryUser) -> datetime:
         return self._modified.get(user.dn, epoch())
 
+    def is_pending(self, user: DirectoryUser) -> bool:
+        return self._pending.get(user.dn, False)
+
     # Utilities for tests ------------------------------------------------
 
-    def add_user(self, username: str, password: str, dn: str | None = None) -> None:
+    def add_user(
+        self,
+        username: str,
+        password: str,
+        dn: str | None = None,
+        *,
+        pending: bool = False,
+    ) -> None:
         self._users[username] = password
         dn = dn or f"uid={username},ou=users,dc=example,dc=com"
         self._groups.setdefault(dn, [])
+        self._pending[dn] = pending
         self._modified[dn] = datetime.now(tz=timezone.utc)
 
     def set_groups(self, dn: str, groups: List[str]) -> None:
         self._groups[dn] = groups
+        self._modified[dn] = datetime.now(tz=timezone.utc)
+
+    def set_pending(self, dn: str, pending: bool) -> None:
+        self._pending[dn] = pending
         self._modified[dn] = datetime.now(tz=timezone.utc)
 
 

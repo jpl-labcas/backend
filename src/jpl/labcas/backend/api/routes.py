@@ -160,6 +160,13 @@ def create_router() -> APIRouter:
                 headers={"WWW-Authenticate": "Basic"},
             )
 
+        if directory.is_pending(user):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Account is pending approval",
+                headers={"WWW-Authenticate": "Basic"},
+            )
+
         # Generate JWT token with session ID
         subject = user.dn
         token = jwt_manager.issue_token(subject)
@@ -203,7 +210,7 @@ def create_router() -> APIRouter:
         fq: list[str] | None = Query(default=None, description="Filter queries"),
         start: int = Query(0, ge=0, description="Pagination start index"),
         rows: int = Query(1, ge=0, description="Number of collection rows to evaluate"),
-        security: SecurityContext = Depends(get_security_context),
+        security: SecurityContext = Depends(require_authenticated_user),
         list_service: ListService = Depends(get_list_service),
     ) -> PlainTextResponse:
         """Return download URLs for files contained in matching collections."""
@@ -233,7 +240,7 @@ def create_router() -> APIRouter:
         fq: list[str] | None = Query(default=None, description="Filter queries"),
         start: int = Query(0, ge=0, description="Pagination start index"),
         rows: int = Query(1, ge=0, description="Number of dataset rows to evaluate"),
-        security: SecurityContext = Depends(get_security_context),
+        security: SecurityContext = Depends(require_authenticated_user),
         list_service: ListService = Depends(get_list_service),
     ) -> PlainTextResponse:
         """Return download URLs for files contained in matching datasets."""
@@ -263,7 +270,7 @@ def create_router() -> APIRouter:
         fq: list[str] | None = Query(default=None, description="Filter queries"),
         start: int = Query(0, ge=0, description="Pagination start index"),
         rows: int = Query(1, ge=0, description="Number of file rows to evaluate"),
-        security: SecurityContext = Depends(get_security_context),
+        security: SecurityContext = Depends(require_authenticated_user),
         list_service: ListService = Depends(get_list_service),
     ) -> PlainTextResponse:
         """Return download URLs for files that match the given query."""
@@ -395,6 +402,7 @@ def create_router() -> APIRouter:
     async def rapidly_download_collection(
         collectionID: str = Query(..., description="Collection ID to include in the Aspera source path"),
         token: str = Query(..., description="Aspera authentication token"),
+        security: SecurityContext = Depends(require_authenticated_user),
         download_service: DownloadService = Depends(get_download_service),
     ) -> JSONResponse:
         """Return an Aspera transfer request for the requested collection."""
