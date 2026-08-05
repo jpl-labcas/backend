@@ -158,7 +158,9 @@ async def require_authenticated_user(
 ) -> SecurityContext:
     """Authenticate via Bearer token, legacy JWT cookie, or Basic auth.
 
-    Pending (unapproved) accounts are rejected with 401.
+    Pending accounts may hold a valid JWT (issued by ``/auth``) but are denied here so
+    file metadata, downloads, and other approved-only endpoints stay guest-restricted.
+    Browse endpoints that use ``get_security_context`` treat pending tokens as guest.
     """
 
     auth_header = request.headers.get("Authorization")

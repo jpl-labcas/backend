@@ -69,6 +69,7 @@ def _pending_directory() -> MockDirectoryProvider:
 
 
 def test_pending_jwt_rejected_on_files_select() -> None:
+    """Pending JWTs are valid for login but denied on approved-only endpoints."""
     directory = _pending_directory()
     jwt_manager = MagicMock(spec=JwtManager)
     jwt_manager.verify_token.return_value = {"sub": PENDING_DN}

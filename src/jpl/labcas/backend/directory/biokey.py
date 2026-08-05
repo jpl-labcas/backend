@@ -45,9 +45,9 @@ def parse_biokey(description: str | None) -> dict[str, Any] | None:
 
 
 def is_pending(biokey: dict[str, Any] | None) -> bool:
-    """Return True unless biokey explicitly has pending equal to the string ``false``.
+    """Return True unless biokey explicitly has pending equal to the string `true`.
 
-    Missing biokey, missing ``pending`` key, or any other value means the account is pending.
+    Missing biokey, missing ``pending`` key, or any other value means the account is not pending.
     """
 
     if biokey is None: return False    # No biokey, we assume you're good to go.

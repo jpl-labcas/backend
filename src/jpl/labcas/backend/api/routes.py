@@ -160,17 +160,14 @@ def create_router() -> APIRouter:
                 headers={"WWW-Authenticate": "Basic"},
             )
 
-        if directory.is_pending(user):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Account is pending approval",
-                headers={"WWW-Authenticate": "Basic"},
-            )
-
-        # Generate JWT token with session ID
+        # Pending accounts still receive a JWT so the client can stay "logged in",
+        # but access control treats them as guests until biokey pending is "false".
         subject = user.dn
         token = jwt_manager.issue_token(subject)
-        LOG.info("Issued JWT token for subject=%s", subject)
+        if directory.is_pending(user):
+            LOG.info("Issued JWT for pending subject=%s (guest-equivalent access)", subject)
+        else:
+            LOG.info("Issued JWT token for subject=%s", subject)
         return PlainTextResponse(content=token, media_type="text/plain")
 
     @data_router.get(

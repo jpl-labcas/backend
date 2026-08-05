@@ -221,10 +221,10 @@ def test_auth_endpoint_with_configured_subpath_prefix(
     assert response.text == "test-jwt-token"
 
 
-def test_auth_endpoint_rejects_pending_account(
+def test_auth_endpoint_issues_token_for_pending_account(
     mock_directory: MockDirectoryProvider, mock_jwt_manager: MagicMock
 ) -> None:
-    """Pending accounts must not receive a JWT."""
+    """Pending accounts may log in; access control treats them as guests afterward."""
     mock_directory.add_user(
         "pendinguser",
         "pendingpass",
@@ -244,7 +244,9 @@ def test_auth_endpoint_rejects_pending_account(
         data={"username": "pendinguser", "password": "pendingpass"},
     )
 
-    assert response.status_code == 401
-    assert "pending" in response.json()["detail"].lower()
-    mock_jwt_manager.issue_token.assert_not_called()
+    assert response.status_code == 200
+    assert response.text == "test-jwt-token"
+    mock_jwt_manager.issue_token.assert_called_once_with(
+        "uid=pendinguser,ou=users,dc=example,dc=com"
+    )
 
