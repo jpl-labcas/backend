@@ -2,12 +2,19 @@
 
 from __future__ import annotations
 
+import base64
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from fastapi.testclient import TestClient
 
-from jpl.labcas.backend.auth.dependencies import SecurityContext, get_security_context, require_authenticated_user
+from jpl.labcas.backend.auth.dependencies import (
+    SecurityContext,
+    get_directory_provider,
+    get_security_context,
+    require_authenticated_user,
+)
+from jpl.labcas.backend.directory import MockDirectoryProvider
 from jpl.labcas.backend.main import create_app
 from jpl.labcas.backend.services.query import QueryService, get_query_service
 
@@ -19,9 +26,11 @@ class StubQueryService:
         self.collections_params: dict | None = None
         self.datasets_params: dict | None = None
         self.files_params: dict | None = None
+        self.last_security: SecurityContext | None = None
 
     async def query_collections(self, *, security: SecurityContext, params: dict) -> dict:
         self.collections_params = params
+        self.last_security = security
         return {
             "response": {
                 "docs": [{"id": "collection1", "name": "Test Collection"}],
@@ -32,6 +41,7 @@ class StubQueryService:
 
     async def query_datasets(self, *, security: SecurityContext, params: dict) -> dict:
         self.datasets_params = params
+        self.last_security = security
         return {
             "response": {
                 "docs": [{"id": "dataset1", "name": "Test Dataset"}],
@@ -42,6 +52,7 @@ class StubQueryService:
 
     async def query_files(self, *, security: SecurityContext, params: dict) -> dict:
         self.files_params = params
+        self.last_security = security
         return {
             "response": {
                 "docs": [{"id": "file1", "name": "test.txt"}],
@@ -59,6 +70,11 @@ def _make_app(stub_service: StubQueryService) -> TestClient:
     )
     app.dependency_overrides[get_query_service] = lambda: stub_service
     return TestClient(app)
+
+
+def _basic_auth_header(username: str, password: str) -> dict[str, str]:
+    credentials = base64.b64encode(f"{username}:{password}".encode("utf-8")).decode("utf-8")
+    return {"Authorization": f"Basic {credentials}"}
 
 
 def test_collections_select_basic_query() -> None:
@@ -293,4 +309,70 @@ def test_collections_select_multi_value_params() -> None:
     fq = stub_service.collections_params.get("fq", [])
     assert isinstance(fq, list)
     assert len(fq) >= 2  # Should include access control filter plus the two provided
+
+
+def _browse_app_with_directory(
+    stub_service: StubQueryService, directory: MockDirectoryProvider
+) -> TestClient:
+    app = create_app()
+    app.dependency_overrides[get_directory_provider] = lambda: directory
+    app.dependency_overrides[get_query_service] = lambda: stub_service
+    return TestClient(app)
+
+
+def test_collections_select_honors_basic_auth() -> None:
+    """HTTP Basic credentials must apply the caller's groups on browse endpoints."""
+    stub_service = StubQueryService()
+    directory = MockDirectoryProvider()
+    subject_dn = "uid=service,ou=users,dc=example,dc=com"
+    directory.add_user("service", "secret", subject_dn)
+    directory.set_groups(subject_dn, ["cn=all"])
+    client = _browse_app_with_directory(stub_service, directory)
+
+    response = client.get(
+        "/collections/select",
+        params={"q": "*:*", "rows": "10"},
+        headers=_basic_auth_header("service", "secret"),
+    )
+
+    assert response.status_code == 200
+    assert stub_service.last_security is not None
+    assert stub_service.last_security.subject == subject_dn
+    assert stub_service.last_security.groups == ["cn=all"]
+
+
+def test_datasets_select_honors_basic_auth() -> None:
+    stub_service = StubQueryService()
+    directory = MockDirectoryProvider()
+    subject_dn = "uid=service,ou=users,dc=example,dc=com"
+    directory.add_user("service", "secret", subject_dn)
+    directory.set_groups(subject_dn, ["cn=all"])
+    client = _browse_app_with_directory(stub_service, directory)
+
+    response = client.get(
+        "/datasets/select",
+        params={"q": "*:*", "rows": "10"},
+        headers=_basic_auth_header("service", "secret"),
+    )
+
+    assert response.status_code == 200
+    assert stub_service.last_security is not None
+    assert stub_service.last_security.subject == subject_dn
+    assert stub_service.last_security.groups == ["cn=all"]
+
+
+def test_collections_select_rejects_invalid_basic_auth() -> None:
+    stub_service = StubQueryService()
+    directory = MockDirectoryProvider()
+    directory.add_user("service", "secret")
+    client = _browse_app_with_directory(stub_service, directory)
+
+    response = client.get(
+        "/collections/select",
+        params={"q": "*:*"},
+        headers=_basic_auth_header("service", "wrong-password"),
+    )
+
+    assert response.status_code == 401
+    assert stub_service.last_security is None
 

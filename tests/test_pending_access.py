@@ -132,6 +132,28 @@ def test_pending_jwt_falls_back_to_guest_on_collections_select() -> None:
     assert stub.last_security.subject == GUEST_USER_DN
 
 
+def test_pending_basic_auth_falls_back_to_guest_on_collections_select() -> None:
+    """Pending Basic credentials must not elevate browse access above guest."""
+    directory = _pending_directory()
+    stub = StubQueryService()
+
+    app = create_app()
+    app.dependency_overrides[get_directory_provider] = lambda: directory
+    app.dependency_overrides[get_query_service] = lambda: stub
+    client = TestClient(app)
+
+    credentials = base64.b64encode(b"pendinguser:pendingpass").decode("utf-8")
+    response = client.get(
+        "/collections/select",
+        params={"q": "*:*"},
+        headers={"Authorization": f"Basic {credentials}"},
+    )
+
+    assert response.status_code == 200
+    assert stub.last_security is not None
+    assert stub.last_security.subject == GUEST_USER_DN
+
+
 def test_guest_can_browse_collections_and_datasets() -> None:
     stub = StubQueryService()
     app = create_app()
