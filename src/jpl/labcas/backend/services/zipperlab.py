@@ -79,9 +79,13 @@ class ZipperlabService:
             "email": email,
             "files": list(files),
         }
-        LOG.info("Initiating Zipperlab request for email=%s file_count=%s", email, len(files))
+        LOG.info(
+            "Initiating Zipperlab request for email=%s file_count=%s sending to %s", email, len(files),
+            str(self.settings.zipperlab_url)
+        )
         response = await self.client.post(str(self.settings.zipperlab_url), json=payload)
         response.raise_for_status()
+        LOG.info("Zipperlab response: %s", response.text)
         uuid = response.text.splitlines()[0].strip() if response.text else ""
         if not uuid:
             raise ValueError("Zipperlab returned an empty UUID.")
