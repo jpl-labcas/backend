@@ -6,7 +6,7 @@ import logging
 from functools import lru_cache
 from typing import Any
 
-import httpx
+import httpx, json
 
 from ..auth.dependencies import SecurityContext
 from ..config import Settings, get_settings
