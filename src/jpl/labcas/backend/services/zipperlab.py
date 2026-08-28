@@ -48,6 +48,8 @@ class ZipperlabService:
     ) -> list[str]:
         """Resolve a query or explicit file IDs into authorized filesystem paths."""
 
+        LOG.info("RESOLVING FILE PATHS: query=%s ids=%s", query, ids)
+
         if query and ids:
             raise ValueError("Specify either query or id values, not both.")
         if query:
@@ -64,6 +66,8 @@ class ZipperlabService:
 
     async def initiate_zip(self, *, email: str, files: Sequence[str]) -> str:
         """Initiate ZIP creation and return the UUID from Zipperlab."""
+
+        LOG.info("INITIATING ZIP: email=%s #files=%d", email, len(files))
 
         if not self.settings.zipperlab_url:
             raise ValueError("LABCAS_ZIPPERLAB_URL configuration is required for /zip.")

@@ -220,3 +220,33 @@ def test_auth_endpoint_with_configured_subpath_prefix(
     assert response.status_code == 200
     assert response.text == "test-jwt-token"
 
+
+def test_auth_endpoint_issues_token_for_pending_account(
+    mock_directory: MockDirectoryProvider, mock_jwt_manager: MagicMock
+) -> None:
+    """Pending accounts may log in; access control treats them as guests afterward."""
+    mock_directory.add_user(
+        "pendinguser",
+        "pendingpass",
+        "uid=pendinguser,ou=users,dc=example,dc=com",
+        pending=True,
+    )
+
+    app = create_app()
+    from jpl.labcas.backend.auth.dependencies import get_directory_provider, get_jwt_manager
+
+    app.dependency_overrides[get_directory_provider] = lambda: mock_directory
+    app.dependency_overrides[get_jwt_manager] = lambda: mock_jwt_manager
+
+    client = TestClient(app)
+    response = client.post(
+        "/auth",
+        data={"username": "pendinguser", "password": "pendingpass"},
+    )
+
+    assert response.status_code == 200
+    assert response.text == "test-jwt-token"
+    mock_jwt_manager.issue_token.assert_called_once_with(
+        "uid=pendinguser,ou=users,dc=example,dc=com"
+    )
+

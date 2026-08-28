@@ -54,17 +54,102 @@ def _groups_for_subject(directory: DirectoryProvider, subject: str) -> List[str]
     return directory.get_groups(DirectoryUser(username=subject, dn=subject))
 
 
+def _directory_user_for_subject(subject: str) -> DirectoryUser:
+    return DirectoryUser(username=subject, dn=subject)
+
+
+def _reject_if_pending(directory: DirectoryProvider, subject: str) -> None:
+    """Raise 401 when the authenticated subject has a pending (unapproved) account."""
+
+    if subject == GUEST_USER_DN:
+        return
+    if directory.is_pending(_directory_user_for_subject(subject)):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Account is pending approval",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+
+
+def _is_subject_pending(directory: DirectoryProvider, subject: str) -> bool:
+    if subject == GUEST_USER_DN:
+        return False
+    return directory.is_pending(_directory_user_for_subject(subject))
+
+
 def _security_context_from_jwt(
     token: str,
     jwt_manager: JwtManager,
     directory: DirectoryProvider,
-) -> SecurityContext:
+    *,
+    reject_pending: bool,
+) -> SecurityContext | None:
+    """Build a security context from a JWT.
+
+    When ``reject_pending`` is True, pending accounts raise 401.
+    When False (optional auth), pending accounts return ``None`` so callers can fall back to guest.
+    """
+
     payload = jwt_manager.verify_token(token)
     subject = payload.get("sub")
     if not subject:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token.")
+    if _is_subject_pending(directory, subject):
+        if reject_pending:
+            _reject_if_pending(directory, subject)
+        return None
     groups = _groups_for_subject(directory, subject)
     return SecurityContext(subject=subject, groups=groups, token=token)
+
+
+def _security_context_from_basic(
+    auth_header: str,
+    directory: DirectoryProvider,
+    *,
+    reject_pending: bool,
+) -> SecurityContext | None:
+    """Build a security context from HTTP Basic credentials.
+
+    Invalid or malformed credentials always raise 401. When ``reject_pending`` is True,
+    pending accounts also raise 401. When False (optional auth), pending accounts return
+    ``None`` so callers can fall back to guest.
+    """
+
+    try:
+        encoded = auth_header.split(" ", 1)[1]
+        decoded = base64.b64decode(encoded).decode("utf-8")
+        auth_username, auth_password = decoded.split(":", 1)
+
+        user = directory.authenticate(auth_username, auth_password)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="🤔 Invalid username or password",
+                headers={"WWW-Authenticate": "Basic"},
+            )
+
+        if _is_subject_pending(directory, user.dn):
+            if reject_pending:
+                _reject_if_pending(directory, user.dn)
+            return None
+
+        groups = directory.get_groups(user)
+        return SecurityContext(subject=user.dn, groups=groups, token=None)
+
+    except HTTPException:
+        raise
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Basic authentication header format",
+            headers={"WWW-Authenticate": "Basic"},
+        ) from exc
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Authentication failed: {str(exc)}",
+            headers={"WWW-Authenticate": "Basic"},
+        ) from exc
 
 
 def _get_jwt_from_cookies(request: Request) -> str | None:
@@ -80,7 +165,12 @@ async def get_security_context(
     directory: DirectoryProvider = Depends(get_directory_provider),
     jwt_manager: JwtManager = Depends(get_jwt_manager),
 ) -> SecurityContext:
-    """Get security context, allowing optional authentication (guest access when no token)."""
+    """Resolve optional auth for browse endpoints (collections/datasets select).
+
+    Accepts Bearer JWT, legacy JWT cookies, or HTTP Basic credentials. Missing
+    credentials and pending accounts fall back to guest access. Invalid Basic
+    credentials raise 401 because the client asserted an identity.
+    """
 
     auth_header = request.headers.get("Authorization")
     
@@ -88,7 +178,12 @@ async def get_security_context(
     if auth_header and auth_header.startswith("Bearer "):
         token = auth_header.removeprefix("Bearer ").strip()
         try:
-            return _security_context_from_jwt(token, jwt_manager, directory)
+            context = _security_context_from_jwt(
+                token, jwt_manager, directory, reject_pending=False
+            )
+            if context is not None:
+                return context
+            # Pending account: fall through to guest access
         except Exception:
             # If token verification fails, fall through to guest access
             pass
@@ -97,10 +192,23 @@ async def get_security_context(
     cookie = _get_jwt_from_cookies(request)
     if cookie:
         try:
-            return _security_context_from_jwt(cookie, jwt_manager, directory)
+            context = _security_context_from_jwt(
+                cookie, jwt_manager, directory, reject_pending=False
+            )
+            if context is not None:
+                return context
+            # Pending account: fall through to guest access
         except Exception:
             # If token verification fails, fall through to guest access
             pass
+
+    if auth_header and auth_header.startswith("Basic "):
+        context = _security_context_from_basic(
+            auth_header, directory, reject_pending=False
+        )
+        if context is not None:
+            return context
+        # Pending account: fall through to guest access
     
     # No valid authentication found, grant guest access
     return SecurityContext(subject=GUEST_USER_DN, groups=[], token=None)
@@ -111,7 +219,12 @@ async def require_authenticated_user(
     directory: DirectoryProvider = Depends(get_directory_provider),
     jwt_manager: JwtManager = Depends(get_jwt_manager),
 ) -> SecurityContext:
-    """Authenticate via Bearer token, legacy JWT cookie, or Basic auth."""
+    """Authenticate via Bearer token, legacy JWT cookie, or Basic auth.
+
+    Pending accounts may hold a valid JWT (issued by ``/auth``) but are denied here so
+    file metadata, downloads, and other approved-only endpoints stay guest-restricted.
+    Browse endpoints that use ``get_security_context`` treat pending tokens as guest.
+    """
 
     auth_header = request.headers.get("Authorization")
 
@@ -125,7 +238,13 @@ async def require_authenticated_user(
             )
 
         try:
-            return _security_context_from_jwt(token, jwt_manager, directory)
+            context = _security_context_from_jwt(
+                token, jwt_manager, directory, reject_pending=True
+            )
+            assert context is not None  # reject_pending=True always returns or raises
+            return context
+        except HTTPException:
+            raise
         except Exception as exc:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -136,7 +255,13 @@ async def require_authenticated_user(
     cookie_token = _get_jwt_from_cookies(request)
     if cookie_token:
         try:
-            return _security_context_from_jwt(cookie_token, jwt_manager, directory)
+            context = _security_context_from_jwt(
+                cookie_token, jwt_manager, directory, reject_pending=True
+            )
+            assert context is not None
+            return context
+        except HTTPException:
+            raise
         except Exception as exc:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -145,36 +270,11 @@ async def require_authenticated_user(
 
     # Handle HTTP Basic Authentication after cookie JWT fallback.
     if auth_header and auth_header.startswith("Basic "):
-        try:
-            encoded = auth_header.split(" ", 1)[1]
-            decoded = base64.b64decode(encoded).decode("utf-8")
-            auth_username, auth_password = decoded.split(":", 1)
-            
-            # Authenticate user via directory
-            user = directory.authenticate(auth_username, auth_password)
-            if not user:
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="🤔 Invalid username or password",
-                    headers={"WWW-Authenticate": "Basic"},
-                )
-            
-            # Return security context with user DN
-            groups = directory.get_groups(user)
-            return SecurityContext(subject=user.dn, groups=groups, token=None)
-            
-        except ValueError as exc:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid Basic authentication header format",
-                headers={"WWW-Authenticate": "Basic"},
-            ) from exc
-        except Exception as exc:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=f"Authentication failed: {str(exc)}",
-                headers={"WWW-Authenticate": "Basic"},
-            ) from exc
+        context = _security_context_from_basic(
+            auth_header, directory, reject_pending=True
+        )
+        assert context is not None  # reject_pending=True always returns or raises
+        return context
 
     if not auth_header:
         raise HTTPException(
