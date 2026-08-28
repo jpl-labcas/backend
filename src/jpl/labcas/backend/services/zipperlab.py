@@ -48,7 +48,7 @@ class ZipperlabService:
     ) -> list[str]:
         """Resolve a query or explicit file IDs into authorized filesystem paths."""
 
-        LOG.info("RESOLVING FILE PATHS: query=%s ids=%s", query, ids)
+        LOG.info("RESOLVING FILE PATHS: query=%s #ids=%d", query, len(ids))
 
         if query and ids:
             raise ValueError("Specify either query or id values, not both.")
@@ -119,7 +119,12 @@ class ZipperlabService:
             "fl": f"id,{SOLR_FIELD_FILE_LOCATION},{SOLR_FIELD_FILE_NAME},{SOLR_FIELD_NAME}",
             "rows": min(len(escaped_ids), self.settings.solr_max_rows),
         }
+        LOG.info("ABOUT TO CALL SOLR with the following query parameters:")
+        LOG.info("q is set to a string that's %d characters long", len(params["q"]))
+        LOG.info("fl is %s", params["fl"])
+        LOG.info("rows is %d", params["rows"])
         result = await self.query_service.query_files(security=security, params=params)
+        LOG.info("SOLR query returned %d documents", len(result.get("response", {}).get("docs", [])))
         docs = result.get("response", {}).get("docs", [])
         return self._file_paths_from_docs(docs)
 
