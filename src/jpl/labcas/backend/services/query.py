@@ -120,10 +120,11 @@ class QueryService:
         safe_params.setdefault("wt", "json")
 
         # Use POST so long query strings from /zip don't exceed proxy/server URI limits.
+        LOG.info("ABOUT TO CALL SOLR with safe_params of %d characters", len(json.dumps(safe_params)))
         response = await self.client.post(f"/{core}/select", data=safe_params)
         response.raise_for_status()
         solr_response = response.json()
-        LOG.debug("Solr query core=%s params=%s returned response", core, safe_params)
+        LOG.info("SOLR query returned %d documents", len(solr_response.get("response", {}).get("docs", [])))
         return solr_response
 
     def _sanitize_params(self, params: dict[str, Any]) -> dict[str, Any]:
