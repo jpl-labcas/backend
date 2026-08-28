@@ -274,3 +274,135 @@ def test_query_service_requires_solr_url() -> None:
     with pytest.raises(ValueError, match="SOLR_URL configuration is required"):
         QueryService(settings=settings)  # type: ignore
 
+
+def _solr_json_response(docs: list[dict]) -> MagicMock:
+    response = MagicMock()
+    response.json.return_value = {"response": {"docs": docs, "numFound": len(docs), "start": 0}}
+    response.raise_for_status = MagicMock()
+    return response
+
+
+def _count_or_clauses(query: str) -> int:
+    parsed = QueryService._parse_or_group_query(query)
+    if parsed is not None:
+        return len(parsed[1])
+    open_paren = query.find("(")
+    if open_paren != -1 and query.endswith(")"):
+        body = query[open_paren + 1 : -1].strip()
+        return 1 if body else 0
+    return 0
+
+
+def test_split_or_clauses_ignores_quoted_delimiter() -> None:
+    clauses = QueryService._split_or_clauses('"a OR b" OR "c" OR "d\\" OR e"')
+    assert clauses == ['"a OR b"', '"c"', '"d\\" OR e"']
+
+
+def test_parse_or_group_query_extracts_id_clauses() -> None:
+    parsed = QueryService._parse_or_group_query('id:("FILE1" OR "FILE2")')
+    assert parsed == ("id:(", ['"FILE1"', '"FILE2"'], ")")
+
+
+@pytest.mark.asyncio
+async def test_short_or_query_is_not_batched(test_settings: Settings, mock_httpx_client: AsyncMock) -> None:
+    service = QueryService(settings=test_settings, client=mock_httpx_client)
+    security = SecurityContext(subject="test-user", groups=["group1"])
+
+    await service.query_files(security=security, params={"q": 'id:("FILE1" OR "FILE2")', "rows": 2})
+
+    assert mock_httpx_client.post.call_count == 1
+    params = mock_httpx_client.post.call_args.kwargs["data"]
+    assert params["q"] == 'id:("FILE1" OR "FILE2")'
+
+
+@pytest.mark.asyncio
+async def test_query_core_batches_long_or_query_and_merges_docs(
+    test_settings: Settings,
+    mock_httpx_client: AsyncMock,
+) -> None:
+    service = QueryService(settings=test_settings, client=mock_httpx_client)
+    service.MAX_SOLR_BOOLEAN_CLAUSES = 3
+    security = SecurityContext(subject="test-user", groups=["group1"])
+    file_ids = [f"FILE{index}" for index in range(7)]
+    query = "id:(" + " OR ".join(f'"{file_id}"' for file_id in file_ids) + ")"
+
+    mock_httpx_client.post.side_effect = [
+        _solr_json_response([{"id": "FILE0"}, {"id": "FILE1"}, {"id": "FILE2"}]),
+        _solr_json_response([{"id": "FILE3"}, {"id": "FILE4"}, {"id": "FILE5"}]),
+        _solr_json_response([{"id": "FILE6"}]),
+    ]
+
+    result = await service.query_files(security=security, params={"q": query, "rows": 3, "fl": "id"})
+
+    assert mock_httpx_client.post.call_count == 3
+    posted_queries = [call.kwargs["data"]["q"] for call in mock_httpx_client.post.call_args_list]
+    assert [_count_or_clauses(query_text) for query_text in posted_queries] == [3, 3, 1]
+    assert all(call.kwargs["data"]["start"] == 0 for call in mock_httpx_client.post.call_args_list)
+    assert [call.kwargs["data"]["rows"] for call in mock_httpx_client.post.call_args_list] == [3, 3, 3]
+    assert [doc["id"] for doc in result["response"]["docs"]] == file_ids
+    assert result["response"]["numFound"] == 7
+
+
+@pytest.mark.asyncio
+async def test_batched_query_returns_all_docs_even_when_rows_is_capped(
+    test_settings: Settings,
+    mock_httpx_client: AsyncMock,
+) -> None:
+    """/zip caps rows at solr_max_rows; batched ID lookups must still return every match."""
+    service = QueryService(settings=test_settings, client=mock_httpx_client)
+    service.MAX_SOLR_BOOLEAN_CLAUSES = 2
+    security = SecurityContext(subject="test-user", groups=["group1"])
+    file_ids = [f"FILE{index}" for index in range(5)]
+    query = "id:(" + " OR ".join(f'"{file_id}"' for file_id in file_ids) + ")"
+
+    mock_httpx_client.post.side_effect = [
+        _solr_json_response([{"id": "FILE0"}, {"id": "FILE1"}]),
+        _solr_json_response([{"id": "FILE2"}, {"id": "FILE3"}]),
+        _solr_json_response([{"id": "FILE4"}]),
+    ]
+
+    result = await service.query_files(security=security, params={"q": query, "rows": 2})
+
+    assert mock_httpx_client.post.call_count == 3
+    assert [doc["id"] for doc in result["response"]["docs"]] == file_ids
+    assert result["response"]["numFound"] == 5
+
+
+@pytest.mark.asyncio
+async def test_query_core_batches_by_character_length(
+    test_settings: Settings,
+    mock_httpx_client: AsyncMock,
+) -> None:
+    service = QueryService(settings=test_settings, client=mock_httpx_client)
+    service.MAX_SOLR_QUERY_CHARS = 32
+    security = SecurityContext(subject="test-user", groups=["group1"])
+    query = 'id:("aaaaaaaaaa" OR "bbbbbbbbbb" OR "cccccccccc")'
+
+    mock_httpx_client.post.side_effect = [
+        _solr_json_response([{"id": "aaaaaaaaaa"}]),
+        _solr_json_response([{"id": "bbbbbbbbbb"}]),
+        _solr_json_response([{"id": "cccccccccc"}]),
+    ]
+
+    result = await service.query_files(security=security, params={"q": query, "rows": 3})
+
+    assert mock_httpx_client.post.call_count == 3
+    assert all(len(call.kwargs["data"]["q"]) <= 32 for call in mock_httpx_client.post.call_args_list)
+    assert result["response"]["numFound"] == 3
+
+
+@pytest.mark.asyncio
+async def test_unsplittable_query_is_sent_in_one_request(
+    test_settings: Settings,
+    mock_httpx_client: AsyncMock,
+) -> None:
+    service = QueryService(settings=test_settings, client=mock_httpx_client)
+    service.MAX_SOLR_QUERY_CHARS = 10
+    security = SecurityContext(subject="test-user", groups=["group1"])
+
+    await service.query_files(security=security, params={"q": "collection:very-long-name-without-or-clauses"})
+
+    assert mock_httpx_client.post.call_count == 1
+    params = mock_httpx_client.post.call_args.kwargs["data"]
+    assert params["q"] == "collection:very-long-name-without-or-clauses"
+
