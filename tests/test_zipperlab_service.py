@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import httpx
@@ -167,6 +168,41 @@ async def test_initiate_zip_posts_java_compatible_payload(test_settings: Setting
             "files": ["/data/files/file1.txt", "/data/files/file2.txt"],
         },
     )
+    response.raise_for_status.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_initiate_zip_posts_file_list_for_large_requests(tmp_path) -> None:
+    """Test large ZIP requests send a shared file list path."""
+
+    test_settings = Settings(
+        solr_url="http://localhost:8983/solr",
+        solr_max_rows=1000,
+        zipperlab_url="http://localhost:6468/edrn/",
+        zipperlab_max_files=1,
+        zipperlab_file_list_folder=str(tmp_path),
+        public_owner_principal="public",
+    )
+    client = AsyncMock(spec=httpx.AsyncClient)
+    response = MagicMock()
+    response.text = "zip-request-uuid\n"
+    response.raise_for_status = MagicMock()
+    client.post = AsyncMock(return_value=response)
+    service = ZipperlabService(settings=test_settings, client=client)
+
+    uuid = await service.initiate_zip(
+        email="hello@example.org",
+        files=["/data/files/file1.txt", "/data/files/file2.txt"],
+    )
+
+    assert uuid == "zip-request-uuid"
+    payload = client.post.await_args.kwargs["json"]
+    assert payload["operation"] == "initiate"
+    assert payload["email"] == "hello@example.org"
+    assert "files" not in payload
+    list_path = tmp_path / Path(payload["list_of_files"]).name
+    assert Path(payload["list_of_files"]) == list_path
+    assert list_path.read_text(encoding="utf-8") == "/data/files/file1.txt\n/data/files/file2.txt\n"
     response.raise_for_status.assert_called_once()
 
 

@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import logging
 from functools import lru_cache
+from pathlib import Path
 from typing import Iterable, Sequence
 from urllib.parse import unquote_plus
+from uuid import uuid4
 
 import httpx
 
@@ -74,11 +76,16 @@ class ZipperlabService:
         if not files:
             raise ValueError("No files matched the ZIP request.")
 
+        file_list = list(files)
         payload = {
             "operation": "initiate",
             "email": email,
-            "files": list(files),
         }
+        if len(file_list) > self.settings.zipperlab_max_files:
+            payload["list_of_files"] = str(self._write_file_list(file_list))
+        else:
+            payload["files"] = file_list
+
         LOG.info(
             "Initiating Zipperlab request for email=%s file_count=%s sending to %s", email, len(files),
             str(self.settings.zipperlab_url)
@@ -91,6 +98,17 @@ class ZipperlabService:
             raise ValueError("Zipperlab returned an empty UUID.")
         LOG.info("Zipperlab initiated request uuid=%s", uuid)
         return uuid
+
+    def _write_file_list(self, files: Sequence[str]) -> Path:
+        """Write a large Zipperlab file list to the configured shared folder."""
+
+        folder = Path(self.settings.zipperlab_file_list_folder)
+        folder.mkdir(parents=True, exist_ok=True)
+        list_path = folder / f"zipperlab-files-{uuid4().hex}.txt"
+        with list_path.open("w", encoding="utf-8") as stream:
+            for file_id in files:
+                stream.write(f"{file_id}\n")
+        return list_path
 
     async def _resolve_query_file_paths(
         self,

@@ -120,6 +120,8 @@ class Settings(BaseSettings):
     file_path_prefix_replacements: str | None = Field(None, alias='LABCAS_FILE_PATH_PREFIX_REPLACEMENTS')
 
     zipperlab_url: HttpUrl | None = Field(None, alias='LABCAS_ZIPPERLAB_URL')
+    zipperlab_max_files: int = Field(100, alias='LABCAS_ZIPPERLAB_MAX_FILES')
+    zipperlab_file_list_folder: str = Field('/labcas-data/tmp/zipperlab', alias='LABCAS_ZIPPERLAB_FILE_LIST_FOLDER')
 
     accept_any_jwt: bool = Field(False, alias='ACCEPT_ANY_JWT')
 
