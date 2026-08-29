@@ -167,6 +167,7 @@ async def test_initiate_zip_posts_java_compatible_payload(test_settings: Setting
             "email": "hello@example.org",
             "files": ["/data/files/file1.txt", "/data/files/file2.txt"],
         },
+        timeout=60.0,
     )
     response.raise_for_status.assert_called_once()
 
@@ -181,6 +182,7 @@ async def test_initiate_zip_posts_file_list_for_large_requests(tmp_path) -> None
         zipperlab_url="http://localhost:6468/edrn/",
         zipperlab_max_files=1,
         zipperlab_file_list_folder=str(tmp_path),
+        zipperlab_timeout_seconds=120.0,
         public_owner_principal="public",
     )
     client = AsyncMock(spec=httpx.AsyncClient)
@@ -200,6 +202,7 @@ async def test_initiate_zip_posts_file_list_for_large_requests(tmp_path) -> None
     assert payload["operation"] == "initiate"
     assert payload["email"] == "hello@example.org"
     assert "files" not in payload
+    assert client.post.await_args.kwargs["timeout"] == 120.0
     list_path = tmp_path / Path(payload["list_of_files"]).name
     assert Path(payload["list_of_files"]) == list_path
     assert list_path.read_text(encoding="utf-8") == "/data/files/file1.txt\n/data/files/file2.txt\n"

@@ -87,10 +87,15 @@ class ZipperlabService:
             payload["files"] = file_list
 
         LOG.info(
-            "Initiating Zipperlab request for email=%s file_count=%s sending to %s", email, len(files),
+            "Initiating Zipperlab request for email=%s file_count=%s list_of_files=%s sending to %s",
+            email, len(files), payload.get("list_of_files", "«not using»"),
             str(self.settings.zipperlab_url)
         )
-        response = await self.client.post(str(self.settings.zipperlab_url), json=payload)
+        response = await self.client.post(
+            str(self.settings.zipperlab_url),
+            json=payload,
+            timeout=self.settings.zipperlab_timeout_seconds,
+        )
         response.raise_for_status()
         LOG.info("Zipperlab response: %s", response.text)
         uuid = response.text.splitlines()[0].strip() if response.text else ""
