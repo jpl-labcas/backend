@@ -14,6 +14,7 @@ from jpl.labcas.backend.auth.dependencies import (
 )
 from jpl.labcas.backend.auth.jwt_manager import JwtManager
 from jpl.labcas.backend.directory import MockDirectoryProvider
+from jpl.labcas.backend.events import EventDispatcher, get_event_dispatcher
 from jpl.labcas.backend.main import create_app
 from jpl.labcas.backend.services.download import get_download_service
 from jpl.labcas.backend.services.listing import get_list_service
@@ -95,6 +96,7 @@ def test_pending_basic_auth_rejected_on_download() -> None:
     app = create_app()
     app.dependency_overrides[get_directory_provider] = lambda: directory
     app.dependency_overrides[get_download_service] = lambda: StubDownloadService()
+    app.dependency_overrides[get_event_dispatcher] = lambda: EventDispatcher()
     client = TestClient(app)
 
     credentials = base64.b64encode(b"pendinguser:pendingpass").decode("utf-8")

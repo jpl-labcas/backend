@@ -32,6 +32,7 @@ from ..services import (
     get_query_service,
     get_zipperlab_service,
 )
+from ..events import DownloadEvent, EventDispatcher, get_event_dispatcher, principal_from_security
 from ..services.access_control import user_may_download
 from ..utils.security import ensure_safe_value
 
@@ -429,6 +430,7 @@ def create_router() -> APIRouter:
         suppressContentDisposition: bool = Query(False, description="Suppress Content-Disposition header"),
         security: SecurityContext = Depends(require_authenticated_user),
         download_service: DownloadService = Depends(get_download_service),
+        event_dispatcher: EventDispatcher = Depends(get_event_dispatcher),
     ) -> Response | StreamingResponse | RedirectResponse:
         """Download a file by ID."""
 
@@ -466,6 +468,10 @@ def create_router() -> APIRouter:
                 LOG.info("Generating S3 presigned URL for key=%s", s3_key)
                 presigned_url = download_service.get_s3_presigned_url(s3_key)
                 LOG.info("Redirecting to S3 URL: %s", presigned_url)
+                if request.method != "HEAD":
+                    event_dispatcher.publish(
+                        DownloadEvent(principal=principal_from_security(security), file_id=id)
+                    )
                 return RedirectResponse(url=presigned_url, status_code=status.HTTP_307_TEMPORARY_REDIRECT)
 
             # Handle local files
@@ -502,6 +508,9 @@ def create_router() -> APIRouter:
                 return Response(content=b"", media_type=media_type, headers=headers)
 
             LOG.info("Streaming file: path=%s, size=%s, mediaType=%s", file_path, file_size, media_type)
+            event_dispatcher.publish(
+                DownloadEvent(principal=principal_from_security(security), file_id=id)
+            )
             return StreamingResponse(
                 generate(),
                 media_type=media_type,

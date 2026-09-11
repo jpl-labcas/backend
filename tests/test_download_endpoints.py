@@ -5,8 +5,7 @@ from __future__ import annotations
 import base64
 import os
 import tempfile
-from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import MagicMock
 
 import pytest
 from fastapi.testclient import TestClient
@@ -19,9 +18,29 @@ from jpl.labcas.backend.auth.dependencies import (
 )
 from jpl.labcas.backend.auth.jwt_manager import JwtManager
 from jpl.labcas.backend.directory import MockDirectoryProvider
+from jpl.labcas.backend.events import DownloadEvent, EventDispatcher, get_event_dispatcher
 from jpl.labcas.backend.main import create_app
-from jpl.labcas.backend.services.download import DownloadService, FileInfo, get_download_service
-from jpl.labcas.backend.services.query import QueryService
+from jpl.labcas.backend.services.download import FileInfo, get_download_service
+
+
+class RecordingEventDispatcher(EventDispatcher):
+    """Event dispatcher that records published events for assertions."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.events: list[DownloadEvent | object] = []
+
+    def publish(self, event) -> None:  # noqa: ANN001
+        self.events.append(event)
+        super().publish(event)
+
+
+def _override_event_dispatcher(app, dispatcher: EventDispatcher | None = None) -> EventDispatcher:
+    """Install a no-op/recording dispatcher so tests do not write labcas-events.log."""
+
+    recording = dispatcher or RecordingEventDispatcher()
+    app.dependency_overrides[get_event_dispatcher] = lambda: recording
+    return recording
 
 
 class StubDownloadService:
@@ -77,14 +96,20 @@ class StubDownloadService:
         }
 
 
-def _make_app(stub_service: StubDownloadService) -> TestClient:
-    """Create test app with stub service."""
+def _make_app(
+    stub_service: StubDownloadService,
+    *,
+    security: SecurityContext | None = None,
+    dispatcher: EventDispatcher | None = None,
+) -> tuple[TestClient, EventDispatcher]:
+    """Create test app with stub service and a recording event dispatcher."""
     app = create_app()
-    app.dependency_overrides[require_authenticated_user] = lambda: SecurityContext(
+    app.dependency_overrides[require_authenticated_user] = lambda: security or SecurityContext(
         subject="test-user", groups=["group1"]
     )
     app.dependency_overrides[get_download_service] = lambda: stub_service
-    return TestClient(app)
+    recording = _override_event_dispatcher(app, dispatcher)
+    return TestClient(app), recording
 
 
 def test_download_forbidden_without_groups() -> None:
@@ -97,17 +122,16 @@ def test_download_forbidden_without_groups() -> None:
         file_path="/tmp/secret.txt",
     )
 
-    app = create_app()
-    app.dependency_overrides[require_authenticated_user] = lambda: SecurityContext(
-        subject="uid=tester,ou=users,dc=example,dc=com", groups=[]
+    client, dispatcher = _make_app(
+        stub_service,
+        security=SecurityContext(subject="uid=tester,ou=users,dc=example,dc=com", groups=[]),
     )
-    app.dependency_overrides[get_download_service] = lambda: stub_service
-    client = TestClient(app)
 
     response = client.get("/download", params={"id": "test-file-id"})
 
     assert response.status_code == 403
     assert stub_service.file_id is None
+    assert dispatcher.events == []
 
 
 def test_download_local_file() -> None:
@@ -126,7 +150,7 @@ def test_download_local_file() -> None:
         )
         stub_service.is_local = True
 
-        client = _make_app(stub_service)
+        client, dispatcher = _make_app(stub_service)
 
         response = client.get(
             "/download",
@@ -136,6 +160,11 @@ def test_download_local_file() -> None:
         assert response.status_code == 200
         assert response.content == b"test content"
         assert stub_service.file_id == "test-file-id"
+        assert len(dispatcher.events) == 1
+        event = dispatcher.events[0]
+        assert isinstance(event, DownloadEvent)
+        assert event.file_id == "test-file-id"
+        assert event.principal == "test-user"
     finally:
         os.unlink(tmp_path)
 
@@ -156,7 +185,7 @@ def test_download_head_local_file_returns_headers_without_body() -> None:
         )
         stub_service.is_local = True
 
-        client = _make_app(stub_service)
+        client, dispatcher = _make_app(stub_service)
 
         response = client.head(
             "/download",
@@ -170,6 +199,7 @@ def test_download_head_local_file_returns_headers_without_body() -> None:
         assert "attachment" in response.headers["content-disposition"]
         assert "test-file.txt" in response.headers["content-disposition"]
         assert stub_service.file_id == "test-file-id"
+        assert dispatcher.events == []
     finally:
         os.unlink(tmp_path)
 
@@ -190,7 +220,7 @@ def test_download_local_file_with_content_disposition() -> None:
         )
         stub_service.is_local = True
 
-        client = _make_app(stub_service)
+        client, _ = _make_app(stub_service)
 
         response = client.get(
             "/download",
@@ -221,7 +251,7 @@ def test_download_suppress_content_disposition() -> None:
         )
         stub_service.is_local = True
 
-        client = _make_app(stub_service)
+        client, _ = _make_app(stub_service)
 
         response = client.get(
             "/download",
@@ -247,7 +277,7 @@ def test_download_s3_file_redirects() -> None:
     stub_service.s3_key = "path/to/file.txt"
     stub_service.presigned_url = "https://s3.amazonaws.com/bucket/path/to/file.txt?signature=xyz"
 
-    client = _make_app(stub_service)
+    client, dispatcher = _make_app(stub_service)
 
     response = client.get(
         "/download",
@@ -257,12 +287,17 @@ def test_download_s3_file_redirects() -> None:
 
     assert response.status_code == 307
     assert response.headers["location"] == stub_service.presigned_url
+    assert len(dispatcher.events) == 1
+    event = dispatcher.events[0]
+    assert isinstance(event, DownloadEvent)
+    assert event.file_id == "test-file-id"
+    assert event.principal == "test-user"
 
 
 def test_rapidly_download_collection_returns_aspera_payload() -> None:
     """Test /rapidly-download-collection returns an Aspera transfer request."""
     stub_service = StubDownloadService()
-    client = _make_app(stub_service)
+    client, _ = _make_app(stub_service)
 
     response = client.get(
         "/rapidly-download-collection",
@@ -310,7 +345,7 @@ def test_download_file_not_found() -> None:
     stub_service = StubDownloadService()
     stub_service.file_info = None
 
-    client = _make_app(stub_service)
+    client, dispatcher = _make_app(stub_service)
 
     response = client.get(
         "/download",
@@ -319,6 +354,7 @@ def test_download_file_not_found() -> None:
 
     assert response.status_code == 404
     assert "not found" in response.json()["detail"].lower()
+    assert dispatcher.events == []
 
 
 def test_download_requires_authentication() -> None:
@@ -360,6 +396,7 @@ def test_download_accepts_legacy_jwt_cookie_without_authorization_header(cookie_
         app.dependency_overrides[get_jwt_manager] = lambda: jwt_manager
         app.dependency_overrides[get_directory_provider] = lambda: directory
         app.dependency_overrides[get_download_service] = lambda: stub_service
+        _override_event_dispatcher(app)
         client = TestClient(app)
         client.cookies.set(cookie_name, "test-jwt-token")
 
@@ -400,6 +437,7 @@ def test_download_prefers_bearer_token_over_legacy_jwt_cookie() -> None:
         app.dependency_overrides[get_jwt_manager] = lambda: jwt_manager
         app.dependency_overrides[get_directory_provider] = lambda: directory
         app.dependency_overrides[get_download_service] = lambda: stub_service
+        _override_event_dispatcher(app)
         client = TestClient(app)
         client.cookies.set("JasonWebToken", "cookie-jwt-token")
 
@@ -437,6 +475,7 @@ def test_download_falls_back_to_basic_auth_when_no_jwt_is_present() -> None:
         app = create_app()
         app.dependency_overrides[get_directory_provider] = lambda: directory
         app.dependency_overrides[get_download_service] = lambda: stub_service
+        _override_event_dispatcher(app)
         client = TestClient(app)
 
         credentials = base64.b64encode(b"testuser:testpass").decode("utf-8")
@@ -454,7 +493,7 @@ def test_download_falls_back_to_basic_auth_when_no_jwt_is_present() -> None:
 def test_download_rejects_unsafe_characters() -> None:
     """Test /download rejects unsafe characters in ID."""
     stub_service = StubDownloadService()
-    client = _make_app(stub_service)
+    client, _ = _make_app(stub_service)
 
     response = client.get(
         "/download",
@@ -476,7 +515,7 @@ def test_download_file_not_found_on_disk() -> None:
     )
     stub_service.is_local = True
 
-    client = _make_app(stub_service)
+    client, dispatcher = _make_app(stub_service)
 
     response = client.get(
         "/download",
@@ -485,6 +524,7 @@ def test_download_file_not_found_on_disk() -> None:
 
     assert response.status_code == 404
     assert "not found" in response.json()["detail"].lower()
+    assert dispatcher.events == []
 
 
 def test_download_with_dicom_file() -> None:
@@ -513,7 +553,7 @@ def test_download_with_dicom_file() -> None:
 
         stub_service.get_media_type = get_dicom_media_type
 
-        client = _make_app(stub_service)
+        client, _ = _make_app(stub_service)
 
         response = client.get(
             "/download",
@@ -543,7 +583,7 @@ def test_download_with_quotes_in_filename() -> None:
         )
         stub_service.is_local = True
 
-        client = _make_app(stub_service)
+        client, _ = _make_app(stub_service)
 
         response = client.get(
             "/download",
