@@ -10,6 +10,17 @@ Create a `.env` file (or specify one with `--env`) and launch it with `labcas-ba
 By default, API endpoints are served from the root path, such as `/auth`. If the service is behind a reverse proxy that keeps a subpath in forwarded requests, set `LABCAS_SUBPATH_PREFIX` in `.env`, for example `LABCAS_SUBPATH_PREFIX=labcas-backend-data-access-api`, to serve endpoints such as `/labcas-backend-data-access-api/auth`.
 
 
+## Auxiliary File Services
+
+Auxiliary assets (JavaScript, CSV, images, icons, and other non-Solr-cataloged files) can be served from configured filesystem roots via:
+
+```text
+GET|HEAD /{subpath}/auxfiles/{service-key}/{relative/path}
+```
+
+Point `LABCAS_AUXFILES_CONFIG` (or `--auxfiles-config`) at an INI file. See [`file-services.ini.example`](file-services.ini.example). Each `[file-service <key>]` section maps a URL key to a `filesystem` root and a `groups` ACL (`*` for public, otherwise `|`-delimited LDAP group DNs). Path traversal outside a service root is always denied. Pass `?download=true` to force `Content-Disposition: attachment`.
+
+
 ## Zipperlab Integration
 
 To test sending queries to Zipperlab, first get your JWT (above) then do:

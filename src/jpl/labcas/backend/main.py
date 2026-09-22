@@ -191,6 +191,11 @@ def cli(argv: Optional[list[str]] = None) -> None:
     parser.add_argument('--reload', action='store_true', help='Enable auto-reload (development only)')
     parser.add_argument('--tls', action='store_true', help='Enable TLS/SSL with self-signed certificate')
     parser.add_argument('--env', default=None, help='Path to .env file (overrides LABCAS_ENV_FILE and default locations)')
+    parser.add_argument(
+        '--auxfiles-config',
+        default=None,
+        help='Path to auxiliary file-services INI config (overrides LABCAS_AUXFILES_CONFIG)',
+    )
 
     args = parser.parse_args(argv)
 
@@ -202,6 +207,15 @@ def cli(argv: Optional[list[str]] = None) -> None:
             raise FileNotFoundError(f'Environment file specified via --env not found: {args.env}')
         os.environ['LABCAS_ENV_FILE'] = str(env_path)
         set_env_file(str(env_path))
+
+    if args.auxfiles_config:
+        aux_path = Path(args.auxfiles_config).resolve()
+        if not aux_path.exists():
+            raise FileNotFoundError(
+                f'Auxiliary file-services config specified via --auxfiles-config not found: {args.auxfiles_config}'
+            )
+        os.environ['LABCAS_AUXFILES_CONFIG'] = str(aux_path)
+        get_settings.cache_clear()
 
     settings = get_settings()
     # Configure logging early so log messages in cli() function are visible

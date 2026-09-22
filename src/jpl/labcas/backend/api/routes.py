@@ -23,10 +23,12 @@ from ..auth.jwt_manager import JwtManager
 from ..config import Settings, get_settings
 from ..directory import DirectoryProvider
 from ..services import (
+    AuxFileService,
     DownloadService,
     ListService,
     QueryService,
     ZipperlabService,
+    get_aux_file_service,
     get_download_service,
     get_list_service,
     get_query_service,
@@ -527,6 +529,94 @@ def create_router() -> APIRouter:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=str(exc),
             ) from exc
+
+    @data_router.api_route(
+        "/auxfiles/{service_key}/{file_path:path}",
+        methods=["GET", "HEAD"],
+        tags=["auxfiles"],
+        summary="Serve an auxiliary asset",
+        description=(
+            "Serve a non-Solr-cataloged auxiliary asset from a configured file-service "
+            "filesystem root. Access is gated by the service's groups setting "
+            "(use * for public). Path traversal outside the configured root is always denied."
+        ),
+        response_model=None,
+    )
+    async def auxfiles(
+        request: Request,
+        service_key: str,
+        file_path: str,
+        download: bool = Query(
+            False,
+            description="When true, force Content-Disposition: attachment so the browser downloads the file",
+        ),
+        security: SecurityContext = Depends(get_security_context),
+        aux_file_service: AuxFileService = Depends(get_aux_file_service),
+    ) -> Response | StreamingResponse:
+        """Serve an auxiliary asset from a configured file-service root."""
+
+        try:
+            config = aux_file_service.get_service(service_key)
+        except KeyError:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Unknown auxiliary file-service: {service_key}",
+            )
+
+        if not aux_file_service.is_authorized(config, security):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not authorized to access this auxiliary file-service",
+            )
+
+        try:
+            resolved = aux_file_service.resolve_path(config, file_path)
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(exc),
+            ) from exc
+
+        if not resolved.is_file():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="File not found",
+            )
+
+        file_size = resolved.stat().st_size
+        media_type = aux_file_service.get_media_type(resolved)
+        headers = {"Content-Length": str(file_size)}
+        if download:
+            filename = resolved.name.replace('"', '\\"')
+            headers["Content-Disposition"] = f'attachment; filename="{filename}"'
+
+        if request.method == "HEAD":
+            LOG.info(
+                "Returning auxfile headers: service=%s path=%s size=%s mediaType=%s",
+                service_key,
+                resolved,
+                file_size,
+                media_type,
+            )
+            return Response(content=b"", media_type=media_type, headers=headers)
+
+        def generate():
+            with open(resolved, "rb") as f:
+                while chunk := f.read(8192):
+                    yield chunk
+
+        LOG.info(
+            "Streaming auxfile: service=%s path=%s size=%s mediaType=%s",
+            service_key,
+            resolved,
+            file_size,
+            media_type,
+        )
+        return StreamingResponse(
+            generate(),
+            media_type=media_type,
+            headers=headers,
+        )
 
     router.include_router(data_router)
     return router

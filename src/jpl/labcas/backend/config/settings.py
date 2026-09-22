@@ -122,6 +122,10 @@ class Settings(BaseSettings):
 
     zipperlab_url: HttpUrl | None = Field(None, alias='LABCAS_ZIPPERLAB_URL')
 
+    # Path to the auxiliary file-services INI config (also settable via --auxfiles-config).
+    # When unset, /auxfiles/* endpoints return 404.
+    auxfiles_config_path: Path | None = Field(None, alias='LABCAS_AUXFILES_CONFIG')
+
     accept_any_jwt: bool = Field(False, alias='ACCEPT_ANY_JWT')
 
     # Key-value pairs for /kvp service; from LABCAS_KEY_VALUE_PAIRS (colon-separated key=value pairs)

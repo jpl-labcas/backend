@@ -1,0 +1,16 @@
+# Example auxiliary file-services configuration.
+# Copy to file-services.ini (or any path) and point LABCAS_AUXFILES_CONFIG /
+# --auxfiles-config at it. Section names must be "file-service <key>" where
+# <key> is the URL segment under /auxfiles/<key>/...
+
+[file-service open-to-public]
+name = open-to-public
+description = Public files available free of charge to everyone
+filesystem = /path/to/public-assets
+groups = *
+
+[file-service minerva]
+name = minerva
+description = Minerva-generated assets only
+filesystem = /path/to/private-assets
+groups = cn=Example Group One,dc=example,dc=org|cn=Example Group Two,dc=example,dc=org
