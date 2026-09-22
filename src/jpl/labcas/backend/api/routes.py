@@ -36,7 +36,7 @@ from ..services import (
 )
 from ..events import DownloadEvent, EventDispatcher, get_event_dispatcher, principal_from_security
 from ..services.access_control import user_may_download
-from ..utils.security import ensure_safe_value
+from ..utils.security import ensure_safe_value, parse_truthy_query
 
 LOG = logging.getLogger(__name__)
 
@@ -546,14 +546,19 @@ def create_router() -> APIRouter:
         request: Request,
         service_key: str,
         file_path: str,
-        download: bool = Query(
-            False,
-            description="When true, force Content-Disposition: attachment so the browser downloads the file",
+        download: str = Query(
+            "false",
+            description=(
+                "When truthy (true, True, 1, yes, on), force Content-Disposition: attachment "
+                "so the browser downloads the file"
+            ),
         ),
         security: SecurityContext = Depends(get_security_context),
         aux_file_service: AuxFileService = Depends(get_aux_file_service),
     ) -> Response | StreamingResponse:
         """Serve an auxiliary asset from a configured file-service root."""
+
+        force_download = parse_truthy_query(download)
 
         try:
             config = aux_file_service.get_service(service_key)
@@ -586,7 +591,7 @@ def create_router() -> APIRouter:
         file_size = resolved.stat().st_size
         media_type = aux_file_service.get_media_type(resolved)
         headers = {"Content-Length": str(file_size)}
-        if download:
+        if force_download:
             filename = resolved.name.replace('"', '\\"')
             headers["Content-Disposition"] = f'attachment; filename="{filename}"'
 

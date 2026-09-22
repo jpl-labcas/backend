@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from jpl.labcas.backend.utils.security import ensure_safe_value
+from jpl.labcas.backend.utils.security import ensure_safe_value, parse_truthy_query
 
 
 def test_ensure_safe_value_allows_safe_characters() -> None:
@@ -72,4 +72,20 @@ def test_ensure_safe_value_unicode() -> None:
     """Test that unicode characters are allowed."""
     assert ensure_safe_value("test_测试") == "test_测试"
     assert ensure_safe_value("test_émoji") == "test_émoji"
+
+
+@pytest.mark.parametrize(
+    "value",
+    ["true", "True", "TRUE", "1", "yes", "YES", "on", "t", "Y", True, 1],
+)
+def test_parse_truthy_query_accepts_truthy(value: object) -> None:
+    assert parse_truthy_query(value) is True  # type: ignore[arg-type]
+
+
+@pytest.mark.parametrize(
+    "value",
+    ["false", "False", "0", "no", "off", "", "banana", None, False, 0],
+)
+def test_parse_truthy_query_rejects_falsy(value: object) -> None:
+    assert parse_truthy_query(value) is False  # type: ignore[arg-type]
 

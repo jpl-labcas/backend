@@ -85,10 +85,19 @@ def test_auxfiles_public_anonymous_ok(tmp_path: Path) -> None:
 def test_auxfiles_download_query_sets_content_disposition(tmp_path: Path) -> None:
     client, _, _ = _make_client(tmp_path)
 
-    response = client.get("/auxfiles/open-to-public/metadata.xlsx", params={"download": "true"})
+    for value in ("true", "True", "1", "yes", "on"):
+        response = client.get("/auxfiles/open-to-public/metadata.xlsx", params={"download": value})
+        assert response.status_code == 200, value
+        assert 'attachment; filename="metadata.xlsx"' in response.headers["content-disposition"], value
 
-    assert response.status_code == 200
-    assert 'attachment; filename="metadata.xlsx"' in response.headers["content-disposition"]
+
+def test_auxfiles_download_query_falsy_keeps_inline(tmp_path: Path) -> None:
+    client, _, _ = _make_client(tmp_path)
+
+    for value in ("false", "False", "0", "no", "off", ""):
+        response = client.get("/auxfiles/open-to-public/metadata.xlsx", params={"download": value})
+        assert response.status_code == 200, value
+        assert "content-disposition" not in response.headers, value
 
 
 def test_auxfiles_head_returns_headers_only(tmp_path: Path) -> None:
