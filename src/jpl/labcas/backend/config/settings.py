@@ -121,6 +121,9 @@ class Settings(BaseSettings):
     file_path_prefix_replacements: str | None = Field(None, alias='LABCAS_FILE_PATH_PREFIX_REPLACEMENTS')
 
     zipperlab_url: HttpUrl | None = Field(None, alias='LABCAS_ZIPPERLAB_URL')
+    zipperlab_max_files: int = Field(100, alias='LABCAS_ZIPPERLAB_MAX_FILES')
+    zipperlab_file_list_folder: str = Field('/labcas-data/tmp/zipperlab', alias='LABCAS_ZIPPERLAB_FILE_LIST_FOLDER')
+    zipperlab_timeout_seconds: float = Field(60.0, alias='LABCAS_ZIPPERLAB_TIMEOUT_SECONDS')
 
     # Path to the auxiliary file-services INI config (also settable via --auxfiles-config).
     # When unset, /auxfiles/* endpoints return 404.
