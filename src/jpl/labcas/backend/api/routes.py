@@ -9,7 +9,14 @@ from typing import Optional
 
 import httpx
 from fastapi import APIRouter, Depends, Form, HTTPException, Query, Request, status
-from fastapi.responses import JSONResponse, PlainTextResponse, RedirectResponse, Response, StreamingResponse
+from fastapi.responses import (
+    FileResponse,
+    JSONResponse,
+    PlainTextResponse,
+    RedirectResponse,
+    Response,
+    StreamingResponse,
+)
 
 from ..auth.dependencies import (
     GUEST_USER_DN,
@@ -433,7 +440,7 @@ def create_router() -> APIRouter:
         security: SecurityContext = Depends(require_authenticated_user),
         download_service: DownloadService = Depends(get_download_service),
         event_dispatcher: EventDispatcher = Depends(get_event_dispatcher),
-    ) -> Response | StreamingResponse | RedirectResponse:
+    ) -> Response | FileResponse | RedirectResponse:
         """Download a file by ID."""
 
         # Users with no LDAP group memberships may browse metadata but cannot download.
@@ -480,7 +487,7 @@ def create_router() -> APIRouter:
             file_path = file_info.file_path
             # Apply path prefix replacements if configured (for debugging/local development)
             file_path = download_service.apply_path_prefix_replacements(file_path)
-            
+
             if not os.path.exists(file_path):
                 LOG.warning("File not found at path: %s", file_path)
                 raise HTTPException(
@@ -488,35 +495,29 @@ def create_router() -> APIRouter:
                     detail="File not found on server",
                 )
 
-            # Get file size and media type
-            file_size = download_service.get_file_size(file_path)
             media_type = download_service.get_media_type(file_path)
-
-            # Create file stream
-            def generate():
-                with open(file_path, "rb") as f:
-                    while chunk := f.read(8192):
-                        yield chunk
-
-            # Build response headers
-            headers = {"Content-Length": str(file_size)}
+            headers: dict[str, str] = {}
             if not suppressContentDisposition:
                 # Escape filename for Content-Disposition header
                 filename = file_info.file_name.replace('"', '\\"')
                 headers["Content-Disposition"] = f'attachment; filename="{filename}"'
 
-            if request.method == "HEAD":
-                LOG.info("Returning download headers: path=%s, size=%s, mediaType=%s", file_path, file_size, media_type)
-                return Response(content=b"", media_type=media_type, headers=headers)
+            if request.method != "HEAD":
+                event_dispatcher.publish(
+                    DownloadEvent(principal=principal_from_security(security), file_id=id)
+                )
 
-            LOG.info("Streaming file: path=%s, size=%s, mediaType=%s", file_path, file_size, media_type)
-            event_dispatcher.publish(
-                DownloadEvent(principal=principal_from_security(security), file_id=id)
+            LOG.info(
+                "Serving file: path=%s, mediaType=%s, method=%s",
+                file_path,
+                media_type,
+                request.method,
             )
-            return StreamingResponse(
-                generate(),
+            return FileResponse(
+                path=file_path,
                 media_type=media_type,
                 headers=headers,
+                filename=None,
             )
 
         except HTTPException:

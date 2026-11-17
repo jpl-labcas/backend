@@ -159,6 +159,7 @@ def test_download_local_file() -> None:
 
         assert response.status_code == 200
         assert response.content == b"test content"
+        assert response.headers["accept-ranges"] == "bytes"
         assert stub_service.file_id == "test-file-id"
         assert len(dispatcher.events) == 1
         event = dispatcher.events[0]
@@ -172,8 +173,9 @@ def test_download_local_file() -> None:
 def test_download_head_local_file_returns_headers_without_body() -> None:
     """Test HEAD /download returns metadata headers without file content."""
     stub_service = StubDownloadService()
-    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as tmp:
-        tmp.write("test content")
+    content = b"test content"
+    with tempfile.NamedTemporaryFile(mode="wb", delete=False, suffix=".txt") as tmp:
+        tmp.write(content)
         tmp_path = tmp.name
 
     try:
@@ -195,7 +197,8 @@ def test_download_head_local_file_returns_headers_without_body() -> None:
         assert response.status_code == 200
         assert response.content == b""
         assert response.headers["content-type"] == "application/octet-stream"
-        assert response.headers["content-length"] == "1024"
+        assert response.headers["content-length"] == str(len(content))
+        assert response.headers["accept-ranges"] == "bytes"
         assert "attachment" in response.headers["content-disposition"]
         assert "test-file.txt" in response.headers["content-disposition"]
         assert stub_service.file_id == "test-file-id"
@@ -406,7 +409,7 @@ def test_download_accepts_legacy_jwt_cookie_without_authorization_header(cookie_
         )
 
         assert response.status_code == 200
-        assert response.headers["content-length"] == "1024"
+        assert response.headers["content-length"] == str(os.path.getsize(tmp_path))
         jwt_manager.verify_token.assert_called_once_with("test-jwt-token")
     finally:
         os.unlink(tmp_path)
@@ -594,6 +597,128 @@ def test_download_with_quotes_in_filename() -> None:
         # Content-Disposition should escape quotes
         assert "Content-Disposition" in response.headers
         assert '\\"' in response.headers["Content-Disposition"] or '"' in response.headers["Content-Disposition"]
+    finally:
+        os.unlink(tmp_path)
+
+
+def _local_download_client(content: bytes) -> tuple[TestClient, RecordingEventDispatcher, str, int]:
+    """Create a test client serving a temp file with the given content."""
+
+    stub_service = StubDownloadService()
+    with tempfile.NamedTemporaryFile(mode="wb", delete=False, suffix=".txt") as tmp:
+        tmp.write(content)
+        tmp_path = tmp.name
+
+    stub_service.file_info = FileInfo(
+        file_location=os.path.dirname(tmp_path),
+        file_name="range-file.txt",
+        real_file_name="range-file.txt",
+        file_path=tmp_path,
+    )
+    stub_service.is_local = True
+    client, dispatcher = _make_app(stub_service)
+    return client, dispatcher, tmp_path, len(content)
+
+
+def test_download_range_returns_partial_content() -> None:
+    """Test GET /download with Range: bytes=0-3 returns 206 and the first four bytes."""
+    content = b"0123456789abcdef"
+    client, dispatcher, tmp_path, size = _local_download_client(content)
+
+    try:
+        response = client.get(
+            "/download",
+            params={"id": "test-file-id"},
+            headers={"Range": "bytes=0-3"},
+        )
+
+        assert response.status_code == 206
+        assert response.content == b"0123"
+        assert response.headers["content-range"] == f"bytes 0-3/{size}"
+        assert response.headers["accept-ranges"] == "bytes"
+        assert response.headers["content-length"] == "4"
+        assert len(dispatcher.events) == 1
+        assert isinstance(dispatcher.events[0], DownloadEvent)
+    finally:
+        os.unlink(tmp_path)
+
+
+def test_download_range_open_ended() -> None:
+    """Test GET /download with an open-ended Range returns the suffix of the file."""
+    content = b"0123456789abcdef"
+    client, _, tmp_path, size = _local_download_client(content)
+
+    try:
+        response = client.get(
+            "/download",
+            params={"id": "test-file-id"},
+            headers={"Range": "bytes=4-"},
+        )
+
+        assert response.status_code == 206
+        assert response.content == content[4:]
+        assert response.headers["content-range"] == f"bytes 4-{size - 1}/{size}"
+    finally:
+        os.unlink(tmp_path)
+
+
+def test_download_range_suffix() -> None:
+    """Test GET /download with a suffix Range returns the last N bytes."""
+    content = b"0123456789abcdef"
+    client, _, tmp_path, size = _local_download_client(content)
+
+    try:
+        response = client.get(
+            "/download",
+            params={"id": "test-file-id"},
+            headers={"Range": "bytes=-4"},
+        )
+
+        assert response.status_code == 206
+        assert response.content == content[-4:]
+        assert response.headers["content-range"] == f"bytes {size - 4}-{size - 1}/{size}"
+    finally:
+        os.unlink(tmp_path)
+
+
+def test_download_range_unsatisfiable() -> None:
+    """Test GET /download with an unsatisfiable Range returns 416 and still publishes an event."""
+    content = b"short"
+    client, dispatcher, tmp_path, size = _local_download_client(content)
+
+    try:
+        response = client.get(
+            "/download",
+            params={"id": "test-file-id"},
+            headers={"Range": "bytes=1000-2000"},
+        )
+
+        assert response.status_code == 416
+        assert response.headers["content-range"] == f"*/{size}"
+        assert len(dispatcher.events) == 1
+        assert isinstance(dispatcher.events[0], DownloadEvent)
+    finally:
+        os.unlink(tmp_path)
+
+
+def test_download_head_with_range_returns_headers_without_body() -> None:
+    """Test HEAD /download with Range returns 206 headers and no body or download event."""
+    content = b"0123456789abcdef"
+    client, dispatcher, tmp_path, size = _local_download_client(content)
+
+    try:
+        response = client.head(
+            "/download",
+            params={"id": "test-file-id"},
+            headers={"Range": "bytes=0-3"},
+        )
+
+        assert response.status_code == 206
+        assert response.content == b""
+        assert response.headers["content-range"] == f"bytes 0-3/{size}"
+        assert response.headers["accept-ranges"] == "bytes"
+        assert response.headers["content-length"] == "4"
+        assert dispatcher.events == []
     finally:
         os.unlink(tmp_path)
 
